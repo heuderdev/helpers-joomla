@@ -1,0 +1,55 @@
+https://www.perplexity.ai/search/1bb17947-c9ec-4d7d-9e47-ddb02d16e8e3
+
+Para ganhar produtividade rápido, eu criaria nesta ordem:
+
+ApiResponseHelper
+InputHelper
+ValidationHelper
+LogHelper
+PermissionHelper
+UploadMaster
+FileHelper
+DbTransactionHelper
+CsvHelper
+ExportHelper
+AuditHelper
+TokenHelper
+DownloadHelper
+HttpClientHelper
+QueueHelper
+
+
+components/com_generico/helpers/
+├── AuthHelper.php
+├── AclHelper.php
+├── ApiResponseHelper.php
+├── AuditHelper.php
+├── CacheHelper.php
+├── CsvHelper.php
+├── DateHelper.php
+├── DbTransactionHelper.php
+├── DownloadHelper.php
+├── EncryptionHelper.php
+├── ExportHelper.php
+├── FileHelper.php
+├── HttpClientHelper.php
+├── ImageHelper.php
+├── InputHelper.php
+├── LogHelper.php
+├── MoneyHelper.php
+├── NotificationHelper.php
+├── OrmBase.php
+├── OrmTables.php
+├── PaginationHelper.php
+├── PasswordHelper.php
+├── PermissionHelper.php
+├── QueueHelper.php
+├── RateLimitHelper.php
+├── ReportHelper.php
+├── RequestHelper.php
+├── SecurityHelper.php
+├── TokenHelper.php
+├── UploadMaster.php
+├── UrlHelper.php
+├── ValidationHelper.php
+└── ZipHelper.php
