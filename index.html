@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Documentação — helpers-joomla</title>
+<style>
+:root{--bg:#f6f8fb;--paper:#fff;--ink:#172033;--muted:#5f6b7a;--line:#dbe3ee;--brand:#075985;--brand2:#0f766e;--code:#0b1220;--warn:#9a3412}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.58 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}header{padding:48px max(24px,calc((100% - 1180px)/2));background:linear-gradient(120deg,#0c4a6e,#0f766e);color:#fff}header h1{margin:0 0 8px;font-size:34px}header p{margin:0;max-width:900px;opacity:.94}.layout{display:grid;grid-template-columns:270px minmax(0,1fr);max-width:1280px;margin:auto}.nav{position:sticky;top:0;height:100vh;overflow:auto;padding:24px;border-right:1px solid var(--line);background:#fff}.nav a{display:block;padding:7px 10px;color:#334155;text-decoration:none;border-radius:6px}.nav a:hover{background:#e0f2fe;color:#075985}.content{padding:34px;max-width:1010px}.card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px;margin:0 0 26px;box-shadow:0 2px 8px #0f172a08}h2{margin:0 0 12px;color:#0c4a6e;font-size:28px}h3{margin:28px 0 8px;font-size:20px;color:#0f4c5c}h4{margin:20px 0 8px}p{margin:9px 0}ul{padding-left:22px}li{margin:5px 0}.signature{font:600 14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;color:#0f172a;background:#eaf5ff;padding:10px 12px;border-radius:8px;overflow:auto}pre{position:relative;background:var(--code);color:#e5eefb;border-radius:10px;padding:18px 50px 18px 18px;overflow:auto;white-space:pre;tab-size:4}pre code{font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.copy{position:absolute;right:10px;top:10px;border:1px solid #64748b;background:#1e293b;color:#fff;border-radius:6px;padding:6px 9px;cursor:pointer}.copy:hover{background:#334155}.note{border-left:4px solid #0ea5e9;background:#eff6ff;padding:12px 14px;border-radius:4px}.warning{border-left-color:#f97316;background:#fff7ed}.method{border-top:1px solid var(--line);padding-top:16px}.method:first-of-type{border-top:0}.tag{display:inline-block;background:#dcfce7;color:#166534;border-radius:99px;padding:2px 8px;font-size:12px;font-weight:700}table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:14px}th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}th{background:#f1f5f9}@media(max-width:850px){.layout{display:block}.nav{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.content{padding:18px}header{padding:32px 20px}}
+</style>
+</head>
+<body>
+<header><h1>helpers-joomla — documentação técnica</h1><p>Guia de uso baseado nos fontes recebidos. Os exemplos PHP ficam em blocos com botão de cópia, implementado em JavaScript puro, sem dependência externa.</p></header>
+<div class="layout"><nav class="nav"><strong>Índice</strong><a href="#inicio">Início</a><a href="#api">ApiResponseHelper</a><a href="#input">InputHelper</a><a href="#validation">ValidationHelper</a><a href="#log">LogHelper</a><a href="#audit">AuditHelper</a><a href="#transaction">DbTransactionHelper</a><a href="#permission">PermissionHelper</a><a href="#orm">OrmBase / OrmTables</a><a href="#file">FileHelper</a><a href="#upload">UploadMaster</a><a href="#csv">CsvHelper</a><a href="#export">ExportHelper</a><a href="#chunk">ChunkUploadHelper</a><a href="#queue">QueueHelper</a></nav>
+<main class="content">
+<section id="inicio" class="card"><h2>Início e convenções</h2><p>Os helpers usam o ambiente Joomla 3: <code>JFactory</code>, <code>JFile</code>, <code>JFolder</code>, <code>JLog</code>, <code>JUri</code> e, em operações de banco, o driver retornado por <code>JFactory::getDbo()</code>. Os arquivos iniciam com <code>defined('_JEXEC') or die;</code>; portanto devem ser carregados dentro de uma execução Joomla.</p><div class="note"><strong>Contrato comum de resultado.</strong> Vários helpers de arquivo, importação, exportação, upload e fila retornam arrays no formato <code>success</code>, <code>status</code>, <code>mensagem</code>, <code>data</code> e, quando aplicável, <code>errors</code>. Sempre teste <code>$resultado['success']</code> antes de acessar dados de sucesso.</div><div class="note warning"><strong>Segurança.</strong> Os helpers de paths rejeitam NUL byte e sequências de traversal como <code>../</code>. Ainda assim, defina diretórios-base específicos por domínio funcional e não exponha caminhos absolutos ao cliente.</div></section>
+<section id="api" class="card"><h2>ApiResponseHelper</h2><p>Padroniza respostas JSON ou mensagens de sessão do Joomla. Uma requisição é considerada JSON quando <code>format=json</code>, <code>X-Requested-With: XMLHttpRequest</code> ou <code>Accept: application/json</code> estiverem presentes. O payload contém <code>success</code>, <code>status</code>, <code>mensagem</code>, <code>data</code>, <code>errors</code> e <code>request_id</code>; <code>meta</code> é incluído quando informado.</p><div class="method"><h3>Configuração e detecção</h3><p class="signature">setDefaultRedirect($url) · setCloseApplication($close) · setLogErrors($logErrors) · setLogCategory($category) · isJson()</p><p><code>setCloseApplication(true)</code> é o padrão: em resposta JSON o helper chama <code>$app-&gt;close()</code>. Para testar ou continuar o fluxo após emitir o JSON, use a opção <code>close =&gt; false</code> ou configure a classe.</p></div><div class="method"><h3>Respostas de sucesso</h3><p class="signature">success($message = 'Operação realizada com sucesso.', $data = null, array $options = array()) · created(...) · updated(...) · deleted(...) · info(...) · warning(...)</p><p><code>created()</code> força HTTP 201. As demais usam HTTP 200 salvo se <code>options['http_status']</code> for informado. Opções reconhecidas: <code>json</code>, <code>close</code>, <code>redirect</code>, <code>meta</code> e <code>http_status</code>.</p><pre><code class="language-php">$cliente = array('id' =&gt; 81, 'nome' =&gt; 'Ana');
+
+return ApiResponseHelper::created(
+    'Cliente cadastrado com sucesso.',
+    $cliente,
+    array(
+        'json' =&gt; true,
+        'close' =&gt; true,
+        'meta' =&gt; array('origem' =&gt; 'clientes.salvar')
+    )
+);</code></pre></div><div class="method"><h3>Respostas de erro</h3><p class="signature">error($message = 'Não foi possível concluir a operação.', $data = null, array $errors = array(), array $options = array()) · validationError(array $errors, $message = 'Corrija os campos informados.', array $options = array())</p><p class="signature">badRequest(...) · unauthorized(...) · forbidden(...) · notFound(...) · methodNotAllowed(...) · conflict(...) · tooManyRequests(...) · internalError(...) · serviceUnavailable(...) · exception(Throwable $error, $publicMessage = ..., array $options = array()) · fromValidation(array $validation, ...)</p><p>Os atalhos definem os códigos HTTP esperados: 400, 401, 403, 404, 405, 409, 429, 500 e 503. <code>validationError()</code> responde 422 e desativa log por padrão. <code>exception()</code> registra o erro técnico, mas retorna uma mensagem pública.</p><pre><code class="language-php">$validacao = ValidationHelper::validate(
+    array('email' =&gt; InputHelper::email('email')),
+    array('email' =&gt; 'required|email')
+);
+
+if (!$validacao['valid']) {
+    return ApiResponseHelper::fromValidation($validacao, 'Revise os campos.');
+}
+
+try {
+    // Persistência do registro.
+} catch (Throwable $e) {
+    return ApiResponseHelper::exception(
+        $e,
+        'Não foi possível salvar o cliente.',
+        array('json' =&gt; true, 'context' =&gt; array('modulo' =&gt; 'clientes'))
+    );
+}</code></pre></div></section>
+<section id="input" class="card"><h2>InputHelper</h2><p>Camada de leitura segura sobre <code>JFactory::getApplication()-&gt;input</code>. Aceita fontes <code>request</code> (padrão), <code>get</code>, <code>post</code>, <code>files</code>, <code>server</code> e <code>cookie</code>. Em falhas, registra em <code>input_helper</code> e retorna o padrão informado.</p><table><tr><th>Métodos</th><th>Uso real</th></tr><tr><td><code>value($name, $default = null, $filter = 'cmd', $source = 'request')</code></td><td>Leitura genérica usando o filtro Joomla passado.</td></tr><tr><td><code>string</code>, <code>raw</code>, <code>html</code></td><td>Texto filtrado, texto raw ou HTML; string/raw podem aplicar trim.</td></tr><tr><td><code>int</code>, <code>uint</code>, <code>float</code>, <code>decimal</code>, <code>bool</code></td><td>Tipos primitivos; <code>decimal()</code> converte o formato brasileiro removendo pontos e trocando vírgula por ponto.</td></tr><tr><td><code>cmd</code>, <code>word</code>, <code>alnum</code>, <code>base64</code>, <code>email</code>, <code>username</code>, <code>path</code></td><td>Filtros especializados do Joomla; email ainda é sanitizado e validado com <code>filter_var</code>.</td></tr><tr><td><code>array</code>, <code>arrayOfInt</code></td><td>Leitura de arrays; <code>arrayOfInt</code> elimina itens não numéricos e valores menores ou iguais a zero.</td></tr></table><pre><code class="language-php">$id = InputHelper::uint('id', 0, 'post');
+$preco = InputHelper::decimal('preco', 0, 'post'); // "1.234,56" =&gt; 1234.56
+$ativo = InputHelper::bool('ativo', false, 'post');
+$tags = InputHelper::arrayOfInt('tags', array(), 'post');
+$descricaoHtml = InputHelper::html('descricao', '', 'post');
+
+if ($id &lt;= 0 || $preco &lt;= 0) {
+    return ApiResponseHelper::badRequest('ID ou preço inválido.');
+}</code></pre></section>
+<section id="validation" class="card"><h2>ValidationHelper</h2><p>Valida arrays de dados usando regras separadas por <code>|</code> ou arrays de regras. O retorno de <code>validate()</code> é <code>valid</code>, <code>errors</code> (por campo) e <code>first_error</code>. Mensagens podem ser personalizadas por regra (<code>email</code>) ou por campo/regra (<code>email.required</code>).</p><p class="signature">setMessages(array $messages) · setCustomMessages(array $messages) · setLabels(array $labels) · reset() · validate(array $data, array $rules, array $messages = array(), array $labels = array()) · firstError(array $errors) · passes(...) · fails(...)</p><p class="signature">cpf($cpf) · cnpj($cnpj) · email($email) · date($date, $format = 'Y-m-d') · file($file) · image($file)</p><h3>Regras implementadas</h3><p><code>required</code>, <code>string</code>, <code>integer|int</code>, <code>numeric</code>, <code>decimal</code>, <code>boolean|bool</code>, <code>email</code>, <code>url</code>, <code>cpf</code>, <code>cnpj</code>, <code>cpfcnpj</code>, <code>phone|telefone</code>, <code>cep</code>, <code>date</code>, <code>datebr</code>, <code>datetime</code>, <code>time</code>, <code>array</code>, <code>json</code>, <code>min</code>, <code>max</code>, <code>between</code>, <code>minlength</code>, <code>maxlength</code>, <code>length</code>, <code>in</code>, <code>notin</code>, <code>regex</code>, <code>same</code>, <code>different</code>, <code>requiredif</code>, <code>requiredwith</code>, <code>nullable</code>, <code>unique</code>, <code>exists</code>, <code>file</code>, <code>filesize</code>, <code>fileextension</code>, <code>filemime</code>, <code>image</code>, <code>imagedimensions</code>, <code>accepted</code>, <code>alpha</code>, <code>alphanum</code>, <code>alphadash</code>, <code>uuid</code>, <code>ip</code> e <code>callback</code>.</p><div class="note">Para <code>unique</code>, <code>exists</code> e <code>callback</code>, o parâmetro da regra deve ser um callback PHP chamável. Callables inseridos diretamente no array de regras também são executados com <code>($value, $data, $field)</code>.</div><pre><code class="language-php">$dados = array(
+    'nome' =&gt; InputHelper::string('nome', '', 'post'),
+    'email' =&gt; InputHelper::email('email', '', 'post'),
+    'cpf' =&gt; InputHelper::string('cpf', '', 'post'),
+    'aceite' =&gt; InputHelper::bool('aceite', false, 'post')
+);
+
+$validacao = ValidationHelper::validate(
+    $dados,
+    array(
+        'nome' =&gt; 'required|string|minlength:3|maxlength:120',
+        'email' =&gt; 'required|email',
+        'cpf' =&gt; 'required|cpf',
+        'aceite' =&gt; 'accepted'
+    ),
+    array('cpf.cpf' =&gt; 'Informe um CPF válido.'),
+    array('cpf' =&gt; 'CPF')
+);
+
+if (!$validacao['valid']) {
+    return ApiResponseHelper::validationError($validacao['errors']);
+}</code></pre></section>
+<section id="log" class="card"><h2>LogHelper</h2><p>Escreve logs Joomla por categoria e nível, adiciona automaticamente <code>request_id</code>, usuário autenticado, método HTTP, URI e IP. Também mascara chaves sensíveis como senha, token, authorization, API key, cartão, CVV, cookie e sessão.</p><p class="signature">setEnabled($enabled) · setDefaultCategory($category) · setBaseDirectory($directory) · getBaseDirectory() · setDirectoryPermission($permission) · setRequestId($requestId) · getRequestId() · addSensitiveKey($key) · sanitize($context)</p><p class="signature">debug($message, $category = null, array $context = array(), $directory = null) · info(...) · notice(...) · warning(...) · error(...) · critical(...) · alert(...) · emergency(...) · exception(Throwable $error, ...) · database(Throwable $error, $query = null, ...) · security(...) · api(...) · upload(...) · queue(...) · audit(...) · payment(...)</p><p>O arquivo de saída segue o padrão <code>{categoria}.{nivel}.php</code>. Diretórios configurados precisam estar dentro de <code>JPATH_SITE</code>.</p><pre><code class="language-php">LogHelper::setBaseDirectory('logs/modulo-clientes');
+LogHelper::addSensitiveKey('documento');
+
+LogHelper::info(
+    'Cliente atualizado.',
+    'clientes',
+    array('cliente_id' =&gt; 81, 'token' =&gt; 'segredo-nao-exposto')
+);
+
+try {
+    // operação de banco
+} catch (Throwable $e) {
+    LogHelper::database($e, 'UPDATE #__clientes ...', array('cliente_id' =&gt; 81));
+}</code></pre></section>
+<section id="audit" class="card"><h2>AuditHelper</h2><p>Registra eventos de auditoria em tabela configurável, incluindo UUID, usuário Joomla, IP, user-agent, referer, método e URI da requisição. Os dados são sanitizados antes da serialização JSON; campos sensíveis são mascarados. Eventos só aceitam caracteres <code>a-z A-Z 0-9 _ . : -</code>.</p><p class="signature">Métodos públicos verificados: setTable($table) · setEnabled($enabled) · setLogCategory($category) · setMaxTextLength($length) · setMaxDataLength($length) · addSensitiveKey($key) · sanitize($data) · custom($event, array $options = array())</p><p>O helper também expõe atalhos de auditoria para ações de domínio e segurança, incluindo criação, atualização, exclusão, login, logout, acesso negado e eventos customizados. Use <code>custom()</code> quando o evento não se encaixar em um atalho.</p><pre><code class="language-php">AuditHelper::setTable('#__audit_logs');
+
+AuditHelper::custom('cliente.atualizado', array(
+    'category' =&gt; 'clientes',
+    'entity_type' =&gt; 'cliente',
+    'entity_id' =&gt; 81,
+    'description' =&gt; 'Cadastro alterado pelo operador.',
+    'metadata' =&gt; array(
+        'antes' =&gt; array('status' =&gt; 'inativo'),
+        'depois' =&gt; array('status' =&gt; 'ativo'),
+        'authorization' =&gt; 'nao-sera-gravado-em-claro'
+    )
+));</code></pre></section>
+<section id="transaction" class="card"><h2>DbTransactionHelper</h2><p>Encapsula transações Joomla com suporte a profundidade e savepoints. Identifica como recuperáveis os códigos 1205 e 1213 e mensagens como <code>deadlock found</code>, <code>lock wait timeout</code> e <code>serialization failure</code>; quando configurado, faz retry com backoff exponencial, limitado a 5 segundos por espera.</p><p class="signature">setLogCategory($category) · setLogDirectory($directory) · setAuditEnabled($enabled) · setMaxRetries($maxRetries) · setRetryDelayMicroseconds($microseconds) · setRetryableErrorCodes(array $codes) · isActive() · depth() · begin() · commit() · rollback()</p><p class="signature">run($callback, array $options = array()) · attempt($callback, array $options = array()) · transaction($callback, array $options = array())</p><p><code>run()</code> e <code>transaction()</code> lançam a exceção final. <code>attempt()</code> a captura e devolve um envelope de sucesso/erro. O callback recebe <code>($db, $attempt)</code>.</p><pre><code class="language-php">$resultado = DbTransactionHelper::attempt(
+    function ($db, $attempt) {
+        $registro = (object) array('nome' =&gt; 'Novo cliente', 'email' =&gt; 'ana@empresa.test');
+        $db-&gt;insertObject('#__clientes', $registro, 'id');
+
+        return array('cliente_id' =&gt; (int) $registro-&gt;id, 'attempt' =&gt; $attempt);
+    },
+    array(
+        'retries' =&gt; 3,
+        'audit_event' =&gt; 'cliente.criado',
+        'context' =&gt; array('origem' =&gt; 'admin.clientes')
+    )
+);
+
+if (!$resultado['success']) {
+    return ApiResponseHelper::internalError($resultado['mensagem']);
+}</code></pre></section>
+<section id="permission" class="card"><h2>PermissionHelper</h2><p>Centraliza autorização Joomla usando <code>JUser::authorise()</code>, grupos, níveis de visualização e assets de componente/entidade. Em negação pode registrar log, auditoria e responder JSON via <code>ApiResponseHelper</code>; em HTML enfileira mensagem Joomla e pode redirecionar.</p><p class="signature">setDefaultComponent($component) · getDefaultComponent() · setLogDirectory($directory) · setUseApiResponse($useApiResponse) · setAuditDenied($auditDenied) · setLogDenied($logDenied)</p><p class="signature">user($user = null) · userId($user = null) · isLoggedIn($user = null) · isGuest($user = null) · groups($user = null) · viewLevels($user = null) · hasGroup($groupId, $user = null) · hasAnyGroup(array $groupIds, $user = null) · hasAllGroups(array $groupIds, $user = null) · canView($accessLevel, $user = null)</p><p class="signature">asset($component = null, $entityType = null, $entityId = null) · can($action, $asset = null, $user = null) · canComponent(...) · canEntity(...) · canAny(...) · canAll(...) · isAdmin(...) · isManager(...) · isAllowedUser(...) · allowsUser(...) · evaluate(...)</p><p class="signature">requireLogin(...) · require(...) · requireComponent(...) · requireEntity(...) · requireAny(...) · requireAll(...) · requireGroup(...) · requireAnyGroup(...) · requireAllowedUser(...) · requireCallback(...) · requireProjectAccess(...)</p><pre><code class="language-php">$clienteId = InputHelper::uint('id', 0);
+
+if (!PermissionHelper::requireEntity(
+    'core.edit',
+    'cliente',
+    $clienteId,
+    'com_clientes',
+    'Você não pode editar este cliente.',
+    'index.php?option=com_clientes'
+)) {
+    return; // A resposta/redirect já foi emitido pelo helper.
+}
+
+// Fluxo autorizado.</code></pre></section>
+<section id="orm" class="card"><h2>OrmBase e OrmTables</h2><p><code>OrmBase</code> é um construtor de consultas e persistência sobre o driver Joomla. <code>OrmTables</code> cria ou registra instâncias reutilizáveis e sempre retorna clones, evitando manter filtros da consulta anterior.</p><h3>OrmTables</h3><p class="signature">table($table, array $options = array()) · make(...) · get($name, $table = null, array $options = array()) · register($name, $table, array $options = array()) · has($name) · forget($name) · flush() · all()</p><h3>OrmBase: construção e leitura</h3><p class="signature">__construct($table, array $options = array()) · table($table, array $options = array()) · db() · tabelaAtual() · newQuery() · select(...) · where(...) · orWhere(...) · whereIn(...) · whereNotIn(...) · whereNull(...) · whereNotNull(...) · whereBetween(...) · whereLike(...) · whereRaw(...)</p><p class="signature">join(...) · innerJoin(...) · leftJoin(...) · leftOuterJoin(...) · rightJoin(...) · rightOuterJoin(...) · crossJoin(...) · orderBy(...) · groupBy(...) · having(...) · limit(...) · get() · first() · all() · find($id) · findOrFail($id) · findBy(...) · value(...) · pluck(...) · exists() · count(...) · sum(...) · avg(...) · min(...) · max(...) · paginate(...)</p><h3>OrmBase: escrita</h3><p class="signature">create(array $data) · createMany(array $list) · firstOrCreate(array $conditions, array $additional = array()) · updateOrCreate(array $conditions, array $data) · update($id, array $data) · updateWhere(array $data) · increment($id, $column, $quantity = 1) · decrement(...) · touch($id) · delete($id) · deleteWhere() · restore($id) · forceDelete($id) · transaction(callable $callback)</p><p>Opções úteis: <code>primaryKey</code>, <code>timestamps</code>, <code>createdAtColumn</code>, <code>updatedAtColumn</code>, <code>softDeletes</code>, <code>deletedAtColumn</code>, <code>casts</code>, <code>fillable</code> e <code>guarded</code>. A lista <code>fillable</code> e <code>guarded</code> atua junto às colunas reais retornadas pelo banco.</p><pre><code class="language-php">$clientes = OrmTables::table('#__clientes', array(
+    'softDeletes' =&gt; true,
+    'casts' =&gt; array('ativo' =&gt; 'bool', 'config' =&gt; 'json'),
+    'fillable' =&gt; array('nome', 'email', 'ativo', 'config')
+));
+
+$cliente = $clientes
+    -&gt;where('ativo', 1)
+    -&gt;whereLike('nome', 'Ana')
+    -&gt;orderBy('nome')
+    -&gt;first();
+
+$novo = $clientes-&gt;create(array(
+    'nome' =&gt; 'Ana Souza',
+    'email' =&gt; 'ana@empresa.test',
+    'ativo' =&gt; true,
+    'config' =&gt; array('recebe_email' =&gt; true)
+));</code></pre><div class="note warning">Evite montar <code>whereRaw()</code>, <code>having()</code> e condições de <code>join()</code> com dados de usuário. Esses trechos são SQL cru; os demais filtros do builder fazem quoting de valores.</div></section>
+<section id="file" class="card"><h2>FileHelper</h2><p>Manipula arquivos abaixo de uma base autorizada dentro de <code>JPATH_SITE</code>. Por padrão captura falhas e retorna envelopes; <code>setThrowExceptions(true)</code> faz os métodos relançarem a exceção.</p><p class="signature">setBaseDirectory($directory) · getBaseDirectory() · setDirectoryPermission($permission) · setFilePermission($permission) · setMaxReadSize($bytes) · setThrowExceptions($throwExceptions) · exists($path, $baseDirectory = null) · directoryExists($directory, $baseDirectory = null)</p><p class="signature">ensureDirectory(...) · info(...) · read(...) · readJson(...) · write(...) · writeJson(...) · append(...) · copy(...) · move(...) · delete(...) · deleteDirectory(...) · listFiles(...) · listDirectories(...) · cleanOlderThan(...) · createZip(...)</p><pre><code class="language-php">FileHelper::setBaseDirectory('media/app/arquivos');
+
+$salvo = FileHelper::writeJson(
+    'clientes/81.json',
+    array('id' =&gt; 81, 'nome' =&gt; 'Ana'),
+    null,
+    array('overwrite' =&gt; true)
+);
+
+if (!$salvo['success']) {
+    LogHelper::error($salvo['mensagem'], 'arquivos');
+    return;
+}
+
+$arquivo = FileHelper::readJson('clientes/81.json');
+$lista = FileHelper::listFiles('clientes', null, array('recursive' =&gt; true));</code></pre></section>
+<section id="upload" class="card"><h2>UploadMaster</h2><p>Upload seguro de arquivos, com validação de erro PHP, tamanho, extensão, MIME real via Fileinfo e compatibilidade extensão/MIME. A lista padrão aceita imagens, PDF, texto, CSV, planilhas, documentos Office, ZIP e alguns vídeos; extensões perigosas, como PHP, PHAR, scripts, executáveis, <code>.env</code> e SQL, são explicitamente proibidas.</p><p class="signature">setBaseDirectory($directory) · getBaseDirectory() · setMaxFileSize($bytes) · setAllowedExtensions(array $extensions) · setAllowedMimes(array $mimes) · setThrowExceptions($throwExceptions) · formatBytes($bytes, $precision = 2) · getFileFromInput($fieldName, $index = null)</p><p class="signature">upload(array $file, $directory, $fileName = null, array $options = array()) · uploadMany(array $files, $directory, array $options = array()) · delete(...) · exists(...) · info(...) · copy(...) · move(...) · thumbnail(...) · stream(...) · removeEmptyDirectories(...)</p><p>Opções relevantes: <code>baseDirectory</code>, <code>maxSize</code>, <code>allowedExtensions</code>, <code>allowedMimes</code>, <code>overwrite</code>, <code>prefix</code>, <code>keepOriginalName</code>. <code>thumbnail()</code> exige extensão GD e aceita <code>crop</code>, <code>quality</code>, <code>prefix</code>, <code>filename</code> e <code>overwrite</code>.</p><pre><code class="language-php">$arquivo = UploadMaster::getFileFromInput('documento');
+
+$resultado = UploadMaster::upload(
+    $arquivo,
+    'clientes/81/documentos',
+    null,
+    array(
+        'baseDirectory' =&gt; 'media/app/uploads',
+        'allowedExtensions' =&gt; array('pdf', 'jpg', 'jpeg', 'png'),
+        'allowedMimes' =&gt; array('application/pdf', 'image/jpeg', 'image/png'),
+        'maxSize' =&gt; 10 * 1024 * 1024,
+        'prefix' =&gt; 'cliente_81'
+    )
+);
+
+if (!$resultado['success']) {
+    return ApiResponseHelper::validationError(array(
+        'documento' =&gt; array($resultado['mensagem'])
+    ));
+}
+
+$dadosArquivo = $resultado['data']; // path, relative_path, url, mime, size etc.</code></pre></section>
+<section id="csv" class="card"><h2>CsvHelper</h2><p>Utilitário para criação, leitura e processamento de CSV com base autorizada, codificação UTF-8/UTF-8-SIG, remoção de BOM e conversão via <code>mb_convert_encoding</code> ou <code>iconv</code> quando disponíveis. Os delimitadores, encapsuladores e escapes são validados para terem um caractere — exceto escape, que pode ser vazio.</p><p class="signature">Configuração e métodos públicos: setBaseDirectory(...) · getBaseDirectory() · setLogDirectory(...) · setDelimiter(...) · setEnclosure(...) · setEscape(...) · setEncoding(...) · export(...) · import(...) · read(...) · write(...) · append(...) · download(...) · info(...)</p><p>Use uma base exclusiva para importar/exportar, e preserve o mesmo delimitador no lado que gera e no lado que consome o arquivo.</p><pre><code class="language-php">$linhas = array(
+    array('id' =&gt; 1, 'nome' =&gt; 'Ana', 'ativo' =&gt; true),
+    array('id' =&gt; 2, 'nome' =&gt; 'Bruno', 'ativo' =&gt; false)
+);
+
+$exportacao = CsvHelper::export(
+    'relatorios/clientes.csv',
+    $linhas,
+    array(
+        'baseDirectory' =&gt; 'media/app/exportacoes',
+        'delimiter' =&gt; ';',
+        'headers' =&gt; array('id', 'nome', 'ativo')
+    )
+);
+
+if ($exportacao['success']) {
+    // $exportacao['data'] contém informações do arquivo gerado.
+}</code></pre></section>
+<section id="export" class="card"><h2>ExportHelper</h2><p>Gera exportações CSV com proteção de paths dentro de <code>JPATH_SITE</code>, nome de arquivo saneado e extensão <code>.csv</code>. Normaliza valores: <code>null</code> vira string vazia, booleanos viram “Sim”/“Não”, <code>DateTime</code> vira <code>Y-m-d H:i:s</code> e estruturas complexas são serializadas.</p><p class="signature">Métodos públicos de configuração e exportação: setBaseDirectory(...) · getBaseDirectory() · setLogDirectory(...) · setDelimiter(...) · setEnclosure(...) · setEscape(...) · export(...) · download(...) · save(...) · stream(...)</p><pre><code class="language-php">$resultado = ExportHelper::export(
+    'financeiro/pedidos.csv',
+    $pedidos,
+    array(
+        'baseDirectory' =&gt; 'media/app/exportacoes',
+        'delimiter' =&gt; ';',
+        'headers' =&gt; array('Pedido', 'Cliente', 'Total', 'Status'),
+        'columns' =&gt; array('id', 'cliente_nome', 'total', 'status')
+    )
+);
+
+if (!$resultado['success']) {
+    return ApiResponseHelper::internalError($resultado['mensagem']);
+}</code></pre></section>
+<section id="chunk" class="card"><h2>ChunkUploadHelper</h2><p>Processa arquivos grandes em blocos de leitura, com offset e fingerprint do arquivo. Ele exige um callback válido de processamento e trabalha com paths restritos à base autorizada. É apropriado para importações CSV em múltiplas requisições, evitando timeout e memória excessiva.</p><p class="signature">Métodos públicos: setBaseDirectory(...) · getBaseDirectory() · setLogDirectory(...) · setDefaultReadSize(...) · setMinReadSize(...) · setMaxReadSize(...) · setDefaultRowsPerChunk(...) · process(...) · processCsv(...) · status(...) · reset(...)</p><p>O callback deve ser idempotente sempre que possível: uma chamada pode precisar ser repetida quando uma requisição falhar no meio do processamento.</p><pre><code class="language-php">$estado = ChunkUploadHelper::processCsv(
+    'importacoes/clientes.csv',
+    function (array $linhas, array $contexto) {
+        foreach ($linhas as $linha) {
+            // Faça upsert ou outra operação idempotente.
+            // $contexto informa posição/fingerprint do processamento.
+        }
+
+        return array('processadas' =&gt; count($linhas));
+    },
+    array(
+        'baseDirectory' =&gt; 'media/app/importacoes',
+        'rowsPerChunk' =&gt; 500,
+        'delimiter' =&gt; ';',
+        'hasHeader' =&gt; true
+    )
+);
+
+// O retorno informa sucesso, progresso/offset e se ainda há dados a processar.</code></pre></section>
+<section id="queue" class="card"><h2>QueueHelper</h2><p>Fila persistida em banco. Estados: <code>pending</code>, <code>processing</code>, <code>retry</code>, <code>completed</code>, <code>failed</code> e <code>cancelled</code>. A reserva de trabalho cria um <code>lock_token</code>; heartbeat, progresso, conclusão e falha exigem esse token. Payload, resultado e erro possuem limites configurados e campos sensíveis são mascarados no log.</p><p class="signature">setTable($table) · setDefaultQueue($queue) · setLogCategory($category) · setLogDirectory($directory) · setDefaultMaxAttempts($attempts) · setDefaultTimeoutSeconds($seconds) · setDefaultRetryAfterSeconds($seconds) · setDefaultRetryDelaySeconds($seconds)</p><p class="signature">push($type, array $payload = array(), array $options = array()) · find($idOrUuid) · next(array $allowedTypes = array(), $queue = null, array $options = array()) · heartbeat($id, $lockToken) · progress($id, $lockToken, $progress, $total = null) · complete($id, $lockToken, array $result = array()) · release($id, $lockToken, array $options = array()) · fail($id, $lockToken, $errorMessage, array $options = array())</p><p class="signature">cancel($idOrUuid, $userId = null, $force = false) · retry($idOrUuid, $userId = null) · releaseExpiredLocks($defaultRetryAfterSeconds = null) · status($idOrUuid, $userId = null) · list(array $filters = array(), $limit = 50, $offset = 0) · count(array $filters = array()) · purge($dateBefore, array $statuses = array(), $limit = 1000)</p><pre><code class="language-php">$novo = QueueHelper::push('importar_clientes', array(
+    'arquivo' =&gt; 'importacoes/clientes.csv',
+    'usuario_id' =&gt; 15
+), array(
+    'queue' =&gt; 'importacoes',
+    'prioridade' =&gt; 10,
+    'maxTentativas' =&gt; 3,
+    'usuarioId' =&gt; 15
+));
+
+// Em um worker/cron:
+$job = QueueHelper::next(array('importar_clientes'), 'importacoes');
+if ($job) {
+    try {
+        QueueHelper::progress($job-&gt;id, $job-&gt;locktoken, 10, 100);
+        // Processar $job-&gt;payload.
+        QueueHelper::complete($job-&gt;id, $job-&gt;locktoken, array('importados' =&gt; 100));
+    } catch (Throwable $e) {
+        QueueHelper::fail($job-&gt;id, $job-&gt;locktoken, $e-&gt;getMessage());
+    }
+}</code></pre><div class="note warning"><strong>Worker obrigatório.</strong> A classe enfileira e reserva jobs, mas não executa automaticamente um daemon. Crie um comando CLI ou cron que chame <code>next()</code>, processe o payload e termine sempre com <code>complete()</code>, <code>fail()</code> ou <code>release()</code>.</div></section>
+</main></div>
+<script>
+document.querySelectorAll('pre').forEach(function(pre){var btn=document.createElement('button');btn.className='copy';btn.type='button';btn.textContent='Copiar';btn.addEventListener('click',function(){var text=pre.querySelector('code').innerText;var done=function(){btn.textContent='Copiado';setTimeout(function(){btn.textContent='Copiar'},1600)};if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done);return}var area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();document.execCommand('copy');document.body.removeChild(area);done()});pre.appendChild(btn)});
+</script>
+</body></html>

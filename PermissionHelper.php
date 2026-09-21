@@ -4,7 +4,7 @@ defined('_JEXEC') or die;
 
 class PermissionHelper
 {
-    private static $defaultComponent = 'com_generico';
+    private static $defaultComponent = null;
 
     private static $logCategory = 'permission_helper';
 
@@ -15,6 +15,8 @@ class PermissionHelper
     private static $auditDenied = true;
 
     private static $logDenied = true;
+
+    private static $entityResolvers = array();
 
     private static function app()
     {
@@ -36,11 +38,10 @@ class PermissionHelper
                 return;
             }
 
-            JLog::add(
-                $message,
-                JLog::WARNING,
-                self::$logCategory
-            );
+            if (class_exists('JLog')) {
+                $priority = ($level === 'error') ? JLog::ERROR : JLog::WARNING;
+                JLog::add($message, $priority, self::$logCategory);
+            }
         } catch (Throwable $error) {
         }
     }
@@ -50,12 +51,12 @@ class PermissionHelper
         $component = trim((string) $component);
 
         if ($component === '') {
-            $component = self::$defaultComponent;
+            $component = (string) self::getDefaultComponent();
         }
 
-        if (!preg_match('/^com_[a-zA-Z0-9_]+$/', $component)) {
+        if ($component === '' || !preg_match('/^com_[a-zA-Z0-9_]+$/', $component)) {
             throw new InvalidArgumentException(
-                'Componente de permissão inválido.'
+                'Componente de permissão inválido ou não definido.'
             );
         }
 
@@ -126,7 +127,7 @@ class PermissionHelper
     private static function isJsonRequest()
     {
         try {
-            if (class_exists('ApiResponseHelper')) {
+            if (class_exists('ApiResponseHelper') && method_exists('ApiResponseHelper', 'isJson')) {
                 return ApiResponseHelper::isJson();
             }
 
@@ -165,21 +166,11 @@ class PermissionHelper
                 'action' => $action,
                 'asset' => $asset,
                 'message' => $message,
-                'user_id' => self::isLoggedIn($user)
-                    ? (int) $user->id
-                    : null,
-                'username' => self::isLoggedIn($user)
-                    ? (string) $user->username
-                    : null,
-                'groups' => self::isLoggedIn($user)
-                    ? self::groups($user)
-                    : array(),
-                'ip' => isset($_SERVER['REMOTE_ADDR'])
-                    ? $_SERVER['REMOTE_ADDR']
-                    : null,
-                'request_uri' => isset($_SERVER['REQUEST_URI'])
-                    ? $_SERVER['REQUEST_URI']
-                    : null
+                'user_id' => self::isLoggedIn($user) ? (int) $user->id : null,
+                'username' => self::isLoggedIn($user) ? (string) $user->username : null,
+                'groups' => self::isLoggedIn($user) ? self::groups($user) : array(),
+                'ip' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null,
+                'request_uri' => isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null
             ),
             $context
         );
@@ -187,33 +178,24 @@ class PermissionHelper
 
     private static function registerDenied($action, $asset, $message, array $context = array())
     {
-        $context = self::deniedContext(
-            $action,
-            $asset,
-            $message,
-            $context
-        );
+        $context = self::deniedContext($action, $asset, $message, $context);
 
         if (self::$logDenied) {
-            self::log(
-                'Acesso negado: ' . $message,
-                $context,
-                'warning'
-            );
+            self::log('Acesso negado: ' . $message, $context, 'warning');
         }
 
         if (self::$auditDenied && class_exists('AuditHelper')) {
             try {
+                $eventConst = defined('AuditHelper::EVENT_SECURITY_DENIED')
+                    ? AuditHelper::EVENT_SECURITY_DENIED
+                    : 'SECURITY_DENIED';
+
                 AuditHelper::securityDenied(
-                    AuditHelper::EVENT_SECURITY_DENIED,
+                    $eventConst,
                     array(
                         'category' => 'permissao',
-                        'entity_type' => isset($context['entity_type'])
-                            ? $context['entity_type']
-                            : null,
-                        'entity_id' => isset($context['entity_id'])
-                            ? $context['entity_id']
-                            : null,
+                        'entity_type' => isset($context['entity_type']) ? $context['entity_type'] : null,
+                        'entity_id' => isset($context['entity_id']) ? $context['entity_id'] : null,
                         'description' => $message,
                         'metadata' => $context
                     )
@@ -221,9 +203,7 @@ class PermissionHelper
             } catch (Throwable $error) {
                 self::log(
                     'Falha ao registrar auditoria de acesso negado.',
-                    array(
-                        'erro' => $error->getMessage()
-                    ),
+                    array('erro' => $error->getMessage()),
                     'error'
                 );
             }
@@ -234,34 +214,18 @@ class PermissionHelper
     {
         $isJson = self::isJsonRequest();
 
-        if (
-            self::$useApiResponse &&
-            class_exists('ApiResponseHelper')
-        ) {
-            if ($httpStatus === 401) {
-                return ApiResponseHelper::unauthorized(
-                    $message,
-                    array(
-                        'redirect' => $redirect
-                    )
-                );
+        if (self::$useApiResponse && class_exists('ApiResponseHelper')) {
+            if ($httpStatus === 401 && method_exists('ApiResponseHelper', 'unauthorized')) {
+                return ApiResponseHelper::unauthorized($message, array('redirect' => $redirect));
             }
 
-            return ApiResponseHelper::forbidden(
-                $message,
-                array(
-                    'redirect' => $redirect
-                )
-            );
+            if (method_exists('ApiResponseHelper', 'forbidden')) {
+                return ApiResponseHelper::forbidden($message, array('redirect' => $redirect));
+            }
         }
 
         if ($isJson) {
-            self::app()->setHeader(
-                'Content-Type',
-                'application/json; charset=utf-8',
-                true
-            );
-
+            self::app()->setHeader('Content-Type', 'application/json; charset=utf-8', true);
             http_response_code((int) $httpStatus);
 
             echo json_encode(
@@ -271,17 +235,13 @@ class PermissionHelper
                     'mensagem' => $message,
                     'context' => $context
                 ),
-                JSON_UNESCAPED_UNICODE |
-                JSON_UNESCAPED_SLASHES
+                JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             );
 
             self::app()->close();
         }
 
-        self::app()->enqueueMessage(
-            $message,
-            'error'
-        );
+        self::app()->enqueueMessage($message, 'error');
 
         if ($redirect !== null && trim((string) $redirect) !== '') {
             self::app()->redirect($redirect);
@@ -292,14 +252,37 @@ class PermissionHelper
 
     public static function setDefaultComponent($component)
     {
-        self::$defaultComponent = self::normalizeComponent(
-            $component
-        );
+        $component = trim((string) $component);
+
+        if (!preg_match('/^com_[a-zA-Z0-9_]+$/', $component)) {
+            throw new InvalidArgumentException('Componente padrão inválido.');
+        }
+
+        self::$defaultComponent = $component;
     }
 
     public static function getDefaultComponent()
     {
-        return self::$defaultComponent;
+        if (self::$defaultComponent !== null) {
+            return self::$defaultComponent;
+        }
+
+        try {
+            $input = self::app()->input;
+            $option = $input ? $input->getCmd('option', '') : '';
+
+            if ($option !== '' && preg_match('/^com_[a-zA-Z0-9_]+$/', $option)) {
+                return $option;
+            }
+        } catch (Throwable $e) {
+        }
+
+        return 'com_content';
+    }
+
+    public static function setLogCategory($category)
+    {
+        self::$logCategory = trim((string) $category);
     }
 
     public static function setLogDirectory($directory)
@@ -322,6 +305,17 @@ class PermissionHelper
         self::$logDenied = (bool) $logDenied;
     }
 
+    public static function registerEntityResolver($entityType, $callback)
+    {
+        $type = self::normalizeEntityType($entityType);
+
+        if (!is_callable($callback)) {
+            throw new InvalidArgumentException('O resolvedor de entidade deve ser um callable válido.');
+        }
+
+        self::$entityResolvers[$type] = $callback;
+    }
+
     public static function user($user = null)
     {
         if ($user instanceof JUser) {
@@ -333,9 +327,7 @@ class PermissionHelper
 
     public static function userId($user = null)
     {
-        $user = self::user($user);
-
-        return (int) $user->id;
+        return (int) self::user($user)->id;
     }
 
     public static function isLoggedIn($user = null)
@@ -363,17 +355,11 @@ class PermissionHelper
                 return array();
             }
 
-            return array_values(
-                array_unique(
-                    array_map('intval', $groups)
-                )
-            );
+            return array_values(array_unique(array_map('intval', $groups)));
         } catch (Throwable $error) {
             self::log(
                 'Falha ao recuperar grupos autorizados do usuário.',
-                array(
-                    'erro' => $error->getMessage()
-                ),
+                array('erro' => $error->getMessage()),
                 'error'
             );
 
@@ -396,17 +382,11 @@ class PermissionHelper
                 return array();
             }
 
-            return array_values(
-                array_unique(
-                    array_map('intval', $levels)
-                )
-            );
+            return array_values(array_unique(array_map('intval', $levels)));
         } catch (Throwable $error) {
             self::log(
                 'Falha ao recuperar níveis de visualização do usuário.',
-                array(
-                    'erro' => $error->getMessage()
-                ),
+                array('erro' => $error->getMessage()),
                 'error'
             );
 
@@ -418,15 +398,7 @@ class PermissionHelper
     {
         $groupId = (int) $groupId;
 
-        if ($groupId <= 0) {
-            return false;
-        }
-
-        return in_array(
-            $groupId,
-            self::groups($user),
-            true
-        );
+        return $groupId > 0 && in_array($groupId, self::groups($user), true);
     }
 
     public static function hasAnyGroup(array $groupIds, $user = null)
@@ -459,15 +431,7 @@ class PermissionHelper
     {
         $accessLevel = (int) $accessLevel;
 
-        if ($accessLevel <= 0) {
-            return false;
-        }
-
-        return in_array(
-            $accessLevel,
-            self::viewLevels($user),
-            true
-        );
+        return $accessLevel > 0 && in_array($accessLevel, self::viewLevels($user), true);
     }
 
     public static function asset($component = null, $entityType = null, $entityId = null)
@@ -484,13 +448,7 @@ class PermissionHelper
             return $component . '.' . $entityType;
         }
 
-        $entityId = self::normalizeEntityId($entityId);
-
-        return $component .
-            '.' .
-            $entityType .
-            '.' .
-            $entityId;
+        return $component . '.' . $entityType . '.' . self::normalizeEntityId($entityId);
     }
 
     public static function can($action, $asset = null, $user = null)
@@ -504,13 +462,10 @@ class PermissionHelper
             }
 
             if ($asset === null || trim((string) $asset) === '') {
-                $asset = self::$defaultComponent;
+                $asset = self::getDefaultComponent();
             }
 
-            return (bool) $user->authorise(
-                $action,
-                (string) $asset
-            );
+            return (bool) $user->authorise($action, (string) $asset);
         } catch (Throwable $error) {
             self::log(
                 'Falha ao validar permissão Joomla.',
@@ -528,28 +483,14 @@ class PermissionHelper
 
     public static function canComponent($action, $component = null, $user = null)
     {
-        $component = self::normalizeComponent($component);
-
-        return self::can(
-            $action,
-            $component,
-            $user
-        );
+        return self::can($action, self::normalizeComponent($component), $user);
     }
 
     public static function canEntity($action, $entityType, $entityId, $component = null, $user = null)
     {
-        $asset = self::asset(
-            $component,
-            $entityType,
-            $entityId
-        );
+        $asset = self::asset($component, $entityType, $entityId);
 
-        return self::can(
-            $action,
-            $asset,
-            $user
-        );
+        return self::can($action, $asset, $user);
     }
 
     public static function canAny(array $actions, $asset = null, $user = null)
@@ -578,60 +519,64 @@ class PermissionHelper
     {
         $component = self::normalizeComponent($component);
 
-        return (
-            self::can('core.admin', $component, $user) ||
-            self::can('core.admin', 'root.1', $user)
-        );
+        return self::can('core.admin', $component, $user) || self::can('core.admin', 'root.1', $user);
     }
 
     public static function isManager($component = null, $user = null)
     {
         $component = self::normalizeComponent($component);
 
-        return (
-            self::can('core.manage', $component, $user) ||
-            self::isAdmin($component, $user)
-        );
+        return self::can('core.manage', $component, $user) || self::isAdmin($component, $user);
     }
 
     public static function isAllowedUser(array $userIds, $user = null)
     {
-        $userId = self::userId($user);
-
-        if ($userId <= 0) {
-            return false;
-        }
-
-        $userIds = array_map(
-            'intval',
-            $userIds
-        );
-
-        return in_array(
-            $userId,
-            $userIds,
-            true
-        );
+        return self::isUserIn($userIds, $user);
     }
 
     public static function allowsUser($userId, array $userIds)
     {
         $userId = (int) $userId;
 
+        return $userId > 0 && in_array($userId, array_map('intval', $userIds), true);
+    }
+
+    public static function isUserIn($allowedUserIds, $user = null)
+    {
+        if (func_num_args() > 2 || (!is_array($allowedUserIds) && !($user instanceof JUser) && $user !== null && is_numeric($user))) {
+            $args = func_get_args();
+            $lastArg = end($args);
+
+            if ($lastArg instanceof JUser) {
+                $user = array_pop($args);
+            } else {
+                $user = null;
+            }
+
+            $allowedUserIds = $args;
+        }
+
+        $userId = self::userId($user);
+
         if ($userId <= 0) {
             return false;
         }
 
-        $userIds = array_map(
-            'intval',
-            $userIds
-        );
+        if (!is_array($allowedUserIds)) {
+            $allowedUserIds = array($allowedUserIds);
+        }
 
-        return in_array(
-            $userId,
-            $userIds,
-            true
-        );
+        $sanitizedIds = array();
+
+        foreach ($allowedUserIds as $id) {
+            $id = (int) $id;
+
+            if ($id > 0) {
+                $sanitizedIds[] = $id;
+            }
+        }
+
+        return in_array($userId, $sanitizedIds, true);
     }
 
     public static function evaluate($callback, $user = null, array $context = array())
@@ -641,19 +586,11 @@ class PermissionHelper
                 return false;
             }
 
-            $user = self::user($user);
-
-            return (bool) call_user_func(
-                $callback,
-                $user,
-                $context
-            );
+            return (bool) call_user_func($callback, self::user($user), $context);
         } catch (Throwable $error) {
             self::log(
                 'Falha ao executar regra de permissão customizada.',
-                array(
-                    'erro' => $error->getMessage()
-                ),
+                array('erro' => $error->getMessage()),
                 'error'
             );
 
@@ -661,118 +598,45 @@ class PermissionHelper
         }
     }
 
-    public static function canAccessProject($idProjeto, $component = 'com_sourural', $user = null)
+    public static function canAccessEntity($entityType, $entityId, $action = 'core.view', $component = null, $user = null, array $context = array())
     {
         try {
             $user = self::user($user);
-            $idProjeto = (int) $idProjeto;
+            $entityType = self::normalizeEntityType($entityType);
+            $entityId = self::normalizeEntityId($entityId);
+            $component = self::normalizeComponent($component);
 
-            if (
-                !self::isLoggedIn($user) ||
-                $idProjeto <= 0
-            ) {
+            if (!self::isLoggedIn($user)) {
                 return false;
             }
 
-            if (
-                self::isAdmin($component, $user) ||
-                self::canEntity(
-                    'core.edit',
-                    'projeto',
-                    $idProjeto,
-                    $component,
-                    $user
-                ) ||
-                self::canEntity(
-                    'core.view',
-                    'projeto',
-                    $idProjeto,
-                    $component,
-                    $user
-                )
-            ) {
+            if (self::isAdmin($component, $user)) {
                 return true;
             }
 
-            if (!method_exists('JFactory', 'getDadosPessoais')) {
-                return false;
-            }
-
-            $dadosPessoais = JFactory::getDadosPessoais();
-
-            if (empty($dadosPessoais)) {
-                return false;
-            }
-
-            $central = isset($dadosPessoais->central)
-                ? (int) $dadosPessoais->central
-                : 0;
-
-            $singular = isset($dadosPessoais->singular)
-                ? (int) $dadosPessoais->singular
-                : 0;
-
-            if ($central <= 0 && $singular <= 0) {
-                return false;
-            }
-
-            $db = JFactory::getDbo();
-
-            $query = $db->getQuery(true)
-                ->select(
-                    array(
-                        $db->quoteName('NUM_CENTRAL'),
-                        $db->quoteName('NUM_SINGULAR')
-                    )
-                )
-                ->from(
-                    $db->quoteName(
-                        '#__premio_produtor_rural_sourural_cadastro_6'
-                    )
-                )
-                ->where(
-                    $db->quoteName('ID_CADASTRO_PROJETO') .
-                    ' = ' .
-                    $idProjeto
-                );
-
-            $db->setQuery($query);
-
-            $projeto = $db->loadObject();
-
-            if (!$projeto) {
-                return false;
-            }
-
-            if (
-                $singular > 1000 &&
-                $singular < 3000 &&
-                (int) $projeto->NUM_CENTRAL === $singular
-            ) {
+            if (self::canEntity($action, $entityType, $entityId, $component, $user)) {
                 return true;
             }
 
-            if (
-                $singular > 3000 &&
-                (int) $projeto->NUM_SINGULAR === $singular
-            ) {
-                return true;
-            }
+            if (isset(self::$entityResolvers[$entityType])) {
+                $resolverContext = array_merge($context, array(
+                    'entity_type' => $entityType,
+                    'entity_id' => $entityId,
+                    'component' => $component,
+                    'action' => $action
+                ));
 
-            if (
-                $central > 0 &&
-                (int) $projeto->NUM_CENTRAL === $central
-            ) {
-                return true;
+                return (bool) call_user_func(self::$entityResolvers[$entityType], $entityId, $user, $resolverContext);
             }
 
             return false;
         } catch (Throwable $error) {
             self::log(
-                'Falha ao validar acesso ao projeto.',
+                'Falha ao validar acesso à entidade.',
                 array(
                     'erro' => $error->getMessage(),
-                    'id_projeto' => $idProjeto
+                    'entity_type' => $entityType,
+                    'entity_id' => $entityId
                 ),
                 'error'
             );
@@ -789,19 +653,8 @@ class PermissionHelper
             return $user;
         }
 
-        self::registerDenied(
-            'login',
-            null,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            401,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied('login', null, $message, $context);
+        self::respondDenied(401, $message, $redirect, $context);
 
         return false;
     }
@@ -811,54 +664,27 @@ class PermissionHelper
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
         if (self::can($action, $asset, $user)) {
             return true;
         }
 
-        self::registerDenied(
-            $action,
-            $asset,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied($action, $asset, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
 
     public static function requireComponent($action, $component = null, $message = 'Você não possui permissão para esta operação.', $redirect = null, array $context = array())
     {
-        $component = self::normalizeComponent($component);
-
-        return self::require(
-            $action,
-            $component,
-            $message,
-            $redirect,
-            $context
-        );
+        return self::require($action, self::normalizeComponent($component), $message, $redirect, $context);
     }
 
     public static function requireEntity($action, $entityType, $entityId, $component = null, $message = 'Você não possui permissão para acessar este registro.', $redirect = null, array $context = array())
     {
-        $asset = self::asset(
-            $component,
-            $entityType,
-            $entityId
-        );
+        $asset = self::asset($component, $entityType, $entityId);
 
         $context = array_merge(
             $context,
@@ -868,13 +694,33 @@ class PermissionHelper
             )
         );
 
-        return self::require(
-            $action,
-            $asset,
-            $message,
-            $redirect,
-            $context
+        return self::require($action, $asset, $message, $redirect, $context);
+    }
+
+    public static function requireAccessEntity($entityType, $entityId, $action = 'core.view', $component = null, $message = 'Você não possui permissão para acessar este registro.', $redirect = null, array $context = array())
+    {
+        $user = self::user();
+
+        if (!self::isLoggedIn($user)) {
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
+        }
+
+        if (self::canAccessEntity($entityType, $entityId, $action, $component, $user, $context)) {
+            return true;
+        }
+
+        $context = array_merge(
+            $context,
+            array(
+                'entity_type' => $entityType,
+                'entity_id' => $entityId
+            )
         );
+
+        self::registerDenied($action, self::asset($component, $entityType, $entityId), $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
+
+        return false;
     }
 
     public static function requireAny(array $actions, $asset = null, $message = 'Você não possui permissão para esta operação.', $redirect = null, array $context = array())
@@ -882,30 +728,15 @@ class PermissionHelper
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
         if (self::canAny($actions, $asset, $user)) {
             return true;
         }
 
-        self::registerDenied(
-            implode('|', $actions),
-            $asset,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied(implode('|', $actions), $asset, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
@@ -915,30 +746,15 @@ class PermissionHelper
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
         if (self::canAll($actions, $asset, $user)) {
             return true;
         }
 
-        self::registerDenied(
-            implode('&', $actions),
-            $asset,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied(implode('&', $actions), $asset, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
@@ -948,30 +764,15 @@ class PermissionHelper
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
         if (self::hasGroup($groupId, $user)) {
             return true;
         }
 
-        self::registerDenied(
-            'group.' . (int) $groupId,
-            null,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied('group.' . (int) $groupId, null, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
@@ -981,63 +782,42 @@ class PermissionHelper
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
         if (self::hasAnyGroup($groupIds, $user)) {
             return true;
         }
 
-        self::registerDenied(
-            'groups.' . implode(',', $groupIds),
-            null,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied('groups.' . implode(',', $groupIds), null, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
 
     public static function requireAllowedUser(array $userIds, $message = 'Você não possui permissão para esta operação.', $redirect = null, array $context = array())
     {
+        return self::requireUserIn($userIds, $message, $redirect, $context);
+    }
+
+    public static function requireUserIn($allowedUserIds, $message = 'Você não possui permissão para acessar esta área.', $redirect = null, array $context = array())
+    {
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
-        if (self::isAllowedUser($userIds, $user)) {
+        if (self::isUserIn($allowedUserIds, $user)) {
             return true;
         }
 
-        self::registerDenied(
-            'allowed_users',
-            null,
-            $message,
-            $context
-        );
+        $context = array_merge($context, array(
+            'allowed_ids' => is_array($allowedUserIds) ? $allowedUserIds : array($allowedUserIds)
+        ));
 
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied('allowed_user_ids', null, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
@@ -1047,70 +827,15 @@ class PermissionHelper
         $user = self::user();
 
         if (!self::isLoggedIn($user)) {
-            return self::requireLogin(
-                'Usuário não autenticado.',
-                $redirect,
-                $context
-            );
+            return self::requireLogin('Usuário não autenticado.', $redirect, $context);
         }
 
         if (self::evaluate($callback, $user, $context)) {
             return true;
         }
 
-        self::registerDenied(
-            'callback',
-            null,
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
-
-        return false;
-    }
-
-    public static function requireProjectAccess($idProjeto, $component = 'com_sourural', $message = 'Você não possui permissão para acessar este projeto.', $redirect = null)
-    {
-        $idProjeto = (int) $idProjeto;
-
-        if ($idProjeto <= 0) {
-            throw new InvalidArgumentException(
-                'ID do projeto inválido.'
-            );
-        }
-
-        if (self::canAccessProject($idProjeto, $component)) {
-            return true;
-        }
-
-        $context = array(
-            'entity_type' => 'projeto',
-            'entity_id' => $idProjeto
-        );
-
-        self::registerDenied(
-            'core.view',
-            self::asset(
-                $component,
-                'projeto',
-                $idProjeto
-            ),
-            $message,
-            $context
-        );
-
-        self::respondDenied(
-            403,
-            $message,
-            $redirect,
-            $context
-        );
+        self::registerDenied('callback', null, $message, $context);
+        self::respondDenied(403, $message, $redirect, $context);
 
         return false;
     }
