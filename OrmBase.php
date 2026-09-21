@@ -431,15 +431,6 @@ class OrmBase
         return $this;
     }
 
-    /**
-     * Mantém compatibilidade com:
-     *
-     * ->join('#__clientes AS c', 'c.id = p.cliente_id')
-     * ->join('#__clientes AS c', 'c.id = p.cliente_id', 'LEFT')
-     *
-     * Tipos aceitos:
-     * INNER, LEFT, LEFT OUTER, RIGHT, RIGHT OUTER e CROSS.
-     */
     public function join($tabela, $condicao = null, $tipo = 'INNER')
     {
         $tabela = trim((string) $tabela);
@@ -473,8 +464,10 @@ class OrmBase
             'CROSS',
         ];
 
-        if ($tipo === 'FULL' || $tipo === 'FULL OUTER'
-            || $tipo === 'FULL JOIN' || $tipo === 'FULL OUTER JOIN') {
+        if ($tipo === 'FULL'
+            || $tipo === 'FULL OUTER'
+            || $tipo === 'FULL JOIN'
+            || $tipo === 'FULL OUTER JOIN') {
             throw new RuntimeException(
                 'FULL OUTER JOIN não é suportado nativamente pelo MySQL/MariaDB. ' .
                 'Utilize UNION entre LEFT JOIN e RIGHT JOIN ou uma consulta SQL específica.'
@@ -644,6 +637,47 @@ class OrmBase
         }
     }
 
+    /*
+     * NOVO:
+     *
+     * Aceita:
+     * - #__pedidos
+     * - #__pedidos AS p
+     * - #__pedidos p
+     *
+     * Retorna:
+     * - `#__pedidos`
+     * - `#__pedidos` AS `p`
+     */
+    protected function montarTabelaComAlias($tabela)
+    {
+        $tabela = trim((string) $tabela);
+
+        if (preg_match(
+            '/^(.+?)\s+AS\s+([a-zA-Z_][a-zA-Z0-9_]*)$/i',
+            $tabela,
+            $matches
+        )) {
+            return $this->db->quoteName(
+                trim($matches[1]),
+                trim($matches[2])
+            );
+        }
+
+        if (preg_match(
+            '/^([^\s]+)\s+([a-zA-Z_][a-zA-Z0-9_]*)$/',
+            $tabela,
+            $matches
+        )) {
+            return $this->db->quoteName(
+                trim($matches[1]),
+                trim($matches[2])
+            );
+        }
+
+        return $this->db->quoteName($tabela);
+    }
+
     protected function montarJoins($query)
     {
         foreach ($this->joins as $join) {
@@ -674,7 +708,14 @@ class OrmBase
             : ['*'];
 
         $query->select($colunasSelecionadas);
-        $query->from($this->db->quoteName($this->table));
+
+        /*
+         * ALTERADO:
+         *
+         * Antes:
+         * $query->from($this->db->quoteName($this->table));
+         */
+        $query->from($this->montarTabelaComAlias($this->table));
 
         $this->montarJoins($query);
         $this->montarWheres($query);
