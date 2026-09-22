@@ -30,7 +30,7 @@ class ApiResponseHelper
 
     const HTTP_CONFLICT = 409;
 
-    const HTTP_UNPROCESSABLE_ENTITY = 422;
+    const HTTP_UNPROCESSABLE_ENTITY = 401;
 
     const HTTP_TOO_MANY_REQUESTS = 429;
 
@@ -516,9 +516,17 @@ class ApiResponseHelper
         );
     }
 
-    public static function validationError(array $errors, $message = 'Corrija os campos informados.', array $options = array())
-    {
-        $options['http_status'] = self::HTTP_UNPROCESSABLE_ENTITY;
+    public static function validationError(
+    array $errors,
+    $message = 'Corrija os campos informados.',
+    array $options = array()
+    ) {
+        $httpStatus = isset($options['http_status'])
+            ? (int) $options['http_status']
+            : self::HTTP_UNPROCESSABLE_ENTITY;
+
+        $options['http_status'] = $httpStatus;
+
         $options['log'] = isset($options['log'])
             ? (bool) $options['log']
             : false;
@@ -529,7 +537,7 @@ class ApiResponseHelper
             $message,
             null,
             $errors,
-            self::HTTP_UNPROCESSABLE_ENTITY,
+            $httpStatus,
             $options
         );
     }
