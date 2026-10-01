@@ -1536,4 +1536,103 @@ class OrmBase
             );
         }
     }
+
+     /**
+     * Remove todos os registros da tabela e reinicia o auto incremento.
+     *
+     * ATENÇÃO:
+     * - TRUNCATE TABLE é destrutivo.
+     * - Em MySQL, normalmente executa commit implícito.
+     * - Não deve ser tratado como operação com rollback.
+     *
+     * @param bool $confirmar Deve ser obrigatoriamente true.
+     *
+     * @return array
+     *
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+        public function truncate($confirmar = false)
+        {
+            if ($confirmar !== true) {
+                throw new InvalidArgumentException(
+                    'Para truncar a tabela, informe true como confirmação explícita.'
+                );
+            }
+
+            $tabela = trim((string) $this->table);
+
+            if ($tabela === '') {
+                throw new InvalidArgumentException(
+                    'A tabela para truncamento não foi informada.'
+                );
+            }
+
+            if (
+                !preg_match(
+                    '/^[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)?$/',
+                    $tabela
+                )
+            ) {
+                throw new InvalidArgumentException(
+                    'Nome de tabela inválido para truncamento.'
+                );
+            }
+
+            try {
+                $tabelaExiste = $this->db->getTableColumns(
+                    $tabela,
+                    false
+                );
+
+                if (empty($tabelaExiste)) {
+                    throw new RuntimeException(
+                        'A tabela informada não existe ou não possui colunas acessíveis: ' .
+                        $tabela
+                    );
+                }
+
+                $quantidadeAntes = 0;
+
+                try {
+                    $queryCount = $this->db
+                        ->getQuery(true)
+                        ->select('COUNT(*)')
+                        ->from($this->db->quoteName($tabela));
+
+                    $this->db->setQuery($queryCount);
+
+                    $quantidadeAntes = (int) $this->db->loadResult();
+                } catch (Throwable $countError) {
+
+                }
+
+
+                $sql = 'TRUNCATE TABLE ' .
+                    $this->db->quoteName($tabela);
+
+                $this->db->setQuery($sql);
+                $this->db->execute();
+
+                $this->newQuery();
+
+                $resultado = array(
+                    'success' => true,
+                    'tabela' => $tabela,
+                    'registros_removidos_estimados' => $quantidadeAntes
+                );
+
+
+                return $resultado;
+            } catch (Throwable $e) {
+
+                throw new RuntimeException(
+                    'Não foi possível truncar a tabela ' .
+                    $tabela . ': ' .
+                    $e->getMessage(),
+                    500,
+                    $e
+                );
+            }
+        }
 }
