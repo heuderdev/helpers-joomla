@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChunkHelper · helpers-joomla</title>
+<meta name="description" content="Referência do ChunkHelper: processamento de grandes arquivos em blocos de bytes ou linhas, divisão física de arquivos, resiliência de processamento via checkpoints JSON e arquitetura desacoplada.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › ChunkHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" class="ativo" aria-current="page" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>ChunkHelper</h1>
+<p class="lead">Processamento segmentado de arquivos gigantes, leitura sequencial em blocos de bytes ou linhas, divisão física de arquivos, e reprocessamento resiliente a quedas/timeouts via checkpoints JSON.</p>
+<div id="nesta-pagina"></div>
+
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O <code>ChunkHelper</code> (fornecido pelo arquivo <code>ChunkUploadHelper.php</code>) é uma solução de alta performance projetada para processar arquivos massivos (de centenas de megabytes ou gigabytes, como dumps de bancos, planilhas CSV corporativas, ou logs brutos) sem estourar o limite de memória (<code>memory_limit</code>) ou de tempo de execução (<code>max_execution_time</code>) do servidor PHP.</p>
+<p>Dentre as principais vantagens e arquitetura empregadas na ferramenta, destacam-se:</p>
+<ul>
+    <li><strong>Portabilidade e Desacoplamento Total:</strong> Embora projetado inicialmente para Joomla, o helper foi desenvolvido com uma arquitetura agnóstica baseada em wrappers dinâmicos. Caso seja carregado fora do Joomla (em projetos Laravel, Symfony, scripts CLI puros ou microsserviços), ele detecta a ausência do framework e chaveia automaticamente todas as operações de log e de manipulação de disco para as funções nativas do PHP (<code>is_dir</code>, <code>mkdir</code>, <code>unlink</code>, <code>rename</code>, etc.).</li>
+    <li><strong>Processamento Baseado em Bytes (`readBytes`):</strong> Lê trechos binários sequenciais de tamanho pré-definido, repassando o buffer a uma função callback.</li>
+    <li><strong>Processamento Baseado em Linhas (`readLines`):</strong> Lê arquivos texto linha a linha, agrupa as linhas processadas em lotes (chunks) e dispara callbacks por lote. Ideal para leitura sob demanda de planilhas de dados gigantes de forma extremamente rápida.</li>
+    <li><strong>Resiliência via Checkpoint JSON (`resumeLines`):</strong> Registra o progresso do processamento (linha atual, bytes lidos, métricas) em um arquivo de progresso em disco (checkpoint). Se o servidor cair, o script estourar o timeout ou a conexão cair, basta acionar a função novamente: ela lerá o checkpoint e **retomará o processamento exatamente do ponto onde parou**, evitando reprocessar registros e duplicar gravações!</li>
+    <li><strong>Divisão Física de Arquivos (`splitFile`):</strong> Divide arquivos gigantes em vários pedaços físicos menores delimitados por quantidade de linhas ou tamanho de bytes, ideal para criar filas de uploads segmentados em background.</li>
+</ul>
+
+<h2 id="configuracao" data-titulo="Configurações globais">Configurações globais</h2>
+<p>Limites físicos de leitura, buffers de memória e pastas padrões de operação.</p>
+
+<div class="metodo">
+<h3 id="setBaseDirectory"><code>setBaseDirectory() / getBaseDirectory()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::setBaseDirectory(string|null $directory): void<br>ChunkHelper::getBaseDirectory(): string|null</div>
+<p>Define ou consulta o diretório raiz das operações físicas. Caminhos relativos fornecidos aos métodos serão resolvidos relativamente a esta pasta (sandbox de segurança JPATH_SITE).</p>
+</div>
+
+<div class="metodo">
+<h3 id="setDefaultReadSize"><code>setDefaultReadSize() / setMaxReadSize()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::setDefaultReadSize(int $readSize): void<br>ChunkHelper::setMaxReadSize(int $readSize): void</div>
+<p>Controla os buffers de tamanho padrão de leitura de blocos binários em bytes (padrão: 8MB; limite máximo aceitável: 64MB).</p>
+</div>
+
+<div class="metodo">
+<h3 id="setDefaultRowsPerChunk"><code>setDefaultRowsPerChunk()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::setDefaultRowsPerChunk(int $rowsPerChunk): void</div>
+<p>Altera a quantidade padrão de linhas agrupadas por bloco enviada a cada ciclo do callback em `readLines()` (padrão: 1000 linhas).</p>
+</div>
+
+<h2 id="metodos-leitura" data-titulo="Leitura Segmentada">Leitura Segmentada de Arquivos</h2>
+<p>Métodos de stream para leitura fluida de arquivos e controle de memória.</p>
+
+<div class="metodo">
+<h3 id="readBytes"><code>readBytes()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::readBytes(string $path, callable $callback, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Lê um arquivo de forma binária sequencial em blocos de bytes e repassa cada bloco para a função callback informada. Útil para fazer hashing incremental ou uploads em streaming de arquivos binários.</p>
+<div class="codigo">
+<pre><code data-lang="php">$resultado = ChunkHelper::readBytes('instalador.iso', function (string $buffer, array $status) {
+    // Processar bloco binário de 8MB
+    HashService::update($buffer);
+}, null, [
+    'read_size' => 8388608 // Buffer customizado de bytes
+]);
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="readLines"><code>readLines()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::readLines(string $path, callable $callback, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Abre o arquivo físico, lê linha a linha utilizando ponteiros de baixo consumo de recursos, agrupa as linhas processadas em lotes de tamanho `rows_per_chunk` e dispara o callback fornecido.</p>
+<p>O callback do usuário deve possuir a assinatura:</p>
+<p><code>function (array $linhasDoLote, array $statusProcessamento): void</code></p>
+<div class="codigo">
+<pre><code data-lang="php">$resultado = ChunkHelper::readLines('planilha_usuarios.csv', function (array $linhas, array $status) {
+    foreach ($linhas as $linha) {
+        // Cada item é uma string de linha limpa sem o caractere newline '\n'
+        UsuarioService::importarLinha($linha);
+    }
+}, null, [
+    'rows_per_chunk' => 500 // Tamanho do lote
+]);
+</code></pre>
+</div>
+</div>
+
+<h2 id="resiliencia" data-titulo="Processamento com Checkpoint">Resiliência com Checkpoints</h2>
+<p>Garantia de processamento tolerante a falhas mecânicas, ideal para scripts pesados em cron de sincronização.</p>
+
+<div class="metodo">
+<h3 id="resumeLines"><code>resumeLines()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::resumeLines(string $path, string $checkpointPath, callable $callback, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Semelhante ao `readLines()`, mas o método cria e atualiza dinamicamente um arquivo JSON de checkpoint no caminho `checkpointPath` (salvando o estado a cada lote processado com sucesso).</p>
+<p>Se o processo falhar no meio (timeout, falha de rede), bastará acionar o método novamente com os mesmos parâmetros: o `resumeLines()` lerá o checkpoint e saltará (via `fseek` rápido) os ponteiros diretamente para a linha física exata onde o último lote com sucesso foi processado, retomando a execução imediatamente!</p>
+<div class="codigo">
+<div class="titulo-codigo">Processamento tolerante a quedas</div>
+<pre><code data-lang="php">$arquivoPlanilha   = 'data/importacoes/cooperados_gigante.csv';
+$arquivoCheckpoint = 'data/checkpoints/cooperados.json';
+
+$resultado = ChunkHelper::resumeLines(
+    $arquivoPlanilha, 
+    $arquivoCheckpoint, 
+    function (array $linhas, array $status) {
+        foreach ($linhas as $linha) {
+            SincronizarService::processar($linha);
+        }
+    },
+    null,
+    [
+        'rows_per_chunk' => 1000,
+        'checkpoint_interval' => 1 // Salva progresso a cada 1 lote concluído
+    ]
+);
+
+// Se terminou com sucesso completo, exclui o checkpoint
+if ($resultado['data']['status'] === 'completed') {
+    ChunkHelper::deleteCheckpoint($arquivoCheckpoint);
+    echo "Sincronização concluída com sucesso total!";
+} else {
+    echo "Processamento pausado ou interrompido. Reexecute para retomar!";
+}
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="deleteCheckpoint"><code>deleteCheckpoint()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::deleteCheckpoint(string $checkpointPath, string|null $baseDirectory = null): bool</div>
+<p>Remove de forma limpa o arquivo JSON de checkpoint do disco de operação.</p>
+</div>
+
+<h2 id="divisao-arquivos" data-titulo="Divisão Física">Divisão Física de Arquivos (Split)</h2>
+<p>Segmentação física de arquivos massivos.</p>
+
+<div class="metodo">
+<h3 id="splitFile"><code>splitFile()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">ChunkHelper::splitFile(string $sourcePath, string $destinationDirectory, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Divide um arquivo massivo de origem física em vários arquivos menores sequenciais dentro da pasta informada.</p>
+<p>Opções aceitas no array:</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Opção</th>
+            <th>Tipo</th>
+            <th>Padrão</th>
+            <th>Descrição</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>'mode'</code></td>
+            <td>string</td>
+            <td><code>'lines'</code></td>
+            <td>Corte físico do arquivo. Use <code>'lines'</code> para fatiar por contagem de linhas ou <code>'bytes'</code> para fatiar por tamanho físico.</td>
+        </tr>
+        <tr>
+            <td><code>'chunk_size'</code></td>
+            <td>int</td>
+            <td><code>50000</code></td>
+            <td>Se o modo for <code>'lines'</code>, indica o número de linhas físicas por arquivo resultante. Se o modo for <code>'bytes'</code>, indica o tamanho em bytes de cada arquivo resultante (ex: 10MB = 10485760).</td>
+        </tr>
+        <tr>
+            <td><code>'prefix'</code></td>
+            <td>string</td>
+            <td><code>'chunk'</code></td>
+            <td>Prefixo dos arquivos menores gerados (ex: <code>'chunk_0001.csv'</code>, <code>'chunk_0002.csv'</code>).</td>
+        </tr>
+        <tr>
+            <td><code>'keep_header'</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Se <code>true</code> (no modo <code>lines</code>), o helper extrai a primeira linha (cabeçalho) do arquivo original e **copia automaticamente este cabeçalho no início de todos os mini-arquivos fatiados**, gerando pacotes independentes válidos para leitura!</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<h2 id="exemplo-controller" data-titulo="Exemplo no Controller">Exemplo prático no Controller</h2>
+<p>Abaixo, veja um exemplo exaustivo de como utilizar o <code>ChunkHelper</code> em um Controller Joomla para realizar uma importação batch resiliente e assíncrona. O exemplo utiliza o <code>InputHelper</code> para capturar os caminhos, o <code>ChunkHelper</code> para realizar a importação em lotes salvando checkpoints de progresso, e o <code>ApiResponseHelper</code> para reportar o progresso em tempo real para um painel web SPA.</p>
+
+<div class="codigo">
+<div class="titulo-codigo">Exemplo: Controller de Importação com Retomada Resiliente (SPA Progress)</div>
+<pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/IncludeHelper.php';
+
+// Garantir o carregamento das dependências através do IncludeHelper de forma topológica!
+IncludeHelper::load(['InputHelper', 'ApiResponseHelper', 'ChunkUploadHelper', 'FileHelper']);
+
+class LojaControllerSincronismo extends JControllerLegacy
+{
+    /**
+     * Executa ou retoma uma importação segmentada de grande porte reportando progresso parcial
+     */
+    public function processarSincronia()
+    {
+        JSession::checkToken('get') or jexit('Token inválido.');
+
+        try {
+            // 1. Caminhos de operação dentro do sandbox do FileHelper
+            $arquivoPlanilha   = 'data/planilhas/estoque_gigante.txt';
+            $arquivoCheckpoint = 'data/checkpoints/estoque_sincronia.json';
+
+            $baseDir = JPATH_SITE . '/administrator/components/com_loja';
+            FileHelper::setBaseDirectory($baseDir);
+
+            // Verificar se o arquivo físico a ser processado existe
+            if (!FileHelper::exists($arquivoPlanilha)) {
+                return ApiResponseHelper::notFound('Arquivo de estoque gigante para processamento não encontrado.');
+            }
+
+            // 2. Chamar o ChunkHelper para ler/retomar em blocos com checkpoint ativo
+            // O resumeLines detecta sozinho se o estoque_sincronia.json existe e lê a linha de reinício!
+            $resultado = ChunkHelper::resumeLines(
+                $arquivoPlanilha,
+                $arquivoCheckpoint,
+                function (array $linhasDoLote, array $status) {
+                    // Este callback será executado em lotes de 1000 linhas
+                    $registros = [];
+                    foreach ($linhasDoLote as $linha) {
+                        $colunas = explode('\t', $linha); // Supondo arquivo tabulado
+                        if (count($colunas) >= 3) {
+                            $registros[] = [
+                                'sku' => trim($colunas[0]),
+                                'preco' => (float) $colunas[1],
+                                'estoque' => (int) $colunas[2]
+                            ];
+                        }
+                    }
+
+                    // Gravar o lote no banco de dados
+                    if (!empty($registros)) {
+                        EstoqueService::atualizarEmLote($registros);
+                    }
+                },
+                $baseDir,
+                [
+                    'rows_per_chunk' => 1000,
+                    'checkpoint_interval' => 1 // Salva o checkpoint em disco a cada lote de 1000 linhas concluído
+                ]
+            );
+
+            // 3. Analisar o relatório do lote
+            $statusFinal = $resultado['data']['status']; // 'completed' ou 'paused' (se atingisse limitação)
+            
+            // Métricas calculadas analiticamente pelo ChunkHelper
+            $progresso = [
+                'total_linhas' => $resultado['data']['total_lines'],
+                'linhas_processadas' => $resultado['data']['processed_lines'],
+                'porcentagem_concluida' => round(($resultado['data']['processed_lines'] / max(1, $resultado['data']['total_lines'])) * 100, 2),
+                'tamanho_arquivo' => ChunkHelper::formatBytes($resultado['data']['file_size']),
+                'bytes_lidos' => ChunkHelper::formatBytes($resultado['data']['bytes_read'])
+            ];
+
+            if ($statusFinal === 'completed') {
+                // Se completou a leitura de todo o arquivo, limpamos o checkpoint
+                ChunkHelper::deleteCheckpoint($arquivoCheckpoint, $baseDir);
+
+                return ApiResponseHelper::success('Sincronização de estoque concluída com sucesso total!', [
+                    'finalizado' => true,
+                    'metricas' => $progresso
+                ]);
+            }
+
+            // Caso o script tenha sido desenhado para pausar (parcialmente) para dar vazão à requisições Ajax
+            return ApiResponseHelper::success('Lote de sincronização processado com sucesso parcial!', [
+                'finalizado' => false,
+                'metricas' => $progresso
+            ]);
+
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e, 'Erro ao processar importação resiliente de estoque.');
+        }
+    }
+}
+</code></pre>
+</div>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul>
+    <li><a href="file-helper.html">FileHelper</a>: Métodos de manipulação física, cópia, exclusão e downloads por stream.</li>
+    <li><a href="csv-helper.html">CsvHelper</a>: Análise, sniffing e importação direta de arquivos CSV em banco de dados.</li>
+    <li><a href="include-helper.html">IncludeHelper</a>: Carregamento topológico das dependências no Joomla de forma ágil.</li>
+</ul>
+
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="include-helper.html"><small>← Anterior</small>IncludeHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code> e <code>ChunkHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>

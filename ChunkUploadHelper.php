@@ -1,6 +1,8 @@
 <?php
 
-defined('_JEXEC') or die;
+if (!defined('_JEXEC') && PHP_SAPI !== 'cli' && !defined('DECOUPLED_RUN')) {
+    die('Acesso restrito.');
+}
 
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
@@ -134,7 +136,7 @@ class ChunkHelper
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(JPATH_SITE);
+        $siteRoot = realpath(defined('JPATH_SITE') ? JPATH_SITE : getcwd());
 
         if ($siteRoot === false) {
             throw new RuntimeException(
@@ -202,8 +204,8 @@ class ChunkHelper
             );
         }
 
-        if (!JFolder::exists($directory)) {
-            if (!JFolder::create(
+        if (!self::folderExists($directory)) {
+            if (!self::folderCreate(
                 $directory,
                 self::$directoryPermission
             )) {
@@ -252,8 +254,8 @@ class ChunkHelper
             );
         }
 
-        if (!JFolder::exists($baseDirectory)) {
-            if (!JFolder::create(
+        if (!self::folderExists($baseDirectory)) {
+            if (!self::folderCreate(
                 $baseDirectory,
                 self::$directoryPermission
             )) {
@@ -309,7 +311,7 @@ class ChunkHelper
                 );
             }
 
-            $safePart = JFile::makeSafe($part);
+            $safePart = self::fileMakeSafe($part);
 
             if ($safePart === '') {
                 throw new RuntimeException(
@@ -350,8 +352,8 @@ class ChunkHelper
         if (!$mustExist) {
             $directory = dirname($filePath);
 
-            if (!JFolder::exists($directory)) {
-                if (!JFolder::create(
+            if (!self::folderExists($directory)) {
+                if (!self::folderCreate(
                     $directory,
                     self::$directoryPermission
                 )) {
@@ -364,7 +366,7 @@ class ChunkHelper
             return $filePath;
         }
 
-        if (!JFile::exists($filePath)) {
+        if (!self::fileExists($filePath)) {
             throw new RuntimeException(
                 'Arquivo não encontrado.'
             );
@@ -520,7 +522,7 @@ class ChunkHelper
                 'chunk_index' => $chunkIndex,
                 'percentual' => $percentual,
                 'started_at' => $startedAt,
-                'updated_at' => JFactory::getDate()->toSql()
+                'updated_at' => self::agora()
             ),
             $extra
         );
@@ -572,13 +574,13 @@ class ChunkHelper
             self::$filePermission
         );
 
-        if (JFile::exists($checkpointFile)) {
-            JFile::delete($checkpointFile);
+        if (self::fileExists($checkpointFile)) {
+            self::fileDelete($checkpointFile);
         }
 
-        if (!JFile::move($temporaryFile, $checkpointFile)) {
-            if (JFile::exists($temporaryFile)) {
-                JFile::delete($temporaryFile);
+        if (!self::fileMove($temporaryFile, $checkpointFile)) {
+            if (self::fileExists($temporaryFile)) {
+                self::fileDelete($temporaryFile);
             }
 
             throw new RuntimeException(
@@ -832,7 +834,7 @@ class ChunkHelper
 
     public static function readBytes($path, $callback, $baseDirectory = null, array $options = array())
     {
-        $startedAt = JFactory::getDate()->toSql();
+        $startedAt = self::agora();
         $handle = null;
 
         try {
@@ -1030,7 +1032,7 @@ class ChunkHelper
                     ? round(($finalOffset / $fileSize) * 100, 4)
                     : 100,
                 'started_at' => $startedAt,
-                'finished_at' => JFactory::getDate()->toSql(),
+                'finished_at' => self::agora(),
                 'last_result' => $lastResult,
                 'fingerprint' => self::getFileFingerprint(
                     $filePath
@@ -1073,7 +1075,7 @@ class ChunkHelper
 
     public static function readLines($path, $callback, $baseDirectory = null, array $options = array())
     {
-        $startedAt = JFactory::getDate()->toSql();
+        $startedAt = self::agora();
         $handle = null;
 
         try {
@@ -1421,7 +1423,7 @@ class ChunkHelper
                     ? round(($finalOffset / $fileSize) * 100, 4)
                     : 100,
                 'started_at' => $startedAt,
-                'finished_at' => JFactory::getDate()->toSql(),
+                'finished_at' => self::agora(),
                 'last_result' => $lastResult,
                 'fingerprint' => self::getFileFingerprint(
                     $filePath
@@ -1574,8 +1576,8 @@ class ChunkHelper
 
             $destinationDirectoryPath = dirname($destinationPath);
 
-            if (JFile::exists($destinationPath)) {
-                JFile::delete($destinationPath);
+            if (self::fileExists($destinationPath)) {
+                self::fileDelete($destinationPath);
             }
 
             $readSize = self::normalizeReadSize(
@@ -1619,7 +1621,7 @@ class ChunkHelper
                     ltrim((string) $options['extension'], '.')
                 )
                 : strtolower(
-                    JFile::getExt(
+                    self::fileGetExt(
                         basename($sourcePath)
                     )
                 );
@@ -1902,7 +1904,7 @@ class ChunkHelper
                 true
             );
 
-            if (!JFile::delete($checkpointFile)) {
+            if (!self::fileDelete($checkpointFile)) {
                 throw new RuntimeException(
                     'Não foi possível excluir o checkpoint.'
                 );
@@ -1930,6 +1932,75 @@ class ChunkHelper
                 'Não foi possível excluir o checkpoint.'
             );
         }
+    }
+
+
+    private static function agora()
+    {
+        if (class_exists('JFactory')) {
+            return JFactory::getDate()->toSql();
+        }
+        return date('Y-m-d H:i:s');
+    }
+
+    private static function folderExists($path)
+    {
+        if (class_exists('JFolder')) {
+            return JFolder::exists($path);
+        }
+        return is_dir($path);
+    }
+
+    private static function folderCreate($path, $permissions = 0755)
+    {
+        if (class_exists('JFolder')) {
+            return JFolder::create($path, $permissions);
+        }
+        return mkdir($path, $permissions, true);
+    }
+
+    private static function fileExists($path)
+    {
+        if (class_exists('JFile')) {
+            return JFile::exists($path);
+        }
+        return is_file($path);
+    }
+
+    private static function fileDelete($path)
+    {
+        if (class_exists('JFile')) {
+            return JFile::delete($path);
+        }
+        if (is_file($path)) {
+            return unlink($path);
+        }
+        return false;
+    }
+
+    private static function fileMove($src, $dest)
+    {
+        if (class_exists('JFile')) {
+            return JFile::move($src, $dest);
+        }
+        return rename($src, $dest);
+    }
+
+    private static function fileGetExt($path)
+    {
+        if (class_exists('JFile')) {
+            return JFile::getExt($path);
+        }
+        return pathinfo($path, PATHINFO_EXTENSION);
+    }
+
+    private static function fileMakeSafe($name)
+    {
+        if (class_exists('JFile')) {
+            return JFile::makeSafe($name);
+        }
+        $name = str_replace(array('/', '\', "\0"), '', $name);
+        return preg_replace('/[^a-zA-Z0-9_\.-]/', '', $name);
     }
 
     public static function formatBytes($bytes, $precision = 2)
