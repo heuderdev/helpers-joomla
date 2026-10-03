@@ -278,6 +278,135 @@ FileHelper::stream('comprovante.pdf', 'recibo-faturamento.pdf', null, [
 </div>
 </div>
 
+<h2 id="exemplo-controller" data-titulo="Exemplo no Controller">Exemplo prático no Controller</h2>
+<p>Abaixo, veja um exemplo completo de um Controller Joomla integrando o <code>InputHelper</code> para ler as entradas e arquivos do usuário, o <code>FileHelper</code> para gerenciar pastas e mover os arquivos de forma segura, e o <code>ApiResponseHelper</code> para responder adequadamente.</p>
+
+<div class="codigo">
+<div class="titulo-codigo">Exemplo: Controller de Gerenciamento de Uploads</div>
+<pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/InputHelper.php';
+require_once JPATH_COMPONENT . '/helpers/FileHelper.php';
+require_once JPATH_COMPONENT . '/helpers/ApiResponseHelper.php';
+
+class LojaControllerProdutos extends JControllerLegacy
+{
+    /**
+     * Recebe uma imagem enviada pelo formulário, salva de forma segura e gera um log JSON
+     */
+    public function salvarFoto()
+    {
+        // 1. Validar Token de Sessão do Joomla por segurança
+        JSession::checkToken() or jexit('Token inválido.');
+
+        try {
+            // 2. Ler o arquivo de upload e parâmetros adicionais usando o InputHelper
+            $arquivoUpload = InputHelper::file('foto'); // Retorna array do $_FILES ou null
+            $produtoId     = InputHelper::int('produto_id');
+
+            if ($arquivoUpload === null) {
+                return ApiResponseHelper::validationError([
+                    'foto' => ['Nenhuma imagem foi enviada ou o arquivo excede o limite do PHP.']
+                ]);
+            }
+
+            // 3. Configurar diretório sandbox seguro de destino usando o FileHelper
+            $diretorioBase = JPATH_SITE . '/images/produtos';
+            FileHelper::setBaseDirectory($diretorioBase);
+
+            // Garantir que a subpasta do produto específico existe
+            $pastaDestino = "produto_" . $produtoId;
+            $prepararPasta = FileHelper::ensureDirectory($pastaDestino);
+
+            if (!$prepararPasta['success']) {
+                return ApiResponseHelper::exception(
+                    new RuntimeException('Não foi possível preparar o diretório de destino.')
+                );
+            }
+
+            // 4. Gerar um nome de arquivo pseudo-aleatório seguro para evitar colisão e sniffing
+            $extensao = strtolower(pathinfo($arquivoUpload['name'], PATHINFO_EXTENSION));
+            $nomeAmigavel = FileHelper::randomFileName('foto_produto', $extensao);
+
+            // 5. Mover o arquivo temporário do PHP para o nosso diretório sandbox
+            $caminhoFinal = $pastaDestino . '/' . $nomeAmigavel;
+            
+            // Movemos de uma base temporária neutra (null) para o nosso sandbox de destino
+            $mover = FileHelper::move(
+                $arquivoUpload['tmp_name'], 
+                $caminhoFinal, 
+                null, // Origem fora do sandbox (pasta temporária do PHP)
+                $diretorioBase, // Destino dentro do sandbox de produtos
+                ['overwrite' => true]
+            );
+
+            if (!$mover['success']) {
+                return ApiResponseHelper::exception(
+                    new RuntimeException('Falha física ao mover a imagem para a pasta final.')
+                );
+            }
+
+            // 6. Gravar um log em formato JSON registrando os metadados do upload
+            $logMeta = [
+                'produto_id' => $produtoId,
+                'upload_original_name' => $arquivoUpload['name'],
+                'saved_as' => $nomeAmigavel,
+                'file_size' => FileHelper::formatBytes($mover['data']['destination']['size']),
+                'uploaded_at' => JFactory::getDate()->toSql()
+            ];
+
+            FileHelper::writeJson(
+                $pastaDestino . '/upload_log.json',
+                $logMeta,
+                $diretorioBase
+            );
+
+            return ApiResponseHelper::success('Imagem do produto salva e registrada com sucesso!', [
+                'url' => $mover['data']['destination']['url'],
+                'file' => $mover['data']['destination']['file_name']
+            ]);
+
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e, 'Erro ao processar o upload do produto.');
+        }
+    }
+
+    /**
+     * Realiza o download por stream de um manual de produto de forma segura (sem expor caminhos reais)
+     */
+    public function baixarManual()
+    {
+        // 1. Ler o caminho relativo informado usando o InputHelper
+        $manualRelativo = InputHelper::string('manual_path');
+
+        if (trim($manualRelativo) === '') {
+            return ApiResponseHelper::notFound('Manual não especificado.');
+        }
+
+        // 2. Definir sandbox restrito à pasta de manuais privados (fora do acesso público web)
+        $diretorioManuais = JPATH_SITE . '/administrator/components/com_loja/manuais';
+        FileHelper::setBaseDirectory($diretorioManuais);
+
+        // 3. Verificar existência segura
+        if (!FileHelper::exists($manualRelativo)) {
+            return ApiResponseHelper::notFound('O arquivo de manual solicitado não existe.');
+        }
+
+        // 4. Iniciar a transmissão limpa de download via stream pelo navegador
+        // Se der sucesso, encerra a execução. Caso contrário, registra o log e retorna falso
+        $sucessoStream = FileHelper::stream(
+            $manualRelativo, 
+            null, // Mantém o nome original do arquivo físico
+            $diretorioManuais, 
+            ['inline' => false] // Força download de arquivo (attachment)
+        );
+
+        if (!$sucessoStream) {
+            jexit('Erro crítico ao transmitir o download do manual.');
+        }
+    }
+}
+</pre>
+</div>
+
 <h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
 <ul>
     <li><a href="csv-helper.html">CsvHelper</a>: Processamento especializado e importação de planilhas de dados.</li>
