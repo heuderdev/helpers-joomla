@@ -178,7 +178,7 @@ class PedidoModel extends OrmBase
 
     public function recentes()
     {
-        return $this->orderBy('created_at', 'DESC');
+        return $this->latest(); // ORDER BY created_at DESC
     }
 }
 
@@ -282,17 +282,17 @@ class PedidoService
                     }
 
                     /*
-                     * Baixa primeiro, confere depois. O UPDATE
-                     * "estoque = estoque - N" trava a linha do produto até
-                     * o COMMIT, então duas compras simultâneas nunca leem o
-                     * mesmo estoque. Se ficar negativo, a exceção faz
-                     * rollback e o estoque volta ao valor original.
+                     * Ler, conferir, gravar. lockForUpdate() gera
+                     * SELECT ... FOR UPDATE: a linha do produto fica travada
+                     * até o COMMIT. Uma compra simultânea do mesmo produto
+                     * espera aqui, e quando passar já lê o estoque baixado.
+                     * Sem a trava, as duas poderiam ler "estoque = 1" e
+                     * vender a mesma unidade.
                      */
-                    $produto = ProdutoModel::query()->decrement(
-                        $produtoId,
-                        'estoque',
-                        $quantidade
-                    );
+                    $produto = ProdutoModel::query()
+                        ->where('id', $produtoId)
+                        ->lockForUpdate()
+                        ->first();
 
                     if ($produto === null || !$produto->ativo) {
                         throw new PedidoException(
@@ -300,11 +300,17 @@ class PedidoService
                         );
                     }
 
-                    if ($produto->estoque < 0) {
+                    if ($produto->estoque < $quantidade) {
                         throw new EstoqueInsuficienteException(
                             'Estoque insuficiente para "' . $produto->nome . '".'
                         );
                     }
+
+                    ProdutoModel::query()->decrement(
+                        $produto->id,
+                        'estoque',
+                        $quantidade
+                    );
 
                     PedidoItemModel::query()->create([
                         'pedido_id' => $pedido->id,
@@ -342,8 +348,21 @@ class PedidoService
     public static function cancelar($pedidoId)
     {
         return DbTransactionHelper::run(function () use ($pedidoId) {
-            // findOrFail lança RuntimeException com código 404.
-            $pedido = PedidoModel::query()->findOrFail($pedidoId);
+            /*
+             * Trava o pedido: se o cliente clicar duas vezes em "cancelar",
+             * a segunda requisição espera a primeira terminar e então já
+             * vê status 'cancelado', sem devolver o estoque duas vezes.
+             * (Sem essa preocupação, findOrFail($id) bastaria.)
+             */
+            $pedido = PedidoModel::query()
+                ->where('id', (int) $pedidoId)
+                ->lockForUpdate()
+                ->first();
+
+            if ($pedido === null) {
+                // Mesmo código que findOrFail usa; o controller trata 404.
+                throw new RuntimeException('Pedido não encontrado.', 404);
+            }
 
             if ($pedido->status !== PedidoModel::STATUS_ABERTO) {
                 throw new PedidoException(
@@ -411,28 +430,95 @@ class PedidoService
 
     /*
      * Listagem com filtros vindos da tela + paginação.
-     * Os scopes deixam a montagem legível; filtro vazio não filtra.
+     *
+     * when($valor, $callback) só aplica o filtro se $valor for
+     * verdadeiro, e passa o valor para o callback. A consulta fica numa
+     * cadeia só, sem if no meio. Para filtros que se repetem em várias
+     * telas, prefira um scope no model (como comStatus).
      */
     public static function listar(array $filtros, $pagina = 1)
     {
-        $query = PedidoModel::query()
-            ->comStatus(isset($filtros['status']) ? $filtros['status'] : '')
-            ->recentes();
-
-        if (!empty($filtros['cliente_id'])) {
-            $query->doCliente($filtros['cliente_id']);
-        }
-
-        if (!empty($filtros['desde'])) {
-            $query->where('created_at', '>=', $filtros['desde']);
-        }
+        $filtros += [
+            'status' => '',
+            'cliente_id' => 0,
+            'desde' => '',
+            'busca_id' => '',
+        ];
 
         /*
          * paginate() devolve:
          * itens, total, por_pagina, pagina_atual, total_paginas, paginacao
          * ('paginacao' é um JPagination, útil em views HTML).
          */
-        return $query->paginate(20, $pagina);
+        return PedidoModel::query()
+            ->comStatus($filtros['status'])
+            ->when($filtros['cliente_id'], function ($q, $clienteId) {
+                $q->doCliente($clienteId);
+            })
+            ->when($filtros['desde'], function ($q, $desde) {
+                $q->where('created_at', '>=', $desde);
+            })
+            ->when($filtros['busca_id'], function ($q, $ids) {
+                // "12, 15, 20" → WHERE id IN (12, 15, 20)
+                $q->whereIn('id', array_map('intval', explode(',', $ids)));
+            })
+            ->recentes()
+            ->paginate(20, $pagina);
+    }
+
+    /*
+     * whereGroup() coloca condições entre parênteses. Aqui:
+     *
+     *   ativo = 1 AND (estoque <= 5 OR preco <= 0)
+     *
+     * Sem o grupo, o SQL seria "ativo = 1 AND estoque <= 5 OR preco <= 0",
+     * e como AND tem precedência, produtos INATIVOS com preço zero
+     * também apareceriam.
+     */
+    public static function produtosParaRevisar($estoqueMinimo = 5)
+    {
+        return ProdutoModel::query()
+            ->ativos()
+            ->whereGroup(function ($q) use ($estoqueMinimo) {
+                $q->where('estoque', '<=', (int) $estoqueMinimo)
+                    ->orWhere('preco', '<=', 0);
+            })
+            ->orderBy('estoque')
+            ->get();
+    }
+
+    /*
+     * chunk() lê a consulta em lotes (aqui, de 500 em 500), então dá
+     * para exportar 1 milhão de pedidos sem estourar a memória do PHP.
+     * O callback recebe o lote e o número do lote; devolver false para.
+     */
+    public static function exportarPagosCsv($caminhoArquivo)
+    {
+        $arquivo = fopen($caminhoArquivo, 'w');
+
+        if ($arquivo === false) {
+            throw new RuntimeException('Não foi possível criar ' . $caminhoArquivo);
+        }
+
+        try {
+            fputcsv($arquivo, ['id', 'cliente_id', 'total', 'data'], ',', '"', '\\');
+
+            PedidoModel::query()
+                ->comStatus(PedidoModel::STATUS_PAGO)
+                ->select(['id', 'cliente_id', 'total', 'created_at'])
+                ->chunk(500, function ($lote) use ($arquivo) {
+                    foreach ($lote as $pedido) {
+                        fputcsv($arquivo, [
+                            $pedido->id,
+                            $pedido->cliente_id,
+                            number_format($pedido->total, 2, ',', ''),
+                            $pedido->created_at,
+                        ], ',', '"', '\\');
+                    }
+                });
+        } finally {
+            fclose($arquivo);
+        }
     }
 
     /*

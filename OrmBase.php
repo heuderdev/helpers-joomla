@@ -50,6 +50,8 @@ class OrmBase
 
     protected $allowMassOperation = false;
 
+    protected $lockForUpdate = false;
+
     /*
      * Opções aceitas no construtor. Só as informadas sobrescrevem as
      * propriedades; as demais mantêm o valor definido na classe, o que
@@ -144,6 +146,7 @@ class OrmBase
         $this->limitValue = null;
         $this->offsetValue = null;
         $this->allowMassOperation = false;
+        $this->lockForUpdate = false;
 
         return $this;
     }
@@ -311,6 +314,44 @@ class OrmBase
         return $valor;
     }
 
+    /*
+     * Executa uma operação e padroniza o erro: qualquer exceção vira
+     * RuntimeException "<mensagem> na tabela <tabela>: <erro original>",
+     * código 500, com a exceção original em getPrevious().
+     *
+     * LogicException (uso incorreto do ORM, ex.: lockForUpdate() fora de
+     * transação) sobe sem embrulho, para não parecer erro de banco.
+     */
+    protected function executar(callable $operacao, $mensagemErro)
+    {
+        try {
+            return $operacao();
+        } catch (LogicException $e) {
+            throw $e;
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                $mensagemErro . ' na tabela ' .
+                $this->table .
+                ': ' . $e->getMessage(),
+                500,
+                $e
+            );
+        }
+    }
+
+    /*
+     * Igual a executar(), mas limpa a query no final, com sucesso ou
+     * erro. Usado pelos métodos que encerram uma consulta montada.
+     */
+    protected function executarEResetar(callable $operacao, $mensagemErro)
+    {
+        try {
+            return $this->executar($operacao, $mensagemErro);
+        } finally {
+            $this->newQuery();
+        }
+    }
+
     public function select($colunas)
     {
         $colunas = is_array($colunas)
@@ -324,13 +365,44 @@ class OrmBase
         return $this;
     }
 
-    public function where($coluna, $operadorOuValor, $valor = null)
+    /*
+     * Aplica $callback só quando $valor é verdadeiro. Evita quebrar a
+     * cadeia com if quando o filtro vem da tela:
+     *
+     * ->when($status, function ($q, $status) {
+     *     $q->where('status', $status);
+     * })
+     *
+     * Cuidado: '0', 0 e '' contam como falso.
+     */
+    public function when($valor, callable $callback, $senao = null)
     {
-        if (func_num_args() === 2) {
+        if ($valor) {
+            $callback($this, $valor);
+        } elseif (is_callable($senao)) {
+            $senao($this, $valor);
+        }
+
+        return $this;
+    }
+
+    protected function adicionarWhere(array $condicao, $conector = 'AND')
+    {
+        $condicao['conector'] = $conector;
+
+        $this->wheres[] = $condicao;
+
+        return $this;
+    }
+
+    protected function adicionarWhereBasico(array $argumentos, $conector)
+    {
+        if (count($argumentos) === 2) {
             $operador = '=';
-            $valor = $operadorOuValor;
+            $valor = $argumentos[1];
         } else {
-            $operador = strtoupper(trim($operadorOuValor));
+            $operador = strtoupper(trim($argumentos[1]));
+            $valor = $argumentos[2];
         }
 
         $operadoresPermitidos = [
@@ -349,137 +421,155 @@ class OrmBase
             );
         }
 
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'basico',
-            'coluna' => $coluna,
+            'coluna' => $argumentos[0],
             'operador' => $operador,
             'valor' => $valor,
-            'conector' => 'AND',
-        ];
+        ], $conector);
+    }
 
-        return $this;
+    public function where($coluna, $operadorOuValor, $valor = null)
+    {
+        return $this->adicionarWhereBasico(func_get_args(), 'AND');
     }
 
     public function orWhere($coluna, $operadorOuValor, $valor = null)
     {
-        if (func_num_args() === 2) {
-            $operador = '=';
-            $valor = $operadorOuValor;
-        } else {
-            $operador = strtoupper(trim($operadorOuValor));
-        }
-
-        $operadoresPermitidos = [
-            '=',
-            '!=',
-            '<>',
-            '>',
-            '<',
-            '>=',
-            '<=',
-        ];
-
-        if (!in_array($operador, $operadoresPermitidos, true)) {
-            throw new InvalidArgumentException(
-                'Operador de comparação inválido: ' . $operador
-            );
-        }
-
-        $this->wheres[] = [
-            'tipo' => 'basico',
-            'coluna' => $coluna,
-            'operador' => $operador,
-            'valor' => $valor,
-            'conector' => 'OR',
-        ];
-
-        return $this;
+        return $this->adicionarWhereBasico(func_get_args(), 'OR');
     }
 
     public function whereIn($coluna, array $valores)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'in',
             'coluna' => $coluna,
             'valores' => $valores,
             'negado' => false,
-            'conector' => 'AND',
-        ];
+        ]);
+    }
 
-        return $this;
+    public function orWhereIn($coluna, array $valores)
+    {
+        return $this->adicionarWhere([
+            'tipo' => 'in',
+            'coluna' => $coluna,
+            'valores' => $valores,
+            'negado' => false,
+        ], 'OR');
     }
 
     public function whereNotIn($coluna, array $valores)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'in',
             'coluna' => $coluna,
             'valores' => $valores,
             'negado' => true,
-            'conector' => 'AND',
-        ];
-
-        return $this;
+        ]);
     }
 
     public function whereNull($coluna)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'nulo',
             'coluna' => $coluna,
             'negado' => false,
-            'conector' => 'AND',
-        ];
+        ]);
+    }
 
-        return $this;
+    public function orWhereNull($coluna)
+    {
+        return $this->adicionarWhere([
+            'tipo' => 'nulo',
+            'coluna' => $coluna,
+            'negado' => false,
+        ], 'OR');
     }
 
     public function whereNotNull($coluna)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'nulo',
             'coluna' => $coluna,
             'negado' => true,
-            'conector' => 'AND',
-        ];
-
-        return $this;
+        ]);
     }
 
     public function whereBetween($coluna, $valorInicial, $valorFinal)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'entre',
             'coluna' => $coluna,
             'valorInicial' => $valorInicial,
             'valorFinal' => $valorFinal,
-            'conector' => 'AND',
-        ];
-
-        return $this;
+        ]);
     }
 
     public function whereLike($coluna, $valor)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'like',
             'coluna' => $coluna,
             'valor' => $valor,
-            'conector' => 'AND',
-        ];
+        ]);
+    }
 
-        return $this;
+    public function orWhereLike($coluna, $valor)
+    {
+        return $this->adicionarWhere([
+            'tipo' => 'like',
+            'coluna' => $coluna,
+            'valor' => $valor,
+        ], 'OR');
     }
 
     public function whereRaw($expressaoSql)
     {
-        $this->wheres[] = [
+        return $this->adicionarWhere([
             'tipo' => 'raw',
             'expressao' => $expressaoSql,
-            'conector' => 'AND',
-        ];
+        ]);
+    }
 
-        return $this;
+    /*
+     * Agrupa condições entre parênteses:
+     *
+     * ->where('ativo', 1)
+     * ->whereGroup(function ($q) {
+     *     $q->where('estoque', '<=', 5)->orWhere('preco', '<=', 0);
+     * })
+     *
+     * gera: ativo = 1 AND (estoque <= 5 OR preco <= 0)
+     *
+     * Dentro do callback use só métodos where*.
+     */
+    public function whereGroup(callable $callback, $conector = 'AND')
+    {
+        $wheresExternos = $this->wheres;
+        $this->wheres = [];
+
+        try {
+            $callback($this);
+
+            $wheresDoGrupo = $this->wheres;
+        } finally {
+            $this->wheres = $wheresExternos;
+        }
+
+        if (empty($wheresDoGrupo)) {
+            return $this;
+        }
+
+        return $this->adicionarWhere([
+            'tipo' => 'grupo',
+            'wheres' => $wheresDoGrupo,
+        ], $conector);
+    }
+
+    public function orWhereGroup(callable $callback)
+    {
+        return $this->whereGroup($callback, 'OR');
     }
 
     public function join($tabela, $condicao = null, $tipo = 'INNER')
@@ -587,6 +677,22 @@ class OrmBase
         return $this;
     }
 
+    public function latest($coluna = null)
+    {
+        return $this->orderBy(
+            $coluna !== null ? $coluna : $this->createdAtColumn,
+            'DESC'
+        );
+    }
+
+    public function oldest($coluna = null)
+    {
+        return $this->orderBy(
+            $coluna !== null ? $coluna : $this->createdAtColumn,
+            'ASC'
+        );
+    }
+
     public function groupBy($coluna)
     {
         $this->groups[] = $this->db->quoteName($coluna);
@@ -609,32 +715,56 @@ class OrmBase
         return $this;
     }
 
+    /*
+     * SELECT ... FOR UPDATE: trava as linhas lidas até o fim da
+     * transação. Outra transação que tente travar ou alterar as mesmas
+     * linhas espera. Use para "ler, conferir e depois gravar":
+     *
+     * DbTransactionHelper::run(function () {
+     *     $produto = ProdutoModel::query()
+     *         ->where('id', $id)
+     *         ->lockForUpdate()
+     *         ->first();
+     *     // ninguém altera este produto até o COMMIT
+     * });
+     *
+     * Fora de uma transação a trava não teria efeito, então lança erro.
+     */
+    public function lockForUpdate()
+    {
+        $this->lockForUpdate = true;
+
+        return $this;
+    }
+
     protected function montarWheres($query)
     {
         if (empty($this->wheres)) {
             return $query;
         }
 
-        $expressoes = [];
-
-        foreach ($this->wheres as $indice => $condicao) {
-            $sql = $this->montarCondicaoUnica($condicao);
-
-            if ($indice === 0) {
-                $expressoes[] = $sql;
-                continue;
-            }
-
-            $expressoes[] = $condicao['conector'] . ' ' . $sql;
-        }
-
         /*
          * Parênteses isolam os OR do usuário dos filtros adicionados depois
          * (ex.: soft delete), já que o Joomla junta os where com AND.
          */
-        $query->where('(' . implode(' ', $expressoes) . ')');
+        $query->where('(' . $this->montarExpressaoWheres($this->wheres) . ')');
 
         return $query;
+    }
+
+    protected function montarExpressaoWheres(array $wheres)
+    {
+        $expressoes = [];
+
+        foreach (array_values($wheres) as $indice => $condicao) {
+            $sql = $this->montarCondicaoUnica($condicao);
+
+            $expressoes[] = $indice === 0
+                ? $sql
+                : $condicao['conector'] . ' ' . $sql;
+        }
+
+        return implode(' ', $expressoes);
     }
 
     protected function montarCondicaoUnica(array $condicao)
@@ -684,6 +814,9 @@ class OrmBase
             case 'raw':
                 return $condicao['expressao'];
 
+            case 'grupo':
+                return '(' . $this->montarExpressaoWheres($condicao['wheres']) . ')';
+
             default:
                 throw new RuntimeException(
                     'Tipo de condição where desconhecido: ' .
@@ -693,8 +826,6 @@ class OrmBase
     }
 
     /*
-     * NOVO:
-     *
      * Aceita:
      * - #__pedidos
      * - #__pedidos AS p
@@ -763,13 +894,6 @@ class OrmBase
             : ['*'];
 
         $query->select($colunasSelecionadas);
-
-        /*
-         * ALTERADO:
-         *
-         * Antes:
-         * $query->from($this->db->quoteName($this->table));
-         */
         $query->from($this->montarTabelaComAlias($this->table));
 
         $this->montarJoins($query);
@@ -782,51 +906,66 @@ class OrmBase
             );
         }
 
-        if (!empty($this->groups)) {
-            foreach ($this->groups as $grupo) {
-                $query->group($grupo);
-            }
+        foreach ($this->groups as $grupo) {
+            $query->group($grupo);
         }
 
-        if (!empty($this->havings)) {
-            foreach ($this->havings as $having) {
-                $query->having($having);
-            }
+        foreach ($this->havings as $having) {
+            $query->having($having);
         }
 
-        if (!empty($this->orders)) {
-            foreach ($this->orders as $order) {
-                $query->order($order);
-            }
+        foreach ($this->orders as $order) {
+            $query->order($order);
         }
 
         return $query;
     }
 
+    /*
+     * Prepara o SELECT no driver. Com lockForUpdate(), o LIMIT é montado
+     * aqui, porque o MySQL exige "... LIMIT n FOR UPDATE" e o driver
+     * acrescentaria o LIMIT depois do FOR UPDATE.
+     */
+    protected function prepararSelect($query, $offset = 0, $limite = 0)
+    {
+        $offset = (int) $offset;
+        $limite = (int) $limite;
+
+        if (!$this->lockForUpdate) {
+            $this->db->setQuery($query, $offset, $limite);
+
+            return;
+        }
+
+        if (!DbTransactionHelper::isActive()) {
+            throw new LogicException(
+                'lockForUpdate() só tem efeito dentro de uma transação. ' .
+                'Use DbTransactionHelper::run() ou $orm->transaction().'
+            );
+        }
+
+        $sql = (string) $query;
+
+        if ($limite > 0) {
+            $sql .= ' LIMIT ' . $offset . ', ' . $limite;
+        }
+
+        $this->db->setQuery($sql . ' FOR UPDATE');
+    }
+
     public function get()
     {
-        try {
-            $query = $this->montarQueryBase();
-
-            $this->db->setQuery(
-                $query,
-                (int) $this->offsetValue,
-                (int) $this->limitValue
+        return $this->executarEResetar(function () {
+            $this->prepararSelect(
+                $this->montarQueryBase(),
+                $this->offsetValue,
+                $this->limitValue
             );
 
-            $resultado = $this->db->loadObjectList();
-
-            return $this->aplicarCastsEmLista($resultado);
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao executar consulta na tabela ' .
-                $this->table . ': ' . $e->getMessage(),
-                500,
-                $e
+            return $this->aplicarCastsEmLista(
+                $this->db->loadObjectList()
             );
-        } finally {
-            $this->newQuery();
-        }
+        }, 'Erro ao executar consulta');
     }
 
     public function first()
@@ -883,30 +1022,12 @@ class OrmBase
     public function value($coluna)
     {
         $this->select([$coluna]);
-        $this->limitValue = 1;
-        $this->offsetValue = 0;
 
-        try {
-            $query = $this->montarQueryBase();
+        return $this->executarEResetar(function () {
+            $this->prepararSelect($this->montarQueryBase(), 0, 1);
 
-            $this->db->setQuery($query, 0, 1);
-
-            $resultado = $this->db->loadResult();
-
-            return $resultado;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao obter valor da coluna ' .
-                $coluna .
-                ' na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        } finally {
-            $this->newQuery();
-        }
+            return $this->db->loadResult();
+        }, 'Erro ao obter valor da coluna ' . $coluna);
     }
 
     public function pluck($coluna, $colunaChave = null)
@@ -917,63 +1038,28 @@ class OrmBase
 
         $this->select($colunas);
 
-        try {
-            $query = $this->montarQueryBase();
-
-            $this->db->setQuery(
-                $query,
-                (int) $this->offsetValue,
-                (int) $this->limitValue
+        return $this->executarEResetar(function () use ($coluna, $colunaChave) {
+            $this->prepararSelect(
+                $this->montarQueryBase(),
+                $this->offsetValue,
+                $this->limitValue
             );
 
-            if ($colunaChave !== null) {
-                $resultado = $this->db->loadAssocList(
-                    $colunaChave,
-                    $coluna
-                );
-            } else {
-                $resultado = $this->db->loadColumn();
-            }
-
-            return $resultado;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao executar pluck na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        } finally {
-            $this->newQuery();
-        }
+            return $colunaChave !== null
+                ? $this->db->loadAssocList($colunaChave, $coluna)
+                : $this->db->loadColumn();
+        }, 'Erro ao executar pluck');
     }
 
     public function exists()
     {
         $this->select(['1']);
-        $this->limitValue = 1;
-        $this->offsetValue = 0;
 
-        try {
-            $query = $this->montarQueryBase();
+        return $this->executarEResetar(function () {
+            $this->prepararSelect($this->montarQueryBase(), 0, 1);
 
-            $this->db->setQuery($query, 0, 1);
-
-            $resultado = $this->db->loadResult();
-
-            return $resultado !== null;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao verificar existência na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        } finally {
-            $this->newQuery();
-        }
+            return $this->db->loadResult() !== null;
+        }, 'Erro ao verificar existência');
     }
 
     public function count($coluna = '*')
@@ -986,25 +1072,11 @@ class OrmBase
             ') AS total',
         ];
 
-        try {
-            $query = $this->montarQueryBase();
+        return $this->executarEResetar(function () {
+            $this->prepararSelect($this->montarQueryBase());
 
-            $this->db->setQuery($query);
-
-            $resultado = (int) $this->db->loadResult();
-
-            return $resultado;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao contar registros na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        } finally {
-            $this->newQuery();
-        }
+            return (int) $this->db->loadResult();
+        }, 'Erro ao contar registros');
     }
 
     public function sum($coluna)
@@ -1036,29 +1108,15 @@ class OrmBase
             ') AS agregado',
         ];
 
-        try {
-            $query = $this->montarQueryBase();
-
-            $this->db->setQuery($query);
+        return $this->executarEResetar(function () {
+            $this->prepararSelect($this->montarQueryBase());
 
             $resultado = $this->db->loadResult();
 
             return $resultado !== null
                 ? (float) $resultado
                 : null;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao calcular ' .
-                $funcao .
-                ' na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        } finally {
-            $this->newQuery();
-        }
+        }, 'Erro ao calcular ' . $funcao);
     }
 
     public function paginate($porPagina = 15, $paginaAtual = 1)
@@ -1100,26 +1158,151 @@ class OrmBase
         ];
     }
 
+    /*
+     * Processa a consulta em lotes, sem carregar tudo na memória:
+     *
+     * PedidoModel::query()->where('status', 'pago')->chunk(500, function ($lote, $numeroDoLote) {
+     *     foreach ($lote as $pedido) { ... }
+     * });
+     *
+     * Retornar false no callback interrompe. Sem orderBy, ordena pela
+     * chave primária para os lotes serem estáveis.
+     *
+     * Atenção: a paginação é por OFFSET. Se o callback alterar uma coluna
+     * usada no where (ex.: muda o status filtrado), registros serão
+     * pulados; nesse caso, filtre por id > último id processado.
+     */
+    public function chunk($tamanho, callable $callback)
+    {
+        $tamanho = max(1, (int) $tamanho);
+
+        $base = clone $this;
+        $this->newQuery();
+
+        if (empty($base->orders)) {
+            $base->orderBy($this->primaryKey);
+        }
+
+        $numeroDoLote = 0;
+
+        do {
+            $consulta = clone $base;
+
+            $lote = $consulta
+                ->limit($tamanho, $numeroDoLote * $tamanho)
+                ->get();
+
+            if (empty($lote)) {
+                break;
+            }
+
+            $numeroDoLote++;
+
+            if ($callback($lote, $numeroDoLote) === false) {
+                break;
+            }
+        } while (count($lote) === $tamanho);
+
+        return $numeroDoLote;
+    }
+
+    /*
+     * Filtra colunas, preenche timestamps e converte os valores (json,
+     * bool) para gravar. Devolve [coluna => valor pronto para o banco].
+     */
+    protected function prepararDadosParaGravar(array $dados, $criando)
+    {
+        $dados = $this->filtrarColunasValidas($dados);
+
+        if ($this->timestamps) {
+            $agora = date('Y-m-d H:i:s');
+
+            if ($criando) {
+                $dados[$this->createdAtColumn] = $agora;
+            }
+
+            $dados[$this->updatedAtColumn] = $agora;
+        }
+
+        foreach ($dados as $coluna => $valor) {
+            $dados[$coluna] = $this->prepararValorParaPersistencia(
+                $coluna,
+                $valor
+            );
+        }
+
+        return $dados;
+    }
+
+    protected function aplicarSet($query, array $dados)
+    {
+        foreach ($dados as $coluna => $valor) {
+            $query->set(
+                $this->db->quoteName($coluna) .
+                ' = ' .
+                ($valor === null ? 'NULL' : $this->db->quote($valor))
+            );
+        }
+
+        return $query;
+    }
+
+    protected function whereChavePrimaria($query, $id)
+    {
+        return $query->where(
+            $this->db->quoteName($this->primaryKey) .
+            ' = ' .
+            (int) $id
+        );
+    }
+
+    protected function novaQueryUpdate()
+    {
+        return $this->db
+            ->getQuery(true)
+            ->update($this->db->quoteName($this->table));
+    }
+
+    protected function novaQueryDelete()
+    {
+        return $this->db
+            ->getQuery(true)
+            ->delete($this->db->quoteName($this->table));
+    }
+
+    protected function executarEscrita($query)
+    {
+        $this->db->setQuery($query);
+        $this->db->execute();
+
+        return (int) $this->db->getAffectedRows();
+    }
+
+    /*
+     * UPDATE/DELETE usando os where montados. Bloqueia a operação sem
+     * where (ver allowMassOperation()) e devolve as linhas afetadas.
+     */
+    protected function executarEscritaEmMassa($operacao, callable $montarQuery, $mensagemErro)
+    {
+        $this->garantirFiltroParaOperacaoEmMassa($operacao);
+
+        return $this->executarEResetar(function () use ($montarQuery) {
+            $query = $montarQuery();
+
+            if ($query === null) {
+                return 0;
+            }
+
+            $this->montarWheres($query);
+
+            return $this->executarEscrita($query);
+        }, $mensagemErro);
+    }
+
     public function create(array $dados)
     {
-        try {
-            $dadosFiltrados = $this->filtrarColunasValidas($dados);
-
-            if ($this->timestamps) {
-                $agora = date('Y-m-d H:i:s');
-
-                $dadosFiltrados[$this->createdAtColumn] = $agora;
-                $dadosFiltrados[$this->updatedAtColumn] = $agora;
-            }
-
-            $objeto = new stdClass();
-
-            foreach ($dadosFiltrados as $coluna => $valor) {
-                $objeto->$coluna = $this->prepararValorParaPersistencia(
-                    $coluna,
-                    $valor
-                );
-            }
+        return $this->executar(function () use ($dados) {
+            $objeto = (object) $this->prepararDadosParaGravar($dados, true);
 
             $this->db->insertObject(
                 $this->table,
@@ -1128,20 +1311,12 @@ class OrmBase
             );
 
             return $this->find($objeto->{$this->primaryKey});
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao criar registro na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        }, 'Erro ao criar registro');
     }
 
     public function createMany(array $listaDeDados)
     {
-        try {
+        return $this->executar(function () use ($listaDeDados) {
             return DbTransactionHelper::run(
                 function () use ($listaDeDados) {
                     $criados = [];
@@ -1154,15 +1329,7 @@ class OrmBase
                 },
                 ['retries' => 0]
             );
-        } catch (Throwable $e) {
-            throw new RuntimeException(
-                'Erro ao criar múltiplos registros na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        }, 'Erro ao criar múltiplos registros');
     }
 
     public function firstOrCreate(
@@ -1210,186 +1377,55 @@ class OrmBase
 
     public function update($id, array $dados)
     {
-        try {
-            $dadosFiltrados = $this->filtrarColunasValidas($dados);
+        return $this->executar(function () use ($id, $dados) {
+            $dados = $this->prepararDadosParaGravar($dados, false);
 
-            if ($this->timestamps) {
-                $dadosFiltrados[$this->updatedAtColumn] = date(
-                    'Y-m-d H:i:s'
-                );
+            if (!empty($dados)) {
+                $query = $this->aplicarSet($this->novaQueryUpdate(), $dados);
+
+                $this->executarEscrita($this->whereChavePrimaria($query, $id));
             }
-
-            if (empty($dadosFiltrados)) {
-                return $this->find($id);
-            }
-
-            $query = $this->db->getQuery(true);
-
-            $query->update($this->db->quoteName($this->table));
-
-            foreach ($dadosFiltrados as $coluna => $valor) {
-                $valorPreparado = $this->prepararValorParaPersistencia(
-                    $coluna,
-                    $valor
-                );
-
-                $query->set(
-                    $this->db->quoteName($coluna) .
-                    ' = ' .
-                    $this->db->quote($valorPreparado)
-                );
-            }
-
-            $query->where(
-                $this->db->quoteName($this->primaryKey) .
-                ' = ' .
-                (int) $id
-            );
-
-            $this->db->setQuery($query);
-            $this->db->execute();
 
             return $this->find($id);
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao atualizar registro na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        }, 'Erro ao atualizar registro');
     }
 
     public function updateWhere(array $dados)
     {
-        $this->garantirFiltroParaOperacaoEmMassa('updateWhere');
+        return $this->executarEscritaEmMassa('updateWhere', function () use ($dados) {
+            $dados = $this->prepararDadosParaGravar($dados, false);
 
-        try {
-            $dadosFiltrados = $this->filtrarColunasValidas($dados);
+            return empty($dados)
+                ? null
+                : $this->aplicarSet($this->novaQueryUpdate(), $dados);
+        }, 'Erro ao atualizar registros');
+    }
 
-            if ($this->timestamps) {
-                $dadosFiltrados[$this->updatedAtColumn] = date(
-                    'Y-m-d H:i:s'
-                );
-            }
-
-            if (empty($dadosFiltrados)) {
-                return 0;
-            }
-
-            $query = $this->db->getQuery(true);
-
-            $query->update($this->db->quoteName($this->table));
-
-            foreach ($dadosFiltrados as $coluna => $valor) {
-                $valorPreparado = $this->prepararValorParaPersistencia(
-                    $coluna,
-                    $valor
-                );
-
-                $query->set(
-                    $this->db->quoteName($coluna) .
-                    ' = ' .
-                    $this->db->quote($valorPreparado)
-                );
-            }
-
-            $this->montarWheres($query);
-
-            $this->db->setQuery($query);
-            $this->db->execute();
-
-            $linhasAfetadas = (int) $this->db->getAffectedRows();
-
-            return $linhasAfetadas;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao atualizar registros na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
+    protected function somarNaColuna($id, $coluna, $quantidade, $verbo)
+    {
+        return $this->executar(function () use ($id, $coluna, $quantidade) {
+            $query = $this->novaQueryUpdate()->set(
+                $this->db->quoteName($coluna) .
+                ' = ' .
+                $this->db->quoteName($coluna) .
+                ($quantidade < 0 ? ' - ' : ' + ') .
+                abs($quantidade)
             );
-        } finally {
-            $this->newQuery();
-        }
+
+            $this->executarEscrita($this->whereChavePrimaria($query, $id));
+
+            return $this->find($id);
+        }, 'Erro ao ' . $verbo . ' coluna ' . $coluna);
     }
 
     public function increment($id, $coluna, $quantidade = 1)
     {
-        try {
-            $query = $this->db->getQuery(true);
-
-            $query->update($this->db->quoteName($this->table));
-
-            $query->set(
-                $this->db->quoteName($coluna) .
-                ' = ' .
-                $this->db->quoteName($coluna) .
-                ' + ' .
-                (int) $quantidade
-            );
-
-            $query->where(
-                $this->db->quoteName($this->primaryKey) .
-                ' = ' .
-                (int) $id
-            );
-
-            $this->db->setQuery($query);
-            $this->db->execute();
-
-            return $this->find($id);
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao incrementar coluna ' .
-                $coluna .
-                ' na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        return $this->somarNaColuna($id, $coluna, (int) $quantidade, 'incrementar');
     }
 
     public function decrement($id, $coluna, $quantidade = 1)
     {
-        try {
-            $query = $this->db->getQuery(true);
-
-            $query->update($this->db->quoteName($this->table));
-
-            $query->set(
-                $this->db->quoteName($coluna) .
-                ' = ' .
-                $this->db->quoteName($coluna) .
-                ' - ' .
-                (int) $quantidade
-            );
-
-            $query->where(
-                $this->db->quoteName($this->primaryKey) .
-                ' = ' .
-                (int) $id
-            );
-
-            $this->db->setQuery($query);
-            $this->db->execute();
-
-            return $this->find($id);
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao decrementar coluna ' .
-                $coluna .
-                ' na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        return $this->somarNaColuna($id, $coluna, -(int) $quantidade, 'decrementar');
     }
 
     public function touch($id)
@@ -1401,106 +1437,37 @@ class OrmBase
         return $this->update($id, []);
     }
 
+    /*
+     * Com softDeletes, "excluir" é um UPDATE que preenche deleted_at.
+     */
+    protected function novaQueryExclusao()
+    {
+        if (!$this->softDeletes) {
+            return $this->novaQueryDelete();
+        }
+
+        return $this->aplicarSet(
+            $this->novaQueryUpdate(),
+            [$this->deletedAtColumn => date('Y-m-d H:i:s')]
+        );
+    }
+
     public function delete($id)
     {
-        try {
-            if ($this->softDeletes) {
-                $query = $this->db->getQuery(true);
-
-                $query->update($this->db->quoteName($this->table));
-
-                $query->set(
-                    $this->db->quoteName($this->deletedAtColumn) .
-                    ' = ' .
-                    $this->db->quote(date('Y-m-d H:i:s'))
-                );
-
-                $query->where(
-                    $this->db->quoteName($this->primaryKey) .
-                    ' = ' .
-                    (int) $id
-                );
-
-                $this->db->setQuery($query);
-                $this->db->execute();
-
-                return true;
-            }
-
-            $query = $this->db->getQuery(true);
-
-            $query->delete($this->db->quoteName($this->table));
-
-            $query->where(
-                $this->db->quoteName($this->primaryKey) .
-                ' = ' .
-                (int) $id
+        return $this->executar(function () use ($id) {
+            $this->executarEscrita(
+                $this->whereChavePrimaria($this->novaQueryExclusao(), $id)
             );
-
-            $this->db->setQuery($query);
-            $this->db->execute();
 
             return true;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao excluir registro na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        }, 'Erro ao excluir registro');
     }
 
     public function deleteWhere()
     {
-        $this->garantirFiltroParaOperacaoEmMassa('deleteWhere');
-
-        try {
-            if ($this->softDeletes) {
-                $query = $this->db->getQuery(true);
-
-                $query->update($this->db->quoteName($this->table));
-
-                $query->set(
-                    $this->db->quoteName($this->deletedAtColumn) .
-                    ' = ' .
-                    $this->db->quote(date('Y-m-d H:i:s'))
-                );
-
-                $this->montarWheres($query);
-
-                $this->db->setQuery($query);
-                $this->db->execute();
-
-                $linhasAfetadas = (int) $this->db->getAffectedRows();
-
-                return $linhasAfetadas;
-            }
-
-            $query = $this->db->getQuery(true);
-
-            $query->delete($this->db->quoteName($this->table));
-
-            $this->montarWheres($query);
-
-            $this->db->setQuery($query);
-            $this->db->execute();
-
-            $linhasAfetadas = (int) $this->db->getAffectedRows();
-
-            return $linhasAfetadas;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao excluir registros na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        } finally {
-            $this->newQuery();
-        }
+        return $this->executarEscritaEmMassa('deleteWhere', function () {
+            return $this->novaQueryExclusao();
+        }, 'Erro ao excluir registros');
     }
 
     public function restore($id)
@@ -1509,63 +1476,27 @@ class OrmBase
             return $this->find($id);
         }
 
-        try {
-            $query = $this->db->getQuery(true);
-
-            $query->update($this->db->quoteName($this->table));
-
-            $query->set(
-                $this->db->quoteName($this->deletedAtColumn) .
-                ' = NULL'
+        return $this->executar(function () use ($id) {
+            $query = $this->aplicarSet(
+                $this->novaQueryUpdate(),
+                [$this->deletedAtColumn => null]
             );
 
-            $query->where(
-                $this->db->quoteName($this->primaryKey) .
-                ' = ' .
-                (int) $id
-            );
-
-            $this->db->setQuery($query);
-            $this->db->execute();
+            $this->executarEscrita($this->whereChavePrimaria($query, $id));
 
             return $this->find($id);
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao restaurar registro na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        }, 'Erro ao restaurar registro');
     }
 
     public function forceDelete($id)
     {
-        try {
-            $query = $this->db->getQuery(true);
-
-            $query->delete($this->db->quoteName($this->table));
-
-            $query->where(
-                $this->db->quoteName($this->primaryKey) .
-                ' = ' .
-                (int) $id
+        return $this->executar(function () use ($id) {
+            $this->executarEscrita(
+                $this->whereChavePrimaria($this->novaQueryDelete(), $id)
             );
-
-            $this->db->setQuery($query);
-            $this->db->execute();
 
             return true;
-        } catch (Exception $e) {
-            throw new RuntimeException(
-                'Erro ao excluir definitivamente o registro na tabela ' .
-                $this->table .
-                ': ' . $e->getMessage(),
-                500,
-                $e
-            );
-        }
+        }, 'Erro ao excluir definitivamente o registro');
     }
 
     /*
