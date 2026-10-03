@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FileHelper · helpers-joomla</title>
+<meta name="description" content="Referência do FileHelper: leitura, gravação, manipulação de arquivos e pastas, criação de ZIP, download por stream e segurança contra Directory Traversal.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › FileHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" class="ativo" aria-current="page" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>FileHelper</h1>
+<p class="lead">Leitura, gravação, listagem, empacotamento ZIP, download stream e gerenciamento de arquivos e diretórios de forma segura, com sandbox contra ataques de Directory Traversal.</p>
+<div id="nesta-pagina"></div>
+
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O <code>FileHelper</code> abstrai as operações físicas do sistema de arquivos do servidor, integrando-se nativamente com as bibliotecas <code>JFile</code> e <code>JFolder</code> do Joomla, mas adicionando uma camada de segurança robusta e um padrão uniforme de respostas.</p>
+<p>Dentre as principais vantagens do seu uso estão:</p>
+<ul>
+    <li><strong>Sandbox de Diretório (Carcereiro):</strong> Todas as operações exigem que os arquivos e pastas estejam situados dentro de um diretório base autorizado (por padrão, a raiz do site, <code>JPATH_SITE</code>). Qualquer tentativa de acessar ou escrever em arquivos fora desse escopo (ex.: via ataques de <em>Directory Traversal</em> com <code>../</code>) gera uma exceção ou retorno de erro imediato.</li>
+    <li><strong>Tratamento Uniforme de Respostas:</strong> Os métodos retornam arrays padronizados pelo `ApiResponseHelper` com as chaves <code>success</code>, <code>mensagem</code> e <code>data</code>, permitindo que falhas físicas do servidor (como falta de permissão de escrita) sejam capturadas sem derrubar a aplicação.</li>
+    <li><strong>Controle Dinâmico de Exceções:</strong> Com o método <code>setThrowExceptions(true)</code>, você pode optar por fazer o helper lançar exceções físicas (<code>Throwable</code>) ao invés de retornar arrays de erro, ideal para blocos de código com transações.</li>
+    <li><strong>Downloads por Stream Inteligentes:</strong> O método <code>stream()</code> lida com o envio de arquivos binários grandes limpando buffers ativos, aplicando cabeçalhos HTTP anti-sniffing, anti-cache e suportando a transmissão em blocos (chunking) para economizar recursos do servidor.</li>
+    <li><strong>Limpeza Periódica de Arquivos:</strong> Permite fazer manutenção automatizada de pastas temporárias, excluindo arquivos antigos com base no tempo de vida parametrizado de forma recursiva.</li>
+</ul>
+
+<h2 id="configuracao-global" data-titulo="Configurações globais">Configurações globais</h2>
+<p>Configurações para governar as permissões, tamanho de arquivos e o comportamento de tratamento de exceções de toda a aplicação.</p>
+
+<div class="metodo">
+<h3 id="setBaseDirectory"><code>setBaseDirectory() / getBaseDirectory()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::setBaseDirectory(string|null $directory): void<br>FileHelper::getBaseDirectory(): string|null</div>
+<p>Define ou consulta o diretório raiz para operações físicas. Se nulo, a raiz do Joomla (<code>JPATH_SITE</code>) é usada como o jail padrão.</p>
+<div class="codigo">
+<pre><code data-lang="php">// Restringir o FileHelper apenas para trabalhar dentro da pasta de uploads
+FileHelper::setBaseDirectory(JPATH_SITE . '/images/uploads');
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="setDirectoryPermission"><code>setDirectoryPermission() / setFilePermission()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::setDirectoryPermission(int $permission): void<br>FileHelper::setFilePermission(int $permission): void</div>
+<p>Configura as permissões octais usadas automaticamente na criação de pastas (padrão: <code>0755</code>) e gravação de novos arquivos (padrão: <code>0644</code>).</p>
+</div>
+
+<div class="metodo">
+<h3 id="setMaxReadSize"><code>setMaxReadSize()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::setMaxReadSize(int $bytes): void</div>
+<p>Define o limite máximo de bytes aceito em leituras de arquivos em memória pelo método <code>read()</code> (padrão: 50MB).</p>
+</div>
+
+<div class="metodo">
+<h3 id="setThrowExceptions"><code>setThrowExceptions()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::setThrowExceptions(bool $throwExceptions): void</div>
+<p>Controla se o helper deve lançar exceções físicas de sistema de arquivos (como `RuntimeException` ou `InvalidArgumentException`) ou se deve apenas retornar um array estruturado indicando <code>'success' => false</code>.</p>
+</div>
+
+<h2 id="verificacao-info" data-titulo="Verificação e Informações">Verificação e Informações</h2>
+<p>Métodos para inspecionar arquivos e diretórios sem ler ou modificar seus conteúdos.</p>
+
+<div class="metodo">
+<h3 id="exists"><code>exists() / directoryExists()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::exists(string $path, string|null $baseDirectory = null): bool<br>FileHelper::directoryExists(string $directory, string|null $baseDirectory = null): bool</div>
+<p>Retornam um booleano simples indicando se o arquivo ou diretório físico existe no caminho informado dentro do sandbox autorizado.</p>
+</div>
+
+<div class="metodo">
+<h3 id="ensureDirectory"><code>ensureDirectory()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::ensureDirectory(string $directory, string|null $baseDirectory = null): array</div>
+<p>Garante a existência de um diretório. Caso a pasta não exista no caminho, ela é criada de forma recursiva aplicando a permissão octal padrão de diretórios.</p>
+</div>
+
+<div class="metodo">
+<h3 id="info"><code>info()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::info(string $path, string|null $baseDirectory = null): array</div>
+<p>Retorna uma lista exaustiva de informações e metadados sobre o arquivo físico.</p>
+<div class="codigo">
+<div class="titulo-codigo">Exemplo de retorno do método info()</div>
+<pre><code data-lang="text">[
+    'success' => true,
+    'mensagem' => 'Informações do arquivo carregadas com sucesso.',
+    'data' => [
+        'path' => '/var/www/site/images/uploads/foto.jpg',
+        'relative_path' => 'images/uploads/foto.jpg',
+        'site_relative_path' => 'images/uploads/foto.jpg',
+        'url' => 'https://seusite.com/images/uploads/foto.jpg',
+        'base_directory' => '/var/www/site',
+        'file_name' => 'foto.jpg',
+        'extension' => 'jpg',
+        'size' => 124500,
+        'modified_at' => '2026-10-03 14:15:22',
+        'created_at' => '2026-10-03 14:12:05'
+    ]
+]
+</code></pre>
+</div>
+</div>
+
+<h2 id="leitura-arquivos" data-titulo="Leitura de arquivos">Leitura de arquivos</h2>
+<p>Carregamento de dados de arquivos em texto puro ou com parsing estruturado de formatos.</p>
+
+<div class="metodo">
+<h3 id="read"><code>read()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::read(string $path, string|null $baseDirectory = null, int|null $maxBytes = null): array</div>
+<p>Lê todo o conteúdo textual de um arquivo e retorna o seu corpo bruto sob a chave <code>data.content</code> junto com os metadados do arquivo em <code>data.file</code>. Impede a leitura se o arquivo exceder o limite de segurança de bytes configurado.</p>
+</div>
+
+<div class="metodo">
+<h3 id="readJson"><code>readJson()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::readJson(string $path, string|null $baseDirectory = null, int|null $maxBytes = null): array</div>
+<p>Carrega o arquivo, executa a decodificação estruturada do seu JSON de forma segura e retorna um array associativo PHP correspondente na chave <code>data.json</code>.</p>
+<div class="codigo">
+<pre><code data-lang="php">$resultado = FileHelper::readJson('config.json');
+
+if ($resultado['success']) {
+    $configuracoes = $resultado['data']['json'];
+}
+</code></pre>
+</div>
+</div>
+
+<h2 id="escrita-gravacao" data-titulo="Escrita e Gravação">Escrita e Gravação</h2>
+<p>Operações de gravação e atualização de conteúdos físicos.</p>
+
+<div class="metodo">
+<h3 id="write"><code>write()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::write(string $path, mixed $content, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Grava informações num arquivo de destino físico. Se a pasta de destino não existir, ela é criada de forma recursiva automaticamente.</p>
+<p>Opções aceitas por parâmetro:</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Opção</th>
+            <th>Tipo</th>
+            <th>Padrão</th>
+            <th>Descrição</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>overwrite</code></td>
+            <td>bool</td>
+            <td><code>true</code></td>
+            <td>Se <code>true</code>, substitui qualquer arquivo existente. Se <code>false</code>, lança um erro caso o arquivo já exista.</td>
+        </tr>
+        <tr>
+            <td><code>append</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Se <code>true</code>, concatena o conteúdo no final do arquivo existente de forma atômica (travando o arquivo com lock exclusivo).</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="writeJson"><code>writeJson()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::writeJson(string $path, mixed $data, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Converte uma estrutura PHP associativa ou de objetos em uma string JSON formatada (Pretty Print, UTF-8 e escape de barras desabilitado) e grava no arquivo físico de destino.</p>
+</div>
+
+<div class="metodo">
+<h3 id="append"><code>append()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::append(string $path, string $content, string|null $baseDirectory = null): array</div>
+<p>Atalho para gravação sequencial de logs ou auditorias textuais, adicionando conteúdo no final do arquivo físico sem remover o existente.</p>
+</div>
+
+<h2 id="operacoes-sistema" data-titulo="Operações de sistema">Operações de sistema</h2>
+<p>Cópia, movimentação e exclusão de arquivos e pastas no servidor.</p>
+
+<div class="metodo">
+<h3 id="copy"><code>copy() / move()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::copy(string $sourcePath, string $destinationPath, string|null $sourceBaseDirectory = null, string|null $destinationBaseDirectory = null, array $options = []): array<br>FileHelper::move(string $sourcePath, string $destinationPath, string|null $sourceBaseDirectory = null, string|null $destinationBaseDirectory = null, array $options = []): array</div>
+<p>Copia ou move arquivos de uma origem para um destino, permitindo sandboxes de origem e destino distintos. Suporta a opção booleana <code>['overwrite' => true]</code> para forçar a substituição do destino caso este já exista.</p>
+</div>
+
+<div class="metodo">
+<h3 id="delete"><code>delete() / deleteDirectory()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::delete(string $path, string|null $baseDirectory = null): array<br>FileHelper::deleteDirectory(string $directory, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Remove arquivos ou exclui diretórios recursivamente. Por segurança extrema, o método <code>deleteDirectory()</code> impede a remoção do diretório base sandbox inteiro, a menos que a opção <code>['allow_base_directory' => true]</code> seja declarada de forma consciente.</p>
+</div>
+
+<h2 id="listagem-limpeza" data-titulo="Listagem e Limpeza">Listagem e Limpeza</h2>
+<p>Métodos para varrer diretórios estruturados e realizar a manutenção do espaço em disco.</p>
+
+<div class="metodo">
+<h3 id="listFiles"><code>listFiles() / listDirectories()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::listFiles(string $directory = '', string|null $baseDirectory = null, array $options = []): array<br>FileHelper::listDirectories(string $directory = '', string|null $baseDirectory = null, array $options = []): array</div>
+<p>Listam arquivos e pastas dentro de um diretório sandbox.</p>
+<p>Ambos os métodos aceitam opções avançadas de filtros:</p>
+<ul>
+    <li><code>'recursive' => true</code>: Varre todas as subpastas recursivamente.</li>
+    <li><code>'filter' => '\.pdf$'</code>: Expressão regular para filtrar apenas determinados nomes.</li>
+    <li><code>'exclude' => [...]</code>: Nomes de pastas físicas a ignorar na varredura.</li>
+    <li><code>'exclude_filter' => [...]</code>: Lista de expressões de arquivos a serem ignorados por padrão.</li>
+</ul>
+</div>
+
+<div class="metodo">
+<h3 id="cleanOlderThan"><code>cleanOlderThan()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::cleanOlderThan(string $directory, int $days, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Analisa todos os arquivos de um diretório de forma recursiva e remove de forma definitiva aqueles cuja data de modificação física seja superior à quantidade de <code>$days</code> informada.</p>
+<p>Ideal para rotinas cron (scripts CLI) limpando pastas de relatórios temporários, exportações rejeitadas ou dumps expirados.</p>
+<div class="codigo">
+<pre><code data-lang="php">// Apagar todos os PDFs criados há mais de 30 dias na pasta de relatórios temporários
+FileHelper::cleanOlderThan('tmp/relatorios', 30, null, [
+    'filter' => '\.pdf$'
+]);
+</code></pre>
+</div>
+</div>
+
+<h2 id="utilitarios" data-titulo="Utilitários Adicionais">Utilitários Adicionais</h2>
+<p>Facilidades para compactação, transmissão de downloads e formatação de dados físicos.</p>
+
+<div class="metodo">
+<h3 id="createZip"><code>createZip()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::createZip(string $zipPath, array $files, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Gera um arquivo comprimido padrão ZIP unindo uma lista de arquivos informados. Utiliza internamente a biblioteca nativa do PHP `ZipArchive`.</p>
+<p>Opções aceitas por parâmetro:</p>
+<ul>
+    <li><code>'flat' => true</code>: Se definido como verdadeiro, todos os arquivos serão jogados na raiz do arquivo ZIP gerado, descartando a sua estrutura de pastas originais relativa.</li>
+    <li><code>'overwrite' => true</code>: Substitui o arquivo ZIP caso este já exista no caminho do destino.</li>
+</ul>
+</div>
+
+<div class="metodo">
+<h3 id="stream"><code>stream()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::stream(string $path, string|null $downloadName = null, string|null $baseDirectory = null, array $options = []): bool</div>
+<p>Inicia a transmissão de download de um arquivo físico do servidor para o cliente de forma otimizada para o navegador web do usuário final.</p>
+<p>O método lida de forma automatizada com:</p>
+<ul>
+    <li><strong>Detecção de MIME:</strong> Se a opção `mime` não for declarada por parâmetro, lê e aplica o MIME Type correto do arquivo usando a extensão `finfo` do PHP, caindo para `application/octet-stream` em caso de falha.</li>
+    <li><strong>Bloqueio de Sniffing e Cache:</strong> Envia cabeçalhos HTTP como <code>X-Content-Type-Options: nosniff</code> para segurança e cabeçalhos privados de Cache-Control para que arquivos que tenham dados do usuário não sejam guardados em proxies intermediários de cache públicos.</li>
+    <li><strong>Suporte a transmissão parcial (Flush):</strong> Desliga todos os níveis de buffers de saída ativos do PHP com <code>ob_end_clean()</code> e transmite o arquivo em blocos de 8KB, dando vasão imediata à memória e poupando sobrecarga no servidor.</li>
+    <li><strong>Nome de download amigável:</strong> Aceita a opção <code>'inline' => true</code> para forçar que o arquivo seja aberto diretamente no navegador (como imagens ou PDFs) ao invés de forçar o download.</li>
+</ul>
+<div class="codigo">
+<pre><code data-lang="php">// Baixar um PDF do sistema
+FileHelper::stream('comprovante.pdf', 'recibo-faturamento.pdf', null, [
+    'inline' => true
+]);
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="formatBytes"><code>formatBytes()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::formatBytes(int $bytes, int $precision = 2): string</div>
+<p>Converte uma quantidade bruta de bytes em uma string legível formatada com a sua respectiva unidade de grandeza (B, KB, MB, GB, TB).</p>
+<div class="codigo">
+<pre><code data-lang="php">echo FileHelper::formatBytes(1254300); // Exibe "1.2 MB"
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="randomFileName"><code>randomFileName()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::randomFileName(string $prefix = 'arquivo', string $extension = ''): string</div>
+<p>Gera um nome de arquivo aleatório e seguro utilizando geradores de bytes pseudo-aleatórios fortes para evitar colisões e adivinhações de arquivos no servidor.</p>
+<div class="codigo">
+<pre><code data-lang="php">echo FileHelper::randomFileName('comprovante', 'pdf');
+// Exibe algo como: comprovante_20261003141522_4e7a1b3d5f60718293a4b5c6d7e8f9a0.pdf
+</code></pre>
+</div>
+</div>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul>
+    <li><a href="csv-helper.html">CsvHelper</a>: Processamento especializado e importação de planilhas de dados.</li>
+    <li><a href="validation-helper.html">ValidationHelper</a>: Validação declarativa de uploads e arquivos carregados pelo usuário.</li>
+</ul>
+
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="csv-helper.html"><small>← Anterior</small>CsvHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code> e <code>FileHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>
