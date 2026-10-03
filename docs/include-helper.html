@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IncludeHelper · helpers-joomla</title>
+<meta name="description" content="Referência do IncludeHelper: carregamento dinâmico e topológico de helpers no Joomla com resolução recursiva de dependências e proteção contra dependências cíclicas.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › IncludeHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" class="ativo" aria-current="page" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>IncludeHelper</h1>
+<p class="lead">Gerenciamento analítico e carregamento dinâmico de helpers no Joomla, resolvendo a árvore de dependências físicas de forma topológica matemática e prevenindo erros de carregamento e redeclaração.</p>
+<div id="nesta-pagina"></div>
+
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>Em projetos de médio e grande porte desenvolvidos para Joomla, à medida que novos helpers com diferentes dependências são criados, o gerenciamento manual das chamadas de <code>require_once</code> torna-se confuso e propenso a falhas de carregamento ou bugs causados por inclusão de arquivos fora de ordem.</p>
+<p>O <code>IncludeHelper</code> resolve essa questão de forma automatizada:</p>
+<ul>
+    <li><strong>Algoritmo de Ordenação Topológica:</strong> Utiliza uma busca em profundidade (Depth-First Search - DFS) com pós-ordem de travessia para carregar os helpers requisitados exatamente após todas as suas dependências estarem devidamente declaradas no PHP.</li>
+    <li><strong>Prevenção de Inclusão Cíclica:</strong> Detecta recursivamente acoplamentos circulares de dependência no ecossistema de classes, lançando uma exceção de aviso imediata para que o arquiteto possa corrigir o acoplamento do sistema.</li>
+    <li><strong>Sandbox de Memória de Classes:</strong> Verifica de forma inteligente com `class_exists()` antes de processar qualquer arquivo físico, prevenindo o overhead e a redundância de reincluir arquivos já carregados em memória pelo Joomla.</li>
+    <li><strong>Mapeamento Automatizado de Nomes:</strong> Lida de forma transparente com helpers cujos nomes de arquivo físico divergem ligeiramente do nome da classe declarada internamente (como o <code>ChunkUploadHelper.php</code> que declara a classe <code>ChunkHelper</code>).</li>
+</ul>
+
+<div class="codigo">
+<div class="titulo-codigo">O problema do carregamento manual</div>
+<pre><code data-lang="php">// Sem o IncludeHelper, o desenvolvedor precisa lembrar de incluir manualmente:
+require_once JPATH_COMPONENT . '/helpers/DbConnectionHelper.php';
+require_once JPATH_COMPONENT . '/helpers/DbTransactionHelper.php';
+require_once JPATH_COMPONENT . '/helpers/OrmBase.php';
+require_once JPATH_COMPONENT . '/helpers/OrmTables.php';
+require_once JPATH_COMPONENT . '/helpers/ValidationHelper.php';
+require_once JPATH_COMPONENT . '/helpers/CsvHelper.php'; // Só agora o CsvHelper pode ser chamado!
+</code></pre>
+</div>
+
+<div class="codigo">
+<div class="titulo-codigo">A solução inteligente e analítica</div>
+<pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/IncludeHelper.php';
+
+// O CsvHelper depende do OrmTables, DbTransactionHelper e ValidationHelper.
+// O IncludeHelper descobre isso e carrega tudo na sequência matematicamente perfeita!
+IncludeHelper::load('CsvHelper');
+</code></pre>
+</div>
+
+<h2 id="grafo-dependencias" data-titulo="Grafo de dependências">O Grafo de Dependências dos Helpers</h2>
+<p>O helper possui um mapeamento analítico consolidado e estático de todas as classes auxiliares da aplicação:</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Helper Requisitado</th>
+            <th>Dependências Diretas Resolvidas</th>
+            <th>Cadeia Topológica de Resolução</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>'LogHelper'</code>, <code>'InputHelper'</code>, <code>'ValidationHelper'</code>, <code>'DbConnectionHelper'</code></td>
+            <td>Nenhuma (Folhas)</td>
+            <td><code>[Self]</code></td>
+        </tr>
+        <tr>
+            <td><code>'DbTransactionHelper'</code></td>
+            <td><code>DbConnectionHelper</code></td>
+            <td><code>DbConnectionHelper</code> &rarr; <code>DbTransactionHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'OrmBase'</code></td>
+            <td><code>DbConnectionHelper</code>, <code>DbTransactionHelper</code></td>
+            <td><code>DbConnectionHelper</code> &rarr; <code>DbTransactionHelper</code> &rarr; <code>OrmBase</code></td>
+        </tr>
+        <tr>
+            <td><code>'OrmTables'</code></td>
+            <td><code>OrmBase</code></td>
+            <td><code>DbConnectionHelper</code> &rarr; <code>DbTransactionHelper</code> &rarr; <code>OrmBase</code> &rarr; <code>OrmTables</code></td>
+        </tr>
+        <tr>
+            <td><code>'ApiResponseHelper'</code></td>
+            <td><code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>ApiResponseHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'PermissionHelper'</code></td>
+            <td><code>LogHelper</code>, <code>ApiResponseHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>ApiResponseHelper</code> &rarr; <code>PermissionHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'FileHelper'</code></td>
+            <td><code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>FileHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'AuditHelper'</code></td>
+            <td><code>OrmTables</code>, <code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>DbTransactionHelper</code> &rarr; <code>OrmBase</code> &rarr; <code>OrmTables</code> &rarr; <code>AuditHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'CsvHelper'</code></td>
+            <td><code>OrmTables</code>, <code>DbTransactionHelper</code>, <code>ValidationHelper</code>, <code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>DbTransactionHelper</code> &rarr; <code>OrmBase</code> &rarr; <code>OrmTables</code> &rarr; <code>ValidationHelper</code> &rarr; <code>CsvHelper</code></td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<h2 id="metodos" data-titulo="Métodos do IncludeHelper">Métodos de Carregamento</h2>
+<p>Métodos estáticos fornecidos para gerenciar a inicialização dinâmica de arquivos.</p>
+
+<div class="metodo">
+<h3 id="load"><code>load()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">IncludeHelper::load(string|array $helpers): array</div>
+<p>Carrega um helper específico ou uma lista de helpers fornecidos. O método vasculha recursivamente a árvore de dependências de cada item solicitado, monta uma única sequência sem duplicatas e efetua o carregamento das classes que ainda não estão presentes em memória.</p>
+<p>Retorna um array contendo os nomes dos helpers que foram fisicamente incluídos durante essa execução.</p>
+<div class="codigo">
+<pre><code data-lang="php">// Carregando múltiplos helpers ao mesmo tempo de forma ordenada
+$incluidos = IncludeHelper::load(['AuditHelper', 'PermissionHelper']);
+
+// $incluidos conterá: ['LogHelper', 'DbConnectionHelper', 'DbTransactionHelper', 'OrmBase', 'OrmTables', 'AuditHelper', 'ApiResponseHelper', 'PermissionHelper']
+// (Apenas as classes que já não estivessem incluídas anteriormente serão requeridas física e dinamicamente!)
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="loadAll"><code>loadAll()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">IncludeHelper::loadAll(): array</div>
+<p>Carrega absolutamente todos os helpers mapeados no projeto, de forma topologicamente correta. É ideal para ser chamado no arquivo de entrada principal do componente (como o <code>helpers.php</code> inicializador ou o arquivo de entrada do Componente na raiz) se você preferir carregar todas as dependências de uma única vez.</p>
+</div>
+
+<div class="metodo">
+<h3 id="getDependencies"><code>getDependencies()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">IncludeHelper::getDependencies(string $helperName): array</div>
+<p>Consulta e retorna a lista estática de dependências diretas mapeada para um determinado helper.</p>
+</div>
+
+<div class="metodo">
+<h3 id="getTopologicalOrder"><code>getTopologicalOrder()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">IncludeHelper::getTopologicalOrder(): array</div>
+<p>Cosulta a sequência linear exata e analítica que seria usada para carregar todo o projeto de ponta a ponta sem disparar nenhuma inclusão física. Útil para inspeção de dependências.</p>
+<div class="codigo">
+<pre><code data-lang="php">print_r(IncludeHelper::getTopologicalOrder());
+/* Exibe:
+Array (
+    [0] => LogHelper
+    [1] => InputHelper
+    [2] => ValidationHelper
+    [3] => DbConnectionHelper
+    [4] => DbTransactionHelper
+    [5] => OrmBase
+    [6] => OrmTables
+    [7] => ApiResponseHelper
+    [8] => PermissionHelper
+    [9] => FileHelper
+    [10] => AuditHelper
+    [11] => CsvHelper
+    [12] => ChunkUploadHelper
+    [13] => ExportHelper
+    [14] => QueueHelper
+) */
+</code></pre>
+</div>
+</div>
+
+<h2 id="exemplo-controller" data-titulo="Exemplo no Controller">Exemplo prático no Controller</h2>
+<p>Abaixo, veja um exemplo típico e elegante de um arquivo de entrada de Componente Joomla (<code>com_loja.php</code> na raiz de administração ou frontend) que utiliza o <code>IncludeHelper</code> para inicializar o ecossistema de helpers de forma extremamente limpa e segura antes de encaminhar a execução para o Controller correspondente.</p>
+
+<div class="codigo">
+<div class="titulo-codigo">Exemplo: Inicializador do Componente Joomla (`com_loja.php`)</div>
+<pre><code data-lang="php">defined('_JEXEC') or die;
+
+// 1. Incluir apenas o IncludeHelper na inicialização do componente
+require_once JPATH_COMPONENT . '/helpers/IncludeHelper.php';
+
+try {
+    // 2. Carregar dinamicamente apenas os helpers que serão cruciais para toda requisição
+    // (Opcional: se preferir, chame IncludeHelper::loadAll() para subir tudo de uma vez)
+    IncludeHelper::load(['InputHelper', 'ApiResponseHelper', 'PermissionHelper']);
+    
+    // 3. Obter dados da tarefa via InputHelper (carregado de forma segura!)
+    $controllerName = InputHelper::string('controller', 'dashboard');
+    $task           = InputHelper::string('task', 'display');
+
+    // 4. Se a tarefa exigir faturamento, carregamos o CsvHelper e o AuditHelper sob demanda
+    if ($controllerName === 'faturamento') {
+        IncludeHelper::load(['CsvHelper', 'AuditHelper']);
+    }
+
+    // 5. Instanciar e executar o controller do Joomla
+    $controllerPath = JPATH_COMPONENT . '/controllers/' . $controllerName . '.php';
+
+    if (is_file($controllerPath)) {
+        require_once $controllerPath;
+        $className = 'LojaController' . ucfirst($controllerName);
+        $controller = new $className();
+        $controller->execute($task);
+        $controller->redirect();
+    } else {
+        throw new RuntimeException('Página do controller de destino não encontrada.');
+    }
+
+} catch (Throwable $e) {
+    // Como o ApiResponseHelper e o LogHelper foram garantidos pelo IncludeHelper, 
+    // respondemos o erro imprevisto em formato limpo
+    if (class_exists('ApiResponseHelper')) {
+        ApiResponseHelper::exception($e, 'Erro crítico ao inicializar o componente.');
+    } else {
+        JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+    }
+}
+</code></pre>
+</div>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul>
+    <li><a href="index.html">Início da Documentação</a>: Visão geral de todos os helpers disponíveis.</li>
+    <li><a href="receitas.html">Receitas</a>: Exemplos integrados de controllers e fluxos completos de negócio.</li>
+</ul>
+
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="audit-helper.html"><small>← Anterior</small>AuditHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code> e <code>IncludeHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>
