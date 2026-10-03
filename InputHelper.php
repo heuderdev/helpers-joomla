@@ -284,6 +284,29 @@ class InputHelper
         return $normalized;
     }
 
+    /*
+     * Aplica um filtro de texto do Joomla (cmd, word, alnum...). Campo
+     * enviado como lista (campo[]=...) devolve o default: sem isso, o
+     * (string) do array viraria "Array".
+     */
+    private static function filtered($method, $name, $default, $source, $filter)
+    {
+        try {
+            $name = self::normalizeName($name);
+            $value = self::resolveSource($name, $source)->get($name, $default, $filter);
+
+            if (is_array($value) || is_object($value)) {
+                $value = $default;
+            }
+
+            return trim((string) $value);
+        } catch (Throwable $error) {
+            self::log($method, $error);
+
+            return trim((string) $default);
+        }
+    }
+
     public static function value($name, $default = null, $filter = 'cmd', $source = 'request')
     {
         try {
@@ -300,6 +323,11 @@ class InputHelper
         try {
             $value = self::get($name, $default, 'string', $source);
 
+            // Campo enviado como lista (campo[]=...) não é texto.
+            if (is_array($value) || is_object($value)) {
+                $value = $default;
+            }
+
             return self::normalizeString($value, $trim);
         } catch (Throwable $error) {
             self::log(__METHOD__, $error);
@@ -312,6 +340,11 @@ class InputHelper
     {
         try {
             $value = self::get($name, $default, 'raw', $source);
+
+            // Campo enviado como lista (campo[]=...) não é texto.
+            if (is_array($value) || is_object($value)) {
+                $value = $default;
+            }
 
             return self::normalizeString($value, $trim);
         } catch (Throwable $error) {
@@ -490,58 +523,22 @@ class InputHelper
 
     public static function cmd($name, $default = '', $source = 'request')
     {
-        try {
-            $name = self::normalizeName($name);
-            $sourceObject = self::resolveSource($name, $source);
-
-            return trim((string) $sourceObject->getCmd($name, $default));
-        } catch (Throwable $error) {
-            self::log(__METHOD__, $error);
-
-            return trim((string) $default);
-        }
+        return self::filtered(__METHOD__, $name, $default, $source, 'cmd');
     }
 
     public static function word($name, $default = '', $source = 'request')
     {
-        try {
-            $name = self::normalizeName($name);
-            $sourceObject = self::resolveSource($name, $source);
-
-            return trim((string) $sourceObject->getWord($name, $default));
-        } catch (Throwable $error) {
-            self::log(__METHOD__, $error);
-
-            return trim((string) $default);
-        }
+        return self::filtered(__METHOD__, $name, $default, $source, 'word');
     }
 
     public static function alnum($name, $default = '', $source = 'request')
     {
-        try {
-            $name = self::normalizeName($name);
-            $sourceObject = self::resolveSource($name, $source);
-
-            return trim((string) $sourceObject->getAlnum($name, $default));
-        } catch (Throwable $error) {
-            self::log(__METHOD__, $error);
-
-            return trim((string) $default);
-        }
+        return self::filtered(__METHOD__, $name, $default, $source, 'alnum');
     }
 
     public static function base64($name, $default = '', $source = 'request')
     {
-        try {
-            $name = self::normalizeName($name);
-            $sourceObject = self::resolveSource($name, $source);
-
-            return trim((string) $sourceObject->getBase64($name, $default));
-        } catch (Throwable $error) {
-            self::log(__METHOD__, $error);
-
-            return trim((string) $default);
-        }
+        return self::filtered(__METHOD__, $name, $default, $source, 'base64');
     }
 
     /*
@@ -603,30 +600,12 @@ class InputHelper
 
     public static function username($name, $default = '', $source = 'request')
     {
-        try {
-            $name = self::normalizeName($name);
-            $sourceObject = self::resolveSource($name, $source);
-
-            return trim((string) $sourceObject->getUsername($name, $default));
-        } catch (Throwable $error) {
-            self::log(__METHOD__, $error);
-
-            return trim((string) $default);
-        }
+        return self::filtered(__METHOD__, $name, $default, $source, 'username');
     }
 
     public static function path($name, $default = '', $source = 'request')
     {
-        try {
-            $name = self::normalizeName($name);
-            $sourceObject = self::resolveSource($name, $source);
-
-            return trim((string) $sourceObject->getPath($name, $default));
-        } catch (Throwable $error) {
-            self::log(__METHOD__, $error);
-
-            return trim((string) $default);
-        }
+        return self::filtered(__METHOD__, $name, $default, $source, 'path');
     }
 
     public static function array($name, array $default = array(), $source = 'request')
