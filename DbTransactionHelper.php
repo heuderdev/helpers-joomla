@@ -73,9 +73,12 @@ class DbTransactionHelper
     private static function log($level, $message, array $context = array())
     {
         try {
-            if (class_exists('LogHelper')) {
-                LogHelper::write(
-                    $level,
+            /*
+             * O LogHelper expõe um método público por nível (debug(),
+             * warning(), error()...); o write() dele é privado.
+             */
+            if (class_exists('LogHelper') && method_exists('LogHelper', $level)) {
+                LogHelper::$level(
                     $message,
                     self::$logCategory,
                     $context,
@@ -85,19 +88,16 @@ class DbTransactionHelper
                 return;
             }
 
-            $priority = JLog::INFO;
+            $priorities = array(
+                'debug' => JLog::DEBUG,
+                'warning' => JLog::WARNING,
+                'error' => JLog::ERROR,
+                'critical' => JLog::CRITICAL
+            );
 
-            if ($level === 'error') {
-                $priority = JLog::ERROR;
-            }
-
-            if ($level === 'warning') {
-                $priority = JLog::WARNING;
-            }
-
-            if ($level === 'debug') {
-                $priority = JLog::DEBUG;
-            }
+            $priority = isset($priorities[$level])
+                ? $priorities[$level]
+                : JLog::INFO;
 
             JLog::add(
                 $message,
