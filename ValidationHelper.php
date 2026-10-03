@@ -52,7 +52,34 @@ class ValidationHelper
         'alpha_dash' => 'O campo :field deve conter apenas letras, números, hífen e underline.',
         'uuid' => 'O campo :field deve conter um UUID válido.',
         'ip' => 'O campo :field deve conter um endereço IP válido.',
+        'after' => 'O campo :field deve ser uma data posterior a :date.',
+        'after_or_equal' => 'O campo :field deve ser uma data igual ou posterior a :date.',
+        'before' => 'O campo :field deve ser uma data anterior a :date.',
+        'before_or_equal' => 'O campo :field deve ser uma data igual ou anterior a :date.',
         'callback' => 'O campo :field é inválido.'
+    );
+
+    /*
+     * Regras avaliadas mesmo com o campo vazio. Com o campo vazio, só
+     * elas rodam: as demais (email, cpf, min...) só valem quando há valor.
+     */
+    private static $presenceRules = array(
+        'required',
+        'required_if',
+        'required_with',
+        'accepted'
+    );
+
+    /*
+     * Regras que só fazem sentido com um valor simples. Uma lista
+     * (campo[]=...) nelas é inválida, em vez de virar "Array".
+     */
+    private static $scalarRules = array(
+        'integer', 'int', 'numeric', 'decimal', 'boolean', 'bool', 'email', 'url',
+        'cpf', 'cnpj', 'cpf_cnpj', 'phone', 'telefone', 'cep', 'date', 'date_br',
+        'datetime', 'time', 'min_length', 'max_length', 'length', 'in', 'not_in',
+        'regex', 'same', 'different', 'accepted', 'alpha', 'alpha_num', 'alpha_dash',
+        'uuid', 'ip', 'after', 'after_or_equal', 'before', 'before_or_equal'
     );
 
     private static $customMessages = array();
@@ -73,19 +100,53 @@ class ValidationHelper
             return false;
         }
 
+        // <input type="file"> enviado sem arquivo
+        if (is_array($value)
+            && isset($value['error'], $value['tmp_name'])
+            && (int) $value['error'] === UPLOAD_ERR_NO_FILE) {
+            return false;
+        }
+
         return true;
+    }
+
+    /*
+     * 'itens.2.quantidade' → 'itens.*.quantidade'
+     */
+    private static function wildcardPattern($field)
+    {
+        return preg_replace('/(?<=^|\.)\d+(?=\.|$)/', '*', (string) $field);
     }
 
     private static function normalizeFieldLabel($field)
     {
+        $field = (string) $field;
+
         if (isset(self::$labels[$field])) {
             return self::$labels[$field];
+        }
+
+        /*
+         * Campo de um item de lista ('itens.2.quantidade'): usa o rótulo
+         * de 'itens.*.quantidade' (ou o nome do campo) e o número do
+         * item, contando a partir de 1: "Quantidade (item 3)".
+         */
+        if (preg_match('/(?:^|\.)(\d+)(?:\.|$)/', $field, $matches)) {
+            $pattern = self::wildcardPattern($field);
+            $segments = explode('.', $field);
+            $last = end($segments);
+
+            $label = isset(self::$labels[$pattern])
+                ? self::$labels[$pattern]
+                : ucfirst(str_replace(array('_', '-'), ' ', ctype_digit($last) ? $segments[0] : $last));
+
+            return $label . ' (item ' . ((int) $matches[1] + 1) . ')';
         }
 
         $field = str_replace(
             array('_', '.', '-'),
             ' ',
-            (string) $field
+            $field
         );
 
         return ucfirst($field);
@@ -115,46 +176,102 @@ class ValidationHelper
         $errors[$field][] = $message;
     }
 
+    /*
+     * Converte as regras de um campo numa lista de
+     * array('name' => ..., 'parameters' => array(...), 'callable' => ...).
+     *
+     * Formatos aceitos:
+     * - string:  'required|email|max_length:150'
+     *            'regex:...' deve ser a última regra da string (o padrão
+     *            pode conter | e vírgulas);
+     * - array:   array('required', 'email', 'max_length:150')
+     * - chave => valor no array:
+     *            'in' => array('aberto', 'pago')   valores com vírgula
+     *            'regex' => '/^a|b$/'
+     *            'unique' => function ($valor, $dados, $campo) {...}
+     * - closure sem chave: regra 'callback'.
+     *
+     * Strings nunca são executadas como função: 'date' e 'time' são
+     * regras, não as funções date() e time() do PHP. Para um método por
+     * nome, use 'callback:Classe::metodo'.
+     */
     private static function parseRules($rules)
     {
+        $list = array();
+
         if (is_string($rules)) {
-            return explode('|', $rules);
+            $regexPosition = stripos($rules, 'regex:');
+            $before = $regexPosition === false ? $rules : substr($rules, 0, $regexPosition);
+
+            foreach (explode('|', $before) as $rule) {
+                if (trim($rule) !== '') {
+                    $list[] = self::parseRule($rule);
+                }
+            }
+
+            if ($regexPosition !== false) {
+                $list[] = self::parseRule(substr($rules, $regexPosition));
+            }
+
+            return $list;
         }
 
-        if (is_array($rules)) {
-            return $rules;
+        if (!is_array($rules)) {
+            return $list;
         }
 
-        return array();
+        foreach ($rules as $key => $rule) {
+            if (is_string($key)) {
+                $name = strtolower(trim($key));
+
+                if (is_object($rule) && is_callable($rule) || is_array($rule) && is_callable($rule)) {
+                    $list[] = array('name' => $name, 'parameters' => array(), 'callable' => $rule);
+                } else {
+                    $list[] = array(
+                        'name' => $name,
+                        'parameters' => is_array($rule) ? array_values($rule) : array($rule),
+                        'callable' => null
+                    );
+                }
+
+                continue;
+            }
+
+            if (is_string($rule)) {
+                if (trim($rule) !== '') {
+                    $list[] = self::parseRule($rule);
+                }
+
+                continue;
+            }
+
+            if (is_callable($rule)) {
+                $list[] = array('name' => 'callback', 'parameters' => array(), 'callable' => $rule);
+            }
+        }
+
+        return $list;
     }
 
     private static function parseRule($rule)
     {
-        if (!is_string($rule)) {
-            return array(
-                'name' => '',
-                'parameters' => array()
-            );
-        }
-
-        $parts = explode(':', $rule, 2);
+        $parts = explode(':', trim((string) $rule), 2);
 
         $name = strtolower(trim($parts[0]));
 
-        $parameters = isset($parts[1])
-            ? explode(',', $parts[1])
-            : array();
-
-        $parameters = array_map(
-            function ($parameter) {
-                return trim($parameter);
-            },
-            $parameters
-        );
+        if (!isset($parts[1])) {
+            $parameters = array();
+        } elseif ($name === 'regex') {
+            // O padrão pode conter vírgulas: não é dividido.
+            $parameters = array($parts[1]);
+        } else {
+            $parameters = array_map('trim', explode(',', $parts[1]));
+        }
 
         return array(
             'name' => $name,
-            'parameters' => $parameters
+            'parameters' => $parameters,
+            'callable' => null
         );
     }
 
@@ -191,39 +308,51 @@ class ValidationHelper
         return false;
     }
 
-    private static function isDecimal($value)
-    {
-        if (is_int($value) || is_float($value)) {
-            return true;
-        }
-
-        if (!is_string($value)) {
-            return false;
-        }
-
-        $value = trim($value);
-
-        if ($value === '') {
-            return false;
-        }
-
-        $value = str_replace('.', '', $value);
-        $value = str_replace(',', '.', $value);
-
-        return is_numeric($value);
-    }
-
-    private static function normalizeDecimal($value)
+    /*
+     * Número digitado por pessoas, no formato brasileiro ou americano:
+     * "10,5", "10.5", "1.234,56", "1,234.56", "R$ 99,90". Com um único
+     * separador, ele é o decimal ("1.500" = 1,5; "1,500" = 1,5), como no
+     * InputHelper::decimal(). Separadores de milhar precisam formar
+     * grupos de 3 dígitos: "1.2.3" é inválido. Devolve null se inválido.
+     */
+    private static function toNumber($value)
     {
         if (is_int($value) || is_float($value)) {
             return (float) $value;
         }
 
-        $value = trim((string) $value);
-        $value = str_replace('.', '', $value);
-        $value = str_replace(',', '.', $value);
+        if (!is_string($value)) {
+            return null;
+        }
 
-        return (float) $value;
+        $value = preg_replace('/R\$|US\$|\$|€|\s|\x{00A0}/u', '', $value);
+
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (preg_match('/^[+-]?(\d+([.,]\d+)?|[.,]\d+)$/', $value)) {
+            return (float) str_replace(',', '.', $value);
+        }
+
+        if (preg_match('/^[+-]?\d{1,3}(\.\d{3})+(,\d+)?$/', $value)) {
+            return (float) str_replace(array('.', ','), array('', '.'), $value);
+        }
+
+        if (preg_match('/^[+-]?\d{1,3}(,\d{3})+(\.\d+)?$/', $value)) {
+            return (float) str_replace(',', '', $value);
+        }
+
+        if (is_numeric($value)) {
+            return (float) $value;
+        }
+
+        return null;
+    }
+
+    private static function isDecimal($value)
+    {
+        return self::toNumber($value) !== null;
     }
 
     private static function isBoolean($value)
@@ -243,16 +372,22 @@ class ValidationHelper
             'off',
             'yes',
             'no',
+            'y',
+            'n',
             'sim',
+            's',
             'nao',
             'não'
         );
 
-        return in_array(
-            is_string($value) ? strtolower(trim($value)) : $value,
-            $allowed,
-            true
-        );
+        if (is_string($value)) {
+            $value = trim($value);
+            $value = function_exists('mb_strtolower')
+                ? mb_strtolower($value, 'UTF-8')
+                : strtolower($value);
+        }
+
+        return in_array($value, $allowed, true);
     }
 
     private static function isDate($value, $format)
@@ -464,6 +599,62 @@ class ValidationHelper
         return @getimagesize($file['tmp_name']) !== false;
     }
 
+    /*
+     * Tamanho em bytes: 2048, "500K", "2M", "1G" (base 1024).
+     */
+    private static function parseSize($size)
+    {
+        $size = strtoupper(trim((string) $size));
+
+        if (!preg_match('/^(\d+(?:\.\d+)?)\s*([KMG]?)B?$/', $size, $matches)) {
+            return 0;
+        }
+
+        $multipliers = array('' => 1, 'K' => 1024, 'M' => 1048576, 'G' => 1073741824);
+
+        return (int) round((float) $matches[1] * $multipliers[$matches[2]]);
+    }
+
+    /*
+     * Referência de after/before: nome de outro campo dos dados ou uma
+     * data ("today", "now", "2026-01-01", "01/01/2026").
+     */
+    private static function dateReference($reference, array $data)
+    {
+        $fromField = self::getNestedValue($data, $reference);
+
+        return $fromField !== null ? $fromField : $reference;
+    }
+
+    /*
+     * Data para timestamp. Datas brasileiras (DD/MM/AAAA) são lidas
+     * explicitamente: o strtotime() as interpretaria como MM/DD/AAAA.
+     */
+    private static function toTimestamp($value)
+    {
+        if (!is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        $value = trim($value);
+
+        if (preg_match('#^\d{2}/\d{2}/\d{4}#', $value)) {
+            foreach (array('d/m/Y H:i:s', 'd/m/Y H:i', 'd/m/Y') as $format) {
+                $date = DateTime::createFromFormat('!' . $format, $value);
+
+                if ($date !== false && $date->format($format) === $value) {
+                    return $date->getTimestamp();
+                }
+            }
+
+            return null;
+        }
+
+        $timestamp = strtotime($value);
+
+        return $timestamp === false ? null : $timestamp;
+    }
+
     private static function getMessage($field, $rule, array $replace = array(), $customMessage = null)
     {
         if ($customMessage !== null && trim((string) $customMessage) !== '') {
@@ -474,14 +665,19 @@ class ValidationHelper
             );
         }
 
-        $fieldRuleKey = $field . '.' . $rule;
+        $keys = array(
+            $field . '.' . $rule,
+            self::wildcardPattern($field) . '.' . $rule
+        );
 
-        if (isset(self::$customMessages[$fieldRuleKey])) {
-            return self::replaceMessage(
-                self::$customMessages[$fieldRuleKey],
-                $field,
-                $replace
-            );
+        foreach ($keys as $fieldRuleKey) {
+            if (isset(self::$customMessages[$fieldRuleKey])) {
+                return self::replaceMessage(
+                    self::$customMessages[$fieldRuleKey],
+                    $field,
+                    $replace
+                );
+            }
         }
 
         if (isset(self::$customMessages[$rule])) {
@@ -503,16 +699,29 @@ class ValidationHelper
         );
     }
 
-    private static function compareNumericOrLength($value, $target, $operator)
+    /*
+     * Grandeza usada por min, max e between: quantidade de itens numa
+     * lista, o valor de um número (inclusive "1.234,56") ou o tamanho de
+     * um texto.
+     */
+    private static function measure($value)
     {
         if (is_array($value)) {
-            $current = count($value);
-        } elseif (is_numeric($value)) {
-            $current = self::normalizeDecimal($value);
-        } else {
-            $current = mb_strlen((string) $value, 'UTF-8');
+            return count($value);
         }
 
+        $number = self::toNumber($value);
+
+        if ($number !== null) {
+            return $number;
+        }
+
+        return mb_strlen((string) $value, 'UTF-8');
+    }
+
+    private static function compareNumericOrLength($value, $target, $operator)
+    {
+        $current = self::measure($value);
         $target = (float) $target;
 
         switch ($operator) {
@@ -529,6 +738,10 @@ class ValidationHelper
 
     private static function validateRule($rule, $value, array $parameters, array $data, $field)
     {
+        if ((is_array($value) || is_object($value)) && in_array($rule, self::$scalarRules, true)) {
+            return false;
+        }
+
         switch ($rule) {
             case 'required':
                 return self::valueExists($value);
@@ -557,10 +770,20 @@ class ValidationHelper
                 ) !== false;
 
             case 'url':
-                return filter_var(
-                    (string) $value,
-                    FILTER_VALIDATE_URL
-                ) !== false;
+                if (filter_var((string) $value, FILTER_VALIDATE_URL) === false) {
+                    return false;
+                }
+
+                // Sem parâmetros, só http/https: evita "javascript:..." em links.
+                $schemes = empty($parameters)
+                    ? array('http', 'https')
+                    : array_map('strtolower', $parameters);
+
+                return in_array(
+                    strtolower((string) parse_url((string) $value, PHP_URL_SCHEME)),
+                    $schemes,
+                    true
+                );
 
             case 'cpf':
                 return self::validateCpf($value);
@@ -599,7 +822,11 @@ class ValidationHelper
                 return self::isDate($value, $format);
 
             case 'time':
-                return self::isDate($value, 'H:i');
+                if (isset($parameters[0])) {
+                    return self::isDate($value, $parameters[0]);
+                }
+
+                return self::isDate($value, 'H:i') || self::isDate($value, 'H:i:s');
 
             case 'array':
                 return is_array($value);
@@ -636,13 +863,7 @@ class ValidationHelper
                     return false;
                 }
 
-                if (is_array($value)) {
-                    $current = count($value);
-                } elseif (is_numeric($value)) {
-                    $current = self::normalizeDecimal($value);
-                } else {
-                    $current = mb_strlen((string) $value, 'UTF-8');
-                }
+                $current = self::measure($value);
 
                 return (
                     $current >= (float) $parameters[0] &&
@@ -778,7 +999,7 @@ class ValidationHelper
                 }
 
                 $maxSize = isset($parameters[0])
-                    ? (int) $parameters[0]
+                    ? self::parseSize($parameters[0])
                     : 0;
 
                 return (
@@ -886,7 +1107,7 @@ class ValidationHelper
 
             case 'uuid':
                 return preg_match(
-                    '/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i',
+                    '/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i',
                     (string) $value
                 ) === 1;
 
@@ -895,6 +1116,37 @@ class ValidationHelper
                     (string) $value,
                     FILTER_VALIDATE_IP
                 ) !== false;
+
+            case 'after':
+            case 'after_or_equal':
+            case 'before':
+            case 'before_or_equal':
+                if (!isset($parameters[0])) {
+                    return false;
+                }
+
+                $current = self::toTimestamp($value);
+                $reference = self::toTimestamp(
+                    self::dateReference($parameters[0], $data)
+                );
+
+                if ($current === null || $reference === null) {
+                    return false;
+                }
+
+                switch ($rule) {
+                    case 'after':
+                        return $current > $reference;
+
+                    case 'after_or_equal':
+                        return $current >= $reference;
+
+                    case 'before':
+                        return $current < $reference;
+
+                    default:
+                        return $current <= $reference;
+                }
 
             case 'callback':
                 if (
@@ -913,6 +1165,139 @@ class ValidationHelper
         }
 
         return true;
+    }
+
+    /*
+     * 'itens.*.quantidade' => regras vira uma entrada por item existente
+     * nos dados: 'itens.0.quantidade', 'itens.1.quantidade'...
+     */
+    private static function expandRules(array $data, array $rules)
+    {
+        $expanded = array();
+
+        foreach ($rules as $field => $fieldRules) {
+            $field = (string) $field;
+
+            if (strpos($field, '*') === false) {
+                $expanded[$field] = $fieldRules;
+
+                continue;
+            }
+
+            foreach (self::expandField($data, explode('.', $field), '') as $concrete) {
+                $expanded[$concrete] = $fieldRules;
+            }
+        }
+
+        return $expanded;
+    }
+
+    private static function expandField($value, array $segments, $prefix)
+    {
+        if (empty($segments)) {
+            return array($prefix);
+        }
+
+        $segment = array_shift($segments);
+
+        if ($segment !== '*') {
+            $next = is_array($value) && array_key_exists($segment, $value)
+                ? $value[$segment]
+                : null;
+
+            return self::expandField($next, $segments, $prefix === '' ? $segment : $prefix . '.' . $segment);
+        }
+
+        if (!is_array($value)) {
+            return array();
+        }
+
+        $fields = array();
+
+        foreach (array_keys($value) as $key) {
+            $fields = array_merge(
+                $fields,
+                self::expandField($value[$key], $segments, $prefix === '' ? (string) $key : $prefix . '.' . $key)
+            );
+        }
+
+        return $fields;
+    }
+
+    /*
+     * Valores usados nas mensagens (:value, :min, :max, :other, :date).
+     */
+    private static function messageReplacements($rule, array $parameters, array $data)
+    {
+        $first = isset($parameters[0]) && is_scalar($parameters[0]) ? (string) $parameters[0] : '';
+
+        switch ($rule) {
+            case 'min':
+            case 'max':
+            case 'min_length':
+            case 'max_length':
+            case 'length':
+            case 'file_size':
+                return array('value' => $first);
+
+            case 'between':
+                return array(
+                    'min' => $first,
+                    'max' => isset($parameters[1]) ? (string) $parameters[1] : ''
+                );
+
+            case 'same':
+            case 'different':
+            case 'required_with':
+                return array('other' => $first === '' ? '' : self::normalizeFieldLabel($first));
+
+            case 'after':
+            case 'after_or_equal':
+            case 'before':
+            case 'before_or_equal':
+                if ($first !== '' && self::getNestedValue($data, $first) !== null) {
+                    return array('date' => self::normalizeFieldLabel($first));
+                }
+
+                $labels = array('today' => 'hoje', 'now' => 'agora', 'tomorrow' => 'amanhã', 'yesterday' => 'ontem');
+
+                return array('date' => isset($labels[strtolower($first)]) ? $labels[strtolower($first)] : $first);
+        }
+
+        return array();
+    }
+
+    /*
+     * Executa uma regra. Devolve null se passou, ou a mensagem de erro.
+     */
+    private static function checkRule(array $rule, $value, array $data, $field)
+    {
+        if ($rule['callable'] !== null) {
+            /*
+             * O callable devolve true (válido), false (inválido, com a
+             * mensagem da regra) ou uma string: a mensagem de erro.
+             * Sem return (null) conta como inválido.
+             */
+            $result = call_user_func($rule['callable'], $value, $data, $field);
+
+            if (is_string($result)) {
+                return trim($result) === ''
+                    ? self::getMessage($field, $rule['name'])
+                    : self::replaceMessage($result, $field);
+            }
+
+            return $result ? null : self::getMessage($field, $rule['name']);
+        }
+
+        if (self::validateRule($rule['name'], $value, $rule['parameters'], $data, $field)) {
+            return null;
+        }
+
+        return self::getMessage(
+            $field,
+            $rule['name'],
+            self::messageReplacements($rule['name'], $rule['parameters'], $data)
+        );
     }
 
     public static function setMessages(array $messages)
@@ -956,141 +1341,33 @@ class ValidationHelper
         $errors = array();
 
         try {
-            foreach ($rules as $field => $fieldRules) {
+            foreach (self::expandRules($data, $rules) as $field => $fieldRules) {
                 $value = self::getNestedValue(
                     $data,
                     $field
                 );
 
-                $parsedRules = self::parseRules($fieldRules);
+                $isEmpty = !self::valueExists($value);
 
-                $nullable = false;
-                $hasRequiredRule = false;
-
-                foreach ($parsedRules as $rawRule) {
-                    if (!is_string($rawRule)) {
+                foreach (self::parseRules($fieldRules) as $rule) {
+                    if ($rule['name'] === '' || $rule['name'] === 'nullable') {
                         continue;
                     }
 
-                    $parsed = self::parseRule($rawRule);
-
-                    if ($parsed['name'] === 'nullable') {
-                        $nullable = true;
-                    }
-
-                    if (
-                        $parsed['name'] === 'required' ||
-                        $parsed['name'] === 'required_if' ||
-                        $parsed['name'] === 'required_with'
-                    ) {
-                        $hasRequiredRule = true;
-                    }
-                }
-
-                if (
-                    $nullable &&
-                    !self::valueExists($value)
-                ) {
-                    continue;
-                }
-
-                if (
-                    !$hasRequiredRule &&
-                    !self::valueExists($value)
-                ) {
-                    continue;
-                }
-
-                foreach ($parsedRules as $rawRule) {
-                    if (is_callable($rawRule)) {
-                        $isValid = (bool) call_user_func(
-                            $rawRule,
-                            $value,
-                            $data,
-                            $field
-                        );
-
-                        if (!$isValid) {
-                            self::addError(
-                                $errors,
-                                $field,
-                                self::getMessage(
-                                    $field,
-                                    'callback'
-                                )
-                            );
-                        }
-
+                    /*
+                     * Campo vazio: só as regras de presença (required,
+                     * required_if, required_with, accepted) se aplicam.
+                     * Um campo opcional vazio não é "e-mail inválido".
+                     */
+                    if ($isEmpty && !in_array($rule['name'], self::$presenceRules, true)) {
                         continue;
                     }
 
-                    $parsed = self::parseRule($rawRule);
-                    $rule = $parsed['name'];
-                    $parameters = $parsed['parameters'];
+                    $message = self::checkRule($rule, $value, $data, $field);
 
-                    if ($rule === '' || $rule === 'nullable') {
-                        continue;
+                    if ($message !== null) {
+                        self::addError($errors, $field, $message);
                     }
-
-                    $isValid = self::validateRule(
-                        $rule,
-                        $value,
-                        $parameters,
-                        $data,
-                        $field
-                    );
-
-                    if ($isValid) {
-                        continue;
-                    }
-
-                    $replace = array();
-
-                    if ($rule === 'min' || $rule === 'max') {
-                        $replace['value'] = isset($parameters[0])
-                            ? $parameters[0]
-                            : '';
-                    }
-
-                    if ($rule === 'between') {
-                        $replace['min'] = isset($parameters[0])
-                            ? $parameters[0]
-                            : '';
-
-                        $replace['max'] = isset($parameters[1])
-                            ? $parameters[1]
-                            : '';
-                    }
-
-                    if (
-                        $rule === 'min_length' ||
-                        $rule === 'max_length' ||
-                        $rule === 'length'
-                    ) {
-                        $replace['value'] = isset($parameters[0])
-                            ? $parameters[0]
-                            : '';
-                    }
-
-                    if (
-                        $rule === 'same' ||
-                        $rule === 'different' ||
-                        $rule === 'required_with'
-                    ) {
-                        $replace['other'] = isset($parameters[0])
-                            ? self::normalizeFieldLabel($parameters[0])
-                            : '';
-                    }
-
-                    self::addError(
-                        $errors,
-                        $field,
-                        self::getMessage(
-                            $field,
-                            $rule,
-                            $replace
-                        )
-                    );
                 }
             }
 
