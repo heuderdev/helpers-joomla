@@ -1,0 +1,203 @@
+{
+  "titulo": "Propostas",
+  "vozEleven": "iP95p4xoKVk53GoZ742B",
+  "caudaFinal": 0.8,
+  "cenas": [
+    {
+      "id": "01-problema",
+      "narracao": "Fechou o projeto, e agora vem a proposta.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Sexta, 18h",
+        "corEtiqueta": "vermelho",
+        "titulo": "Projeto fechado.",
+        "tecnologias": true,
+        "itens": [
+          {
+            "titulo": "Documento em branco",
+            "detalhe": "Por onde começar",
+            "icone": "gd-documento"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-dor",
+      "narracao": "Aí você copia a do outro cliente, troca os valores na mão, exporta o PDF e torce pra não ter esquecido nada.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Como é hoje",
+        "corEtiqueta": "vermelho",
+        "titulo": "De novo, do zero.",
+        "mostrarTempo": true,
+        "numero": {
+          "valor": 33,
+          "rotulo": "minutos",
+          "cor": "vermelho"
+        },
+        "itens": [
+          {
+            "titulo": "Google Docs",
+            "detalhe": "Copiar a do outro cliente",
+            "icone": "gd-documento",
+            "tempo": "8 min"
+          },
+          {
+            "titulo": "Editar na mão",
+            "detalhe": "Trocar nome, escopo e valores",
+            "icone": "gd-editar",
+            "tempo": "15 min"
+          },
+          {
+            "titulo": "Exportar PDF",
+            "detalhe": "Conferir se não esqueceu nada",
+            "icone": "gd-arquivo",
+            "tempo": "6 min"
+          },
+          {
+            "titulo": "Email",
+            "detalhe": "Anexar e esperar",
+            "icone": "gd-envelope-1",
+            "tempo": "4 min"
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-virada",
+      "narracao": "Só que dá pra fazer isso em um minuto.",
+      "conteudo": {
+        "tipo": "marca",
+        "titulo": "Dá pra ser em um minuto.",
+        "destaque": "minuto"
+      }
+    },
+    {
+      "id": "04-passo-1",
+      "narracao": "Você escolhe um dos cinco layouts prontos,",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Passo 1",
+        "titulo": "Cinco layouts prontos.",
+        "itens": [
+          {
+            "titulo": "Escolhe o modelo",
+            "detalhe": "Nenhuma folha em branco",
+            "icone": "gd-quadros"
+          },
+          {
+            "titulo": "As variáveis se preenchem",
+            "detalhe": "Nome, valor, escopo",
+            "icone": "gd-personalizar"
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-passo-2",
+      "narracao": "a proposta se monta com a sua cara,",
+      "conteudo": {
+        "tipo": "tela",
+        "etiqueta": "Passo 2",
+        "titulo": "Com a sua marca.",
+        "tela": {
+          "titulo": "Landing page",
+          "rotulo": "Proposta comercial",
+          "claro": true,
+          "linhas": [
+            [
+              "Cliente",
+              "Ana Martins"
+            ],
+            [
+              "Prazo",
+              "20 dias"
+            ]
+          ],
+          "confirmaEm": 999,
+          "corpo": [
+            "#Escopo do projeto",
+            "Design responsivo em 4 telas",
+            "Integração com a API de contatos",
+            "Publicação e domínio configurado"
+          ],
+          "total": "R$ 4.800",
+          "rotuloTotal": "Investimento"
+        },
+        "tituloCurto": true
+      }
+    },
+    {
+      "id": "06-passo-3",
+      "narracao": "e o cliente aceita direto no celular.",
+      "conteudo": {
+        "tipo": "tela",
+        "etiqueta": "Passo 3",
+        "titulo": "Manda o link.",
+        "tela": {
+          "titulo": "Landing page",
+          "rotulo": "proposta.gestao.dev",
+          "claro": true,
+          "linhas": [
+            [
+              "Cliente",
+              "Ana Martins"
+            ],
+            [
+              "Prazo",
+              "20 dias"
+            ]
+          ],
+          "confirmaEm": 26,
+          "selo": "Proposta aceita",
+          "seloIcone": "gd-proposta-aceita",
+          "corpo": [
+            "#Escopo do projeto",
+            "Design responsivo em 4 telas",
+            "Integração com a API de contatos",
+            "Publicação e domínio configurado"
+          ],
+          "total": "R$ 4.800",
+          "rotuloTotal": "Investimento"
+        },
+        "tituloCurto": true
+      }
+    },
+    {
+      "id": "07-consequencia",
+      "narracao": "Daí o contrato, o Pix e a nota saem sozinhos.",
+      "conteudo": {
+        "tipo": "passos",
+        "etiqueta": "E o resto",
+        "titulo": "Sai sozinho.",
+        "itens": [
+          {
+            "titulo": "Contrato",
+            "detalhe": "Assinado pelo celular",
+            "icone": "gd-contrato-assinar"
+          },
+          {
+            "titulo": "Pix",
+            "detalhe": "Direto na sua conta",
+            "icone": "gd-pix"
+          },
+          {
+            "titulo": "Nota fiscal",
+            "detalhe": "Emitida sozinha",
+            "icone": "gd-notas-fiscais"
+          }
+        ]
+      }
+    },
+    {
+      "id": "08-cta",
+      "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "De graça.",
+        "subtitulo": "Você só paga\nquando recebe.",
+        "cta": "link na bio"
+      }
+    }
+  ]
+}

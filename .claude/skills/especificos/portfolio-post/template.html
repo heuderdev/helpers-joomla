@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="./assets/tokens.css">
+<style>
+/* ════════ Base — cada .slide é um quadro 1080x1350 (4:5 Instagram) ════════ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #050505;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 40px; padding: 40px;
+  -webkit-font-smoothing: antialiased;
+}
+.slide {
+  position: relative;
+  width: 1080px; height: 1350px;
+  flex-shrink: 0;
+  display: flex; flex-direction: column;
+  background: var(--cor-preto);
+  color: var(--cor-branco);
+  overflow: hidden;
+  padding: 80px;
+}
+.grao {
+  position: absolute; inset: 0;
+  background-image: var(--grao); background-size: 200px;
+  opacity: 0.05; mix-blend-mode: screen; pointer-events: none; z-index: 0;
+}
+
+/* ─── Topo (marca + indicador) ─── */
+.topo {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+}
+.topo .marca { display: inline-flex; align-items: center; gap: 14px; }
+.topo .marca img { height: 30px; width: auto; display: block; }
+.topo .marca b { font-family: var(--regular); font-weight: normal; font-size: var(--f2); color: var(--cor-branco); letter-spacing: -0.01em; }
+.topo .handle, .topo .num {
+  font-family: var(--regular); font-size: var(--f0);
+  color: var(--cor-cinza-2); text-transform: uppercase; letter-spacing: 3px;
+}
+
+/* ─── Rótulo numerado (padrão das seções do site) ─── */
+.rotulo {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--regular); font-size: var(--f1);
+  color: var(--cor-cinza-2); text-transform: uppercase; letter-spacing: 3px;
+}
+.rotulo i { font-style: normal; color: var(--acento); }
+
+/* ─── Títulos (h1/h2 com <em> itálico cinza) ─── */
+h1, h2 {
+  font-family: var(--regular); color: var(--cor-branco);
+  line-height: 1.0; letter-spacing: -0.02em; font-weight: normal;
+  text-wrap: balance;
+}
+h1 em, h2 em { font-family: var(--light); font-style: italic; color: var(--cor-cinza-1); }
+h1 { font-size: var(--f8); margin-top: 22px; }
+h2 { font-size: var(--f6); }
+
+.bloco { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 26px; max-width: 820px; }
+.bloco p {
+  font-family: var(--regular); font-size: var(--f3);
+  color: var(--cor-cinza-1); line-height: 1.5; text-wrap: pretty;
+}
+
+/* ════════ SLIDE CAPA ════════ */
+.capa { justify-content: space-between; }
+.capa .capa-corpo { position: relative; z-index: 2; margin-top: 60px; }
+.capa .capa-corpo p {
+  font-family: var(--regular); font-size: var(--f3);
+  color: var(--cor-cinza-1); line-height: 1.5; max-width: 620px; margin-top: 30px;
+}
+.capa .capa-mockup {
+  position: relative; z-index: 2; width: 100%; margin-top: 56px;
+  border: 1px solid var(--linha-1); border-radius: 16px; overflow: hidden;
+}
+.capa .capa-mockup img { width: 100%; display: block; }
+.rodape {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 32px; border-top: 1px solid var(--linha-1);
+}
+.rodape .cliente { font-family: var(--regular); font-size: var(--f2); color: var(--cor-branco); }
+.rodape .meta { font-family: var(--regular); font-size: var(--f1); color: var(--cor-cinza-2); text-transform: uppercase; letter-spacing: 3px; display: inline-flex; gap: 12px; }
+.rodape .meta i { font-style: normal; color: var(--acento); animation: empurra 1.4s ease-in-out infinite; }
+
+/* ════════ SLIDES DE TEXTO ════════ */
+.texto { justify-content: space-between; }
+.texto .bloco { margin-top: 90px; }
+
+.stats {
+  position: relative; z-index: 2;
+  display: flex; gap: 72px; padding-top: 48px; border-top: 1px solid var(--linha-1);
+}
+.stats .stat { display: flex; flex-direction: column; gap: 12px; }
+.stats .stat strong { font-family: var(--regular); font-size: var(--f5); color: var(--cor-branco); letter-spacing: -0.02em; font-weight: normal; }
+.stats .stat span { font-family: var(--regular); font-size: var(--f1); color: var(--cor-cinza-2); text-transform: uppercase; letter-spacing: 2px; }
+
+.paleta { position: relative; z-index: 2; display: flex; gap: 32px; }
+.paleta .cor { display: flex; flex-direction: column; gap: 18px; flex: 1; }
+.paleta .cor .amostra { width: 100%; height: 220px; border-radius: 14px; }
+.paleta .cor em { font-family: var(--regular); font-style: normal; font-size: var(--f3); color: var(--cor-branco); }
+.paleta .cor i { font-family: var(--regular); font-style: normal; font-size: var(--f1); color: var(--cor-cinza-2); letter-spacing: 2px; }
+
+.stack { position: relative; z-index: 2; display: flex; flex-wrap: wrap; gap: 14px; list-style: none; }
+.stack li {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--regular); font-size: var(--f2); color: var(--cor-branco);
+  padding: 12px 22px; border: 1px solid var(--linha-2); border-radius: 100px;
+}
+.stack li img { height: 28px; width: 28px; object-fit: contain; display: block; }
+
+/* ════════ SLIDES SHOWCASE (mockup) ════════ */
+.showcase { justify-content: flex-start; }
+.showcase .bloco { margin-top: 44px; }
+.showcase .device-wrap {
+  position: relative; z-index: 2; flex: 1;
+  display: flex; align-items: center; justify-content: center;
+  margin: 56px 0;
+  border: 1px solid var(--linha-1); border-radius: 18px; overflow: hidden;
+}
+.showcase .device-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.showcase .legenda {
+  position: relative; z-index: 2;
+  font-family: var(--regular); font-size: var(--f3); color: var(--cor-cinza-1);
+  line-height: 1.5; max-width: 780px;
+}
+
+/* ════════ SLIDE CTA ════════ */
+.cta { justify-content: space-between; }
+.cta .cta-corpo { position: relative; z-index: 2; display: flex; flex-direction: column; gap: 30px; margin: auto 0; }
+.cta .cta-corpo h2 { font-size: var(--f7); margin-top: 8px; }
+.cta .cta-corpo p { font-family: var(--regular); font-size: var(--f3); color: var(--cor-cinza-1); line-height: 1.5; max-width: 640px; }
+.cta .botao {
+  align-self: flex-start; margin-top: 24px;
+  font-family: var(--regular); font-size: var(--f3); color: var(--cor-preto);
+  background: var(--cor-branco); padding: 26px 52px; border-radius: 100px;
+  display: inline-flex; align-items: center; gap: 16px;
+}
+.cta .botao i { font-style: normal; }
+
+@keyframes empurra { 0%,100%{transform:translateX(0)} 50%{transform:translateX(8px)} }
+</style>
+</head>
+<body style="--acento: {{ACENTO}}">
+
+<!-- ───────────────────────── SLIDE 1 — CAPA ───────────────────────── -->
+<article class="slide capa" id="slide-1">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="handle">@teamlecdt</span>
+  </header>
+  <div class="capa-corpo">
+    <span class="rotulo"><i>case</i> {{CAPA_ROTULO}}</span>
+    <h1>{{CAPA_TITULO}}</h1>
+    <p>{{CAPA_SUB}}</p>
+  </div>
+  <div class="capa-mockup"><img src="{{IMG_AMBOS}}" alt="{{EMPRESA}}"></div>
+  <footer class="rodape">
+    <span class="cliente">{{EMPRESA}}</span>
+    <span class="meta">arraste <i>→</i></span>
+  </footer>
+</article>
+
+<!-- ───────────────────────── SLIDE 2 — DESAFIO ───────────────────────── -->
+<article class="slide texto" id="slide-2">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="num">01 / 06</span>
+  </header>
+  <div class="bloco">
+    <span class="rotulo"><i>01</i> {{S2_ROTULO}}</span>
+    <h2>{{S2_TITULO}}</h2>
+    <p>{{S2_TEXTO}}</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><strong>{{S2_STAT1_N}}</strong><span>{{S2_STAT1_L}}</span></div>
+    <div class="stat"><strong>{{S2_STAT2_N}}</strong><span>{{S2_STAT2_L}}</span></div>
+    <div class="stat"><strong>{{S2_STAT3_N}}</strong><span>{{S2_STAT3_L}}</span></div>
+  </div>
+</article>
+
+<!-- ───────────────────────── SLIDE 3 — DESKTOP ───────────────────────── -->
+<article class="slide showcase" id="slide-3">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="num">02 / 06</span>
+  </header>
+  <div class="bloco">
+    <span class="rotulo"><i>02</i> {{S3_ROTULO}}</span>
+    <h2>{{S3_TITULO}}</h2>
+  </div>
+  <div class="device-wrap"><img src="{{IMG_DESKTOP}}" alt="{{EMPRESA}} desktop"></div>
+  <p class="legenda">{{S3_LEGENDA}}</p>
+</article>
+
+<!-- ───────────────────────── SLIDE 4 — MOBILE ───────────────────────── -->
+<article class="slide showcase" id="slide-4">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="num">03 / 06</span>
+  </header>
+  <div class="bloco">
+    <span class="rotulo"><i>03</i> {{S4_ROTULO}}</span>
+    <h2>{{S4_TITULO}}</h2>
+  </div>
+  <div class="device-wrap"><img src="{{IMG_MOBILE}}" alt="{{EMPRESA}} mobile"></div>
+  <p class="legenda">{{S4_LEGENDA}}</p>
+</article>
+
+<!-- ───────────────────────── SLIDE 5 — IDENTIDADE ───────────────────────── -->
+<article class="slide texto" id="slide-5">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="num">04 / 06</span>
+  </header>
+  <div class="bloco">
+    <span class="rotulo"><i>04</i> {{S5_ROTULO}}</span>
+    <h2>{{S5_TITULO}}</h2>
+    <p>{{S5_TEXTO}}</p>
+  </div>
+  <div class="paleta">
+    <div class="cor"><span class="amostra" style="background: {{COR1_HEX}}"></span><em>{{COR1_NOME}}</em><i>{{COR1_HEX}}</i></div>
+    <div class="cor"><span class="amostra" style="background: {{COR2_HEX}}; border: 1px solid var(--linha-2)"></span><em>{{COR2_NOME}}</em><i>{{COR2_HEX}}</i></div>
+    <div class="cor"><span class="amostra" style="background: {{COR3_HEX}}"></span><em>{{COR3_NOME}}</em><i>{{COR3_HEX}}</i></div>
+  </div>
+</article>
+
+<!-- ───────────────────────── SLIDE 6 — STACK ───────────────────────── -->
+<article class="slide texto" id="slide-6">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="num">05 / 06</span>
+  </header>
+  <div class="bloco">
+    <span class="rotulo"><i>05</i> {{S6_ROTULO}}</span>
+    <h2>{{S6_TITULO}}</h2>
+    <p>{{S6_TEXTO}}</p>
+  </div>
+  <ul class="stack">{{STACK_ITENS}}</ul>
+</article>
+
+<!-- ───────────────────────── SLIDE 7 — CTA ───────────────────────── -->
+<article class="slide cta" id="slide-7">
+  <span class="grao"></span>
+  <header class="topo">
+    <span class="marca"><img src="./assets/logo-icone.svg" alt=""><b>Team Lecdt</b></span>
+    <span class="num">06 / 06</span>
+  </header>
+  <div class="cta-corpo">
+    <span class="rotulo"><i>06</i> {{S7_ROTULO}}</span>
+    <h2>{{S7_TITULO}}</h2>
+    <p>{{S7_TEXTO}}</p>
+    <div class="botao">{{S7_BOTAO}} <i>→</i></div>
+  </div>
+  <footer class="rodape">
+    <span class="meta">@teamlecdt</span>
+    <span class="cliente">lecdt.com</span>
+  </footer>
+</article>
+
+</body>
+</html>

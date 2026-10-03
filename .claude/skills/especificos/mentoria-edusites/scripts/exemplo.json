@@ -1,0 +1,552 @@
+{
+  "cabecalho": {
+    "etiqueta": "Mentoria EduSites · Call 01",
+    "titulo": "Diagnóstico e Plano de Ação",
+    "subtitulo": "Felipe Gonçalves de Andrade — Web Designer & Desenvolvedor",
+    "dados": {
+      "Data": "28 de julho de 2026",
+      "Duração": "1h03",
+      "Mentor": "Eduardo Lecdt",
+      "Próxima call": "terça-feira",
+      "Meta de agosto": "R$ 4.000 em projetos"
+    }
+  },
+  "rodape": "Mentoria EduSites · Call 01 · 28 de julho de 2026 · Documento gerado a partir da transcrição integral da chamada.",
+  "secoes": [
+    {
+      "numero": "01",
+      "titulo": "Onde você está hoje",
+      "blocos": [
+        {
+          "tipo": "kpi",
+          "itens": [
+            {
+              "valor": "R$ 2.000",
+              "label": "Faturamento médio/mês"
+            },
+            {
+              "valor": "R$ 3.500",
+              "label": "Custo fixo mensal"
+            },
+            {
+              "valor": "- R$ 1.500",
+              "label": "Resultado real"
+            }
+          ]
+        },
+        {
+          "tipo": "destaque",
+          "forte": true,
+          "conteudo": "<b>O ponto central da call:</b> você não tem um problema de capacidade técnica — tem um problema de <b>preço, posicionamento e canal de aquisição</b>. Você entrega em 3 dias um site institucional completo e cobra R$ 400. O trabalho já é bom; o que falta é a estrutura em volta dele."
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Perfil profissional"
+        },
+        {
+          "tipo": "tabela",
+          "colunas": [
+            "Item",
+            "Situação atual"
+          ],
+          "linhas": [
+            [
+              "Idade / formação",
+              "27 anos · Sistemas de Informação"
+            ],
+            [
+              "Início na área",
+              "2019 (estágio dev full stack, PHP) · sites desde 2022"
+            ],
+            [
+              "Trajetória",
+              "CLT em dados (BI/Ciência de Dados) até ser demitido em 2025; a área fechou as portas"
+            ],
+            [
+              "Stack principal",
+              "WordPress + Elementor · Figma para layout"
+            ],
+            [
+              "Serviços que domina",
+              "Landing page, site institucional, criativo, edição de vídeo, anúncios"
+            ],
+            [
+              "Ticket atual",
+              "R$ 400 a R$ 600 por projeto"
+            ],
+            [
+              "Prazo praticado",
+              "3 a 4 dias (um e-commerce chegou a 1 mês)"
+            ],
+            [
+              "Origem dos clientes",
+              "Prospecção em grupos (design, edição de vídeo, sites)"
+            ],
+            [
+              "Uso de IA",
+              "Apenas ChatGPT para dúvidas pontuais do Elementor"
+            ]
+          ]
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Histórico financeiro"
+        },
+        {
+          "tipo": "tabela",
+          "colunas": [
+            "Marco",
+            "Detalhe"
+          ],
+          "linhas": [
+            [
+              "<b>Melhor mês</b>",
+              "R$ 12.000 — 4 clientes simultâneos, todos da área de dados, com demanda fixa mensal"
+            ],
+            [
+              "<b>Pior mês</b>",
+              "R$ 0 — nenhum cliente; precisou de empréstimo para uma dívida familiar (~R$ 3.000)"
+            ],
+            [
+              "<b>Hoje</b>",
+              "R$ 2.000/mês em média, com a esposa complementando a renda da casa"
+            ]
+          ]
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Contexto pessoal"
+        },
+        {
+          "tipo": "lista",
+          "itens": [
+            "Casado, mora com a esposa em casa da família (sem aluguel). Sem filhos por ora.",
+            "A esposa <b>gosta</b> de trabalhar (maquiagem e atendimento) — o objetivo não é que ela pare.",
+            "<b>Saúde:</b> epilepsia (agravada por estresse elevado), enxaqueca crônica e pressão alta. Acompanhamento médico desde 2019/2020.",
+            "Já sofreu preconceito em empresas por causa das condições de saúde e das consultas.",
+            "Trabalhar de casa é uma necessidade real: permite pausar em dias ruins sem perder o trabalho.",
+            "Tem dificuldade em receber ordens, mas não bate de frente — o desconforto com o modelo CLT foi um dos motivos da virada para o freela."
+          ]
+        },
+        {
+          "tipo": "destaque",
+          "conteudo": "<b>Sobre a saúde — o que ficou combinado:</b> isso não impede você de fazer dinheiro. O modelo que vamos montar (cliente vem até você, prazo negociado com folga) na verdade <b>trabalha a favor</b> das suas limitações. Dia ruim, é só avisar."
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Objetivo declarado"
+        },
+        {
+          "tipo": "citacao",
+          "conteudo": "\"Liberdade financeira. Não ter dificuldade para comprar as coisas e poder ter momentos de lazer — sem deixar de ter por faltar.\""
+        }
+      ],
+      "quebra": false
+    },
+    {
+      "numero": "02",
+      "titulo": "Diagnóstico — o que está travando",
+      "quebra": false,
+      "blocos": [
+        {
+          "tipo": "tabela",
+          "colunas": [
+            "Gargalo",
+            "O que foi observado",
+            "Correção"
+          ],
+          "linhas": [
+            [
+              "<b>Preço muito baixo</b>",
+              "R$ 400 por um institucional completo com blog, entregue em 3 dias. Valor de iniciante para quem está na área desde 2022.",
+              "LP a partir de R$ 1.000; institucional de R$ 2.000 a R$ 3.000"
+            ],
+            [
+              "<b>Canal errado</b>",
+              "100% dos clientes vêm de grupos — o ambiente mais desvalorizado que existe. Ninguém entra ali para pagar caro.",
+              "Instagram + portfólio + anúncio como porta de entrada"
+            ],
+            [
+              "<b>Zero crédito nas entregas</b>",
+              "Trabalha como subcontratado de agência: o site sai com a marca deles. Sem contrato assinado e sem direito de portfólio.",
+              "Fechar direto com o cliente final"
+            ],
+            [
+              "<b>CNPJ de terceiro</b>",
+              "A empresa usada está no nome de Rosângela Gonçalves da Silva de Andrade — CNPJ 63.494.709/0001-00. Contrato e nota fiscal saem nesse nome.",
+              "Alterar razão social para o nome dele"
+            ],
+            [
+              "<b>Tempo de produção alto</b>",
+              "4 dias por R$ 600; um redesign de e-commerce consumiu quase um mês. Mesmo subindo o preço, o lucro por hora fica baixo.",
+              "Ferramentas melhores + escopo mais fechado"
+            ],
+            [
+              "<b>Portfólio desatualizado</b>",
+              "O site existe (felipega.com.br) mas está no estágio inicial. Behance parado, com projetos fracos.",
+              "Refazer a index + atualizar as vitrines"
+            ],
+            [
+              "<b>Identidade sem direção</b>",
+              "Azul + vermelho — cor fria com cor quente, combinação difícil de acertar e que não transmite autoridade.",
+              "Vermelho + preto (definido na call)"
+            ],
+            [
+              "<b>Trava na câmera</b>",
+              "Fala com clareza na conversa, mas enrijece e gesticula pouco quando a câmera liga.",
+              "Repetição — gravar até soltar"
+            ]
+          ]
+        },
+        {
+          "tipo": "destaque",
+          "forte": true,
+          "conteudo": "<b>O que você já tem de vantagem:</b> sabe fazer site, design, criativo, edição de vídeo e anúncio — combinação rara. Já tem cenário montado com iluminação pensada e sabe legendar vídeo. A foto de perfil já é profissional. Você tem <b>meio caminho andado</b>: o trabalho aqui é organizar e cobrar por isso."
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Ferramentas e custos atuais"
+        },
+        {
+          "tipo": "tabela",
+          "colunas": [
+            "Ferramenta",
+            "Custo/mês",
+            "Observação"
+          ],
+          "linhas": [
+            [
+              "Nuvem Hospedagem",
+              "R$ 79,90",
+              "Hospeda os próprios projetos; indica aos clientes por link de afiliado"
+            ],
+            [
+              "Canva",
+              "R$ 49,00",
+              "Ferramenta principal de design gráfico"
+            ],
+            [
+              "Google Workspace",
+              "R$ 39,20",
+              "E-mail corporativo"
+            ],
+            [
+              "CapCut",
+              "R$ 33,00",
+              "Edição de vídeo"
+            ],
+            [
+              "Adobe Creative Cloud",
+              "R$ 13,75",
+              "Promoção temporária, dividida com outra pessoa"
+            ],
+            [
+              "Figma",
+              "Grátis",
+              "Plano estudante"
+            ],
+            [
+              "<b>Total</b>",
+              "<b>~R$ 215</b>",
+              "Financeiro controlado no Google Keep (só despesas, sem registro de entradas)"
+            ]
+          ]
+        },
+        {
+          "tipo": "destaque",
+          "conteudo": "<b>Sobre assinar Claude e DigitalOcean:</b> ainda não. Primeiro arruma a casa. Quando fechar o primeiro projeto de R$ 1.000, aí sim assinamos as ferramentas boas de uma vez.<br><b>Sobre o financeiro:</b> hoje você anota só o que sai. Vai precisar registrar também o que entra — faturando mais, não dá para perder o controle."
+        }
+      ]
+    },
+    {
+      "numero": "03",
+      "titulo": "O plano — agosto",
+      "quebra": false,
+      "blocos": [
+        {
+          "tipo": "destaque",
+          "forte": true,
+          "conteudo": "<b>Meta:</b> R$ 4.000 em projetos, do dia 1 ao último dia de agosto.<br>A lógica é simples: <b>focar no que você já domina hoje.</b> Nada de parar para aprender tecnologia nova — isso demora. Aprendizado novo entra nas horas vagas, em paralelo."
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Fase 1 — Arrumar a casa (7 dias)"
+        },
+        {
+          "tipo": "lista",
+          "itens": [
+            "<b>Instagram</b> como porta de entrada: bio e identidade ajustadas (a foto de perfil já está boa).",
+            "<b>Portfólio em três frentes:</b> site próprio (felipega.com.br), Dribbble e Behance atualizados.",
+            "<b>Reels</b> mostrando os projetos que já faz — formato simples, sem produção elaborada.",
+            "<b>Migrar a audiência</b> do Instagram antigo para o profissional via story."
+          ]
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Fase 2 — Tráfego pago (a partir do 8º dia)"
+        },
+        {
+          "tipo": "lista",
+          "itens": [
+            "Escolher o Reels de melhor desempenho e investir <b>R$ 300 em 7 dias</b>.",
+            "Configurar a conta de anúncios (você já sabe fazer anúncio — é só estruturar).",
+            "Atendimento e negociação pelo WhatsApp, com acompanhamento em tempo real."
+          ]
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Fase 3 — Reinvestimento em escada"
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Projeto fechado não vai inteiro para o bolso. Parte volta para anúncio:"
+        },
+        {
+          "tipo": "tabela",
+          "colunas": [
+            "Projeto fechado",
+            "Reinveste em anúncio",
+            "Fica com você"
+          ],
+          "linhas": [
+            [
+              "R$ 1.000",
+              "R$ 500",
+              "R$ 500"
+            ],
+            [
+              "R$ 2.000",
+              "R$ 700",
+              "R$ 1.300"
+            ],
+            [
+              "R$ 4.000",
+              "R$ 1.200",
+              "R$ 2.800"
+            ]
+          ]
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Repare que o reinvestimento <b>não cresce na mesma proporção</b> do projeto — a margem aumenta conforme você sobe."
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Fase 4 — Aumentar preço na base atual"
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "Com Instagram e portfólio prontos, os clientes que você já tem entram no novo fluxo:"
+        },
+        {
+          "tipo": "lista",
+          "itens": [
+            "Não anuncie aumento. <b>Espere o próximo pedido de projeto.</b>",
+            "Quando pedirem, me chame antes de responder.",
+            "Montamos uma proposta profissional (ferramenta: Gestão Dev) com o valor novo.",
+            "Justificativa natural: agenda mais fechada."
+          ]
+        },
+        {
+          "tipo": "destaque",
+          "conteudo": "<b>Expectativa alinhada com honestidade:</b> não existe promessa de R$ 10.000/mês. Se em 60 dias você chegar a R$ 3.000, já é mais do que os R$ 2.000 de hoje — e o investimento se paga. Pelo que você já tem construído, <b>R$ 5.000 em 60 dias é realista</b>. Mas não é promessa."
+        }
+      ]
+    },
+    {
+      "numero": "04",
+      "titulo": "Checklist de ações",
+      "quebra": true,
+      "blocos": [
+        {
+          "tipo": "checklist",
+          "grupos": [
+            {
+              "titulo": "Hoje — até 23h59",
+              "nivel": "alta",
+              "itens": [
+                {
+                  "prazo": "Hoje",
+                  "acao": "Postar story no Instagram antigo",
+                  "detalhe": "Avisar que vai começar a produzir conteúdo no perfil profissional e levar todo mundo para lá."
+                },
+                {
+                  "prazo": "Hoje",
+                  "acao": "Gravar e postar story anunciando a mudança",
+                  "detalhe": "\"Vou melhorar meu portfólio, mudar o tom de cor, a identidade e a marca.\" Grave 20 vezes se precisar — vai dar vergonha, é normal. O Edu vai estar monitorando com alerta ativado."
+                }
+              ]
+            },
+            {
+              "titulo": "Esta semana",
+              "nivel": "media",
+              "itens": [
+                {
+                  "prazo": "Semana",
+                  "acao": "Resolver o CNPJ",
+                  "detalhe": "Falar com a Contabilizei sobre trocar a razão social de Rosângela Gonçalves da Silva de Andrade para \"Felipe Gá Sites Ltda\" ou \"Felipe Gonçalves Ltda\". Verificar também o valor da dívida (~R$ 2.000) do Simples Nacional anterior e se compensa abrir MEI novo."
+                },
+                {
+                  "prazo": "Semana",
+                  "acao": "Tirar o azul da identidade",
+                  "detalhe": "Ficar só com vermelho e preto. Ajustar imagens que tenham fundo azul."
+                },
+                {
+                  "prazo": "Semana",
+                  "acao": "Refazer a index do portfólio",
+                  "detalhe": "Começar pela home de felipega.com.br. Usar Nano Banana para gerar as imagens, como você já fez."
+                },
+                {
+                  "prazo": "Semana",
+                  "acao": "Atualizar Behance e criar conta no Dribbble",
+                  "detalhe": "Tirar os projetos fracos, subir os bons com apresentação decente."
+                },
+                {
+                  "prazo": "Semana",
+                  "acao": "Começar a postar Reels",
+                  "detalhe": "Formato simples: mostrando os projetos que você faz. Constância importa mais que produção."
+                },
+                {
+                  "prazo": "Semana",
+                  "acao": "Avisar antes de responder qualquer lead",
+                  "detalhe": "Chegou mensagem de cliente? Copia e manda para o Edu antes de responder — negociação feita junto."
+                }
+              ]
+            },
+            {
+              "titulo": "Ao longo de agosto",
+              "nivel": "baixa",
+              "itens": [
+                {
+                  "prazo": "Agosto",
+                  "acao": "Rodar R$ 300 em anúncio por 7 dias",
+                  "detalhe": "Depois que Instagram, portfólio e Reels estiverem prontos. Configurar a conta de anúncios antes."
+                },
+                {
+                  "prazo": "Agosto",
+                  "acao": "Reajustar preço dos clientes atuais",
+                  "detalhe": "Só quando pedirem projeto novo. Proposta profissional via Gestão Dev."
+                },
+                {
+                  "prazo": "Agosto",
+                  "acao": "Negociar prazos maiores",
+                  "detalhe": "Sair dos 3 dias. Prazo folgado protege sua saúde e permite entregar melhor."
+                },
+                {
+                  "prazo": "Agosto",
+                  "acao": "Passar a registrar entradas no financeiro",
+                  "detalhe": "Hoje o Keep só tem saídas. Faturando mais, precisa saber o que entrou e o que saiu."
+                },
+                {
+                  "prazo": "Agosto",
+                  "acao": "Assinar as ferramentas boas — só após o 1º projeto de R$ 1.000",
+                  "detalhe": "Claude, DigitalOcean, Magnific. Antes disso, não."
+                },
+                {
+                  "prazo": "Agosto",
+                  "acao": "Migrar os agentes do ChatGPT para o Claude",
+                  "detalhe": "Dá para migrar tudo. Entra junto com o item acima."
+                }
+              ]
+            },
+            {
+              "titulo": "Do lado do Edu",
+              "nivel": "media",
+              "itens": [
+                {
+                  "prazo": "Até terça",
+                  "acao": "Montar a identidade visual base",
+                  "detalhe": "Estrutura, paleta em vermelho e preto, direção de marca — para servir de base ao portfólio."
+                },
+                {
+                  "prazo": "Até terça",
+                  "acao": "Enviar transcrição e checklist detalhado por etapa",
+                  "detalhe": "Este documento."
+                },
+                {
+                  "prazo": "Diário",
+                  "acao": "Acompanhamento no grupo do WhatsApp",
+                  "detalhe": "Todo dia. Incluindo cobrar o story de hoje."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": "05",
+      "titulo": "Posicionamento definido",
+      "quebra": false,
+      "blocos": [
+        {
+          "tipo": "texto",
+          "conteudo": "Duas palavras foram escolhidas na call para definir como as pessoas devem enxergar você:"
+        },
+        {
+          "tipo": "kpi",
+          "itens": [
+            {
+              "valor": "Credibilidade",
+              "label": "Palavra-chave 1"
+            },
+            {
+              "valor": "Autoridade",
+              "label": "Palavra-chave 2"
+            }
+          ]
+        },
+        {
+          "tipo": "citacao",
+          "conteudo": "\"Quero fazer uma landing page — é o Felipe que eu vou contratar.\"<br>Esse é o reflexo que queremos criar no mercado."
+        },
+        {
+          "tipo": "tabela",
+          "colunas": [
+            "Elemento",
+            "Definição"
+          ],
+          "linhas": [
+            [
+              "Cores",
+              "Vermelho e preto (azul removido)"
+            ],
+            [
+              "Nome de marca",
+              "Felipe Gá / Felipe Gonçalves"
+            ],
+            [
+              "Razão social alvo",
+              "Felipe Gá Sites Ltda (ou equivalente com o nome dele)"
+            ],
+            [
+              "Percepção desejada",
+              "Profissional que resolve o problema digital do cliente"
+            ],
+            [
+              "Canal principal",
+              "Instagram → portfólio → WhatsApp"
+            ]
+          ]
+        },
+        {
+          "tipo": "destaque",
+          "forte": true,
+          "conteudo": "<b>Por que o CNPJ importa tanto:</b> em projeto de R$ 400 ninguém olha. Em projeto de R$ 3.000, o contrato e a nota fiscal saem no nome de Rosângela — e o cliente coloca o pé atrás na hora. Referência de como funciona: \"Team Lecdt Sites e Sistemas\" diz o nome <i>e</i> o que faz."
+        },
+        {
+          "tipo": "subtitulo",
+          "conteudo": "Próxima call"
+        },
+        {
+          "tipo": "texto",
+          "conteudo": "<b>Terça-feira</b> — com acompanhamento diário pelo WhatsApp até lá. Na terça revisamos o que foi feito, avaliamos a identidade nova e definimos os próximos passos."
+        },
+        {
+          "tipo": "destaque",
+          "conteudo": "<b>Recado final da call:</b> agora é hora de ação. São dois meses juntos e vão passar rápido — trabalho todo dia. Se em algum dia você não estiver bem, é só avisar: sem problema. Mas a expectativa é que você se empolgue e queira fazer alguma coisa todo dia."
+        }
+      ]
+    }
+  ]
+}

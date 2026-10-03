@@ -1,0 +1,1017 @@
+{
+  "videos": [
+    {
+      "id": "cobrancas",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 540,
+        "audioUnico": "audio/cobrancas.mp3",
+        "cenas": [
+          {
+            "id": "01-dor",
+            "inicio": 0,
+            "frames": 65,
+            "narracao": "Cobrar cliente é a parte que ninguém gosta.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Como é hoje",
+              "corEtiqueta": "vermelho",
+              "titulo": "Mandar o Pix na mão.",
+              "itens": [
+                {
+                  "titulo": "Copiar a chave",
+                  "detalhe": "Toda vez de novo",
+                  "icone": "gd-copiar"
+                },
+                {
+                  "titulo": "Conferir se caiu",
+                  "detalhe": "Abrir o app do banco",
+                  "icone": "gd-banco"
+                },
+                {
+                  "titulo": "Cobrar de novo",
+                  "detalhe": "Sem parecer chato",
+                  "icone": "gd-atencao"
+                }
+              ]
+            }
+          },
+          {
+            "id": "02-virada",
+            "inicio": 65,
+            "frames": 67,
+            "narracao": "Você gera a cobrança e o sistema faz o resto.",
+            "conteudo": {
+              "tipo": "marca",
+              "titulo": "O sistema cobra.",
+              "destaque": "cobra"
+            }
+          },
+          {
+            "id": "03-metodos",
+            "inicio": 132,
+            "frames": 99,
+            "narracao": "Pix, boleto ou cartão em até vinte e uma vezes.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "O cliente escolhe",
+              "titulo": "Três formas de pagar.",
+              "itens": [
+                {
+                  "titulo": "Pix",
+                  "detalhe": "Cai na hora",
+                  "icone": "gd-pix"
+                },
+                {
+                  "titulo": "Boleto",
+                  "detalhe": "Vence quando você marcar",
+                  "icone": "gd-boleto"
+                },
+                {
+                  "titulo": "Cartão em 21x",
+                  "detalhe": "Recebe em D mais um",
+                  "icone": "gd-cartao"
+                }
+              ]
+            }
+          },
+          {
+            "id": "04-automatico",
+            "inicio": 231,
+            "frames": 88,
+            "narracao": "Pagou, o status muda sozinho e você é avisado.",
+            "conteudo": {
+              "tipo": "tela",
+              "etiqueta": "Automático",
+              "titulo": "Você nem abre o app.",
+              "tela": {
+                "titulo": "Cobrança #2841",
+                "rotulo": "R$ 4.800",
+                "linhas": [
+                  [
+                    "Cliente",
+                    "Ana Martins"
+                  ],
+                  [
+                    "Vencimento",
+                    "Hoje"
+                  ]
+                ],
+                "confirmaEm": 28,
+                "selo": "Pagamento confirmado",
+                "seloIcone": "gd-check",
+                "corpo": [
+                  "#Formas de pagamento",
+                  "Pix com desconto à vista",
+                  "Cartão em até 21x"
+                ],
+                "total": "R$ 4.800",
+                "rotuloTotal": "Valor"
+              },
+              "tituloCurto": false
+            }
+          },
+          {
+            "id": "05-extras",
+            "inicio": 319,
+            "frames": 60,
+            "narracao": "E dá pra antecipar o que ainda vai receber.",
+            "conteudo": {
+              "tipo": "passos",
+              "etiqueta": "Precisa do dinheiro antes",
+              "titulo": "Antecipa e saca.",
+              "itens": [
+                {
+                  "titulo": "Antecipação",
+                  "detalhe": "Simula e recebe antes",
+                  "icone": "gd-antecipacoes"
+                },
+                {
+                  "titulo": "Saque por Pix",
+                  "detalhe": "Direto pra sua conta",
+                  "icone": "gd-transferir"
+                },
+                {
+                  "titulo": "Cobrança recorrente",
+                  "detalhe": "Mensal no cartão",
+                  "icone": "gd-repetir"
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-cta",
+            "inicio": 379,
+            "frames": 161,
+            "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "De graça.",
+              "subtitulo": "Você só paga\nquando recebe.",
+              "cta": "link na bio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "contratos",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 682,
+        "audioUnico": "audio/contratos.mp3",
+        "cenas": [
+          {
+            "id": "01-dor",
+            "inicio": 0,
+            "frames": 147,
+            "narracao": "Contrato assinado ainda é imprimir, assinar, escanear e mandar de volta.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Como é hoje",
+              "corEtiqueta": "vermelho",
+              "titulo": "Ninguém tem impressora.",
+              "itens": [
+                {
+                  "titulo": "Imprimir",
+                  "detalhe": "Achar uma impressora",
+                  "icone": "gd-arquivo"
+                },
+                {
+                  "titulo": "Assinar e escanear",
+                  "detalhe": "Foto torta no celular",
+                  "icone": "gd-caneta"
+                },
+                {
+                  "titulo": "Mandar de volta",
+                  "detalhe": "Se lembrar",
+                  "icone": "gd-envelope-1"
+                }
+              ]
+            }
+          },
+          {
+            "id": "02-virada",
+            "inicio": 147,
+            "frames": 66,
+            "narracao": "O cliente assina pelo celular, em um minuto.",
+            "conteudo": {
+              "tipo": "marca",
+              "titulo": "Assina pelo celular.",
+              "destaque": "celular"
+            }
+          },
+          {
+            "id": "03-assinatura",
+            "inicio": 213,
+            "frames": 115,
+            "narracao": "Ele desenha a assinatura e confirma com um código de seis dígitos.",
+            "conteudo": {
+              "tipo": "tela",
+              "etiqueta": "Assinatura",
+              "titulo": "Desenha e confirma.",
+              "tela": {
+                "titulo": "Contrato de serviço",
+                "rotulo": "contrato.gestao.dev",
+                "claro": true,
+                "linhas": [
+                  [
+                    "Cliente",
+                    "Ana Martins"
+                  ],
+                  [
+                    "Documento",
+                    "Prestação de serviço"
+                  ]
+                ],
+                "confirmaEm": 30,
+                "selo": "Contrato assinado",
+                "seloIcone": "gd-contrato-assinar",
+                "corpo": [
+                  "#Assinatura eletrônica",
+                  "Código enviado por WhatsApp",
+                  "Assinatura desenhada na tela"
+                ],
+                "total": "4 8 2 9 1 7",
+                "rotuloTotal": "Código"
+              },
+              "tituloCurto": false
+            }
+          },
+          {
+            "id": "04-juridico",
+            "inicio": 328,
+            "frames": 123,
+            "narracao": "Fica gravado IP, data, dispositivo e o hash do documento.",
+            "conteudo": {
+              "tipo": "passos",
+              "etiqueta": "Validade jurídica",
+              "titulo": "Prova de quem assinou.",
+              "itens": [
+                {
+                  "titulo": "IP e dispositivo",
+                  "detalhe": "De onde assinou",
+                  "icone": "gd-localizacao"
+                },
+                {
+                  "titulo": "Data e hora",
+                  "detalhe": "Registro do momento",
+                  "icone": "gd-relogio"
+                },
+                {
+                  "titulo": "Hash do documento",
+                  "detalhe": "Prova que não mudou",
+                  "icone": "gd-cadeado"
+                }
+              ]
+            }
+          },
+          {
+            "id": "05-lei",
+            "inicio": 451,
+            "frames": 99,
+            "narracao": "Tudo pela lei brasileira de assinatura eletrônica. Sem cartório.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Sem cartório",
+              "titulo": "Vale por lei.",
+              "itens": [
+                {
+                  "titulo": "MP 2.200-2 de 2001",
+                  "detalhe": "Assinatura eletrônica",
+                  "icone": "gd-livro"
+                },
+                {
+                  "titulo": "Lei 14.063 de 2020",
+                  "detalhe": "Documento digital",
+                  "icone": "gd-documento-check"
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-cta",
+            "inicio": 550,
+            "frames": 132,
+            "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "De graça.",
+              "subtitulo": "Você só paga\nquando recebe.",
+              "cta": "link na bio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "dashboard",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 562,
+        "audioUnico": "audio/dashboard.mp3",
+        "cenas": [
+          {
+            "id": "01-dor",
+            "inicio": 0,
+            "frames": 100,
+            "narracao": "Quanto você faturou esse mês? Se demorou pra responder, é isso.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "A pergunta difícil",
+              "corEtiqueta": "vermelho",
+              "titulo": "Você sabe de cabeça?",
+              "itens": [
+                {
+                  "titulo": "Quanto entrou",
+                  "detalhe": "Sem abrir o banco",
+                  "icone": "gd-dinheiro"
+                },
+                {
+                  "titulo": "Quanto falta receber",
+                  "detalhe": "E quem está atrasado",
+                  "icone": "gd-relogio"
+                },
+                {
+                  "titulo": "Quantas propostas viraram projeto",
+                  "detalhe": "A sua conversão",
+                  "icone": "gd-proposta-aceita"
+                }
+              ]
+            }
+          },
+          {
+            "id": "02-virada",
+            "inicio": 100,
+            "frames": 52,
+            "narracao": "Abre o painel e está tudo lá.",
+            "conteudo": {
+              "tipo": "marca",
+              "titulo": "Tudo num painel.",
+              "destaque": "painel"
+            }
+          },
+          {
+            "id": "03-numeros",
+            "inicio": 152,
+            "frames": 103,
+            "narracao": "Recebido, a receber, ticket médio e faturamento recorrente.",
+            "conteudo": {
+              "tipo": "numeros",
+              "etiqueta": "Últimos 30 dias",
+              "titulo": "Os números do mês.",
+              "metricas": [
+                {
+                  "rotulo": "Recebido",
+                  "valor": 24800,
+                  "prefixo": "R$ ",
+                  "icone": "gd-dinheiro"
+                },
+                {
+                  "rotulo": "A receber",
+                  "valor": 9600,
+                  "prefixo": "R$ ",
+                  "icone": "gd-relogio"
+                },
+                {
+                  "rotulo": "Ticket médio",
+                  "valor": 3100,
+                  "prefixo": "R$ ",
+                  "icone": "gd-grafico"
+                }
+              ]
+            }
+          },
+          {
+            "id": "04-grafico",
+            "inicio": 255,
+            "frames": 62,
+            "narracao": "Dá pra ver a receita crescendo mês a mês.",
+            "conteudo": {
+              "tipo": "grafico",
+              "etiqueta": "Evolução",
+              "titulo": "Mês a mês.",
+              "rotuloGrafico": "Receita nos últimos 6 meses",
+              "barras": [
+                {
+                  "rotulo": "Mar",
+                  "valor": 12
+                },
+                {
+                  "rotulo": "Abr",
+                  "valor": 15
+                },
+                {
+                  "rotulo": "Mai",
+                  "valor": 14
+                },
+                {
+                  "rotulo": "Jun",
+                  "valor": 19
+                },
+                {
+                  "rotulo": "Jul",
+                  "valor": 22
+                },
+                {
+                  "rotulo": "Ago",
+                  "valor": 25
+                }
+              ]
+            }
+          },
+          {
+            "id": "05-funil",
+            "inicio": 317,
+            "frames": 61,
+            "narracao": "E o funil mostra onde o dinheiro trava.",
+            "conteudo": {
+              "tipo": "passos",
+              "etiqueta": "Funil",
+              "titulo": "Do contato ao caixa.",
+              "itens": [
+                {
+                  "titulo": "Propostas enviadas",
+                  "detalhe": "12 no mês",
+                  "icone": "gd-proposta"
+                },
+                {
+                  "titulo": "Contratos assinados",
+                  "detalhe": "8 fecharam",
+                  "icone": "gd-contrato-assinar"
+                },
+                {
+                  "titulo": "Notas emitidas",
+                  "detalhe": "8 na prefeitura",
+                  "icone": "gd-notas-fiscais"
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-email",
+            "inicio": 378,
+            "frames": 75,
+            "narracao": "E chega um resumo no seu e-mail todo dia às oito.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Sem abrir o sistema",
+              "titulo": "Chega pronto.",
+              "itens": [
+                {
+                  "titulo": "Todo dia às 8h",
+                  "detalhe": "O que entrou ontem",
+                  "icone": "gd-envelope-1"
+                },
+                {
+                  "titulo": "Segunda e dia 1º",
+                  "detalhe": "Fechamento da semana e do mês",
+                  "icone": "gd-calendario"
+                }
+              ]
+            }
+          },
+          {
+            "id": "07-cta",
+            "inicio": 453,
+            "frames": 109,
+            "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "De graça.",
+              "subtitulo": "Você só paga\nquando recebe.",
+              "cta": "link na bio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "notafiscal",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 603,
+        "audioUnico": "audio/notafiscal.mp3",
+        "cenas": [
+          {
+            "id": "01-dor",
+            "inicio": 0,
+            "frames": 73,
+            "narracao": "Todo mês a mesma novela pra emitir nota.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Como é hoje",
+              "corEtiqueta": "vermelho",
+              "titulo": "O site da prefeitura.",
+              "itens": [
+                {
+                  "titulo": "Achar o login",
+                  "detalhe": "A senha que você anotou",
+                  "icone": "gd-cadeado"
+                },
+                {
+                  "titulo": "Preencher tudo de novo",
+                  "detalhe": "Os mesmos dados",
+                  "icone": "gd-editar"
+                },
+                {
+                  "titulo": "Torcer pra não cair",
+                  "detalhe": "O site fora do ar",
+                  "icone": "gd-atencao"
+                }
+              ]
+            }
+          },
+          {
+            "id": "02-virada",
+            "inicio": 73,
+            "frames": 61,
+            "narracao": "Você emite direto do Gestão Dev.",
+            "conteudo": {
+              "tipo": "marca",
+              "titulo": "Emite por aqui.",
+              "destaque": "aqui"
+            }
+          },
+          {
+            "id": "03-emissao",
+            "inicio": 134,
+            "frames": 88,
+            "narracao": "A nota já nasce preenchida com os dados da última.",
+            "conteudo": {
+              "tipo": "tela",
+              "etiqueta": "Nota nova",
+              "titulo": "Já vem preenchida.",
+              "tela": {
+                "titulo": "NFS-e",
+                "rotulo": "R$ 4.800",
+                "claro": true,
+                "linhas": [
+                  [
+                    "Tomador",
+                    "Ana Martins"
+                  ],
+                  [
+                    "Serviço",
+                    "Desenvolvimento"
+                  ]
+                ],
+                "confirmaEm": 30,
+                "selo": "Autorizada",
+                "seloIcone": "gd-notas-fiscais",
+                "corpo": [
+                  "#Impostos calculados",
+                  "ISS retido na fonte",
+                  "PIS, COFINS e CSLL"
+                ],
+                "total": "R$ 4.800",
+                "rotuloTotal": "Valor da nota"
+              },
+              "tituloCurto": false
+            }
+          },
+          {
+            "id": "04-real",
+            "inicio": 222,
+            "frames": 133,
+            "narracao": "É nota de verdade, com seu certificado digital e a regra da sua cidade.",
+            "conteudo": {
+              "tipo": "passos",
+              "etiqueta": "Emissão real",
+              "titulo": "Direto na prefeitura.",
+              "itens": [
+                {
+                  "titulo": "Certificado A1",
+                  "detalhe": "O seu, com segurança",
+                  "icone": "gd-cadeado"
+                },
+                {
+                  "titulo": "Regra do seu município",
+                  "detalhe": "Cada cidade tem a sua",
+                  "icone": "gd-localizacao"
+                },
+                {
+                  "titulo": "Impostos calculados",
+                  "detalhe": "ISS, PIS, COFINS, IR",
+                  "icone": "gd-calculadora"
+                }
+              ]
+            }
+          },
+          {
+            "id": "05-entrega",
+            "inicio": 355,
+            "frames": 117,
+            "narracao": "Autorizou, o PDF sai na hora pro WhatsApp e o e-mail do cliente.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Entrega sozinha",
+              "titulo": "Com a sua marca.",
+              "itens": [
+                {
+                  "titulo": "WhatsApp",
+                  "detalhe": "Número oficial",
+                  "icone": "gd-celular"
+                },
+                {
+                  "titulo": "E-mail",
+                  "detalhe": "Com o seu logo",
+                  "icone": "gd-envelope-1"
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-cta",
+            "inicio": 472,
+            "frames": 131,
+            "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "De graça.",
+              "subtitulo": "Você só paga\nquando recebe.",
+              "cta": "link na bio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "proposta",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 674,
+        "audioUnico": "audio/proposta.mp3",
+        "cenas": [
+          {
+            "id": "01-problema",
+            "inicio": 0,
+            "frames": 68,
+            "narracao": "Fechou o projeto, e agora vem a proposta.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Sexta, 18h",
+              "corEtiqueta": "vermelho",
+              "titulo": "Projeto fechado.",
+              "tecnologias": true,
+              "itens": [
+                {
+                  "titulo": "Documento em branco",
+                  "detalhe": "Por onde começar",
+                  "icone": "gd-documento"
+                }
+              ]
+            }
+          },
+          {
+            "id": "02-dor",
+            "inicio": 68,
+            "frames": 173,
+            "narracao": "Aí você copia a do outro cliente, troca os valores na mão, exporta o PDF e torce pra não ter esquecido nada.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Como é hoje",
+              "corEtiqueta": "vermelho",
+              "titulo": "De novo, do zero.",
+              "mostrarTempo": true,
+              "numero": {
+                "valor": 33,
+                "rotulo": "minutos",
+                "cor": "vermelho"
+              },
+              "itens": [
+                {
+                  "titulo": "Google Docs",
+                  "detalhe": "Copiar a do outro cliente",
+                  "icone": "gd-documento",
+                  "tempo": "8 min"
+                },
+                {
+                  "titulo": "Editar na mão",
+                  "detalhe": "Trocar nome, escopo e valores",
+                  "icone": "gd-editar",
+                  "tempo": "15 min"
+                },
+                {
+                  "titulo": "Exportar PDF",
+                  "detalhe": "Conferir se não esqueceu nada",
+                  "icone": "gd-arquivo",
+                  "tempo": "6 min"
+                },
+                {
+                  "titulo": "Email",
+                  "detalhe": "Anexar e esperar",
+                  "icone": "gd-envelope-1",
+                  "tempo": "4 min"
+                }
+              ]
+            }
+          },
+          {
+            "id": "03-virada",
+            "inicio": 241,
+            "frames": 54,
+            "narracao": "Só que dá pra fazer isso em um minuto.",
+            "conteudo": {
+              "tipo": "marca",
+              "titulo": "Dá pra ser em um minuto.",
+              "destaque": "minuto"
+            }
+          },
+          {
+            "id": "04-passo-1",
+            "inicio": 295,
+            "frames": 66,
+            "narracao": "Você escolhe um dos cinco layouts prontos,",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Passo 1",
+              "titulo": "Cinco layouts prontos.",
+              "itens": [
+                {
+                  "titulo": "Escolhe o modelo",
+                  "detalhe": "Nenhuma folha em branco",
+                  "icone": "gd-quadros"
+                },
+                {
+                  "titulo": "As variáveis se preenchem",
+                  "detalhe": "Nome, valor, escopo",
+                  "icone": "gd-personalizar"
+                }
+              ]
+            }
+          },
+          {
+            "id": "05-passo-2",
+            "inicio": 361,
+            "frames": 49,
+            "narracao": "a proposta se monta com a sua cara,",
+            "conteudo": {
+              "tipo": "tela",
+              "etiqueta": "Passo 2",
+              "titulo": "Com a sua marca.",
+              "tela": {
+                "titulo": "Landing page",
+                "rotulo": "Proposta comercial",
+                "claro": true,
+                "linhas": [
+                  [
+                    "Cliente",
+                    "Ana Martins"
+                  ],
+                  [
+                    "Prazo",
+                    "20 dias"
+                  ]
+                ],
+                "confirmaEm": 999,
+                "corpo": [
+                  "#Escopo do projeto",
+                  "Design responsivo em 4 telas",
+                  "Integração com a API de contatos",
+                  "Publicação e domínio configurado"
+                ],
+                "total": "R$ 4.800",
+                "rotuloTotal": "Investimento"
+              },
+              "tituloCurto": true
+            }
+          },
+          {
+            "id": "06-passo-3",
+            "inicio": 410,
+            "frames": 58,
+            "narracao": "e o cliente aceita direto no celular.",
+            "conteudo": {
+              "tipo": "tela",
+              "etiqueta": "Passo 3",
+              "titulo": "Manda o link.",
+              "tela": {
+                "titulo": "Landing page",
+                "rotulo": "proposta.gestao.dev",
+                "claro": true,
+                "linhas": [
+                  [
+                    "Cliente",
+                    "Ana Martins"
+                  ],
+                  [
+                    "Prazo",
+                    "20 dias"
+                  ]
+                ],
+                "confirmaEm": 26,
+                "selo": "Proposta aceita",
+                "seloIcone": "gd-proposta-aceita",
+                "corpo": [
+                  "#Escopo do projeto",
+                  "Design responsivo em 4 telas",
+                  "Integração com a API de contatos",
+                  "Publicação e domínio configurado"
+                ],
+                "total": "R$ 4.800",
+                "rotuloTotal": "Investimento"
+              },
+              "tituloCurto": true
+            }
+          },
+          {
+            "id": "07-consequencia",
+            "inicio": 468,
+            "frames": 85,
+            "narracao": "Daí o contrato, o Pix e a nota saem sozinhos.",
+            "conteudo": {
+              "tipo": "passos",
+              "etiqueta": "E o resto",
+              "titulo": "Sai sozinho.",
+              "itens": [
+                {
+                  "titulo": "Contrato",
+                  "detalhe": "Assinado pelo celular",
+                  "icone": "gd-contrato-assinar"
+                },
+                {
+                  "titulo": "Pix",
+                  "detalhe": "Direto na sua conta",
+                  "icone": "gd-pix"
+                },
+                {
+                  "titulo": "Nota fiscal",
+                  "detalhe": "Emitida sozinha",
+                  "icone": "gd-notas-fiscais"
+                }
+              ]
+            }
+          },
+          {
+            "id": "08-cta",
+            "inicio": 553,
+            "frames": 121,
+            "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "De graça.",
+              "subtitulo": "Você só paga\nquando recebe.",
+              "cta": "link na bio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "tarefas",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 551,
+        "audioUnico": "audio/tarefas.mp3",
+        "cenas": [
+          {
+            "id": "01-dor",
+            "inicio": 0,
+            "frames": 92,
+            "narracao": "O cliente pede ajuste no WhatsApp, e some no meio da conversa.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "Como é hoje",
+              "corEtiqueta": "vermelho",
+              "titulo": "Pedido perdido no chat.",
+              "itens": [
+                {
+                  "titulo": "Áudio de 3 minutos",
+                  "detalhe": "Você ouve duas vezes",
+                  "icone": "gd-celular"
+                },
+                {
+                  "titulo": "Print no meio da conversa",
+                  "detalhe": "Some ao rolar",
+                  "icone": "gd-imagem"
+                },
+                {
+                  "titulo": "\"Depois eu te mando\"",
+                  "detalhe": "Nunca manda",
+                  "icone": "gd-relogio"
+                }
+              ]
+            }
+          },
+          {
+            "id": "02-virada",
+            "inicio": 92,
+            "frames": 64,
+            "narracao": "Cada projeto tem um link de ajuste.",
+            "conteudo": {
+              "tipo": "marca",
+              "titulo": "Um link por projeto.",
+              "destaque": "link"
+            }
+          },
+          {
+            "id": "03-link",
+            "inicio": 156,
+            "frames": 79,
+            "narracao": "O cliente descreve o que quer e escolhe a urgência.",
+            "conteudo": {
+              "tipo": "tela",
+              "etiqueta": "O cliente preenche",
+              "titulo": "Ele mesmo abre a tarefa.",
+              "tela": {
+                "titulo": "Pedir ajuste",
+                "rotulo": "tarefa.gestao.dev",
+                "claro": true,
+                "linhas": [
+                  [
+                    "Projeto",
+                    "Site institucional"
+                  ],
+                  [
+                    "Urgência",
+                    "Alta"
+                  ]
+                ],
+                "confirmaEm": 30,
+                "selo": "Tarefa criada",
+                "seloIcone": "gd-check",
+                "corpo": [
+                  "#O que precisa mudar",
+                  "Trocar a foto do topo",
+                  "Ajustar o formulário de contato"
+                ],
+                "total": "22 de agosto",
+                "rotuloTotal": "Prazo"
+              },
+              "tituloCurto": false
+            }
+          },
+          {
+            "id": "04-quadro",
+            "inicio": 235,
+            "frames": 80,
+            "narracao": "E ela já nasce no seu quadro, na prioridade certa.",
+            "conteudo": {
+              "tipo": "lista",
+              "etiqueta": "No seu quadro",
+              "titulo": "Organizada por urgência.",
+              "itens": [
+                {
+                  "titulo": "Urgente",
+                  "detalhe": "Corrigir checkout",
+                  "icone": "gd-urgencia-urgente"
+                },
+                {
+                  "titulo": "Alta",
+                  "detalhe": "Ajuste no formulário",
+                  "icone": "gd-urgencia-alta"
+                },
+                {
+                  "titulo": "Média",
+                  "detalhe": "Trocar as fotos",
+                  "icone": "gd-urgencia-media"
+                }
+              ]
+            }
+          },
+          {
+            "id": "05-extras",
+            "inicio": 315,
+            "frames": 113,
+            "narracao": "Tem cronômetro, subtarefa, tag e sincronia com o Google Agenda.",
+            "conteudo": {
+              "tipo": "passos",
+              "etiqueta": "E ainda",
+              "titulo": "Tudo junto.",
+              "itens": [
+                {
+                  "titulo": "Cronômetro",
+                  "detalhe": "Sabe quanto tempo levou",
+                  "icone": "gd-cronometro"
+                },
+                {
+                  "titulo": "50 modelos prontos",
+                  "detalhe": "Deploy, LGPD, SEO",
+                  "icone": "gd-tarefas"
+                },
+                {
+                  "titulo": "Google Agenda",
+                  "detalhe": "Sincroniza sozinho",
+                  "icone": "gd-calendario"
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-cta",
+            "inicio": 428,
+            "frames": 123,
+            "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "De graça.",
+              "subtitulo": "Você só paga\nquando recebe.",
+              "cta": "link na bio"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

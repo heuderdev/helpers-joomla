@@ -1,0 +1,220 @@
+{
+  "fps": 30,
+  "duracaoTotal": 960,
+  "audioUnico": "audio/padroes.mp3",
+  "cenas": [
+    {
+      "id": "01",
+      "inicio": 0,
+      "frames": 89,
+      "narracao": "[conversacional] Você sabe QUANDO você gasta mais?",
+      "conteudo": {
+        "cena": "busca",
+        "pergunta": "Em que dia eu gasto mais?",
+        "titulo": "",
+        "sub": "não é quanto — é quando"
+      }
+    },
+    {
+      "id": "02",
+      "inicio": 89,
+      "frames": 70,
+      "narracao": "Não é quanto. É quando.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Não é quanto.|É quando.",
+        "destaque": [
+          "quando."
+        ]
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "03",
+      "inicio": 159,
+      "frames": 68,
+      "narracao": "[animada] O Dominnus enxerga o seu padrão.",
+      "conteudo": {
+        "cena": "contadorSobe",
+        "titulo": "Ele enxerga|seu padrão.",
+        "destaque": [
+          "padrão."
+        ],
+        "valor": 4312.7,
+        "rotulo": "analisados este mês"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "04",
+      "inicio": 227,
+      "frames": 100,
+      "narracao": "Ele mostra em que dia da semana o seu dinheiro some,",
+      "conteudo": {
+        "cena": "heatmapSemana",
+        "titulo": "Dia por dia.",
+        "destaque": [
+          "dia."
+        ],
+        "veredito": "Sexta concentra 34% do mês"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "05",
+      "inicio": 327,
+      "frames": 77,
+      "narracao": "[curiosa] e até em que hora do dia você mais compra.",
+      "conteudo": {
+        "cena": "relogio24h",
+        "titulo": "Hora por hora.",
+        "destaque": [
+          "hora."
+        ],
+        "veredito": "Seu pico de gastos é às 20h"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "06",
+      "inicio": 404,
+      "frames": 72,
+      "narracao": "Aí aparece onde você mais gastou,",
+      "conteudo": {
+        "cena": "podio",
+        "titulo": "Onde foi parar.",
+        "destaque": [
+          "parar."
+        ],
+        "sub": "por empresa, não só por categoria"
+      },
+      "transicao": {
+        "tipo": "continuidade",
+        "frames": 6
+      }
+    },
+    {
+      "id": "07",
+      "inicio": 476,
+      "frames": 93,
+      "narracao": "empresa por empresa, e não só por categoria.",
+      "conteudo": {
+        "cena": "caos",
+        "titulo": "Empresa|por empresa.",
+        "destaque": [
+          "empresa."
+        ],
+        "itens": [
+          [
+            "ifood",
+            -250,
+            -160,
+            -11
+          ],
+          [
+            "uber",
+            210,
+            -200,
+            9
+          ],
+          [
+            "rappi",
+            -200,
+            70,
+            8
+          ],
+          [
+            "starbucks",
+            230,
+            100,
+            -7
+          ],
+          [
+            "mcdonalds",
+            -110,
+            270,
+            11
+          ],
+          [
+            "amazon",
+            200,
+            300,
+            -6
+          ]
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "08",
+      "inicio": 569,
+      "frames": 123,
+      "narracao": "[confiante] E ele compara com o mês passado, pra você ver o que cresceu.",
+      "conteudo": {
+        "cena": "comparaMeses",
+        "titulo": "O que cresceu.",
+        "destaque": [
+          "cresceu."
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "09",
+      "inicio": 692,
+      "frames": 86,
+      "narracao": "Doze meses de histórico, num gráfico só.",
+      "conteudo": {
+        "cena": "selo",
+        "icone": "grafico-linha",
+        "titulo": "Doze meses|num gráfico.",
+        "destaque": [
+          "gráfico."
+        ],
+        "selo": "Evolução mês a mês"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "10",
+      "inicio": 778,
+      "frames": 182,
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

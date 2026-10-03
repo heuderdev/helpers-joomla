@@ -1,0 +1,50 @@
+{
+  "name": "unicpages",
+  "displayName": "UnicPages",
+  "repos": [
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/frontend/nuxt-app",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/frontend/nuxt-admin",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/frontend/nuxt-web",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/api-app",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/api-admin",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/api-worker",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/api-conversor",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/api-sites",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/api-upload",
+    "/Users/eduardolecdt/Empresas/UnicPages/Repositórios/backend/shared"
+  ],
+  "defaultWindowHours": 12,
+  "ignoreGlobs": [
+    "**/CLAUDE.md",
+    "**/pnpm-lock.yaml",
+    "**/package-lock.json",
+    "**/.claude/**",
+    "**/.env*",
+    "**/node_modules/**",
+    "**/.output/**",
+    "**/.nuxt/**",
+    "**/docker/**"
+  ],
+  "keepCommitTypes": ["feat", "fix", "perf", "improve"],
+  "updateEndpoint": "https://api-admin.unicpages.com/updates",
+  "updateMethod": "POST",
+  "auth": {
+    "kind": "local-jwt",
+    "secretsKey": "unicpages",
+    "header": "x-access-token",
+    "cacheTtlSeconds": 86400
+  },
+  "uploadEndpoint": "https://api-upload.unicpages.com/storage/imagem",
+  "uploadMaxWidth": 1600,
+  "uploadAuth": {
+    "kind": "local-jwt",
+    "secretsKey": "unicpages",
+    "header": "x-access-token",
+    "cacheTtlSeconds": 86400
+  },
+  "supportedLanguages": ["pt", "en", "es"],
+  "payloadShape": "api-admin-i18n",
+  "discordWebhookEnv": "UNICPAGES_DISCORD_WEBHOOK",
+  "allowEmojis": { "admin": false, "discord": true },
+  "publicUrlTemplate": "https://unicpages.com/updates/{slug}"
+}

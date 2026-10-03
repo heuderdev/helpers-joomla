@@ -1,0 +1,218 @@
+{
+  "titulo": "Dominnus — seu dinheiro se organiza sozinho",
+  "vozEleven": "RGymW84CSmfVugnA5tvA",
+  "caudaFinal": 0.8,
+  "cenas": [
+    {
+      "id": "01",
+      "narracao": "[conversacional] Você já tentou controlar seu dinheiro numa planilha,",
+      "conteudo": {
+        "cena": "planilha"
+      }
+    },
+    {
+      "id": "02",
+      "narracao": "e durou umas três semanas.",
+      "conteudo": {
+        "cena": "planilhaColapso"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 7
+      }
+    },
+    {
+      "id": "03",
+      "narracao": "Aí veio o pix que ninguém anotou, a fatura que chegou maior,",
+      "conteudo": {
+        "cena": "caos"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "04",
+      "narracao": "e a conta nunca mais fechou.",
+      "conteudo": {
+        "cena": "contaQuebrada"
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "05",
+      "narracao": "[animada] O Dominnus resolve isso de um jeito diferente:",
+      "conteudo": {
+        "cena": "virada"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "06",
+      "narracao": "você conecta o banco uma vez, e nunca mais anota um gasto.",
+      "conteudo": {
+        "cena": "conecta"
+      },
+      "transicao": {
+        "tipo": "iris",
+        "frames": 15,
+        "cx": 540,
+        "cy": 960,
+        "raioInicial": 110
+      }
+    },
+    {
+      "id": "07",
+      "narracao": "Pelo Open Finance, o Nubank, o Itaú, o Inter,",
+      "conteudo": {
+        "cena": "bancosChegam"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "08",
+      "narracao": "todos os seus bancos passam a conversar com ele,",
+      "conteudo": {
+        "cena": "bancosConectam"
+      },
+      "transicao": {
+        "tipo": "continuidade",
+        "frames": 6
+      }
+    },
+    {
+      "id": "09",
+      "narracao": "e as transações, os saldos e as faturas entram sozinhos, todo dia,",
+      "conteudo": {
+        "cena": "fluxo"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "10",
+      "narracao": "já com cada gasto na categoria certa.",
+      "conteudo": {
+        "cena": "categoriza"
+      },
+      "transicao": {
+        "tipo": "continuidade",
+        "frames": 6
+      }
+    },
+    {
+      "id": "11",
+      "narracao": "E o que o banco não vê, você manda no WhatsApp:",
+      "conteudo": {
+        "cena": "whatsappDigita"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "12",
+      "narracao": "escreve, manda um áudio, ou só a foto do comprovante.",
+      "conteudo": {
+        "cena": "whatsappModos"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "13",
+      "narracao": "Seu histórico também entra, seja o extrato, a planilha antiga, ou até um print da tela.",
+      "conteudo": {
+        "cena": "importacao"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "14",
+      "narracao": "[curiosa] Aí é só perguntar onde seu dinheiro está vazando,",
+      "conteudo": {
+        "cena": "pergunta"
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "15",
+      "narracao": "que ela lê seus lançamentos de verdade e mostra o que está pesando.",
+      "conteudo": {
+        "cena": "resposta"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "16",
+      "narracao": "[confiante] E é seguro, porque o Open Finance é regulado pelo Banco Central:",
+      "conteudo": {
+        "cena": "bancoCentral"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "17",
+      "narracao": "ele enxerga para organizar, mas não movimenta um centavo.",
+      "conteudo": {
+        "cena": "somenteLeitura"
+      },
+      "transicao": {
+        "tipo": "iris",
+        "frames": 15,
+        "cx": 540,
+        "cy": 900,
+        "raioInicial": 100
+      }
+    },
+    {
+      "id": "18",
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ],
+  "modelo": "eleven_v3",
+  "voz": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "use_speaker_boost": true
+  }
+}

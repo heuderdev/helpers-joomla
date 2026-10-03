@@ -1,0 +1,223 @@
+{
+  "fps": 30,
+  "duracaoTotal": 1121,
+  "audioUnico": "audio/whatsapp.mp3",
+  "cenas": [
+    {
+      "id": "01",
+      "inicio": 0,
+      "frames": 89,
+      "narracao": "[conversacional] Todo app de finança te dá um formulário pra preencher,",
+      "conteudo": {
+        "cena": "formularioCansa",
+        "titulo": "Um formulário|pra preencher.",
+        "destaque": [
+          "formulário"
+        ],
+        "campos": [
+          "Valor",
+          "Categoria",
+          "Data",
+          "Conta",
+          "Descrição"
+        ]
+      }
+    },
+    {
+      "id": "02",
+      "inicio": 89,
+      "frames": 113,
+      "narracao": "e no terceiro campo você já desistiu de anotar aquele café.",
+      "conteudo": {
+        "cena": "desistencia",
+        "titulo": "E você desiste|no terceiro campo.",
+        "destaque": [
+          "desiste"
+        ],
+        "ate": 3
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 7
+      }
+    },
+    {
+      "id": "03",
+      "inicio": 202,
+      "frames": 103,
+      "narracao": "[animada] No Dominnus, você já sabe usar: é o WhatsApp.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Você já sabe usar.",
+        "destaque": [
+          "já sabe"
+        ]
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "04",
+      "inicio": 305,
+      "frames": 115,
+      "narracao": "Você escreve do jeito que fala, mercado noventa reais,",
+      "conteudo": {
+        "cena": "conversaSolta",
+        "titulo": "Escreve|como você fala.",
+        "destaque": [
+          "como você fala."
+        ],
+        "mensagem": "mercado 90",
+        "cartao": {
+          "titulo": "Despesa registrada",
+          "linhas": [
+            [
+              "Mercado",
+              "R$ 90,00"
+            ],
+            [
+              "Alimentação",
+              "hoje"
+            ]
+          ]
+        }
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "05",
+      "inicio": 420,
+      "frames": 83,
+      "narracao": "[curiosa] ou manda um áudio, se estiver com as mãos ocupadas,",
+      "conteudo": {
+        "cena": "audioVira",
+        "titulo": "Ou manda|um áudio.",
+        "destaque": [
+          "um áudio."
+        ],
+        "transcrito": "paguei 42 no uber agora"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "06",
+      "inicio": 503,
+      "frames": 114,
+      "narracao": "ou só a foto do comprovante, e ele lê o valor sozinho.",
+      "conteudo": {
+        "cena": "fotoLida",
+        "titulo": "Ou só a foto|do comprovante.",
+        "destaque": [
+          "a foto"
+        ],
+        "valor": "R$ 128,40",
+        "estabelecimento": "Posto Ipiranga"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "07",
+      "inicio": 617,
+      "frames": 126,
+      "narracao": "[curiosa] E dá pra perguntar também: quanto eu gastei com comida esse mês?",
+      "conteudo": {
+        "cena": "perguntaChat",
+        "titulo": "E dá pra|perguntar.",
+        "destaque": [
+          "perguntar."
+        ],
+        "pergunta": "quanto gastei com comida esse mês?",
+        "resposta": "R$ 847,30",
+        "detalhe": "23 lançamentos · maior: iFood"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "08",
+      "inicio": 743,
+      "frames": 111,
+      "narracao": "Ele responde na hora, com o número certo e de onde saiu.",
+      "conteudo": {
+        "cena": "respostaDetalha",
+        "titulo": "Responde|na hora.",
+        "destaque": [
+          "na hora."
+        ],
+        "itens": [
+          [
+            "ifood",
+            "iFood",
+            "R$ 312,00"
+          ],
+          [
+            "mcdonalds",
+            "McDonald's",
+            "R$ 96,50"
+          ],
+          [
+            "rappi",
+            "Rappi",
+            "R$ 128,80"
+          ]
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "09",
+      "inicio": 854,
+      "frames": 92,
+      "narracao": "[confiante] E nada é gravado sem você confirmar antes.",
+      "conteudo": {
+        "cena": "confirmaAntes",
+        "titulo": "Nada entra|sem você confirmar.",
+        "destaque": [
+          "confirmar."
+        ],
+        "acao": "Apagar despesa de R$ 90,00?"
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "10",
+      "inicio": 946,
+      "frames": 175,
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

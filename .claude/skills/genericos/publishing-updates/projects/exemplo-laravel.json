@@ -1,0 +1,57 @@
+{
+  "name": "exemplo-laravel",
+  "displayName": "Exemplo Laravel",
+  "repos": [
+    "/Users/eduardolecdt/Empresas/<Empresa>/Repositórios/frontend/app",
+    "/Users/eduardolecdt/Empresas/<Empresa>/Repositórios/frontend/admin",
+    "/Users/eduardolecdt/Empresas/<Empresa>/Repositórios/frontend/web"
+  ],
+  "defaultWindowHours": 12,
+  "ignoreGlobs": [
+    "**/CLAUDE.md",
+    "**/composer.lock",
+    "**/package-lock.json",
+    "**/.claude/**",
+    "**/.env*",
+    "**/vendor/**",
+    "**/node_modules/**",
+    "**/public/build/**",
+    "**/storage/**",
+    "**/bootstrap/cache/**",
+    "**/database/seeders/**",
+    "**/tests/**",
+    "**/docker/**"
+  ],
+  "keepCommitTypes": [
+    "feat",
+    "fix",
+    "perf",
+    "improve"
+  ],
+  "updateEndpoint": "https://admin.exemplo.com/api/updates",
+  "updateMethod": "POST",
+  "auth": {
+    "kind": "local-sanctum",
+    "secretsKey": "exemplo-laravel",
+    "cacheTtlSeconds": 86400
+  },
+  "uploadEndpoint": "https://admin.exemplo.com/api/storage/imagem",
+  "uploadMaxWidth": 1600,
+  "uploadAuth": {
+    "kind": "local-sanctum",
+    "secretsKey": "exemplo-laravel",
+    "cacheTtlSeconds": 86400
+  },
+  "supportedLanguages": [
+    "pt",
+    "en",
+    "es"
+  ],
+  "payloadShape": "api-admin-i18n",
+  "discordWebhookEnv": "EXEMPLO_DISCORD_WEBHOOK",
+  "allowEmojis": {
+    "admin": false,
+    "discord": true
+  },
+  "publicUrlTemplate": "https://exemplo.com/updates/{slug}"
+}

@@ -1,0 +1,1781 @@
+{
+  "videos": [
+    {
+      "id": "abertura",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1875,
+        "audioUnico": "audio/abertura.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 85,
+            "narracao": "[conversacional] Você já tentou controlar seu dinheiro numa planilha,",
+            "conteudo": {
+              "cena": "planilha"
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 85,
+            "frames": 55,
+            "narracao": "e durou umas três semanas.",
+            "conteudo": {
+              "cena": "planilhaColapso"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 7
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 140,
+            "frames": 110,
+            "narracao": "Aí veio o pix que ninguém anotou, a fatura que chegou maior,",
+            "conteudo": {
+              "cena": "caos"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 250,
+            "frames": 50,
+            "narracao": "e a conta nunca mais fechou.",
+            "conteudo": {
+              "cena": "contaQuebrada"
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 300,
+            "frames": 85,
+            "narracao": "[animada] O Dominnus resolve isso de um jeito diferente:",
+            "conteudo": {
+              "cena": "virada"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 385,
+            "frames": 109,
+            "narracao": "você conecta o banco uma vez, e nunca mais anota um gasto.",
+            "conteudo": {
+              "cena": "conecta"
+            },
+            "transicao": {
+              "tipo": "iris",
+              "frames": 15,
+              "cx": 540,
+              "cy": 960,
+              "raioInicial": 110
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 494,
+            "frames": 111,
+            "narracao": "Pelo Open Finance, o Nubank, o Itaú, o Inter,",
+            "conteudo": {
+              "cena": "bancosChegam"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 605,
+            "frames": 81,
+            "narracao": "todos os seus bancos passam a conversar com ele,",
+            "conteudo": {
+              "cena": "bancosConectam"
+            },
+            "transicao": {
+              "tipo": "continuidade",
+              "frames": 6
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 686,
+            "frames": 137,
+            "narracao": "e as transações, os saldos e as faturas entram sozinhos, todo dia,",
+            "conteudo": {
+              "cena": "fluxo"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 823,
+            "frames": 76,
+            "narracao": "já com cada gasto na categoria certa.",
+            "conteudo": {
+              "cena": "categoriza"
+            },
+            "transicao": {
+              "tipo": "continuidade",
+              "frames": 6
+            }
+          },
+          {
+            "id": "11",
+            "inicio": 899,
+            "frames": 87,
+            "narracao": "E o que o banco não vê, você manda no WhatsApp:",
+            "conteudo": {
+              "cena": "whatsappDigita"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "12",
+            "inicio": 986,
+            "frames": 101,
+            "narracao": "escreve, manda um áudio, ou só a foto do comprovante.",
+            "conteudo": {
+              "cena": "whatsappModos"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "13",
+            "inicio": 1087,
+            "frames": 175,
+            "narracao": "Seu histórico também entra, seja o extrato, a planilha antiga, ou até um print da tela.",
+            "conteudo": {
+              "cena": "importacao"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "14",
+            "inicio": 1262,
+            "frames": 83,
+            "narracao": "[curiosa] Aí é só perguntar onde seu dinheiro está vazando,",
+            "conteudo": {
+              "cena": "pergunta"
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "15",
+            "inicio": 1345,
+            "frames": 122,
+            "narracao": "que ela lê seus lançamentos de verdade e mostra o que está pesando.",
+            "conteudo": {
+              "cena": "resposta"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "16",
+            "inicio": 1467,
+            "frames": 123,
+            "narracao": "[confiante] E é seguro, porque o Open Finance é regulado pelo Banco Central:",
+            "conteudo": {
+              "cena": "bancoCentral"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "17",
+            "inicio": 1590,
+            "frames": 108,
+            "narracao": "ele enxerga para organizar, mas não movimenta um centavo.",
+            "conteudo": {
+              "cena": "somenteLeitura"
+            },
+            "transicao": {
+              "tipo": "iris",
+              "frames": 15,
+              "cx": 540,
+              "cy": 900,
+              "raioInicial": 100
+            }
+          },
+          {
+            "id": "18",
+            "inicio": 1698,
+            "frames": 177,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "assinaturas",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1038,
+        "audioUnico": "audio/assinaturas.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 75,
+            "narracao": "[conversacional] Some um dinheiro da sua conta todo mês,",
+            "conteudo": {
+              "cena": "calendarioSangra",
+              "titulo": "Todo mês|some um valor.",
+              "destaque": [
+                "some"
+              ]
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 75,
+            "frames": 88,
+            "narracao": "e você nem lembra direito de tudo que assinou.",
+            "conteudo": {
+              "cena": "numeroQuebra",
+              "titulo": "E você nem lembra.",
+              "destaque": [
+                "nem"
+              ],
+              "valor": -436.4,
+              "rotulo": "por mês em assinaturas"
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 163,
+            "frames": 69,
+            "narracao": "[animada] O Dominnus acha todas sozinho.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Ele acha|todas sozinho.",
+              "destaque": [
+                "todas"
+              ]
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 232,
+            "frames": 117,
+            "narracao": "Ele olha os seus lançamentos, acha o que se repete todo mês,",
+            "conteudo": {
+              "cena": "radar",
+              "titulo": "Ele acha|o que se repete.",
+              "destaque": [
+                "repete."
+              ],
+              "sub": "três ocorrências, mesmo intervalo"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 349,
+            "frames": 127,
+            "narracao": "e a inteligência artificial confirma o que é assinatura de verdade.",
+            "conteudo": {
+              "cena": "peneira",
+              "titulo": "A IA separa|o que é de verdade.",
+              "destaque": [
+                "verdade."
+              ]
+            },
+            "transicao": {
+              "tipo": "continuidade",
+              "frames": 6
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 476,
+            "frames": 104,
+            "narracao": "Mercado, delivery e transporte ela deixa de fora.",
+            "conteudo": {
+              "cena": "filtroRuido",
+              "titulo": "Mercado e delivery|ficam de fora.",
+              "destaque": [
+                "fora."
+              ],
+              "itens": [
+                {
+                  "rotulo": "Netflix",
+                  "icone": "repetir",
+                  "conta": true
+                },
+                {
+                  "rotulo": "Academia",
+                  "icone": "repetir",
+                  "conta": true
+                },
+                {
+                  "rotulo": "iFood",
+                  "icone": "carrinho-compras",
+                  "conta": false
+                },
+                {
+                  "rotulo": "Uber",
+                  "icone": "transferencia",
+                  "conta": false
+                }
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 580,
+            "frames": 83,
+            "narracao": "[curiosa] Aí você abre a tela e vê o total:",
+            "conteudo": {
+              "cena": "busca",
+              "pergunta": "Quanto vai em assinatura?",
+              "titulo": "",
+              "sub": "o total, na sua frente"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 663,
+            "frames": 81,
+            "narracao": "quanto sai por mês, e quanto isso dá no ano.",
+            "conteudo": {
+              "cena": "anoEmpilha",
+              "titulo": "Por mês.|E por ano.",
+              "destaque": [
+                "ano."
+              ],
+              "valorMes": 436.4,
+              "rotulo": "em 12 meses"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 744,
+            "frames": 118,
+            "narracao": "[confiante] E um dia antes de cada cobrança, ele te avisa no celular.",
+            "conteudo": {
+              "cena": "selo",
+              "icone": "sino",
+              "titulo": "Um dia antes,|ele avisa.",
+              "destaque": [
+                "avisa."
+              ],
+              "selo": "Cobrança amanhã"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 862,
+            "frames": 176,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "economia",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1042,
+        "audioUnico": "audio/economia.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 80,
+            "narracao": "[conversacional] Todo fim de mês vem a mesma pergunta:",
+            "conteudo": {
+              "cena": "busca",
+              "pergunta": "Cadê o dinheiro que eu ganhei?",
+              "titulo": "",
+              "sub": "a pergunta de todo fim de mês"
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 80,
+            "frames": 113,
+            "narracao": "o salário entrou, mas você não sabe quanto realmente sobrou.",
+            "conteudo": {
+              "cena": "ralo",
+              "titulo": "Entrou.|E sumiu.",
+              "destaque": [
+                "sumiu."
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 193,
+            "frames": 105,
+            "narracao": "[animada] O Dominnus responde isso todo mês, com um número só.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Um número.|Todo mês.",
+              "destaque": [
+                "número."
+              ]
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 298,
+            "frames": 78,
+            "narracao": "Ele soma o que entrou, tira o que saiu,",
+            "conteudo": {
+              "cena": "balanca",
+              "titulo": "Entrou menos saiu.",
+              "destaque": [
+                "saiu."
+              ],
+              "entrou": 8400,
+              "saiu": 6423.5
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 376,
+            "frames": 63,
+            "narracao": "e mostra a sua taxa de poupança.",
+            "conteudo": {
+              "cena": "cofre",
+              "titulo": "Sua taxa|de poupança.",
+              "destaque": [
+                "poupança."
+              ],
+              "taxa": 23.5,
+              "valor": 1976.5
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 439,
+            "frames": 105,
+            "narracao": "[confiante] E ele não se engana com transferência entre as suas contas,",
+            "conteudo": {
+              "cena": "filtroRuido",
+              "titulo": "Ele não se engana.",
+              "destaque": [
+                "engana."
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 544,
+            "frames": 145,
+            "narracao": "nem com pagamento de fatura. Só movimento de verdade entra na conta.",
+            "conteudo": {
+              "cena": "peneira",
+              "titulo": "Só movimento|de verdade.",
+              "destaque": [
+                "verdade."
+              ],
+              "itens": [
+                {
+                  "marca": "mercadopago",
+                  "passa": false,
+                  "x": -200
+                },
+                {
+                  "marca": "ifood",
+                  "passa": false,
+                  "x": -60
+                },
+                {
+                  "marca": "pix",
+                  "passa": true,
+                  "x": 80
+                },
+                {
+                  "marca": "netflix",
+                  "passa": false,
+                  "x": 215
+                },
+                {
+                  "marca": "uber",
+                  "passa": true,
+                  "x": -130
+                }
+              ]
+            },
+            "transicao": {
+              "tipo": "continuidade",
+              "frames": 6
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 689,
+            "frames": 88,
+            "narracao": "[curiosa] Aí dá pra comparar com os meses anteriores,",
+            "conteudo": {
+              "cena": "historicoSobra",
+              "titulo": "Mês a mês.",
+              "destaque": [
+                "mês."
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 777,
+            "frames": 85,
+            "narracao": "e ver qual foi a sua melhor sobra do ano.",
+            "conteudo": {
+              "cena": "selo",
+              "icone": "cofrinho-porco",
+              "titulo": "Sua melhor sobra|do ano.",
+              "destaque": [
+                "sobra"
+              ],
+              "selo": "Melhor sobra: R$ 1.976,50"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 862,
+            "frames": 180,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "padroes",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 960,
+        "audioUnico": "audio/padroes.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 89,
+            "narracao": "[conversacional] Você sabe QUANDO você gasta mais?",
+            "conteudo": {
+              "cena": "busca",
+              "pergunta": "Em que dia eu gasto mais?",
+              "titulo": "",
+              "sub": "não é quanto — é quando"
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 89,
+            "frames": 70,
+            "narracao": "Não é quanto. É quando.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Não é quanto.|É quando.",
+              "destaque": [
+                "quando."
+              ]
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 159,
+            "frames": 68,
+            "narracao": "[animada] O Dominnus enxerga o seu padrão.",
+            "conteudo": {
+              "cena": "contadorSobe",
+              "titulo": "Ele enxerga|seu padrão.",
+              "destaque": [
+                "padrão."
+              ],
+              "valor": 4312.7,
+              "rotulo": "analisados este mês"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 227,
+            "frames": 100,
+            "narracao": "Ele mostra em que dia da semana o seu dinheiro some,",
+            "conteudo": {
+              "cena": "heatmapSemana",
+              "titulo": "Dia por dia.",
+              "destaque": [
+                "dia."
+              ],
+              "veredito": "Sexta concentra 34% do mês"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 327,
+            "frames": 77,
+            "narracao": "[curiosa] e até em que hora do dia você mais compra.",
+            "conteudo": {
+              "cena": "relogio24h",
+              "titulo": "Hora por hora.",
+              "destaque": [
+                "hora."
+              ],
+              "veredito": "Seu pico de gastos é às 20h"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 404,
+            "frames": 72,
+            "narracao": "Aí aparece onde você mais gastou,",
+            "conteudo": {
+              "cena": "podio",
+              "titulo": "Onde foi parar.",
+              "destaque": [
+                "parar."
+              ],
+              "sub": "por empresa, não só por categoria"
+            },
+            "transicao": {
+              "tipo": "continuidade",
+              "frames": 6
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 476,
+            "frames": 93,
+            "narracao": "empresa por empresa, e não só por categoria.",
+            "conteudo": {
+              "cena": "caos",
+              "titulo": "Empresa|por empresa.",
+              "destaque": [
+                "empresa."
+              ],
+              "itens": [
+                [
+                  "ifood",
+                  -250,
+                  -160,
+                  -11
+                ],
+                [
+                  "uber",
+                  210,
+                  -200,
+                  9
+                ],
+                [
+                  "rappi",
+                  -200,
+                  70,
+                  8
+                ],
+                [
+                  "starbucks",
+                  230,
+                  100,
+                  -7
+                ],
+                [
+                  "mcdonalds",
+                  -110,
+                  270,
+                  11
+                ],
+                [
+                  "amazon",
+                  200,
+                  300,
+                  -6
+                ]
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 569,
+            "frames": 123,
+            "narracao": "[confiante] E ele compara com o mês passado, pra você ver o que cresceu.",
+            "conteudo": {
+              "cena": "comparaMeses",
+              "titulo": "O que cresceu.",
+              "destaque": [
+                "cresceu."
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 692,
+            "frames": 86,
+            "narracao": "Doze meses de histórico, num gráfico só.",
+            "conteudo": {
+              "cena": "selo",
+              "icone": "grafico-linha",
+              "titulo": "Doze meses|num gráfico.",
+              "destaque": [
+                "gráfico."
+              ],
+              "selo": "Evolução mês a mês"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 778,
+            "frames": 182,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cartoes",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1131,
+        "audioUnico": "audio/cartoes.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 99,
+            "narracao": "[conversacional] A fatura chega e vem maior do que você esperava.",
+            "conteudo": {
+              "cena": "numeroQuebra",
+              "titulo": "A fatura|sempre surpreende.",
+              "destaque": [
+                "surpreende."
+              ],
+              "valor": -4312.7,
+              "rotulo": "e você não viu chegando"
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 99,
+            "frames": 111,
+            "narracao": "Aí você abre três aplicativos de banco pra entender o que aconteceu.",
+            "conteudo": {
+              "cena": "caos",
+              "titulo": "Três apps.|Nenhuma resposta.",
+              "destaque": [
+                "Nenhuma"
+              ],
+              "itens": [
+                [
+                  "ifood",
+                  -250,
+                  -160,
+                  -11
+                ],
+                [
+                  "uber",
+                  210,
+                  -200,
+                  9
+                ],
+                [
+                  "netflix",
+                  -200,
+                  70,
+                  8
+                ],
+                [
+                  "amazon",
+                  230,
+                  100,
+                  -7
+                ],
+                [
+                  "spotify",
+                  -110,
+                  270,
+                  11
+                ],
+                [
+                  "rappi",
+                  200,
+                  300,
+                  -6
+                ]
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 210,
+            "frames": 92,
+            "narracao": "[animada] Com o Dominnus, a fatura para de ser surpresa.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Sem surpresa.",
+              "destaque": [
+                "surpresa."
+              ]
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 302,
+            "frames": 79,
+            "narracao": "Todos os seus cartões ficam na mesma tela,",
+            "conteudo": {
+              "cena": "lequeCartoes",
+              "titulo": "Todos os cartões|na mesma tela.",
+              "destaque": [
+                "cartões"
+              ],
+              "sub": "limite, fechamento e vencimento"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 381,
+            "frames": 115,
+            "narracao": "com o limite, o dia de fechamento e o de vencimento de cada um.",
+            "conteudo": {
+              "cena": "cicloFatura",
+              "titulo": "Fecha e vence.|Cada um no seu dia.",
+              "destaque": [
+                "dia."
+              ]
+            },
+            "transicao": {
+              "tipo": "continuidade",
+              "frames": 6
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 496,
+            "frames": 128,
+            "narracao": "[curiosa] E cada compra aparece dentro da fatura certa, sozinha.",
+            "conteudo": {
+              "cena": "comprasNoCartao",
+              "titulo": "Cada compra|na fatura certa.",
+              "destaque": [
+                "certa."
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 624,
+            "frames": 113,
+            "narracao": "Você vê o que já fechou, o que está aberto, e o que já foi pago.",
+            "conteudo": {
+              "cena": "abasFatura",
+              "titulo": "Paga, aberta|ou a vencer.",
+              "destaque": [
+                "vencer."
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 737,
+            "frames": 101,
+            "narracao": "[confiante] Três dias antes do vencimento, ele te avisa no celular.",
+            "conteudo": {
+              "cena": "selo",
+              "icone": "fatura",
+              "titulo": "Três dias antes,|ele avisa.",
+              "destaque": [
+                "avisa."
+              ],
+              "selo": "Fatura vence em 3 dias"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 838,
+            "frames": 115,
+            "narracao": "E no dia também, pra você não pagar juros por esquecimento.",
+            "conteudo": {
+              "cena": "notificacaoChega",
+              "titulo": "E no dia também.",
+              "destaque": [
+                "dia"
+              ],
+              "hora": "09:00",
+              "dia": "no dia do vencimento",
+              "tituloCard": "Fatura de cartão",
+              "linhas": [
+                [
+                  "Nubank",
+                  "R$ 2.412,50"
+                ],
+                [
+                  "Vence",
+                  "hoje"
+                ],
+                [
+                  "Status",
+                  "em aberto"
+                ]
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 953,
+            "frames": 178,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "relatorios",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 996,
+        "audioUnico": "audio/relatorios.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 80,
+            "narracao": "[conversacional] Todo app de finança espera você abrir ele.",
+            "conteudo": {
+              "cena": "appParado",
+              "titulo": "Todo app espera|você abrir.",
+              "destaque": [
+                "espera"
+              ],
+              "ate": 47
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 80,
+            "frames": 115,
+            "narracao": "E você abre uma vez, duas… e depois esquece.",
+            "conteudo": {
+              "cena": "planilhaColapso",
+              "titulo": "E você esquece.",
+              "destaque": [
+                "esquece."
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 7
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 195,
+            "frames": 86,
+            "narracao": "[animada] O Dominnus faz o contrário: ele te procura.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Ele te procura.",
+              "destaque": [
+                "procura."
+              ]
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 281,
+            "frames": 79,
+            "narracao": "Às oito da noite, chega o resumo do dia:",
+            "conteudo": {
+              "cena": "notificacaoChega",
+              "titulo": "Às 20h,|ele te procura.",
+              "destaque": [
+                "20h,"
+              ],
+              "hora": "20:00",
+              "dia": "todo dia",
+              "tituloCard": "Resumo do dia",
+              "linhas": [
+                [
+                  "Gastou",
+                  "R$ 257,60"
+                ],
+                [
+                  "Lançamentos",
+                  "6"
+                ],
+                [
+                  "Maior gasto",
+                  "Mercado"
+                ]
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 360,
+            "frames": 81,
+            "narracao": "quanto você gastou e em quantos lançamentos.",
+            "conteudo": {
+              "cena": "anoEmpilha",
+              "titulo": "O dia fechado.",
+              "destaque": [
+                "fechado."
+              ],
+              "valorMes": 257.6,
+              "rotulo": "nos últimos 12 dias"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 441,
+            "frames": 106,
+            "narracao": "[curiosa] Toda segunda, o resumo da semana, comparado com a anterior.",
+            "conteudo": {
+              "cena": "relatorioMontando",
+              "titulo": "A semana|comparada.",
+              "destaque": [
+                "comparada."
+              ],
+              "cabecalho": "Sua semana",
+              "periodo": "12 a 18 de agosto"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 547,
+            "frames": 89,
+            "narracao": "E no dia primeiro, o fechamento do mês inteiro.",
+            "conteudo": {
+              "cena": "contadorSobe",
+              "titulo": "O mês fechado.",
+              "destaque": [
+                "fechado."
+              ],
+              "valor": 1976.5,
+              "rotulo": "entrou, saiu, sobrou"
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 636,
+            "frames": 89,
+            "narracao": "[confiante] Tudo isso chega no seu celular e no seu e-mail,",
+            "conteudo": {
+              "cena": "canais",
+              "titulo": "No celular|e no e-mail.",
+              "destaque": [
+                "e-mail."
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 725,
+            "frames": 92,
+            "narracao": "com a evolução dos últimos meses e o que mais cresceu.",
+            "conteudo": {
+              "cena": "selo",
+              "icone": "grafico-crescimento",
+              "titulo": "Com a evolução|dos meses.",
+              "destaque": [
+                "evolução"
+              ],
+              "selo": "O que mais cresceu"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 817,
+            "frames": 179,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "whatsapp",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1121,
+        "audioUnico": "audio/whatsapp.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 89,
+            "narracao": "[conversacional] Todo app de finança te dá um formulário pra preencher,",
+            "conteudo": {
+              "cena": "formularioCansa",
+              "titulo": "Um formulário|pra preencher.",
+              "destaque": [
+                "formulário"
+              ],
+              "campos": [
+                "Valor",
+                "Categoria",
+                "Data",
+                "Conta",
+                "Descrição"
+              ]
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 89,
+            "frames": 113,
+            "narracao": "e no terceiro campo você já desistiu de anotar aquele café.",
+            "conteudo": {
+              "cena": "desistencia",
+              "titulo": "E você desiste|no terceiro campo.",
+              "destaque": [
+                "desiste"
+              ],
+              "ate": 3
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 7
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 202,
+            "frames": 103,
+            "narracao": "[animada] No Dominnus, você já sabe usar: é o WhatsApp.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Você já sabe usar.",
+              "destaque": [
+                "já sabe"
+              ]
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 305,
+            "frames": 115,
+            "narracao": "Você escreve do jeito que fala, mercado noventa reais,",
+            "conteudo": {
+              "cena": "conversaSolta",
+              "titulo": "Escreve|como você fala.",
+              "destaque": [
+                "como você fala."
+              ],
+              "mensagem": "mercado 90",
+              "cartao": {
+                "titulo": "Despesa registrada",
+                "linhas": [
+                  [
+                    "Mercado",
+                    "R$ 90,00"
+                  ],
+                  [
+                    "Alimentação",
+                    "hoje"
+                  ]
+                ]
+              }
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 420,
+            "frames": 83,
+            "narracao": "[curiosa] ou manda um áudio, se estiver com as mãos ocupadas,",
+            "conteudo": {
+              "cena": "audioVira",
+              "titulo": "Ou manda|um áudio.",
+              "destaque": [
+                "um áudio."
+              ],
+              "transcrito": "paguei 42 no uber agora"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 503,
+            "frames": 114,
+            "narracao": "ou só a foto do comprovante, e ele lê o valor sozinho.",
+            "conteudo": {
+              "cena": "fotoLida",
+              "titulo": "Ou só a foto|do comprovante.",
+              "destaque": [
+                "a foto"
+              ],
+              "valor": "R$ 128,40",
+              "estabelecimento": "Posto Ipiranga"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 617,
+            "frames": 126,
+            "narracao": "[curiosa] E dá pra perguntar também: quanto eu gastei com comida esse mês?",
+            "conteudo": {
+              "cena": "perguntaChat",
+              "titulo": "E dá pra|perguntar.",
+              "destaque": [
+                "perguntar."
+              ],
+              "pergunta": "quanto gastei com comida esse mês?",
+              "resposta": "R$ 847,30",
+              "detalhe": "23 lançamentos · maior: iFood"
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 743,
+            "frames": 111,
+            "narracao": "Ele responde na hora, com o número certo e de onde saiu.",
+            "conteudo": {
+              "cena": "respostaDetalha",
+              "titulo": "Responde|na hora.",
+              "destaque": [
+                "na hora."
+              ],
+              "itens": [
+                [
+                  "ifood",
+                  "iFood",
+                  "R$ 312,00"
+                ],
+                [
+                  "mcdonalds",
+                  "McDonald's",
+                  "R$ 96,50"
+                ],
+                [
+                  "rappi",
+                  "Rappi",
+                  "R$ 128,80"
+                ]
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 854,
+            "frames": 92,
+            "narracao": "[confiante] E nada é gravado sem você confirmar antes.",
+            "conteudo": {
+              "cena": "confirmaAntes",
+              "titulo": "Nada entra|sem você confirmar.",
+              "destaque": [
+                "confirmar."
+              ],
+              "acao": "Apagar despesa de R$ 90,00?"
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 946,
+            "frames": 175,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "openfinance",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1392,
+        "audioUnico": "audio/openfinance.mp3",
+        "cenas": [
+          {
+            "id": "01",
+            "inicio": 0,
+            "frames": 119,
+            "narracao": "[conversacional] Quanto tempo por mês você perde digitando gasto num app?",
+            "conteudo": {
+              "cena": "tempoPerdido",
+              "titulo": "Quanto tempo|você perde?",
+              "destaque": [
+                "tempo"
+              ],
+              "minutos": 40,
+              "rotulo": "minutos por mês, digitando"
+            }
+          },
+          {
+            "id": "02",
+            "inicio": 119,
+            "frames": 160,
+            "narracao": "Uma semana você anota tudo, na outra você para, e o mês inteiro se perde.",
+            "conteudo": {
+              "cena": "constanciaQuebra",
+              "titulo": "Uma semana sim,|três não.",
+              "destaque": [
+                "três não."
+              ],
+              "semanas": [
+                1,
+                1,
+                0,
+                0
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 7
+            }
+          },
+          {
+            "id": "03",
+            "inicio": 279,
+            "frames": 131,
+            "narracao": "[animada] O Dominnus resolve isso de um jeito diferente: você não digita nada.",
+            "conteudo": {
+              "cena": "virada",
+              "titulo": "Você não|digita nada.",
+              "destaque": [
+                "nada."
+              ]
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          },
+          {
+            "id": "04",
+            "inicio": 410,
+            "frames": 113,
+            "narracao": "Pelo Open Finance, você autoriza o seu banco uma única vez,",
+            "conteudo": {
+              "cena": "autorizaUmaVez",
+              "titulo": "Uma autorização.|Uma vez só.",
+              "destaque": [
+                "Uma vez só."
+              ],
+              "banco": "nubank"
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": 1
+            }
+          },
+          {
+            "id": "05",
+            "inicio": 523,
+            "frames": 120,
+            "narracao": "e a partir daí ele busca tudo sozinho, todo santo dia.",
+            "conteudo": {
+              "cena": "sincronizaSozinho",
+              "titulo": "Ele busca|sozinho.",
+              "destaque": [
+                "sozinho."
+              ],
+              "dias": 7
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "06",
+            "inicio": 643,
+            "frames": 151,
+            "narracao": "[curiosa] Não é só um banco: conta, cartão, saldo e fatura, de todos eles.",
+            "conteudo": {
+              "cena": "todosOsBancos",
+              "titulo": "De todos|os seus bancos.",
+              "destaque": [
+                "todos"
+              ],
+              "bancos": [
+                "nubank",
+                "itau",
+                "inter",
+                "c6",
+                "bradesco",
+                "santander"
+              ]
+            },
+            "transicao": {
+              "tipo": "whip",
+              "frames": 10,
+              "sentido": -1
+            }
+          },
+          {
+            "id": "07",
+            "inicio": 794,
+            "frames": 130,
+            "narracao": "A compra que você fez de manhã já está organizada quando você abre o app,",
+            "conteudo": {
+              "cena": "chegaCategorizado",
+              "titulo": "Já chega|organizado.",
+              "destaque": [
+                "organizado."
+              ],
+              "itens": [
+                [
+                  "ifood",
+                  "iFood",
+                  "Alimentação"
+                ],
+                [
+                  "uber",
+                  "Uber",
+                  "Transporte"
+                ],
+                [
+                  "netflix",
+                  "Netflix",
+                  "Assinaturas"
+                ]
+              ]
+            },
+            "transicao": {
+              "tipo": "sobe",
+              "frames": 12
+            }
+          },
+          {
+            "id": "08",
+            "inicio": 924,
+            "frames": 114,
+            "narracao": "com a categoria já preenchida, sem você encostar num campo.",
+            "conteudo": {
+              "cena": "campoIntocado",
+              "titulo": "Sem encostar|num campo.",
+              "destaque": [
+                "num campo."
+              ]
+            },
+            "transicao": {
+              "tipo": "flash",
+              "frames": 8
+            }
+          },
+          {
+            "id": "09",
+            "inicio": 1038,
+            "frames": 170,
+            "narracao": "[confiante] E é seguro: o Open Finance é regulado pelo Banco Central, e o acesso é só de leitura.",
+            "conteudo": {
+              "cena": "leituraApenas",
+              "titulo": "Só leitura.|Nada se move.",
+              "destaque": [
+                "Só leitura."
+              ],
+              "selo": "Regulado pelo Banco Central"
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 14
+            }
+          },
+          {
+            "id": "10",
+            "inicio": 1208,
+            "frames": 184,
+            "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+            "conteudo": {
+              "cena": "cta",
+              "titulo": "7 dias grátis.",
+              "destaque": [
+                "grátis."
+              ],
+              "subtitulo": "Sem cartão de crédito."
+            },
+            "transicao": {
+              "tipo": "matchCut",
+              "frames": 16
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

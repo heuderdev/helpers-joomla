@@ -1,0 +1,204 @@
+{
+  "fps": 30,
+  "duracaoTotal": 1038,
+  "audioUnico": "audio/assinaturas.mp3",
+  "cenas": [
+    {
+      "id": "01",
+      "inicio": 0,
+      "frames": 75,
+      "narracao": "[conversacional] Some um dinheiro da sua conta todo mês,",
+      "conteudo": {
+        "cena": "calendarioSangra",
+        "titulo": "Todo mês|some um valor.",
+        "destaque": [
+          "some"
+        ]
+      }
+    },
+    {
+      "id": "02",
+      "inicio": 75,
+      "frames": 88,
+      "narracao": "e você nem lembra direito de tudo que assinou.",
+      "conteudo": {
+        "cena": "numeroQuebra",
+        "titulo": "E você nem lembra.",
+        "destaque": [
+          "nem"
+        ],
+        "valor": -436.4,
+        "rotulo": "por mês em assinaturas"
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "03",
+      "inicio": 163,
+      "frames": 69,
+      "narracao": "[animada] O Dominnus acha todas sozinho.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Ele acha|todas sozinho.",
+        "destaque": [
+          "todas"
+        ]
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "04",
+      "inicio": 232,
+      "frames": 117,
+      "narracao": "Ele olha os seus lançamentos, acha o que se repete todo mês,",
+      "conteudo": {
+        "cena": "radar",
+        "titulo": "Ele acha|o que se repete.",
+        "destaque": [
+          "repete."
+        ],
+        "sub": "três ocorrências, mesmo intervalo"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "05",
+      "inicio": 349,
+      "frames": 127,
+      "narracao": "e a inteligência artificial confirma o que é assinatura de verdade.",
+      "conteudo": {
+        "cena": "peneira",
+        "titulo": "A IA separa|o que é de verdade.",
+        "destaque": [
+          "verdade."
+        ]
+      },
+      "transicao": {
+        "tipo": "continuidade",
+        "frames": 6
+      }
+    },
+    {
+      "id": "06",
+      "inicio": 476,
+      "frames": 104,
+      "narracao": "Mercado, delivery e transporte ela deixa de fora.",
+      "conteudo": {
+        "cena": "filtroRuido",
+        "titulo": "Mercado e delivery|ficam de fora.",
+        "destaque": [
+          "fora."
+        ],
+        "itens": [
+          {
+            "rotulo": "Netflix",
+            "icone": "repetir",
+            "conta": true
+          },
+          {
+            "rotulo": "Academia",
+            "icone": "repetir",
+            "conta": true
+          },
+          {
+            "rotulo": "iFood",
+            "icone": "carrinho-compras",
+            "conta": false
+          },
+          {
+            "rotulo": "Uber",
+            "icone": "transferencia",
+            "conta": false
+          }
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "07",
+      "inicio": 580,
+      "frames": 83,
+      "narracao": "[curiosa] Aí você abre a tela e vê o total:",
+      "conteudo": {
+        "cena": "busca",
+        "pergunta": "Quanto vai em assinatura?",
+        "titulo": "",
+        "sub": "o total, na sua frente"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "08",
+      "inicio": 663,
+      "frames": 81,
+      "narracao": "quanto sai por mês, e quanto isso dá no ano.",
+      "conteudo": {
+        "cena": "anoEmpilha",
+        "titulo": "Por mês.|E por ano.",
+        "destaque": [
+          "ano."
+        ],
+        "valorMes": 436.4,
+        "rotulo": "em 12 meses"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "09",
+      "inicio": 744,
+      "frames": 118,
+      "narracao": "[confiante] E um dia antes de cada cobrança, ele te avisa no celular.",
+      "conteudo": {
+        "cena": "selo",
+        "icone": "sino",
+        "titulo": "Um dia antes,|ele avisa.",
+        "destaque": [
+          "avisa."
+        ],
+        "selo": "Cobrança amanhã"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "10",
+      "inicio": 862,
+      "frames": 176,
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

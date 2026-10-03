@@ -1,0 +1,21 @@
+{
+  "id": "teste10",
+  "titulo": "Teste10",
+  "formato": "reels",
+  "tema": "pagzero",
+  "fps": 30,
+  "caudaFinal": 0.4,
+  "cenas": [
+    { "tipo": "preset", "texto": "Seu checkout\nestá travando venda.",
+      "categoria": "Text/Animate In", "preset": "Decodificar",
+      "tamanho": 88, "cor": "#ffffff", "duracao": 3.0 },
+
+    { "tipo": "lista", "titulo": "Com a PagZero",
+      "itens": [
+        { "titulo": "PIX na hora", "detalhe": "sem espera" },
+        { "titulo": "Cartão em 12x", "detalhe": "com ou sem juros" }
+      ], "duracao": 3.8 },
+
+    { "tipo": "titulo", "titulo": "PagZero", "subtitulo": "pagzero.com.br", "duracao": 2.8 }
+  ]
+}

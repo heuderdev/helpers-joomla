@@ -1,0 +1,179 @@
+{
+  "fps": 30,
+  "duracaoTotal": 562,
+  "audioUnico": "audio/dashboard.mp3",
+  "cenas": [
+    {
+      "id": "01-dor",
+      "inicio": 0,
+      "frames": 100,
+      "narracao": "Quanto você faturou esse mês? Se demorou pra responder, é isso.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "A pergunta difícil",
+        "corEtiqueta": "vermelho",
+        "titulo": "Você sabe de cabeça?",
+        "itens": [
+          {
+            "titulo": "Quanto entrou",
+            "detalhe": "Sem abrir o banco",
+            "icone": "gd-dinheiro"
+          },
+          {
+            "titulo": "Quanto falta receber",
+            "detalhe": "E quem está atrasado",
+            "icone": "gd-relogio"
+          },
+          {
+            "titulo": "Quantas propostas viraram projeto",
+            "detalhe": "A sua conversão",
+            "icone": "gd-proposta-aceita"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-virada",
+      "inicio": 100,
+      "frames": 52,
+      "narracao": "Abre o painel e está tudo lá.",
+      "conteudo": {
+        "tipo": "marca",
+        "titulo": "Tudo num painel.",
+        "destaque": "painel"
+      }
+    },
+    {
+      "id": "03-numeros",
+      "inicio": 152,
+      "frames": 103,
+      "narracao": "Recebido, a receber, ticket médio e faturamento recorrente.",
+      "conteudo": {
+        "tipo": "numeros",
+        "etiqueta": "Últimos 30 dias",
+        "titulo": "Os números do mês.",
+        "metricas": [
+          {
+            "rotulo": "Recebido",
+            "valor": 24800,
+            "prefixo": "R$ ",
+            "icone": "gd-dinheiro"
+          },
+          {
+            "rotulo": "A receber",
+            "valor": 9600,
+            "prefixo": "R$ ",
+            "icone": "gd-relogio"
+          },
+          {
+            "rotulo": "Ticket médio",
+            "valor": 3100,
+            "prefixo": "R$ ",
+            "icone": "gd-grafico"
+          }
+        ]
+      }
+    },
+    {
+      "id": "04-grafico",
+      "inicio": 255,
+      "frames": 62,
+      "narracao": "Dá pra ver a receita crescendo mês a mês.",
+      "conteudo": {
+        "tipo": "grafico",
+        "etiqueta": "Evolução",
+        "titulo": "Mês a mês.",
+        "rotuloGrafico": "Receita nos últimos 6 meses",
+        "barras": [
+          {
+            "rotulo": "Mar",
+            "valor": 12
+          },
+          {
+            "rotulo": "Abr",
+            "valor": 15
+          },
+          {
+            "rotulo": "Mai",
+            "valor": 14
+          },
+          {
+            "rotulo": "Jun",
+            "valor": 19
+          },
+          {
+            "rotulo": "Jul",
+            "valor": 22
+          },
+          {
+            "rotulo": "Ago",
+            "valor": 25
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-funil",
+      "inicio": 317,
+      "frames": 61,
+      "narracao": "E o funil mostra onde o dinheiro trava.",
+      "conteudo": {
+        "tipo": "passos",
+        "etiqueta": "Funil",
+        "titulo": "Do contato ao caixa.",
+        "itens": [
+          {
+            "titulo": "Propostas enviadas",
+            "detalhe": "12 no mês",
+            "icone": "gd-proposta"
+          },
+          {
+            "titulo": "Contratos assinados",
+            "detalhe": "8 fecharam",
+            "icone": "gd-contrato-assinar"
+          },
+          {
+            "titulo": "Notas emitidas",
+            "detalhe": "8 na prefeitura",
+            "icone": "gd-notas-fiscais"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-email",
+      "inicio": 378,
+      "frames": 75,
+      "narracao": "E chega um resumo no seu e-mail todo dia às oito.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Sem abrir o sistema",
+        "titulo": "Chega pronto.",
+        "itens": [
+          {
+            "titulo": "Todo dia às 8h",
+            "detalhe": "O que entrou ontem",
+            "icone": "gd-envelope-1"
+          },
+          {
+            "titulo": "Segunda e dia 1º",
+            "detalhe": "Fechamento da semana e do mês",
+            "icone": "gd-calendario"
+          }
+        ]
+      }
+    },
+    {
+      "id": "07-cta",
+      "inicio": 453,
+      "frames": 109,
+      "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "De graça.",
+        "subtitulo": "Você só paga\nquando recebe.",
+        "cta": "link na bio"
+      }
+    }
+  ]
+}

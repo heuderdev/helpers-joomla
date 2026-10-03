@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 760" width="420" height="760">
+
+  <!-- torso: ombro em y=356, largura 300 (1.4x a cabeça) -->
+  <path d="M80 700 Q80 374 210 358 Q340 374 340 700 Z" fill="#1A1A1E"/>
+  <!-- braço esquerdo, encostado no corpo -->
+  <path d="M104 432 Q84 530 96 612" stroke="#1A1A1E" stroke-width="54" fill="none" stroke-linecap="round"/>
+  <circle cx="98" cy="632" r="27" fill="#F2C9A0"/>
+  <!-- gola em V -->
+  <path d="M172 364 L210 432 L248 364 Q230 356 210 356 Q190 356 172 364 Z" fill="#1E1D22"/>
+  <path d="M210 436 L210 500" stroke="#1E1D22" stroke-width="5" opacity="0.4"/>
+  <!-- pescoço: sai de DENTRO do torso, nunca solto -->
+  <path d="M178 300 h64 v62 q-32 16 -64 0 Z" fill="#D9A87C"/>
+  <path d="M178 300 h64 v20 q-32 14 -64 0 Z" fill="#C99A6E"/>
+</svg>

@@ -1,0 +1,147 @@
+{
+  "fps": 30,
+  "duracaoTotal": 603,
+  "audioUnico": "audio/notafiscal.mp3",
+  "cenas": [
+    {
+      "id": "01-dor",
+      "inicio": 0,
+      "frames": 73,
+      "narracao": "Todo mês a mesma novela pra emitir nota.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Como é hoje",
+        "corEtiqueta": "vermelho",
+        "titulo": "O site da prefeitura.",
+        "itens": [
+          {
+            "titulo": "Achar o login",
+            "detalhe": "A senha que você anotou",
+            "icone": "gd-cadeado"
+          },
+          {
+            "titulo": "Preencher tudo de novo",
+            "detalhe": "Os mesmos dados",
+            "icone": "gd-editar"
+          },
+          {
+            "titulo": "Torcer pra não cair",
+            "detalhe": "O site fora do ar",
+            "icone": "gd-atencao"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-virada",
+      "inicio": 73,
+      "frames": 61,
+      "narracao": "Você emite direto do Gestão Dev.",
+      "conteudo": {
+        "tipo": "marca",
+        "titulo": "Emite por aqui.",
+        "destaque": "aqui"
+      }
+    },
+    {
+      "id": "03-emissao",
+      "inicio": 134,
+      "frames": 88,
+      "narracao": "A nota já nasce preenchida com os dados da última.",
+      "conteudo": {
+        "tipo": "tela",
+        "etiqueta": "Nota nova",
+        "titulo": "Já vem preenchida.",
+        "tela": {
+          "titulo": "NFS-e",
+          "rotulo": "R$ 4.800",
+          "claro": true,
+          "linhas": [
+            [
+              "Tomador",
+              "Ana Martins"
+            ],
+            [
+              "Serviço",
+              "Desenvolvimento"
+            ]
+          ],
+          "confirmaEm": 30,
+          "selo": "Autorizada",
+          "seloIcone": "gd-notas-fiscais",
+          "corpo": [
+            "#Impostos calculados",
+            "ISS retido na fonte",
+            "PIS, COFINS e CSLL"
+          ],
+          "total": "R$ 4.800",
+          "rotuloTotal": "Valor da nota"
+        },
+        "tituloCurto": false
+      }
+    },
+    {
+      "id": "04-real",
+      "inicio": 222,
+      "frames": 133,
+      "narracao": "É nota de verdade, com seu certificado digital e a regra da sua cidade.",
+      "conteudo": {
+        "tipo": "passos",
+        "etiqueta": "Emissão real",
+        "titulo": "Direto na prefeitura.",
+        "itens": [
+          {
+            "titulo": "Certificado A1",
+            "detalhe": "O seu, com segurança",
+            "icone": "gd-cadeado"
+          },
+          {
+            "titulo": "Regra do seu município",
+            "detalhe": "Cada cidade tem a sua",
+            "icone": "gd-localizacao"
+          },
+          {
+            "titulo": "Impostos calculados",
+            "detalhe": "ISS, PIS, COFINS, IR",
+            "icone": "gd-calculadora"
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-entrega",
+      "inicio": 355,
+      "frames": 117,
+      "narracao": "Autorizou, o PDF sai na hora pro WhatsApp e o e-mail do cliente.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Entrega sozinha",
+        "titulo": "Com a sua marca.",
+        "itens": [
+          {
+            "titulo": "WhatsApp",
+            "detalhe": "Número oficial",
+            "icone": "gd-celular"
+          },
+          {
+            "titulo": "E-mail",
+            "detalhe": "Com o seu logo",
+            "icone": "gd-envelope-1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-cta",
+      "inicio": 472,
+      "frames": 131,
+      "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "De graça.",
+        "subtitulo": "Você só paga\nquando recebe.",
+        "cta": "link na bio"
+      }
+    }
+  ]
+}

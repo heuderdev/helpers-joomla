@@ -1,0 +1,182 @@
+{
+ "audio": "vsl/audio/narracao.mp3",
+ "fps": 30,
+ "duracaoTotal": 5426,
+ "cenas": [
+  {
+   "id": 1,
+   "inicio": 0,
+   "frames": 111
+  },
+  {
+   "id": 2,
+   "inicio": 111,
+   "frames": 112
+  },
+  {
+   "id": 3,
+   "inicio": 213,
+   "frames": 98
+  },
+  {
+   "id": 4,
+   "inicio": 302,
+   "frames": 200
+  },
+  {
+   "id": 5,
+   "inicio": 491,
+   "frames": 161
+  },
+  {
+   "id": 6,
+   "inicio": 642,
+   "frames": 98
+  },
+  {
+   "id": 7,
+   "inicio": 729,
+   "frames": 162
+  },
+  {
+   "id": 8,
+   "inicio": 885,
+   "frames": 132
+  },
+  {
+   "id": 9,
+   "inicio": 1007,
+   "frames": 224
+  },
+  {
+   "id": 10,
+   "inicio": 1220,
+   "frames": 130
+  },
+  {
+   "id": 11,
+   "inicio": 1342,
+   "frames": 192
+  },
+  {
+   "id": 12,
+   "inicio": 1528,
+   "frames": 238
+  },
+  {
+   "id": 13,
+   "inicio": 1760,
+   "frames": 212
+  },
+  {
+   "id": 14,
+   "inicio": 1963,
+   "frames": 136
+  },
+  {
+   "id": 15,
+   "inicio": 2089,
+   "frames": 57
+  },
+  {
+   "id": 16,
+   "inicio": 2138,
+   "frames": 113
+  },
+  {
+   "id": 17,
+   "inicio": 2240,
+   "frames": 267
+  },
+  {
+   "id": 18,
+   "inicio": 2497,
+   "frames": 248
+  },
+  {
+   "id": 19,
+   "inicio": 2739,
+   "frames": 98
+  },
+  {
+   "id": 20,
+   "inicio": 2829,
+   "frames": 145
+  },
+  {
+   "id": 21,
+   "inicio": 2965,
+   "frames": 153
+  },
+  {
+   "id": 22,
+   "inicio": 3108,
+   "frames": 211
+  },
+  {
+   "id": 23,
+   "inicio": 3308,
+   "frames": 214
+  },
+  {
+   "id": 24,
+   "inicio": 3514,
+   "frames": 140
+  },
+  {
+   "id": 25,
+   "inicio": 3644,
+   "frames": 182
+  },
+  {
+   "id": 26,
+   "inicio": 3815,
+   "frames": 152
+  },
+  {
+   "id": 27,
+   "inicio": 3961,
+   "frames": 274
+  },
+  {
+   "id": 28,
+   "inicio": 4225,
+   "frames": 113
+  },
+  {
+   "id": 29,
+   "inicio": 4327,
+   "frames": 259
+  },
+  {
+   "id": 30,
+   "inicio": 4578,
+   "frames": 186
+  },
+  {
+   "id": 31,
+   "inicio": 4754,
+   "frames": 226
+  },
+  {
+   "id": 32,
+   "inicio": 4971,
+   "frames": 177
+  },
+  {
+   "id": 33,
+   "inicio": 5142,
+   "frames": 137
+  },
+  {
+   "id": 34,
+   "inicio": 5269,
+   "frames": 39
+  },
+  {
+   "id": 35,
+   "inicio": 5297,
+   "frames": 139
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+
+  <circle cx="200" cy="200" r="150" fill="#141317" stroke="#FEBE00" stroke-width="10"/>
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#8A6800" stroke-width="10"
+          stroke-dasharray="180 760" stroke-linecap="round" transform="rotate(-90 200 200)"/>
+  <line x1="322.0" y1="200.0" x2="336.0" y2="200.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="305.7" y1="261.0" x2="317.8" y2="268.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="261.0" y1="305.7" x2="268.0" y2="317.8" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="200.0" y1="322.0" x2="200.0" y2="336.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="139.0" y1="305.7" x2="132.0" y2="317.8" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="94.3" y1="261.0" x2="82.2" y2="268.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="78.0" y1="200.0" x2="64.0" y2="200.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="94.3" y1="139.0" x2="82.2" y2="132.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="139.0" y1="94.3" x2="132.0" y2="82.2" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="200.0" y1="78.0" x2="200.0" y2="64.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="261.0" y1="94.3" x2="268.0" y2="82.2" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="305.7" y1="139.0" x2="317.8" y2="132.0" stroke="#8E8C97" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <circle cx="200" cy="200" r="14" fill="#FEBE00"/>
+</svg>

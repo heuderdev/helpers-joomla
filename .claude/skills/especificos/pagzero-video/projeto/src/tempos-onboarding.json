@@ -1,0 +1,176 @@
+{
+  "fps": 30,
+  "duracaoTotal": 2144,
+  "audioUnico": "audio/onboarding.mp3",
+  "cenas": [
+    {
+      "id": "01-abertura",
+      "inicio": 0,
+      "frames": 165,
+      "narracao": "Bem-vindo à Paguê-Zero. Em dois minutos você vai sair daqui com sua primeira venda pronta pra acontecer.",
+      "conteudo": {
+        "tipo": "abertura",
+        "titulo": "Bem-vindo à PagZero",
+        "subtitulo": "Da conta criada à primeira venda"
+      }
+    },
+    {
+      "id": "02-caminho",
+      "inicio": 165,
+      "frames": 236,
+      "narracao": "O caminho é sempre o mesmo, e são só quatro paradas. Produto, oferta, checkout e o gateway que recebe o dinheiro.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "O caminho",
+        "titulo": "Quatro paradas",
+        "subtitulo": "Toda venda na PagZero nasce assim.",
+        "itens": [
+          {
+            "titulo": "Produto",
+            "detalhe": "O que você entrega: curso, ebook, mentoria, evento."
+          },
+          {
+            "titulo": "Oferta",
+            "detalhe": "Quanto custa e como parcela."
+          },
+          {
+            "titulo": "Checkout",
+            "detalhe": "A página onde o cliente paga."
+          },
+          {
+            "titulo": "Gateway",
+            "detalhe": "Quem processa e envia o dinheiro pra você."
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-dashboard",
+      "inicio": 401,
+      "frames": 323,
+      "narracao": "Essa é a sua central. Faturamento, vendas, ticket médio, margem, tudo em tempo real. No começo ela está vazia, e é justamente isso que a gente vai resolver.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "on-dashboard@2x.png",
+        "etiqueta": "Passo 1",
+        "titulo": "Conheça o dashboard",
+        "foco": {
+          "x": 253,
+          "y": 190,
+          "w": 1280,
+          "h": 170
+        }
+      }
+    },
+    {
+      "id": "04-menu",
+      "inicio": 724,
+      "frames": 243,
+      "narracao": "No menu da esquerda está tudo. Produtos e vendas na parte de cima, área de membros e colaboradores na gestão, e os plugins lá embaixo.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "on-produtos-lista@2x.png",
+        "etiqueta": "Passo 2",
+        "titulo": "O menu lateral",
+        "foco": {
+          "x": 0,
+          "y": 60,
+          "w": 230,
+          "h": 320
+        }
+      }
+    },
+    {
+      "id": "05-produto",
+      "inicio": 967,
+      "frames": 312,
+      "narracao": "Comece pelo produto. Dê um nome, escolha o tipo, e pronto. Curso, ebook, assinatura, mentoria, evento: são doze tipos disponíveis.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "on-produto@2x.png",
+        "etiqueta": "Passo 3",
+        "titulo": "Crie seu produto",
+        "foco": {
+          "x": 253,
+          "y": 185,
+          "w": 1280,
+          "h": 175
+        }
+      }
+    },
+    {
+      "id": "06-oferta",
+      "inicio": 1279,
+      "frames": 264,
+      "narracao": "Agora a oferta. É ela que define o preço, as formas de pagamento e o parcelamento. Um mesmo produto pode ter várias ofertas diferentes.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "pr-oferta@2x.png",
+        "etiqueta": "Passo 4",
+        "titulo": "Defina a oferta",
+        "foco": {
+          "x": 608,
+          "y": 140,
+          "w": 572,
+          "h": 130
+        }
+      }
+    },
+    {
+      "id": "07-gateway",
+      "inicio": 1543,
+      "frames": 245,
+      "narracao": "Conecte um gateway em plugins. Pagar-Mi, Asaas, e é ele quem processa o pagamento e manda o dinheiro pra sua conta.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "on-plugins@2x.png",
+        "etiqueta": "Passo 5",
+        "titulo": "Conecte o gateway",
+        "foco": {
+          "x": 255,
+          "y": 235,
+          "w": 1280,
+          "h": 260
+        }
+      }
+    },
+    {
+      "id": "08-trial",
+      "inicio": 1788,
+      "frames": 194,
+      "narracao": "Uma última coisa: você tem quinze dias de teste grátis, e o aviso no topo mostra quantos ainda restam.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "Bom saber",
+        "titulo": "Seu teste grátis",
+        "subtitulo": "15 dias pra testar tudo, sem cartão.",
+        "itens": [
+          {
+            "titulo": "15 dias completos",
+            "detalhe": "Todos os recursos liberados desde o primeiro minuto."
+          },
+          {
+            "titulo": "Aviso no topo",
+            "detalhe": "Mostra sempre quantos dias faltam."
+          },
+          {
+            "titulo": "Suporte no WhatsApp",
+            "detalhe": "Botão fixo no rodapé do menu, com gente de verdade."
+          }
+        ]
+      }
+    },
+    {
+      "id": "09-cta",
+      "inicio": 1982,
+      "frames": 162,
+      "narracao": "Agora é com você. Crie seu produto e faça a primeira venda.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "Bora vender.",
+        "subtitulo": "Seu primeiro produto está a um clique",
+        "cta": "app.pagzero.com"
+      }
+    }
+  ]
+}

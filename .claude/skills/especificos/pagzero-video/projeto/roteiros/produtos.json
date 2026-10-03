@@ -1,0 +1,124 @@
+{
+  "titulo": "Produtos, ofertas e checkout",
+  "vozEleven": "cgSgspJ2msm6clMCkdW9",
+  "caudaFinal": 0.9,
+  "cenas": [
+    {
+      "id": "01-abertura",
+      "narracao": "Produto, oferta e checkout. Entenda esses três e você entendeu a Paguê-Zero por completo.",
+      "conteudo": {
+        "tipo": "abertura",
+        "titulo": "Produto, oferta, checkout",
+        "subtitulo": "Os três pilares de toda venda"
+      }
+    },
+    {
+      "id": "02-diferenca",
+      "narracao": "A diferença é simples. O produto é o que você entrega. A oferta é quanto custa. E o checkout é a página onde o cliente paga.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "A diferença",
+        "titulo": "Cada um faz uma coisa",
+        "itens": [
+          {
+            "titulo": "Produto",
+            "detalhe": "O conteúdo. Nome, tipo, capa, suporte."
+          },
+          {
+            "titulo": "Oferta",
+            "detalhe": "O preço, o parcelamento e a entrega."
+          },
+          {
+            "titulo": "Checkout",
+            "detalhe": "A página de pagamento, com a sua cara."
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-produto",
+      "narracao": "Comece criando o produto. São doze tipos: curso, ebook, assinatura, mentoria, evento, comunidade e mais. Se for evento presencial, ele até pede o endereço.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "on-produto@2x.png",
+        "etiqueta": "Passo 1",
+        "titulo": "Crie o produto",
+        "foco": {
+          "x": 253,
+          "y": 185,
+          "w": 1280,
+          "h": 175
+        }
+      }
+    },
+    {
+      "id": "04-oferta",
+      "narracao": "Agora a oferta, que é o que o cliente realmente compra. Aqui você define o preço, escolhe as formas de pagamento e monta o parcelamento.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "pr-oferta@2x.png",
+        "etiqueta": "Passo 2",
+        "titulo": "Monte a oferta",
+        "foco": {
+          "x": 608,
+          "y": 140,
+          "w": 572,
+          "h": 130
+        }
+      }
+    },
+    {
+      "id": "05-pagamento",
+      "narracao": "As formas de pagamento vão além do básico. Tem cartão, pix e boleto, mas também dois cartões na mesma compra, e cartão mais pix combinados.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "Passo 3",
+        "titulo": "Formas de pagamento",
+        "itens": [
+          {
+            "titulo": "Cartão, PIX e boleto",
+            "detalhe": "O trio de sempre, em qualquer combinação."
+          },
+          {
+            "titulo": "Dois cartões",
+            "detalhe": "O cliente divide o valor entre dois cartões."
+          },
+          {
+            "titulo": "Cartão + PIX",
+            "detalhe": "Parte no cartão, parte no PIX."
+          },
+          {
+            "titulo": "Parcelamento com juros",
+            "detalhe": "Até 21x, com tabela de juros por parcela."
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-cobranca",
+      "narracao": "Você ainda define o tipo de cobrança, os dias de garantia e se o checkout pede o endereço do comprador.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "pr-oferta-pagamento@2x.png",
+        "etiqueta": "Passo 4",
+        "titulo": "Cobrança e garantia",
+        "foco": {
+          "x": 608,
+          "y": 170,
+          "w": 572,
+          "h": 130
+        }
+      }
+    },
+    {
+      "id": "09-cta",
+      "narracao": "Produto, oferta, checkout. Agora é só vender.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "Pronto pra vender.",
+        "subtitulo": "Seu checkout no ar em minutos",
+        "cta": "app.pagzero.com"
+      }
+    }
+  ]
+}

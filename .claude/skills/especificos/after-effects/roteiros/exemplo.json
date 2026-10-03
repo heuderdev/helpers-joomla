@@ -1,0 +1,18 @@
+{
+  "id": "exemplo",
+  "titulo": "Exemplo",
+  "formato": "reels",
+  "tema": "pagzero",
+  "fps": 30,
+  "cenas": [
+    { "tipo": "titulo", "titulo": "PagZero", "subtitulo": "checkout que converte", "duracao": 3 },
+    { "tipo": "frase", "texto": "Vender online\nnão precisa ser difícil.", "duracao": 3 },
+    { "tipo": "lista", "titulo": "O que você ganha",
+      "itens": [
+        { "titulo": "PIX na hora", "detalhe": "sem espera" },
+        { "titulo": "Cartão em 12x", "detalhe": "com ou sem juros" },
+        { "titulo": "Área de membros", "detalhe": "entrega automática" }
+      ], "duracao": 4.5 },
+    { "tipo": "preset", "texto": "Comece hoje", "preset": "Deslizar", "duracao": 3 }
+  ]
+}

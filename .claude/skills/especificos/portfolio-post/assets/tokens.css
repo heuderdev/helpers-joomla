@@ -1,0 +1,61 @@
+/* ════════════════════════════════════════════════════════════════════════
+   DESIGN SYSTEM — Team Lecdt (extraído de lecdt.com)
+   Tema monocromático P&B + tipografia TWK Lausanne.
+   Usado por todos os templates de carrossel de portfólio.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Fontes (embutidas na skill, proprietárias) ───────────────────────── */
+@font-face {
+  font-family: 'TWKLausanne-350';
+  font-weight: normal; font-style: normal; font-display: block;
+  src: url('./fonts/TWKLausanne-350.woff2') format('woff2'),
+       url('./fonts/TWKLausanne-350.woff') format('woff');
+}
+@font-face {
+  font-family: 'TWKLausanne-400';
+  font-weight: normal; font-style: normal; font-display: block;
+  src: url('./fonts/TWKLausanne-400.woff2') format('woff2'),
+       url('./fonts/TWKLausanne-400.woff') format('woff');
+}
+
+:root {
+  /* Cores — base mono P&B */
+  --cor-branco: #ffffff;
+  --cor-preto: #000000;
+  --cor-cinza-1: #b5b5b5;
+  --cor-cinza-2: #7a7a7a;
+
+  --cor-escuro-1: #000000;
+  --cor-escuro-2: #0a0a0a;
+  --cor-escuro-3: #161616;
+  --cor-escuro-4: #222222;
+
+  /* Linhas hairline / vidro (branco via opacidade) */
+  --linha-1: rgba(255,255,255,0.08);
+  --linha-2: rgba(255,255,255,0.14);
+  --linha-3: rgba(255,255,255,0.28);
+  --vidro:   rgba(255,255,255,0.04);
+  --vidro-2: rgba(255,255,255,0.07);
+
+  /* Cor de acento do PROJETO — preenchida por slide via --acento.
+     Default branco para manter o mono caso o projeto não tenha cor. */
+  --acento: #ffffff;
+
+  /* Grão monocromático sutil (data-uri, igual ao site) */
+  --grao: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/%3E%3C/svg%3E");
+
+  /* Escala tipográfica (px) — mesma do site */
+  --f0: 18px;   /* rótulos uppercase   (escalado p/ canvas 1080) */
+  --f1: 22px;
+  --f2: 28px;
+  --f3: 32px;
+  --f4: 44px;
+  --f5: 60px;
+  --f6: 78px;
+  --f7: 96px;
+  --f8: 120px;
+  --f9: 150px;
+
+  --light:   'TWKLausanne-350';
+  --regular: 'TWKLausanne-400';
+}

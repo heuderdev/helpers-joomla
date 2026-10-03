@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 560" width="460" height="560">
+
+  <ellipse cx="230" cy="516" rx="168" ry="34" fill="#22C55E" opacity="0.12"/>
+  <path d="M110 520 Q110 372 230 372 Q350 372 350 520 Z" fill="#1A1A1E"/>
+  <!-- braço aberto, palma pra cima -->
+  <path d="M336 424 Q392 396 404 340" stroke="#1A1A1E" stroke-width="44" fill="none" stroke-linecap="round"/>
+  <circle cx="406" cy="330" r="26" fill="#F2C9A0"/>
+  <path d="M124 430 Q150 470 168 496" stroke="#1A1A1E" stroke-width="44" fill="none" stroke-linecap="round"/>
+  <rect x="200" y="316" width="60" height="70" rx="22" fill="#D9A87C"/>
+  <ellipse cx="230" cy="252" rx="88" ry="94" fill="#F2C9A0"/>
+  <path d="M142 244 Q146 136 230 136 Q314 136 318 244 Q312 186 230 186 Q148 186 142 244 Z" fill="#1A1A1E"/>
+  <path d="M186 252 q12 -16 24 0" stroke="#1A1A1E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M250 252 q12 -16 24 0" stroke="#1A1A1E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M194 292 Q230 328 266 292" stroke="#1A1A1E" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <circle cx="168" cy="288" r="13" fill="#EF4444" opacity="0.18"/>
+  <circle cx="292" cy="288" r="13" fill="#EF4444" opacity="0.18"/>
+</svg>

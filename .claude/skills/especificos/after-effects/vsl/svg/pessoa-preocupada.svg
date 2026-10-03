@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 560" width="460" height="560">
+
+  <ellipse cx="230" cy="516" rx="168" ry="34" fill="#FEBE00" opacity="0.09"/>
+  <!-- torso -->
+  <path d="M110 520 Q110 372 230 372 Q350 372 350 520 Z" fill="#1A1A1E"/>
+  <!-- braços cruzados: gesto de preocupação -->
+  <path d="M124 432 Q230 470 336 432" stroke="#1A1A1E" stroke-width="46" fill="none" stroke-linecap="round"/>
+  <path d="M124 432 Q230 470 336 432" stroke="#1E1D22" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <circle cx="150" cy="446" r="24" fill="#F2C9A0"/>
+  <circle cx="310" cy="446" r="24" fill="#F2C9A0"/>
+  <!-- pescoço -->
+  <rect x="200" y="316" width="60" height="70" rx="22" fill="#D9A87C"/>
+  <!-- cabeça -->
+  <ellipse cx="230" cy="252" rx="88" ry="94" fill="#F2C9A0"/>
+  <path d="M142 244 Q146 136 230 136 Q314 136 318 244 Q312 186 230 186 Q148 186 142 244 Z" fill="#1A1A1E"/>
+  <ellipse cx="198" cy="258" rx="8" ry="10" fill="#1A1A1E"/>
+  <ellipse cx="262" cy="258" rx="8" ry="10" fill="#1A1A1E"/>
+  <path d="M204 310 Q230 294 256 310" stroke="#1A1A1E" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M180 228 Q198 216 216 226" stroke="#1A1A1E" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M244 226 Q262 216 280 228" stroke="#1A1A1E" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- gota de tensão -->
+  <path d="M330 236 q10 18 0 26 q-10 -8 0 -26 Z" fill="#FEBE00" opacity="0.8"/>
+</svg>

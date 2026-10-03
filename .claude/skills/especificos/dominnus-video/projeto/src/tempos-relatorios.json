@@ -1,0 +1,202 @@
+{
+  "fps": 30,
+  "duracaoTotal": 996,
+  "audioUnico": "audio/relatorios.mp3",
+  "cenas": [
+    {
+      "id": "01",
+      "inicio": 0,
+      "frames": 80,
+      "narracao": "[conversacional] Todo app de finança espera você abrir ele.",
+      "conteudo": {
+        "cena": "appParado",
+        "titulo": "Todo app espera|você abrir.",
+        "destaque": [
+          "espera"
+        ],
+        "ate": 47
+      }
+    },
+    {
+      "id": "02",
+      "inicio": 80,
+      "frames": 115,
+      "narracao": "E você abre uma vez, duas… e depois esquece.",
+      "conteudo": {
+        "cena": "planilhaColapso",
+        "titulo": "E você esquece.",
+        "destaque": [
+          "esquece."
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 7
+      }
+    },
+    {
+      "id": "03",
+      "inicio": 195,
+      "frames": 86,
+      "narracao": "[animada] O Dominnus faz o contrário: ele te procura.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Ele te procura.",
+        "destaque": [
+          "procura."
+        ]
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "04",
+      "inicio": 281,
+      "frames": 79,
+      "narracao": "Às oito da noite, chega o resumo do dia:",
+      "conteudo": {
+        "cena": "notificacaoChega",
+        "titulo": "Às 20h,|ele te procura.",
+        "destaque": [
+          "20h,"
+        ],
+        "hora": "20:00",
+        "dia": "todo dia",
+        "tituloCard": "Resumo do dia",
+        "linhas": [
+          [
+            "Gastou",
+            "R$ 257,60"
+          ],
+          [
+            "Lançamentos",
+            "6"
+          ],
+          [
+            "Maior gasto",
+            "Mercado"
+          ]
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "05",
+      "inicio": 360,
+      "frames": 81,
+      "narracao": "quanto você gastou e em quantos lançamentos.",
+      "conteudo": {
+        "cena": "anoEmpilha",
+        "titulo": "O dia fechado.",
+        "destaque": [
+          "fechado."
+        ],
+        "valorMes": 257.6,
+        "rotulo": "nos últimos 12 dias"
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "06",
+      "inicio": 441,
+      "frames": 106,
+      "narracao": "[curiosa] Toda segunda, o resumo da semana, comparado com a anterior.",
+      "conteudo": {
+        "cena": "relatorioMontando",
+        "titulo": "A semana|comparada.",
+        "destaque": [
+          "comparada."
+        ],
+        "cabecalho": "Sua semana",
+        "periodo": "12 a 18 de agosto"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "07",
+      "inicio": 547,
+      "frames": 89,
+      "narracao": "E no dia primeiro, o fechamento do mês inteiro.",
+      "conteudo": {
+        "cena": "contadorSobe",
+        "titulo": "O mês fechado.",
+        "destaque": [
+          "fechado."
+        ],
+        "valor": 1976.5,
+        "rotulo": "entrou, saiu, sobrou"
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "08",
+      "inicio": 636,
+      "frames": 89,
+      "narracao": "[confiante] Tudo isso chega no seu celular e no seu e-mail,",
+      "conteudo": {
+        "cena": "canais",
+        "titulo": "No celular|e no e-mail.",
+        "destaque": [
+          "e-mail."
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "09",
+      "inicio": 725,
+      "frames": 92,
+      "narracao": "com a evolução dos últimos meses e o que mais cresceu.",
+      "conteudo": {
+        "cena": "selo",
+        "icone": "grafico-crescimento",
+        "titulo": "Com a evolução|dos meses.",
+        "destaque": [
+          "evolução"
+        ],
+        "selo": "O que mais cresceu"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "10",
+      "inicio": 817,
+      "frames": 179,
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

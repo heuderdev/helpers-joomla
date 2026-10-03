@@ -1,0 +1,27 @@
+{
+  "name": "gestaodev-video",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.509",
+    "@remotion/media-utils": "^4.0.509",
+    "@remotion/motion-blur": "4.0.509",
+    "@remotion/noise": "^4.0.509",
+    "@remotion/paths": "4.0.509",
+    "@remotion/shapes": "^4.0.509",
+    "@remotion/transitions": "^4.0.509",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.509"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

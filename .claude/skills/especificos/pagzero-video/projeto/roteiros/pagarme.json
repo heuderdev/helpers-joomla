@@ -1,0 +1,177 @@
+{
+  "titulo": "Conectar a Pagar.me na PagZero",
+  "vozEleven": "cgSgspJ2msm6clMCkdW9",
+  "caudaFinal": 0.9,
+  "cenas": [
+    {
+      "id": "01-abertura",
+      "narracao": "Vou te mostrar como conectar a Pagar-Mi na Paguê-Zero, do começo ao fim.",
+      "conteudo": {
+        "tipo": "abertura",
+        "titulo": "Conecte a Pagar.me",
+        "subtitulo": "Passo a passo, do zero ao primeiro pagamento"
+      }
+    },
+    {
+      "id": "02-catalogo",
+      "narracao": "No menu lateral, abra Plugins. Esse é o catálogo de tudo que a Paguê-Zero conecta. Ative a Pagar-Mi.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "02-catalogo@2x.png",
+        "etiqueta": "Passo 1",
+        "titulo": "Ative o plugin",
+        "foco": {
+          "x": 733,
+          "y": 238,
+          "w": 382,
+          "h": 275
+        }
+      }
+    },
+    {
+      "id": "03-nova-conexao",
+      "narracao": "Clique em nova conexão e dê um apelido pra ela, como conta principal.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "03-novo@2x.png",
+        "etiqueta": "Passo 2",
+        "titulo": "Nomeie a conexão",
+        "foco": {
+          "x": 560,
+          "y": 238,
+          "w": 726,
+          "h": 112
+        }
+      }
+    },
+    {
+      "id": "04-chaves-pagarme",
+      "narracao": "Agora abra o painel da Pagar-Mi. Em configurações, chaves, você encontra as chaves de API da sua conta.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "04-pagarme-chaves@2x.png",
+        "etiqueta": "Passo 3",
+        "titulo": "Copie a Secret Key",
+        "marca": "pagarme",
+        "foco": {
+          "x": 288,
+          "y": 405,
+          "w": 1244,
+          "h": 320
+        }
+      }
+    },
+    {
+      "id": "05-cola-chaves",
+      "narracao": "Volte na Paguê-Zero e cole a secret key da sua conta. Depois escolha o ambiente: produção pra vender de verdade, sandbox pra testar.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "03-novo@2x.png",
+        "etiqueta": "Passo 4",
+        "titulo": "Cole a Secret Key",
+        "foco": {
+          "x": 560,
+          "y": 444,
+          "w": 726,
+          "h": 78
+        }
+      }
+    },
+    {
+      "id": "06-webhook-copiar",
+      "narracao": "Esse é o passo que quase todo mundo esquece. Copie a URL do webhook que a Paguê-Zero te mostra aqui.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "06-webhook@2x.png",
+        "etiqueta": "Passo 5",
+        "titulo": "Copie a URL do webhook",
+        "destaque": true,
+        "foco": {
+          "x": 560,
+          "y": 256,
+          "w": 726,
+          "h": 48
+        }
+      }
+    },
+    {
+      "id": "07-webhook-pagarme",
+      "narracao": "Na Pagar-Mi, vá em configurações, webhooks, criar webhook, e cole a URL. Ligue habilitar autenticação e defina um usuário e uma senha.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "07-pagarme-webhook@2x.png",
+        "etiqueta": "Passo 6",
+        "titulo": "Cadastre o webhook",
+        "marca": "pagarme",
+        "foco": {
+          "x": 662,
+          "y": 268,
+          "w": 858,
+          "h": 330
+        }
+      }
+    },
+    {
+      "id": "08-eventos",
+      "narracao": "Marque os eventos de cobrança paga, falha no pagamento, estorno e chargeback. Se você vende assinatura, marque também os de fatura.",
+      "conteudo": {
+        "tipo": "eventos",
+        "etiqueta": "Passo 7",
+        "titulo": "Marque os eventos",
+        "itens": [
+          "charge.paid",
+          "charge.payment_failed",
+          "charge.refunded",
+          "charge.chargedback",
+          "order.paid",
+          "order.payment_failed",
+          "invoice.paid",
+          "invoice.payment_failed"
+        ]
+      }
+    },
+    {
+      "id": "09-salvar",
+      "narracao": "De volta na Paguê-Zero, informe o mesmo usuário e senha, confirme que criou o webhook, e salve.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "06-webhook@2x.png",
+        "etiqueta": "Passo 8",
+        "titulo": "Confirme e salve",
+        "foco": {
+          "x": 560,
+          "y": 510,
+          "w": 726,
+          "h": 50
+        }
+      }
+    },
+    {
+      "id": "10-prova",
+      "narracao": "Pronto. Toda venda aprovada na Pagar-Mi chega na Paguê-Zero na hora.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "10-entregas@2x.png",
+        "etiqueta": "Funcionando",
+        "titulo": "Eventos chegando",
+        "marca": "pagarme",
+        "foco": {
+          "x": 288,
+          "y": 240,
+          "w": 1244,
+          "h": 420
+        }
+      }
+    },
+    {
+      "id": "11-cta",
+      "narracao": "É isso. Sua Pagar-Mi está conectada.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "Conectado.",
+        "subtitulo": "Todo pagamento em tempo real",
+        "cta": "pagzero.com"
+      }
+    }
+  ]
+}

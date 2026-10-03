@@ -1,0 +1,151 @@
+{
+  "fps": 30,
+  "duracaoTotal": 540,
+  "audioUnico": "audio/cobrancas.mp3",
+  "cenas": [
+    {
+      "id": "01-dor",
+      "inicio": 0,
+      "frames": 65,
+      "narracao": "Cobrar cliente é a parte que ninguém gosta.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Como é hoje",
+        "corEtiqueta": "vermelho",
+        "titulo": "Mandar o Pix na mão.",
+        "itens": [
+          {
+            "titulo": "Copiar a chave",
+            "detalhe": "Toda vez de novo",
+            "icone": "gd-copiar"
+          },
+          {
+            "titulo": "Conferir se caiu",
+            "detalhe": "Abrir o app do banco",
+            "icone": "gd-banco"
+          },
+          {
+            "titulo": "Cobrar de novo",
+            "detalhe": "Sem parecer chato",
+            "icone": "gd-atencao"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-virada",
+      "inicio": 65,
+      "frames": 67,
+      "narracao": "Você gera a cobrança e o sistema faz o resto.",
+      "conteudo": {
+        "tipo": "marca",
+        "titulo": "O sistema cobra.",
+        "destaque": "cobra"
+      }
+    },
+    {
+      "id": "03-metodos",
+      "inicio": 132,
+      "frames": 99,
+      "narracao": "Pix, boleto ou cartão em até vinte e uma vezes.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "O cliente escolhe",
+        "titulo": "Três formas de pagar.",
+        "itens": [
+          {
+            "titulo": "Pix",
+            "detalhe": "Cai na hora",
+            "icone": "gd-pix"
+          },
+          {
+            "titulo": "Boleto",
+            "detalhe": "Vence quando você marcar",
+            "icone": "gd-boleto"
+          },
+          {
+            "titulo": "Cartão em 21x",
+            "detalhe": "Recebe em D mais um",
+            "icone": "gd-cartao"
+          }
+        ]
+      }
+    },
+    {
+      "id": "04-automatico",
+      "inicio": 231,
+      "frames": 88,
+      "narracao": "Pagou, o status muda sozinho e você é avisado.",
+      "conteudo": {
+        "tipo": "tela",
+        "etiqueta": "Automático",
+        "titulo": "Você nem abre o app.",
+        "tela": {
+          "titulo": "Cobrança #2841",
+          "rotulo": "R$ 4.800",
+          "linhas": [
+            [
+              "Cliente",
+              "Ana Martins"
+            ],
+            [
+              "Vencimento",
+              "Hoje"
+            ]
+          ],
+          "confirmaEm": 28,
+          "selo": "Pagamento confirmado",
+          "seloIcone": "gd-check",
+          "corpo": [
+            "#Formas de pagamento",
+            "Pix com desconto à vista",
+            "Cartão em até 21x"
+          ],
+          "total": "R$ 4.800",
+          "rotuloTotal": "Valor"
+        },
+        "tituloCurto": false
+      }
+    },
+    {
+      "id": "05-extras",
+      "inicio": 319,
+      "frames": 60,
+      "narracao": "E dá pra antecipar o que ainda vai receber.",
+      "conteudo": {
+        "tipo": "passos",
+        "etiqueta": "Precisa do dinheiro antes",
+        "titulo": "Antecipa e saca.",
+        "itens": [
+          {
+            "titulo": "Antecipação",
+            "detalhe": "Simula e recebe antes",
+            "icone": "gd-antecipacoes"
+          },
+          {
+            "titulo": "Saque por Pix",
+            "detalhe": "Direto pra sua conta",
+            "icone": "gd-transferir"
+          },
+          {
+            "titulo": "Cobrança recorrente",
+            "detalhe": "Mensal no cartão",
+            "icone": "gd-repetir"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-cta",
+      "inicio": 379,
+      "frames": 161,
+      "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "De graça.",
+        "subtitulo": "Você só paga\nquando recebe.",
+        "cta": "link na bio"
+      }
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "fps": 30,
+  "duracaoTotal": 1392,
+  "audioUnico": "audio/openfinance.mp3",
+  "cenas": [
+    {
+      "id": "01",
+      "inicio": 0,
+      "frames": 119,
+      "narracao": "[conversacional] Quanto tempo por mês você perde digitando gasto num app?",
+      "conteudo": {
+        "cena": "tempoPerdido",
+        "titulo": "Quanto tempo|você perde?",
+        "destaque": [
+          "tempo"
+        ],
+        "minutos": 40,
+        "rotulo": "minutos por mês, digitando"
+      }
+    },
+    {
+      "id": "02",
+      "inicio": 119,
+      "frames": 160,
+      "narracao": "Uma semana você anota tudo, na outra você para, e o mês inteiro se perde.",
+      "conteudo": {
+        "cena": "constanciaQuebra",
+        "titulo": "Uma semana sim,|três não.",
+        "destaque": [
+          "três não."
+        ],
+        "semanas": [
+          1,
+          1,
+          0,
+          0
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 7
+      }
+    },
+    {
+      "id": "03",
+      "inicio": 279,
+      "frames": 131,
+      "narracao": "[animada] O Dominnus resolve isso de um jeito diferente: você não digita nada.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Você não|digita nada.",
+        "destaque": [
+          "nada."
+        ]
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "04",
+      "inicio": 410,
+      "frames": 113,
+      "narracao": "Pelo Open Finance, você autoriza o seu banco uma única vez,",
+      "conteudo": {
+        "cena": "autorizaUmaVez",
+        "titulo": "Uma autorização.|Uma vez só.",
+        "destaque": [
+          "Uma vez só."
+        ],
+        "banco": "nubank"
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "05",
+      "inicio": 523,
+      "frames": 120,
+      "narracao": "e a partir daí ele busca tudo sozinho, todo santo dia.",
+      "conteudo": {
+        "cena": "sincronizaSozinho",
+        "titulo": "Ele busca|sozinho.",
+        "destaque": [
+          "sozinho."
+        ],
+        "dias": 7
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "06",
+      "inicio": 643,
+      "frames": 151,
+      "narracao": "[curiosa] Não é só um banco: conta, cartão, saldo e fatura, de todos eles.",
+      "conteudo": {
+        "cena": "todosOsBancos",
+        "titulo": "De todos|os seus bancos.",
+        "destaque": [
+          "todos"
+        ],
+        "bancos": [
+          "nubank",
+          "itau",
+          "inter",
+          "c6",
+          "bradesco",
+          "santander"
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "07",
+      "inicio": 794,
+      "frames": 130,
+      "narracao": "A compra que você fez de manhã já está organizada quando você abre o app,",
+      "conteudo": {
+        "cena": "chegaCategorizado",
+        "titulo": "Já chega|organizado.",
+        "destaque": [
+          "organizado."
+        ],
+        "itens": [
+          [
+            "ifood",
+            "iFood",
+            "Alimentação"
+          ],
+          [
+            "uber",
+            "Uber",
+            "Transporte"
+          ],
+          [
+            "netflix",
+            "Netflix",
+            "Assinaturas"
+          ]
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "08",
+      "inicio": 924,
+      "frames": 114,
+      "narracao": "com a categoria já preenchida, sem você encostar num campo.",
+      "conteudo": {
+        "cena": "campoIntocado",
+        "titulo": "Sem encostar|num campo.",
+        "destaque": [
+          "num campo."
+        ]
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "09",
+      "inicio": 1038,
+      "frames": 170,
+      "narracao": "[confiante] E é seguro: o Open Finance é regulado pelo Banco Central, e o acesso é só de leitura.",
+      "conteudo": {
+        "cena": "leituraApenas",
+        "titulo": "Só leitura.|Nada se move.",
+        "destaque": [
+          "Só leitura."
+        ],
+        "selo": "Regulado pelo Banco Central"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "10",
+      "inicio": 1208,
+      "frames": 184,
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

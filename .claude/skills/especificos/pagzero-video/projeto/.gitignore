@@ -1,0 +1,4 @@
+node_modules/
+out/
+.cortes-*.json
+audio-bruto/*.mp3

@@ -1,0 +1,717 @@
+{
+  "videos": [
+    {
+      "id": "pagarme",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 2079,
+        "audioUnico": "audio/pagarme.mp3",
+        "cenas": [
+          {
+            "id": "01-abertura",
+            "inicio": 0,
+            "frames": 122,
+            "narracao": "Vou te mostrar como conectar a Pagar-Mi na Paguê-Zero, do começo ao fim.",
+            "conteudo": {
+              "tipo": "abertura",
+              "titulo": "Conecte a Pagar.me",
+              "subtitulo": "Passo a passo, do zero ao primeiro pagamento"
+            }
+          },
+          {
+            "id": "02-catalogo",
+            "inicio": 122,
+            "frames": 212,
+            "narracao": "No menu lateral, abra Plugins. Esse é o catálogo de tudo que a Paguê-Zero conecta. Ative a Pagar-Mi.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "02-catalogo@2x.png",
+              "etiqueta": "Passo 1",
+              "titulo": "Ative o plugin",
+              "foco": {
+                "x": 733,
+                "y": 238,
+                "w": 382,
+                "h": 275
+              }
+            }
+          },
+          {
+            "id": "03-nova-conexao",
+            "inicio": 334,
+            "frames": 117,
+            "narracao": "Clique em nova conexão e dê um apelido pra ela, como conta principal.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "03-novo@2x.png",
+              "etiqueta": "Passo 2",
+              "titulo": "Nomeie a conexão",
+              "foco": {
+                "x": 560,
+                "y": 238,
+                "w": 726,
+                "h": 112
+              }
+            }
+          },
+          {
+            "id": "04-chaves-pagarme",
+            "inicio": 451,
+            "frames": 206,
+            "narracao": "Agora abra o painel da Pagar-Mi. Em configurações, chaves, você encontra as chaves de API da sua conta.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "04-pagarme-chaves@2x.png",
+              "etiqueta": "Passo 3",
+              "titulo": "Copie a Secret Key",
+              "marca": "pagarme",
+              "foco": {
+                "x": 288,
+                "y": 405,
+                "w": 1244,
+                "h": 320
+              }
+            }
+          },
+          {
+            "id": "05-cola-chaves",
+            "inicio": 657,
+            "frames": 250,
+            "narracao": "Volte na Paguê-Zero e cole a secret key da sua conta. Depois escolha o ambiente: produção pra vender de verdade, sandbox pra testar.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "03-novo@2x.png",
+              "etiqueta": "Passo 4",
+              "titulo": "Cole a Secret Key",
+              "foco": {
+                "x": 560,
+                "y": 444,
+                "w": 726,
+                "h": 78
+              }
+            }
+          },
+          {
+            "id": "06-webhook-copiar",
+            "inicio": 907,
+            "frames": 198,
+            "narracao": "Esse é o passo que quase todo mundo esquece. Copie a URL do webhook que a Paguê-Zero te mostra aqui.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "06-webhook@2x.png",
+              "etiqueta": "Passo 5",
+              "titulo": "Copie a URL do webhook",
+              "destaque": true,
+              "foco": {
+                "x": 560,
+                "y": 256,
+                "w": 726,
+                "h": 48
+              }
+            }
+          },
+          {
+            "id": "07-webhook-pagarme",
+            "inicio": 1105,
+            "frames": 295,
+            "narracao": "Na Pagar-Mi, vá em configurações, webhooks, criar webhook, e cole a URL. Ligue habilitar autenticação e defina um usuário e uma senha.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "07-pagarme-webhook@2x.png",
+              "etiqueta": "Passo 6",
+              "titulo": "Cadastre o webhook",
+              "marca": "pagarme",
+              "foco": {
+                "x": 662,
+                "y": 268,
+                "w": 858,
+                "h": 330
+              }
+            }
+          },
+          {
+            "id": "08-eventos",
+            "inicio": 1400,
+            "frames": 258,
+            "narracao": "Marque os eventos de cobrança paga, falha no pagamento, estorno e chargeback. Se você vende assinatura, marque também os de fatura.",
+            "conteudo": {
+              "tipo": "eventos",
+              "etiqueta": "Passo 7",
+              "titulo": "Marque os eventos",
+              "itens": [
+                "charge.paid",
+                "charge.payment_failed",
+                "charge.refunded",
+                "charge.chargedback",
+                "order.paid",
+                "order.payment_failed",
+                "invoice.paid",
+                "invoice.payment_failed"
+              ]
+            }
+          },
+          {
+            "id": "09-salvar",
+            "inicio": 1658,
+            "frames": 185,
+            "narracao": "De volta na Paguê-Zero, informe o mesmo usuário e senha, confirme que criou o webhook, e salve.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "06-webhook@2x.png",
+              "etiqueta": "Passo 8",
+              "titulo": "Confirme e salve",
+              "foco": {
+                "x": 560,
+                "y": 510,
+                "w": 726,
+                "h": 50
+              }
+            }
+          },
+          {
+            "id": "10-prova",
+            "inicio": 1843,
+            "frames": 124,
+            "narracao": "Pronto. Toda venda aprovada na Pagar-Mi chega na Paguê-Zero na hora.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "10-entregas@2x.png",
+              "etiqueta": "Funcionando",
+              "titulo": "Eventos chegando",
+              "marca": "pagarme",
+              "foco": {
+                "x": 288,
+                "y": 240,
+                "w": 1244,
+                "h": 420
+              }
+            }
+          },
+          {
+            "id": "11-cta",
+            "inicio": 1967,
+            "frames": 112,
+            "narracao": "É isso. Sua Pagar-Mi está conectada.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "Conectado.",
+              "subtitulo": "Todo pagamento em tempo real",
+              "cta": "pagzero.com"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "onboarding",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 2144,
+        "audioUnico": "audio/onboarding.mp3",
+        "cenas": [
+          {
+            "id": "01-abertura",
+            "inicio": 0,
+            "frames": 165,
+            "narracao": "Bem-vindo à Paguê-Zero. Em dois minutos você vai sair daqui com sua primeira venda pronta pra acontecer.",
+            "conteudo": {
+              "tipo": "abertura",
+              "titulo": "Bem-vindo à PagZero",
+              "subtitulo": "Da conta criada à primeira venda"
+            }
+          },
+          {
+            "id": "02-caminho",
+            "inicio": 165,
+            "frames": 236,
+            "narracao": "O caminho é sempre o mesmo, e são só quatro paradas. Produto, oferta, checkout e o gateway que recebe o dinheiro.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "O caminho",
+              "titulo": "Quatro paradas",
+              "subtitulo": "Toda venda na PagZero nasce assim.",
+              "itens": [
+                {
+                  "titulo": "Produto",
+                  "detalhe": "O que você entrega: curso, ebook, mentoria, evento."
+                },
+                {
+                  "titulo": "Oferta",
+                  "detalhe": "Quanto custa e como parcela."
+                },
+                {
+                  "titulo": "Checkout",
+                  "detalhe": "A página onde o cliente paga."
+                },
+                {
+                  "titulo": "Gateway",
+                  "detalhe": "Quem processa e envia o dinheiro pra você."
+                }
+              ]
+            }
+          },
+          {
+            "id": "03-dashboard",
+            "inicio": 401,
+            "frames": 323,
+            "narracao": "Essa é a sua central. Faturamento, vendas, ticket médio, margem, tudo em tempo real. No começo ela está vazia, e é justamente isso que a gente vai resolver.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "on-dashboard@2x.png",
+              "etiqueta": "Passo 1",
+              "titulo": "Conheça o dashboard",
+              "foco": {
+                "x": 253,
+                "y": 190,
+                "w": 1280,
+                "h": 170
+              }
+            }
+          },
+          {
+            "id": "04-menu",
+            "inicio": 724,
+            "frames": 243,
+            "narracao": "No menu da esquerda está tudo. Produtos e vendas na parte de cima, área de membros e colaboradores na gestão, e os plugins lá embaixo.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "on-produtos-lista@2x.png",
+              "etiqueta": "Passo 2",
+              "titulo": "O menu lateral",
+              "foco": {
+                "x": 0,
+                "y": 60,
+                "w": 230,
+                "h": 320
+              }
+            }
+          },
+          {
+            "id": "05-produto",
+            "inicio": 967,
+            "frames": 312,
+            "narracao": "Comece pelo produto. Dê um nome, escolha o tipo, e pronto. Curso, ebook, assinatura, mentoria, evento: são doze tipos disponíveis.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "on-produto@2x.png",
+              "etiqueta": "Passo 3",
+              "titulo": "Crie seu produto",
+              "foco": {
+                "x": 253,
+                "y": 185,
+                "w": 1280,
+                "h": 175
+              }
+            }
+          },
+          {
+            "id": "06-oferta",
+            "inicio": 1279,
+            "frames": 264,
+            "narracao": "Agora a oferta. É ela que define o preço, as formas de pagamento e o parcelamento. Um mesmo produto pode ter várias ofertas diferentes.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "pr-oferta@2x.png",
+              "etiqueta": "Passo 4",
+              "titulo": "Defina a oferta",
+              "foco": {
+                "x": 608,
+                "y": 140,
+                "w": 572,
+                "h": 130
+              }
+            }
+          },
+          {
+            "id": "07-gateway",
+            "inicio": 1543,
+            "frames": 245,
+            "narracao": "Conecte um gateway em plugins. Pagar-Mi, Asaas, e é ele quem processa o pagamento e manda o dinheiro pra sua conta.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "on-plugins@2x.png",
+              "etiqueta": "Passo 5",
+              "titulo": "Conecte o gateway",
+              "foco": {
+                "x": 255,
+                "y": 235,
+                "w": 1280,
+                "h": 260
+              }
+            }
+          },
+          {
+            "id": "08-trial",
+            "inicio": 1788,
+            "frames": 194,
+            "narracao": "Uma última coisa: você tem quinze dias de teste grátis, e o aviso no topo mostra quantos ainda restam.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "Bom saber",
+              "titulo": "Seu teste grátis",
+              "subtitulo": "15 dias pra testar tudo, sem cartão.",
+              "itens": [
+                {
+                  "titulo": "15 dias completos",
+                  "detalhe": "Todos os recursos liberados desde o primeiro minuto."
+                },
+                {
+                  "titulo": "Aviso no topo",
+                  "detalhe": "Mostra sempre quantos dias faltam."
+                },
+                {
+                  "titulo": "Suporte no WhatsApp",
+                  "detalhe": "Botão fixo no rodapé do menu, com gente de verdade."
+                }
+              ]
+            }
+          },
+          {
+            "id": "09-cta",
+            "inicio": 1982,
+            "frames": 162,
+            "narracao": "Agora é com você. Crie seu produto e faça a primeira venda.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "Bora vender.",
+              "subtitulo": "Seu primeiro produto está a um clique",
+              "cta": "app.pagzero.com"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "area-membros",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1832,
+        "audioUnico": "audio/area-membros.mp3",
+        "cenas": [
+          {
+            "id": "01-abertura",
+            "inicio": 0,
+            "frames": 191,
+            "narracao": "A área de membros da Paguê-Zero é onde seu aluno assiste. E ela funciona sozinha: quem paga, entra.",
+            "conteudo": {
+              "tipo": "abertura",
+              "titulo": "Área de membros",
+              "subtitulo": "Quem paga, entra. Sem você fazer nada."
+            }
+          },
+          {
+            "id": "02-estrutura",
+            "inicio": 191,
+            "frames": 217,
+            "narracao": "A estrutura tem três níveis. A área guarda os cursos, o curso guarda os módulos, e o módulo guarda as aulas.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "Como se organiza",
+              "titulo": "Três níveis",
+              "subtitulo": "Do maior pro menor, sempre nessa ordem.",
+              "itens": [
+                {
+                  "titulo": "Área",
+                  "detalhe": "O portal do aluno, com seu logo e suas cores."
+                },
+                {
+                  "titulo": "Curso",
+                  "detalhe": "Cada treinamento que você vende."
+                },
+                {
+                  "titulo": "Módulo",
+                  "detalhe": "Os blocos que dividem o curso."
+                },
+                {
+                  "titulo": "Aula",
+                  "detalhe": "O vídeo, com material e links de apoio."
+                }
+              ]
+            }
+          },
+          {
+            "id": "03-conteudo",
+            "inicio": 408,
+            "frames": 199,
+            "narracao": "Você monta tudo numa tela só. Arrasta pra reordenar, e cria curso, módulo e aula sem sair do lugar.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "am-conteudo@2x.png",
+              "etiqueta": "Passo 1",
+              "titulo": "Monte o conteúdo",
+              "foco": {
+                "x": 253,
+                "y": 240,
+                "w": 1280,
+                "h": 220
+              }
+            }
+          },
+          {
+            "id": "04-aula",
+            "inicio": 607,
+            "frames": 290,
+            "narracao": "Cada aula recebe o link do vídeo. Funciona com YouTube, Vimeo, Panda e Bunny. E ainda aceita PDF, planilha e links complementares.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "am-conteudo@2x.png",
+              "etiqueta": "Passo 2",
+              "titulo": "As aulas do módulo",
+              "foco": {
+                "x": 300,
+                "y": 345,
+                "w": 1230,
+                "h": 110
+              }
+            }
+          },
+          {
+            "id": "05-liberacao",
+            "inicio": 897,
+            "frames": 128,
+            "narracao": "Agora a parte mais poderosa: você decide quem vê o quê, e quando.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "Passo 3",
+              "titulo": "Controle o acesso",
+              "subtitulo": "Três mecanismos que se combinam.",
+              "itens": [
+                {
+                  "titulo": "Por turma",
+                  "detalhe": "Libera cursos inteiros ou só alguns módulos pra cada grupo."
+                },
+                {
+                  "titulo": "Por tempo",
+                  "detalhe": "A aula abre X dias depois da matrícula, ou numa data marcada."
+                },
+                {
+                  "titulo": "Por validade",
+                  "detalhe": "Acesso vitalício, por período ou até uma data."
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-entrega",
+            "inicio": 1025,
+            "frames": 268,
+            "narracao": "E a entrega é automática. Na oferta você escolhe a área e a turma. Venda aprovada, o aluno é matriculado e recebe o e-mail pra criar a senha.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "am-entrega@2x.png",
+              "etiqueta": "Passo 4",
+              "titulo": "Entrega automática",
+              "destaque": true,
+              "foco": {
+                "x": 608,
+                "y": 360,
+                "w": 572,
+                "h": 60
+              }
+            }
+          },
+          {
+            "id": "07-aluno",
+            "inicio": 1293,
+            "frames": 171,
+            "narracao": "Do lado do aluno, ele entra pelo endereço da área, com o nome e a identidade do seu curso na tela.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "am-aluno-login@2x.png",
+              "etiqueta": "O aluno vê",
+              "titulo": "O portal do aluno",
+              "foco": {
+                "x": 536,
+                "y": 148,
+                "w": 440,
+                "h": 500
+              }
+            }
+          },
+          {
+            "id": "08-player",
+            "inicio": 1464,
+            "frames": 227,
+            "narracao": "No player ele marca a aula como concluída, favorita, baixa os materiais e faz anotações no tempo exato do vídeo.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "No player",
+              "titulo": "O que o aluno faz",
+              "itens": [
+                {
+                  "titulo": "Marca como concluída",
+                  "detalhe": "O progresso do curso sobe na hora."
+                },
+                {
+                  "titulo": "Favorita a aula",
+                  "detalhe": "Pra achar rápido depois."
+                },
+                {
+                  "titulo": "Baixa os materiais",
+                  "detalhe": "PDFs, planilhas e links da aula."
+                },
+                {
+                  "titulo": "Faz anotações",
+                  "detalhe": "Presas ao minuto do vídeo, só ele vê."
+                }
+              ]
+            }
+          },
+          {
+            "id": "09-cta",
+            "inicio": 1691,
+            "frames": 141,
+            "narracao": "É isso. Sua área de membros trabalhando enquanto você dorme.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "No automático.",
+              "subtitulo": "Venda aprovada, aluno dentro",
+              "cta": "app.pagzero.com"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "produtos",
+      "tempos": {
+        "fps": 30,
+        "duracaoTotal": 1693,
+        "audioUnico": "audio/produtos.mp3",
+        "cenas": [
+          {
+            "id": "01-abertura",
+            "inicio": 0,
+            "frames": 176,
+            "narracao": "Produto, oferta e checkout. Entenda esses três e você entendeu a Paguê-Zero por completo.",
+            "conteudo": {
+              "tipo": "abertura",
+              "titulo": "Produto, oferta, checkout",
+              "subtitulo": "Os três pilares de toda venda"
+            }
+          },
+          {
+            "id": "02-diferenca",
+            "inicio": 176,
+            "frames": 259,
+            "narracao": "A diferença é simples. O produto é o que você entrega. A oferta é quanto custa. E o checkout é a página onde o cliente paga.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "A diferença",
+              "titulo": "Cada um faz uma coisa",
+              "itens": [
+                {
+                  "titulo": "Produto",
+                  "detalhe": "O conteúdo. Nome, tipo, capa, suporte."
+                },
+                {
+                  "titulo": "Oferta",
+                  "detalhe": "O preço, o parcelamento e a entrega."
+                },
+                {
+                  "titulo": "Checkout",
+                  "detalhe": "A página de pagamento, com a sua cara."
+                }
+              ]
+            }
+          },
+          {
+            "id": "03-produto",
+            "inicio": 435,
+            "frames": 371,
+            "narracao": "Comece criando o produto. São doze tipos: curso, ebook, assinatura, mentoria, evento, comunidade e mais. Se for evento presencial, ele até pede o endereço.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "on-produto@2x.png",
+              "etiqueta": "Passo 1",
+              "titulo": "Crie o produto",
+              "foco": {
+                "x": 253,
+                "y": 185,
+                "w": 1280,
+                "h": 175
+              }
+            }
+          },
+          {
+            "id": "04-oferta",
+            "inicio": 806,
+            "frames": 253,
+            "narracao": "Agora a oferta, que é o que o cliente realmente compra. Aqui você define o preço, escolhe as formas de pagamento e monta o parcelamento.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "pr-oferta@2x.png",
+              "etiqueta": "Passo 2",
+              "titulo": "Monte a oferta",
+              "foco": {
+                "x": 608,
+                "y": 140,
+                "w": 572,
+                "h": 130
+              }
+            }
+          },
+          {
+            "id": "05-pagamento",
+            "inicio": 1059,
+            "frames": 289,
+            "narracao": "As formas de pagamento vão além do básico. Tem cartão, pix e boleto, mas também dois cartões na mesma compra, e cartão mais pix combinados.",
+            "conteudo": {
+              "tipo": "conceito",
+              "etiqueta": "Passo 3",
+              "titulo": "Formas de pagamento",
+              "itens": [
+                {
+                  "titulo": "Cartão, PIX e boleto",
+                  "detalhe": "O trio de sempre, em qualquer combinação."
+                },
+                {
+                  "titulo": "Dois cartões",
+                  "detalhe": "O cliente divide o valor entre dois cartões."
+                },
+                {
+                  "titulo": "Cartão + PIX",
+                  "detalhe": "Parte no cartão, parte no PIX."
+                },
+                {
+                  "titulo": "Parcelamento com juros",
+                  "detalhe": "Até 21x, com tabela de juros por parcela."
+                }
+              ]
+            }
+          },
+          {
+            "id": "06-cobranca",
+            "inicio": 1348,
+            "frames": 182,
+            "narracao": "Você ainda define o tipo de cobrança, os dias de garantia e se o checkout pede o endereço do comprador.",
+            "conteudo": {
+              "tipo": "print",
+              "arquivo": "pr-oferta-pagamento@2x.png",
+              "etiqueta": "Passo 4",
+              "titulo": "Cobrança e garantia",
+              "foco": {
+                "x": 608,
+                "y": 170,
+                "w": 572,
+                "h": 130
+              }
+            }
+          },
+          {
+            "id": "09-cta",
+            "inicio": 1530,
+            "frames": 163,
+            "narracao": "Produto, oferta, checkout. Agora é só vender.",
+            "conteudo": {
+              "tipo": "cta",
+              "titulo": "Pronto pra vender.",
+              "subtitulo": "Seu checkout no ar em minutos",
+              "cta": "app.pagzero.com"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

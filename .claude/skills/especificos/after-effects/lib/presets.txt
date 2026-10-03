@@ -1,0 +1,621 @@
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Cair para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Crescer para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Deslizar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Encolher para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Entrar.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Fade In.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Girar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Piscar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/In/Pular dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Ciclo de cintilação.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Ciclo de instabilidade.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Ciclo de respiração.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Ciclo intermitente.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Laço Bob.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Laço de giro.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Laço de ioiô.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Laço de manobra.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Looping/Laço de pulso.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Cair para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Crescer para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Deslizar para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Encolher para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Fade Out.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Girar para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Piscar para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Pular fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Adobe Express/Out/Sair.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Aparição.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Assustador.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Blocos.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Cinzas.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Circuito.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Cortina.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Cristais verdes.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Curva de relâmpago.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Curvas arrebatadoras.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Esfera.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Fumaça subindo.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Indigestão.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Infecção.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Linhas de velocidade estilo anime.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Luz rosa.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Luzes de névoa.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Magma.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Poder cósmico.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Radial estilo anime.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Retângulos de corrida.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Rio.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Seda.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Tecido profundo.ffx
+/Applications/Adobe After Effects 2026/Presets/Backgrounds/Velocidade vermelha.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Aparar caminhos na entrada da camada.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Aparar caminhos na saída da camada.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Aparecimento gradual na camada abaixo.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Aparecimento+desaparecimento gradual – m_s.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Aparecimento+desaparecimento gradual – quadros.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Ativar-Desativar aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Chocalho – cisalhamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Chocalho – escala.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Chocalho – gelatina.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Chocalho – posição.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Chocalho – rotação.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Cores aleatórias.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Desaparecimento gradual na camada abaixo.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Flash de opacidade – aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Flash de opacidade – marcadores de camada.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Fluir ao longo do tempo.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Forçar ponto de ancoragem.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Gerador de valor de onda.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Girar ao longo do tempo.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Número inteiro aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Opacidade piscante.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Rolagem automática – horizontal.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Rolagem automática – vertical.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Salto com escala – aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Salto com escala – marcadores de camada.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Separar escala XYZ.ffx
+/Applications/Adobe After Effects 2026/Presets/Behaviors/Wigglerama.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – azul celeste.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – gradiente de pôr do sol.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – infravermelho.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – laranja celeste.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – lavagem azul.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – mergulho dourado.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – sépia.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – sombras do luar.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – tonalidade de mão vermelha.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Colorir – violeta real.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Contraste – luminância.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Contraste – saturação.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Dimensão – brilho+sombra.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Dimensão – chanfro+sombra.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Efeito VHS tremulante.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Efeito de desenhado à mão.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Florescer – clareia+escurece.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Florescer – clareia.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Florescer – cristalizar 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Florescer – cristalizar 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Iluminação ambiental – amorfa.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Iluminação ambiental – digital.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Iluminação ambiental – traços.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Iluminação da vinheta.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Sombras projetadas empilhadas.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Tons de cinza 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Tons de cinza 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Tons de cinza 3.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Tons de cinza 4.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Creative/Vinheta com ruído.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/Erros de registro de movimento.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/Mosaicos rachados.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/TV ruim 1 – distorção.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/TV ruim 2 – antiga.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/TV ruim 3 – fraca.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/Vazamentos de luz – aleatórios.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/Vazamentos de luz – marcadores de camada.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Special Effects/Visão noturna.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Alfa de luminosidade (não multiplicado).ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Ampliar & Preservar alfa.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Cortar bordas.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Exemplo de expressões de imagem.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Intervalo dinâmico de compactação e expansão.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Inverter + Inverter verticalmente.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Inverter alfa.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Inverter verticalmente.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Inverter.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Keylight + Limpeza de máscara + Supressão de espalhamento avançado.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Máscara – desfoque azul.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Máscara – desfoque verde.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Níveis – computador para vídeo.ffx
+/Applications/Adobe After Effects 2026/Presets/Image - Utilities/Níveis - Vídeo para computador.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Barras piscantes.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – NTSC aleatório 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – NTSC aleatório 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – NTSC aleatório 3.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – NTSC concêntrico.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – NTSC traçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – PAL aleatório 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – PAL aleatório 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – PAL aleatório 3.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – PAL concêntrico.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Caixas – PAL traçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Cata-vento.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Centopeia.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Clipe de papel.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Contrair - expandir.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Deslocar até interno.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Digital.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Emergir.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Entrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Espirógrafo.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Etéreo.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Exposição de pulso.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Exposição múltipla gravada.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Fitas tortas 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Fitas tortas.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Flash azul.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Flutuar.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Frenesi.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Frente - trás.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Giro 3D em torno do círculo.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Inflamação.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Inversão de várias linhas.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Linhas 3D Mais zoom.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Lírico.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Na frente - atrás.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Organismo.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Ovais – NTSC aleatório 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Ovais – NTSC aleatório 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Ovais – NTSC concêntrico.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Ovais – PAL aleatório 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Ovais – PAL aleatório 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Ovais – PAL concêntrico.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Passarela de estrelas.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Pontos verdes.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Recorte de branco.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Reduzir obstrução DV.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Relâmpago de giro.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Relâmpago de palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Relâmpago – horizontal.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Relâmpago – vertical.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Saída - entrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Separar posição XYZ.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Silhuetas.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Silvo sonar.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Soltar com salto.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Sombras.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Terceiro abaixo – NTSC de máscara de corte.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Terceiro abaixo – PAL de máscara de corte.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Terceiro à esquerda – NTSC de máscara de corte.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Terceiro à esquerda – PAL de máscara de corte.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Tom de discagem-EUA.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Validação do terceiro abaixo – escurecer.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Validação do terceiro abaixo – saturar.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Vídeo interno – bordas rasgadas.ffx
+/Applications/Adobe After Effects 2026/Presets/Legacy/Vídeo interno – enquadrado.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Backgrounds/Borda de composição.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Backgrounds/Caleidoscópio.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Backgrounds/Enxame de caixa.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Backgrounds/Raio de sol.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Backgrounds/Rede de nervos – circular.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Backgrounds/Rede de nervos – penta.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Caixa de texto 2D (forma).ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Caixa delimitadora mínima.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Elemento de cursor alternável.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Estalo de explosão.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Etiqueta de corte ondulado.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Grade de cruzes.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Gravar na seta.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Gráfico de argola.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Gráfico de barra.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Gráfico de linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Gráfico radial.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Hélice de DNA.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Linha de perseguição – caixas.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Linhas repetidas.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Marcador emergente de mapa.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Marcador simples de mapa.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Moldura recortada.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Relógio analógico.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Selo postal.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Sequências de letreiro.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Verme de arame.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Elements/Ícones de mapa saltitantes.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Cara de alienígena – animada.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Circular – divisão celular.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Escopo de fase.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Estrela vintage.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Estrelinha.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Mandala espiral.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Mandala – animado.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Animated/Nó de dança.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Alvo.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Caixa – linhas tracejadas.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Caligrafia alienígena.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Cara de alienígena.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Circular – parcialmente redondo.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Circular – tritracejado.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Colchete arredondado – chanfro.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Colchete arredondado – duplo.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Engrenagem 1.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Engrenagem 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Estrela com raio-4.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Estrela com raio-8.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Luz sagrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Mandala.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Margarida beira-mar.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Mira – colchetes.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Mira – quadrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Mira – redonda.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Pás do ventilador.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Poder das flores.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Roda tridentada.ffx
+/Applications/Adobe After Effects 2026/Presets/Shapes/Sprites - Still/Sol indiano.ffx
+/Applications/Adobe After Effects 2026/Presets/Sound Effects/Companhia telefônica.ffx
+/Applications/Adobe After Effects 2026/Presets/Sound Effects/DTMF.ffx
+/Applications/Adobe After Effects 2026/Presets/Sound Effects/Dinamitador.ffx
+/Applications/Adobe After Effects 2026/Presets/Sound Effects/Ligar para a Adobe.ffx
+/Applications/Adobe After Effects 2026/Presets/Sound Effects/Ocupado.ffx
+/Applications/Adobe After Effects 2026/Presets/Sound Effects/Telefone tocando-EUA.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Ambiente dourado.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Barras azuis.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Células.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Fumê – espalhando.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Linhas topográficas.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Mosaico.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Película em pastilha.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Película holográfica.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Riscos laranjas.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Rotação de explosão.ffx
+/Applications/Adobe After Effects 2026/Presets/Synthetics/Verso do CD.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Balanço 3D no caminho.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Cascata X de rotação básica 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Cascata Y de rotação básica 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Cascata Z de posição básica 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Chuva 3D por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Corrida 3D em posição Z.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Digitação Z de posição básica 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Embaralhamento de recuo 3D e desfoque.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Escala de retrocesso 3D & inclinação.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Espiral 3D para baixo e desdobramento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Giro 3D para dentro por caractere X.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Giro 3D para dentro por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Giro 3D para fora por caractere X.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Giro 3D para fora por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Giro de espiral 3D para dentro por linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Giro de espiral 3D para fora por linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Inverter 3D acima do reflexo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Inverter 3D fora da rotação X.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Inverter 3D na rotação X.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Personagens 3D torcidos e coloridos.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Pico aleatório em 3D em queda.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Posição de resolução 3D em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Queda aleatória em 3D por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Salto 3D centralizado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Vibração 3D a partir da esquerda.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Vibração 3D em ordem aleatória.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Vibração 3D para fora da direita.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Voo 3D aleatório e girar Y.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Voo 3D por trás da câmera.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/3D Text/Voo e desdobramento 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Abertura no centro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Aparecimento gradual do decodificador.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Aparecimento gradual lento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Atenuar caracteres.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Atenuar e inverter.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Atenuar linhas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Atenuar palavras.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Console de máquina de escrever com cursor piscante.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Decodificar na entrada por caractere aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Deslizar e surgir na entrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Deslizar para baixo por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Deslizar para cima por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Deslizar para cima por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Deslizar para dentro a partir da borda de composição.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Deslizar para dentro por linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Embaralhamento aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Embaralhamento de caracteres.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Embaralhamento de palavras aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada chuvosa de caracteres.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada de caracteres alternados.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada direta de várias linhas 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada direta de várias linhas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada direta por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada direta por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Entrada por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Espiral central.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Esticar para dentro cada linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Esticar para dentro cada palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Fade in aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Giro de entrada por caractere.ffx.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Giro de entrada por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Máquina de escrever.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Movimento de entrada suave.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Opacidade tremulante na entrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Quadro de letras expresso.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Surgimento com torção.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Surgimento da parte inferior.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Torcer para dentro cada linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Torcer para dentro cada palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate In/Zumbidos de estouro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Decodificar na saída por caractere aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Desaparecimento gradual do codificador.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Desaparecimento gradual lento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Desaparecimento gradual por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Deslizar à direita por caractere.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Deslizar à direita por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Deslizar e surgir na saída.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Deslizar para a borda de composição.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Deslizar para dentro por linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Esticar para fora cada linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Esticar para fora cada palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Opacidade tremulante na saída.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Saída chuvosa de caracteres.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Saída de caracteres alternados.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Soltar aleatoriamente.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Soltar palavra aleatoriamente.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Torcer para dentro cada palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Animate Out/Torcer para fora cada linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Desfocar por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Desfoque e aparecimento gradual.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Desfoque e desaparecimento gradual.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Desfoque intenso por caractere na entrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Desfoque intenso por caractere na saída.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Evaporar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Falha de desfoque.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Nevoeiro em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Transportador em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Blurs/Trem-bala em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Alargamento radial em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Aro do pneu para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Cambalhota.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Dança de cadeiras.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Entrada de espiral.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Entrada de redemoinho.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Entrada em sentido horário.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Espiral para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Flor desabrochando em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Folhas de chá.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Girar anti-horário.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Girar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Giro rápido para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Laço caindo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Laço para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Mergulho.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Newton.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Redemoinho fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Curves and Spins/Retógrado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Caixa de texto 2D (Máscara & Efeitos).ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Destaque da lista de palavras.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Exibir tempo da composição.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Lista de palavras do ciclo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Minhoca.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Número do quadro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Expressions/Salto de texto.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Abertura de cor de preenchimento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Cintilação de cor deslizante.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Comportamento de lavagem de cores.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Cor de cintilação.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Largura do traçado sinuoso por linha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Matiz de preenchimento do ciclo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Mudança de matiz fria.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Perseguição.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Pulso laranja.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Relaxamento de traçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Fill and Stroke/Traçados de pulsação.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Caixas amarelas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Círculos vermelhos.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Cortar formas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Filme arranhado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Flocos de neve.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Intercâmbio.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Nota fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Graphical/Risco.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Broadway.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Exposição de cintilação.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Flash.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Luz de escritório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Luz fluorescente.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Pulso de bolhas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Lights and Optical/Sobreposição.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Algoritmo em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Automação.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Degrau.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Distorção 9.8.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Doppler.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Eletroímã em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Entrada cinemática.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Entrada mecânica.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Helicóptero em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Inserir texto em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Loop de algortimo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Passeio de carro 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Passeio de carro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Pistões.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Rack e suporte.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Recepção ruim.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Rolagem de tela.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Salto de escala.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Sublinhado em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Mechanical/Submarino.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Caótico em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Comprimir.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Decodificador de texto desfocado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Deslizar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Entrar com salto.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Entrar deslizando.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Esfumaçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Explodir.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Inverter de volta.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Ioiô.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Linhas onduladas em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Pergunta.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Pombos de argila fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Ponto de fuga em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Pulo e um salto.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Pulo sequencial.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Pêndulo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Queda livre.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Rolar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Seis atiradores em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Soprar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Super-herói em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Surgimento de ângulo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Miscellaneous/Trepidação.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Alternar pilha em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Correntes em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Criptografia em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Fluxo de dados em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Fluxo de jato em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Ideias.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Negociar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Pacote de dados.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Pneumático em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Processador de texto em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Rápido.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Sopa de letrinhas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Surgimento por caracteres.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Multi-Line/Surgimento por palavras.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Number Counters/Contador de moeda monoespaçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Number Counters/Contador de porcentagem monoespaçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Number Counters/Contagem regressiva de contator monoespaçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Number Counters/Temporizador de contagem regressiva monoespaçado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Beija-flor em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Borbulhar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Borracha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Brotos em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Bumerangue em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Corrente de vento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Corrente oceânica.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Embaralhar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Enjoado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Equipe de luta livre.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Escalar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Fatiar e cortar em cubos.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Fervente.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Formação de voo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Goma de mascar em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Hélice dupla.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Inseticida.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Insetos em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Isca.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Labrador em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Linha solta.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Mergulhar com salto.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Mosca em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Ondulação em.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Oscilar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Outono.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Piso de borracha.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Pular carniça.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Salto diagonal para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Tremor.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Organic/Trigal.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Abaixo e para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Antílope.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Balanço.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Balão.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Bolha estourando.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Colidir e deslizar para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Deslizar abaixo para fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Elástico.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Espiral dupla.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Espiral longa.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Esteira.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Formigas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Golpe de caratê.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Loop de 360.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Loop de entrada e saída.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Ninho de ratos.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Obstáculos.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Placa de circuito fora.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Ponte de cordas.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Quinquilharia.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Rolo a rolo 2.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Rolo a rolo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Saltitante.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Serpente.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Simetria.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Tubos.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Paths/Ziguezague.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Girar por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Girar por personagem.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Giro para dentro.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Gotejamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Inverter.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Loop em sequência.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Redemoinho.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Rotação aleatória.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Rotação completa.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Rotation/Rotação complexa.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Abertura de escala sinuosa.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Ampliar a partir do ponto.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Dimensionamento aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Dimensionar por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Dimensionar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Distanciar zoom.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Expandir por palavra.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Expandir.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Reduzir a partir do ponto.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Vamos dançar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Scale/Zoom para frente.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Ampliar.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Aumentar rastreamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Contrato.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Diminuir rastreamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Espasmo.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Estender.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Esticado.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Mover para dentro por rastreamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Text/Tracking/Mover para fora por rastreamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Atenuar – mergulhar em preto.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Atenuar – piscar em branco.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Atenuar – superexposição.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolução de bloco – aleatório.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolução de bloco – digital.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolução de bloco – linhas de varredura.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolvedor em tinta.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolvedor pixelado.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolver – areia.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolver – bolhas.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolver – desfazer fusão.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolver – ondulação.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolver – pontilhamento.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Dissolver – vapor.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Opacidade tremulante na entrada da camada.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Dissolves/Opacidade tremulante na saída da camadat.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Abertura de cartão – 2D fraturado.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Abertura de cartão – balanço 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Abertura de cartão – chuva de pixels 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Deslizar – reto.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Deslizar – rusga.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Deslizar – soltar.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Escala – Cardinal.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Esticar - Borda.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Esticar e desfocar.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Esticar e deslizar.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Esticar sobre – horizontal.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Esticar – vertical.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Surgir e tremular na entrada.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Zoom – bolha.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Zoom – espiral.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Zoom – giro 2D.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Zoom – oscilar.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Movement/Zoom – tombamento 3D.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Abertura de grade.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Abertura de portas.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Abertura em relógio.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Abertura linear.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Concha.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Esmaecimento em íris com tinta.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Esmaecimento em íris pixelado.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Esmaecimento linear em tinta.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Esmaecimento linear pixelado.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Limpeza de banda - Construir HD.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Limpeza de banda - HD em ziguezague.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Limpeza de banda - cruzando HD.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Limpeza radial - Cardinal.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Pintar.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Revelação de canto.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Venezianas.ffx
+/Applications/Adobe After Effects 2026/Presets/Transitions - Wipes/Verificador de limpeza HD.ffx

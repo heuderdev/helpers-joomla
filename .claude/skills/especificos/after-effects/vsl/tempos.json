@@ -1,0 +1,253 @@
+{
+ "voz": "HOfBIVLhom4mc9WvXfyH",
+ "seed": 42,
+ "audio": "vsl-42.mp3",
+ "total": 175.095,
+ "cortes": [
+  {
+   "id": 1,
+   "inicio": 0,
+   "fim": 3.7,
+   "dur": 3.7,
+   "fala": "[rápida, animada] Seu cliente pagou juros pra comprar o seu infoproduto,"
+  },
+  {
+   "id": 2,
+   "inicio": 3.7,
+   "fim": 7.117,
+   "dur": 3.417,
+   "fala": "[curiosa] e você já parou pra pensar pra onde foi esse dinheiro?"
+  },
+  {
+   "id": 3,
+   "inicio": 7.117,
+   "fim": 10.086,
+   "dur": 2.969,
+   "fala": "Não foi pra você. Nem foi pro banco dele."
+  },
+  {
+   "id": 4,
+   "inicio": 10.086,
+   "fim": 16.289,
+   "dur": 6.203,
+   "fala": "Uma venda de mil reais em doze vezes vira mil e duzentos no cartão do seu cliente —"
+  },
+  {
+   "id": 5,
+   "inicio": 16.289,
+   "fim": 21.297,
+   "dur": 5.008,
+   "fala": "ou seja, duzentos reais a mais na sua venda, pelo seu produto,"
+  },
+  {
+   "id": 6,
+   "inicio": 21.297,
+   "fim": 24.195,
+   "dur": 2.898,
+   "fala": "[confiante] e esses duzentos ficam com a plataforma."
+  },
+  {
+   "id": 7,
+   "inicio": 24.195,
+   "fim": 29.448,
+   "dur": 5.253,
+   "fala": "O cliente pagou mil e duzentos. A sua comissão? Novecentos e cinquenta."
+  },
+  {
+   "id": 8,
+   "inicio": 29.448,
+   "fim": 33.346,
+   "dur": 3.898,
+   "fala": "então duzentos e cinquenta reais ficaram no meio do caminho."
+  },
+  {
+   "id": 9,
+   "inicio": 33.346,
+   "fim": 39.748,
+   "dur": 6.402,
+   "fala": "A sua plataforma diz que cobra cinco por cento de taxa. Mas nessa venda ela cobrou vinte e um."
+  },
+  {
+   "id": 10,
+   "inicio": 39.748,
+   "fim": 44.013,
+   "dur": 4.265,
+   "fala": "[rápida, conversacional] Deixa eu te explicar como funcionam as plataformas tradicionais."
+  },
+  {
+   "id": 11,
+   "inicio": 44.013,
+   "fim": 50.176,
+   "dur": 6.163,
+   "fala": "A plataforma não processa o seu pagamento. Quem processa é uma adquirente, atrás dela."
+  },
+  {
+   "id": 12,
+   "inicio": 50.176,
+   "fim": 57.85,
+   "dur": 7.674,
+   "fala": "Ela é uma intermediária, que compra o processamento por um preço e revende pra você por outro, muito maior."
+  },
+  {
+   "id": 13,
+   "inicio": 57.85,
+   "fim": 64.176,
+   "dur": 6.326,
+   "fala": "Ela tem a função dela, claro: checkout, dashboard, área de membros, integrações,"
+  },
+  {
+   "id": 14,
+   "inicio": 64.176,
+   "fim": 68.191,
+   "dur": 4.015,
+   "fala": "[curiosa] mas será que isso deveria custar um percentual do seu faturamento?"
+  },
+  {
+   "id": 15,
+   "inicio": 68.191,
+   "fim": 69.092,
+   "dur": 0.901,
+   "fala": "[confiante] E aí tem o Pix."
+  },
+  {
+   "id": 16,
+   "inicio": 69.092,
+   "fim": 72.622,
+   "dur": 3.53,
+   "fala": "Processar um Pix custa em torno de meio por cento."
+  },
+  {
+   "id": 17,
+   "inicio": 72.622,
+   "fim": 81.153,
+   "dur": 8.531,
+   "fala": "mas a plataforma cobra a taxa cheia: três, cinco, às vezes dez por cento, pra processar um simples Pix."
+  },
+  {
+   "id": 18,
+   "inicio": 81.153,
+   "fim": 88.742,
+   "dur": 7.589,
+   "fala": "Numa venda de dez mil no Pix, você paga de trezentos a mil reais por uma operação que custa cinquenta."
+  },
+  {
+   "id": 19,
+   "inicio": 88.742,
+   "fim": 91.513,
+   "dur": 2.771,
+   "fala": "[rápida] E ainda tem o prazo pra sacar o seu dinheiro."
+  },
+  {
+   "id": 20,
+   "inicio": 91.513,
+   "fim": 96.499,
+   "dur": 4.986,
+   "fala": "Você se acostumou a sacar em dê mais quatorze, ou em dê mais trinta,"
+  },
+  {
+   "id": 21,
+   "inicio": 96.499,
+   "fim": 101.211,
+   "dur": 4.712,
+   "fala": "e adaptou todo o seu fluxo de caixa pra receber um mês depois da venda,"
+  },
+  {
+   "id": 22,
+   "inicio": 101.211,
+   "fim": 107.721,
+   "dur": 6.51,
+   "fala": "[animada] quando o tempo todo dava pra receber em dois dias, mesmo no cartão, sem pagar antecipação."
+  },
+  {
+   "id": 23,
+   "inicio": 107.721,
+   "fim": 114.398,
+   "dur": 6.677,
+   "fala": "[confiante] Agora junta tudo isso: o juro, a taxa inflada, o Pix caro, o dinheiro parado."
+  },
+  {
+   "id": 24,
+   "inicio": 114.398,
+   "fim": 118.426,
+   "dur": 4.028,
+   "fala": "Entre dez e quinze por cento do seu faturamento fica no caminho."
+  },
+  {
+   "id": 25,
+   "inicio": 118.426,
+   "fim": 123.938,
+   "dur": 5.512,
+   "fala": "e se você fatura trinta mil por mês, são três a quatro mil e quinhentos reais."
+  },
+  {
+   "id": 26,
+   "inicio": 123.938,
+   "fim": 128.283,
+   "dur": 4.345,
+   "fala": "E isso não sai da sua receita. Sai inteiro do seu lucro."
+  },
+  {
+   "id": 27,
+   "inicio": 128.283,
+   "fim": 136.373,
+   "dur": 8.09,
+   "fala": "Se a sua margem é de trinta por cento, trocar de plataforma coloca de trinta a cinquenta por cento de lucro a mais no seu bolso,"
+  },
+  {
+   "id": 28,
+   "inicio": 136.373,
+   "fim": 139.679,
+   "dur": 3.306,
+   "fala": "[animada] vendendo exatamente o que você já vende hoje."
+  },
+  {
+   "id": 29,
+   "inicio": 139.679,
+   "fim": 147.603,
+   "dur": 7.924,
+   "fala": "[confiante] A PagZero não fica no meio do caminho do seu dinheiro, e não cobra taxa nenhuma por venda: você paga uma mensalidade fixa,"
+  },
+  {
+   "id": 30,
+   "inicio": 147.603,
+   "fim": 153.188,
+   "dur": 5.585,
+   "fala": "e a venda vai direto pro seu gateway: zero de comissão, zero de custo escondido."
+  },
+  {
+   "id": 31,
+   "inicio": 153.188,
+   "fim": 160.615,
+   "dur": 7.427,
+   "fala": "Você conecta o seu próprio gateway, seja Pagar Mi, Asaas, Mercado Pago, Stripe ou PayPal,"
+  },
+  {
+   "id": 32,
+   "inicio": 160.615,
+   "fim": 166.404,
+   "dur": 5.789,
+   "fala": "e o dinheiro cai inteiro na sua conta. Porque o gateway é seu, não da plataforma."
+  },
+  {
+   "id": 33,
+   "inicio": 166.404,
+   "fim": 170.468,
+   "dur": 4.064,
+   "fala": "O juro que o seu cliente pagou volta pra onde deveria ter ido:"
+  },
+  {
+   "id": 34,
+   "inicio": 170.468,
+   "fim": 171.418,
+   "dur": 0.95,
+   "fala": "[animada] pra você."
+  },
+  {
+   "id": 35,
+   "inicio": 171.418,
+   "fim": 175.095,
+   "dur": 3.677,
+   "fala": "Clique no botão abaixo e fale com a nossa equipe."
+  }
+ ]
+}

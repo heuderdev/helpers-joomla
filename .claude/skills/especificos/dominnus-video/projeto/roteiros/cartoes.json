@@ -1,0 +1,222 @@
+{
+  "titulo": "Cartões e faturas — nunca mais uma surpresa",
+  "vozEleven": "RGymW84CSmfVugnA5tvA",
+  "modelo": "eleven_v3",
+  "voz": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "use_speaker_boost": true
+  },
+  "caudaFinal": 0.8,
+  "cenas": [
+    {
+      "id": "01",
+      "narracao": "[conversacional] A fatura chega e vem maior do que você esperava.",
+      "conteudo": {
+        "cena": "numeroQuebra",
+        "titulo": "A fatura|sempre surpreende.",
+        "destaque": [
+          "surpreende."
+        ],
+        "valor": -4312.7,
+        "rotulo": "e você não viu chegando"
+      }
+    },
+    {
+      "id": "02",
+      "narracao": "Aí você abre três aplicativos de banco pra entender o que aconteceu.",
+      "conteudo": {
+        "cena": "caos",
+        "titulo": "Três apps.|Nenhuma resposta.",
+        "destaque": [
+          "Nenhuma"
+        ],
+        "itens": [
+          [
+            "ifood",
+            -250,
+            -160,
+            -11
+          ],
+          [
+            "uber",
+            210,
+            -200,
+            9
+          ],
+          [
+            "netflix",
+            -200,
+            70,
+            8
+          ],
+          [
+            "amazon",
+            230,
+            100,
+            -7
+          ],
+          [
+            "spotify",
+            -110,
+            270,
+            11
+          ],
+          [
+            "rappi",
+            200,
+            300,
+            -6
+          ]
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "03",
+      "narracao": "[animada] Com o Dominnus, a fatura para de ser surpresa.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Sem surpresa.",
+        "destaque": [
+          "surpresa."
+        ]
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "04",
+      "narracao": "Todos os seus cartões ficam na mesma tela,",
+      "conteudo": {
+        "cena": "lequeCartoes",
+        "titulo": "Todos os cartões|na mesma tela.",
+        "destaque": [
+          "cartões"
+        ],
+        "sub": "limite, fechamento e vencimento"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "05",
+      "narracao": "com o limite, o dia de fechamento e o de vencimento de cada um.",
+      "conteudo": {
+        "cena": "cicloFatura",
+        "titulo": "Fecha e vence.|Cada um no seu dia.",
+        "destaque": [
+          "dia."
+        ]
+      },
+      "transicao": {
+        "tipo": "continuidade",
+        "frames": 6
+      }
+    },
+    {
+      "id": "06",
+      "narracao": "[curiosa] E cada compra aparece dentro da fatura certa, sozinha.",
+      "conteudo": {
+        "cena": "comprasNoCartao",
+        "titulo": "Cada compra|na fatura certa.",
+        "destaque": [
+          "certa."
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "07",
+      "narracao": "Você vê o que já fechou, o que está aberto, e o que já foi pago.",
+      "conteudo": {
+        "cena": "abasFatura",
+        "titulo": "Paga, aberta|ou a vencer.",
+        "destaque": [
+          "vencer."
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "08",
+      "narracao": "[confiante] Três dias antes do vencimento, ele te avisa no celular.",
+      "conteudo": {
+        "cena": "selo",
+        "icone": "fatura",
+        "titulo": "Três dias antes,|ele avisa.",
+        "destaque": [
+          "avisa."
+        ],
+        "selo": "Fatura vence em 3 dias"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "09",
+      "narracao": "E no dia também, pra você não pagar juros por esquecimento.",
+      "conteudo": {
+        "cena": "notificacaoChega",
+        "titulo": "E no dia também.",
+        "destaque": [
+          "dia"
+        ],
+        "hora": "09:00",
+        "dia": "no dia do vencimento",
+        "tituloCard": "Fatura de cartão",
+        "linhas": [
+          [
+            "Nubank",
+            "R$ 2.412,50"
+          ],
+          [
+            "Vence",
+            "hoje"
+          ],
+          [
+            "Status",
+            "em aberto"
+          ]
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "10",
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

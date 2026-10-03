@@ -1,0 +1,170 @@
+{
+  "titulo": "Área de membros da PagZero",
+  "vozEleven": "cgSgspJ2msm6clMCkdW9",
+  "caudaFinal": 0.9,
+  "cenas": [
+    {
+      "id": "01-abertura",
+      "narracao": "A área de membros da Paguê-Zero é onde seu aluno assiste. E ela funciona sozinha: quem paga, entra.",
+      "conteudo": {
+        "tipo": "abertura",
+        "titulo": "Área de membros",
+        "subtitulo": "Quem paga, entra. Sem você fazer nada."
+      }
+    },
+    {
+      "id": "02-estrutura",
+      "narracao": "A estrutura tem três níveis. A área guarda os cursos, o curso guarda os módulos, e o módulo guarda as aulas.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "Como se organiza",
+        "titulo": "Três níveis",
+        "subtitulo": "Do maior pro menor, sempre nessa ordem.",
+        "itens": [
+          {
+            "titulo": "Área",
+            "detalhe": "O portal do aluno, com seu logo e suas cores."
+          },
+          {
+            "titulo": "Curso",
+            "detalhe": "Cada treinamento que você vende."
+          },
+          {
+            "titulo": "Módulo",
+            "detalhe": "Os blocos que dividem o curso."
+          },
+          {
+            "titulo": "Aula",
+            "detalhe": "O vídeo, com material e links de apoio."
+          }
+        ]
+      }
+    },
+    {
+      "id": "03-conteudo",
+      "narracao": "Você monta tudo numa tela só. Arrasta pra reordenar, e cria curso, módulo e aula sem sair do lugar.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "am-conteudo@2x.png",
+        "etiqueta": "Passo 1",
+        "titulo": "Monte o conteúdo",
+        "foco": {
+          "x": 253,
+          "y": 240,
+          "w": 1280,
+          "h": 220
+        }
+      }
+    },
+    {
+      "id": "04-aula",
+      "narracao": "Cada aula recebe o link do vídeo. Funciona com YouTube, Vimeo, Panda e Bunny. E ainda aceita PDF, planilha e links complementares.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "am-conteudo@2x.png",
+        "etiqueta": "Passo 2",
+        "titulo": "As aulas do módulo",
+        "foco": {
+          "x": 300,
+          "y": 345,
+          "w": 1230,
+          "h": 110
+        }
+      }
+    },
+    {
+      "id": "05-liberacao",
+      "narracao": "Agora a parte mais poderosa: você decide quem vê o quê, e quando.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "Passo 3",
+        "titulo": "Controle o acesso",
+        "subtitulo": "Três mecanismos que se combinam.",
+        "itens": [
+          {
+            "titulo": "Por turma",
+            "detalhe": "Libera cursos inteiros ou só alguns módulos pra cada grupo."
+          },
+          {
+            "titulo": "Por tempo",
+            "detalhe": "A aula abre X dias depois da matrícula, ou numa data marcada."
+          },
+          {
+            "titulo": "Por validade",
+            "detalhe": "Acesso vitalício, por período ou até uma data."
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-entrega",
+      "narracao": "E a entrega é automática. Na oferta você escolhe a área e a turma. Venda aprovada, o aluno é matriculado e recebe o e-mail pra criar a senha.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "am-entrega@2x.png",
+        "etiqueta": "Passo 4",
+        "titulo": "Entrega automática",
+        "destaque": true,
+        "foco": {
+          "x": 608,
+          "y": 360,
+          "w": 572,
+          "h": 60
+        }
+      }
+    },
+    {
+      "id": "07-aluno",
+      "narracao": "Do lado do aluno, ele entra pelo endereço da área, com o nome e a identidade do seu curso na tela.",
+      "conteudo": {
+        "tipo": "print",
+        "arquivo": "am-aluno-login@2x.png",
+        "etiqueta": "O aluno vê",
+        "titulo": "O portal do aluno",
+        "foco": {
+          "x": 536,
+          "y": 148,
+          "w": 440,
+          "h": 500
+        }
+      }
+    },
+    {
+      "id": "08-player",
+      "narracao": "No player ele marca a aula como concluída, favorita, baixa os materiais e faz anotações no tempo exato do vídeo.",
+      "conteudo": {
+        "tipo": "conceito",
+        "etiqueta": "No player",
+        "titulo": "O que o aluno faz",
+        "itens": [
+          {
+            "titulo": "Marca como concluída",
+            "detalhe": "O progresso do curso sobe na hora."
+          },
+          {
+            "titulo": "Favorita a aula",
+            "detalhe": "Pra achar rápido depois."
+          },
+          {
+            "titulo": "Baixa os materiais",
+            "detalhe": "PDFs, planilhas e links da aula."
+          },
+          {
+            "titulo": "Faz anotações",
+            "detalhe": "Presas ao minuto do vídeo, só ele vê."
+          }
+        ]
+      }
+    },
+    {
+      "id": "09-cta",
+      "narracao": "É isso. Sua área de membros trabalhando enquanto você dorme.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "No automático.",
+        "subtitulo": "Venda aprovada, aluno dentro",
+        "cta": "app.pagzero.com"
+      }
+    }
+  ]
+}

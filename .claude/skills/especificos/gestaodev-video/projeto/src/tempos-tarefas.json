@@ -1,0 +1,152 @@
+{
+  "fps": 30,
+  "duracaoTotal": 551,
+  "audioUnico": "audio/tarefas.mp3",
+  "cenas": [
+    {
+      "id": "01-dor",
+      "inicio": 0,
+      "frames": 92,
+      "narracao": "O cliente pede ajuste no WhatsApp, e some no meio da conversa.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Como é hoje",
+        "corEtiqueta": "vermelho",
+        "titulo": "Pedido perdido no chat.",
+        "itens": [
+          {
+            "titulo": "Áudio de 3 minutos",
+            "detalhe": "Você ouve duas vezes",
+            "icone": "gd-celular"
+          },
+          {
+            "titulo": "Print no meio da conversa",
+            "detalhe": "Some ao rolar",
+            "icone": "gd-imagem"
+          },
+          {
+            "titulo": "\"Depois eu te mando\"",
+            "detalhe": "Nunca manda",
+            "icone": "gd-relogio"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-virada",
+      "inicio": 92,
+      "frames": 64,
+      "narracao": "Cada projeto tem um link de ajuste.",
+      "conteudo": {
+        "tipo": "marca",
+        "titulo": "Um link por projeto.",
+        "destaque": "link"
+      }
+    },
+    {
+      "id": "03-link",
+      "inicio": 156,
+      "frames": 79,
+      "narracao": "O cliente descreve o que quer e escolhe a urgência.",
+      "conteudo": {
+        "tipo": "tela",
+        "etiqueta": "O cliente preenche",
+        "titulo": "Ele mesmo abre a tarefa.",
+        "tela": {
+          "titulo": "Pedir ajuste",
+          "rotulo": "tarefa.gestao.dev",
+          "claro": true,
+          "linhas": [
+            [
+              "Projeto",
+              "Site institucional"
+            ],
+            [
+              "Urgência",
+              "Alta"
+            ]
+          ],
+          "confirmaEm": 30,
+          "selo": "Tarefa criada",
+          "seloIcone": "gd-check",
+          "corpo": [
+            "#O que precisa mudar",
+            "Trocar a foto do topo",
+            "Ajustar o formulário de contato"
+          ],
+          "total": "22 de agosto",
+          "rotuloTotal": "Prazo"
+        },
+        "tituloCurto": false
+      }
+    },
+    {
+      "id": "04-quadro",
+      "inicio": 235,
+      "frames": 80,
+      "narracao": "E ela já nasce no seu quadro, na prioridade certa.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "No seu quadro",
+        "titulo": "Organizada por urgência.",
+        "itens": [
+          {
+            "titulo": "Urgente",
+            "detalhe": "Corrigir checkout",
+            "icone": "gd-urgencia-urgente"
+          },
+          {
+            "titulo": "Alta",
+            "detalhe": "Ajuste no formulário",
+            "icone": "gd-urgencia-alta"
+          },
+          {
+            "titulo": "Média",
+            "detalhe": "Trocar as fotos",
+            "icone": "gd-urgencia-media"
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-extras",
+      "inicio": 315,
+      "frames": 113,
+      "narracao": "Tem cronômetro, subtarefa, tag e sincronia com o Google Agenda.",
+      "conteudo": {
+        "tipo": "passos",
+        "etiqueta": "E ainda",
+        "titulo": "Tudo junto.",
+        "itens": [
+          {
+            "titulo": "Cronômetro",
+            "detalhe": "Sabe quanto tempo levou",
+            "icone": "gd-cronometro"
+          },
+          {
+            "titulo": "50 modelos prontos",
+            "detalhe": "Deploy, LGPD, SEO",
+            "icone": "gd-tarefas"
+          },
+          {
+            "titulo": "Google Agenda",
+            "detalhe": "Sincroniza sozinho",
+            "icone": "gd-calendario"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-cta",
+      "inicio": 428,
+      "frames": 123,
+      "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "De graça.",
+        "subtitulo": "Você só paga\nquando recebe.",
+        "cta": "link na bio"
+      }
+    }
+  ]
+}

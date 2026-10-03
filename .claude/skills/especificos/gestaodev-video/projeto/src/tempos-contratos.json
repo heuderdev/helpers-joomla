@@ -1,0 +1,147 @@
+{
+  "fps": 30,
+  "duracaoTotal": 682,
+  "audioUnico": "audio/contratos.mp3",
+  "cenas": [
+    {
+      "id": "01-dor",
+      "inicio": 0,
+      "frames": 147,
+      "narracao": "Contrato assinado ainda é imprimir, assinar, escanear e mandar de volta.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Como é hoje",
+        "corEtiqueta": "vermelho",
+        "titulo": "Ninguém tem impressora.",
+        "itens": [
+          {
+            "titulo": "Imprimir",
+            "detalhe": "Achar uma impressora",
+            "icone": "gd-arquivo"
+          },
+          {
+            "titulo": "Assinar e escanear",
+            "detalhe": "Foto torta no celular",
+            "icone": "gd-caneta"
+          },
+          {
+            "titulo": "Mandar de volta",
+            "detalhe": "Se lembrar",
+            "icone": "gd-envelope-1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "02-virada",
+      "inicio": 147,
+      "frames": 66,
+      "narracao": "O cliente assina pelo celular, em um minuto.",
+      "conteudo": {
+        "tipo": "marca",
+        "titulo": "Assina pelo celular.",
+        "destaque": "celular"
+      }
+    },
+    {
+      "id": "03-assinatura",
+      "inicio": 213,
+      "frames": 115,
+      "narracao": "Ele desenha a assinatura e confirma com um código de seis dígitos.",
+      "conteudo": {
+        "tipo": "tela",
+        "etiqueta": "Assinatura",
+        "titulo": "Desenha e confirma.",
+        "tela": {
+          "titulo": "Contrato de serviço",
+          "rotulo": "contrato.gestao.dev",
+          "claro": true,
+          "linhas": [
+            [
+              "Cliente",
+              "Ana Martins"
+            ],
+            [
+              "Documento",
+              "Prestação de serviço"
+            ]
+          ],
+          "confirmaEm": 30,
+          "selo": "Contrato assinado",
+          "seloIcone": "gd-contrato-assinar",
+          "corpo": [
+            "#Assinatura eletrônica",
+            "Código enviado por WhatsApp",
+            "Assinatura desenhada na tela"
+          ],
+          "total": "4 8 2 9 1 7",
+          "rotuloTotal": "Código"
+        },
+        "tituloCurto": false
+      }
+    },
+    {
+      "id": "04-juridico",
+      "inicio": 328,
+      "frames": 123,
+      "narracao": "Fica gravado IP, data, dispositivo e o hash do documento.",
+      "conteudo": {
+        "tipo": "passos",
+        "etiqueta": "Validade jurídica",
+        "titulo": "Prova de quem assinou.",
+        "itens": [
+          {
+            "titulo": "IP e dispositivo",
+            "detalhe": "De onde assinou",
+            "icone": "gd-localizacao"
+          },
+          {
+            "titulo": "Data e hora",
+            "detalhe": "Registro do momento",
+            "icone": "gd-relogio"
+          },
+          {
+            "titulo": "Hash do documento",
+            "detalhe": "Prova que não mudou",
+            "icone": "gd-cadeado"
+          }
+        ]
+      }
+    },
+    {
+      "id": "05-lei",
+      "inicio": 451,
+      "frames": 99,
+      "narracao": "Tudo pela lei brasileira de assinatura eletrônica. Sem cartório.",
+      "conteudo": {
+        "tipo": "lista",
+        "etiqueta": "Sem cartório",
+        "titulo": "Vale por lei.",
+        "itens": [
+          {
+            "titulo": "MP 2.200-2 de 2001",
+            "detalhe": "Assinatura eletrônica",
+            "icone": "gd-livro"
+          },
+          {
+            "titulo": "Lei 14.063 de 2020",
+            "detalhe": "Documento digital",
+            "icone": "gd-documento-check"
+          }
+        ]
+      }
+    },
+    {
+      "id": "06-cta",
+      "inicio": 550,
+      "frames": 132,
+      "narracao": "É de graça. Você só paga quando recebe. Link na bio.",
+      "conteudo": {
+        "tipo": "cta",
+        "titulo": "De graça.",
+        "subtitulo": "Você só paga\nquando recebe.",
+        "cta": "link na bio"
+      }
+    }
+  ]
+}

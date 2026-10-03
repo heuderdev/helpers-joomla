@@ -1,0 +1,194 @@
+{
+  "titulo": "Quanto sobrou — taxa de poupança",
+  "vozEleven": "RGymW84CSmfVugnA5tvA",
+  "modelo": "eleven_v3",
+  "voz": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "use_speaker_boost": true
+  },
+  "caudaFinal": 0.8,
+  "cenas": [
+    {
+      "id": "01",
+      "narracao": "[conversacional] Todo fim de mês vem a mesma pergunta:",
+      "conteudo": {
+        "cena": "busca",
+        "pergunta": "Cadê o dinheiro que eu ganhei?",
+        "titulo": "",
+        "sub": "a pergunta de todo fim de mês"
+      }
+    },
+    {
+      "id": "02",
+      "narracao": "o salário entrou, mas você não sabe quanto realmente sobrou.",
+      "conteudo": {
+        "cena": "ralo",
+        "titulo": "Entrou.|E sumiu.",
+        "destaque": [
+          "sumiu."
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": 1
+      }
+    },
+    {
+      "id": "03",
+      "narracao": "[animada] O Dominnus responde isso todo mês, com um número só.",
+      "conteudo": {
+        "cena": "virada",
+        "titulo": "Um número.|Todo mês.",
+        "destaque": [
+          "número."
+        ]
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    },
+    {
+      "id": "04",
+      "narracao": "Ele soma o que entrou, tira o que saiu,",
+      "conteudo": {
+        "cena": "balanca",
+        "titulo": "Entrou menos saiu.",
+        "destaque": [
+          "saiu."
+        ],
+        "entrou": 8400,
+        "saiu": 6423.5
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "05",
+      "narracao": "e mostra a sua taxa de poupança.",
+      "conteudo": {
+        "cena": "cofre",
+        "titulo": "Sua taxa|de poupança.",
+        "destaque": [
+          "poupança."
+        ],
+        "taxa": 23.5,
+        "valor": 1976.5
+      },
+      "transicao": {
+        "tipo": "flash",
+        "frames": 8
+      }
+    },
+    {
+      "id": "06",
+      "narracao": "[confiante] E ele não se engana com transferência entre as suas contas,",
+      "conteudo": {
+        "cena": "filtroRuido",
+        "titulo": "Ele não se engana.",
+        "destaque": [
+          "engana."
+        ]
+      },
+      "transicao": {
+        "tipo": "whip",
+        "frames": 10,
+        "sentido": -1
+      }
+    },
+    {
+      "id": "07",
+      "narracao": "nem com pagamento de fatura. Só movimento de verdade entra na conta.",
+      "conteudo": {
+        "cena": "peneira",
+        "titulo": "Só movimento|de verdade.",
+        "destaque": [
+          "verdade."
+        ],
+        "itens": [
+          {
+            "marca": "mercadopago",
+            "passa": false,
+            "x": -200
+          },
+          {
+            "marca": "ifood",
+            "passa": false,
+            "x": -60
+          },
+          {
+            "marca": "pix",
+            "passa": true,
+            "x": 80
+          },
+          {
+            "marca": "netflix",
+            "passa": false,
+            "x": 215
+          },
+          {
+            "marca": "uber",
+            "passa": true,
+            "x": -130
+          }
+        ]
+      },
+      "transicao": {
+        "tipo": "continuidade",
+        "frames": 6
+      }
+    },
+    {
+      "id": "08",
+      "narracao": "[curiosa] Aí dá pra comparar com os meses anteriores,",
+      "conteudo": {
+        "cena": "historicoSobra",
+        "titulo": "Mês a mês.",
+        "destaque": [
+          "mês."
+        ]
+      },
+      "transicao": {
+        "tipo": "sobe",
+        "frames": 12
+      }
+    },
+    {
+      "id": "09",
+      "narracao": "e ver qual foi a sua melhor sobra do ano.",
+      "conteudo": {
+        "cena": "selo",
+        "icone": "cofrinho-porco",
+        "titulo": "Sua melhor sobra|do ano.",
+        "destaque": [
+          "sobra"
+        ],
+        "selo": "Melhor sobra: R$ 1.976,50"
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 14
+      }
+    },
+    {
+      "id": "10",
+      "narracao": "[animada] Testa sete dias de graça, sem cartão — é só acessar dominnus ponto com.",
+      "conteudo": {
+        "cena": "cta",
+        "titulo": "7 dias grátis.",
+        "destaque": [
+          "grátis."
+        ],
+        "subtitulo": "Sem cartão de crédito."
+      },
+      "transicao": {
+        "tipo": "matchCut",
+        "frames": 16
+      }
+    }
+  ]
+}

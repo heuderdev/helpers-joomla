@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+
+  <circle cx="200" cy="200" r="150" fill="#8A6800" opacity="0.35"/>
+  <path d="M200 200 L200 50 A150 150 0 0 1 330 275 Z" fill="#FEBE00"/>
+  <path d="M200 200 L330 275 A150 150 0 0 1 200 350 Z" fill="#EF4444" opacity="0.9"
+        transform="translate(16,10)"/>
+  <circle cx="200" cy="200" r="66" fill="#0B0A0D"/>
+</svg>
