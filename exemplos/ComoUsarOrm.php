@@ -857,10 +857,8 @@ class LojaControllerPedidos extends JControllerLegacy
                 InputHelper::uint('pagina', 1, 'get')
             );
 
-            // O JPagination não é útil em JSON; devolve só os dados.
-            unset($resultado['paginacao']);
-
-            return ApiResponseHelper::success('Pedidos carregados.', $resultado);
+            // Itens em 'data' e números da paginação em 'meta.paginacao'.
+            return ApiResponseHelper::paginated($resultado, 'Pedidos carregados.');
         } catch (Throwable $e) {
             return ApiResponseHelper::exception($e);
         }

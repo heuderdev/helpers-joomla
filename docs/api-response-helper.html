@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ApiResponseHelper · helpers-joomla</title>
+<meta name="description" content="Referência do ApiResponseHelper: respostas JSON e HTML padronizadas, status HTTP, erros, paginação e consumo no front-end.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › ApiResponseHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" class="ativo" aria-current="page" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>ApiResponseHelper</h1>
+<p class="lead">Respostas padronizadas para JSON e páginas HTML: status HTTP corretos, erros por campo, mensagens seguras e um formato que o front-end sempre entende.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>O <code>ApiResponseHelper</code> padroniza as respostas dos controllers. A <strong>mesma chamada</strong> funciona para os dois tipos de requisição:</p><ul><li><strong>Requisições JSON</strong> (<code>fetch</code>, axios, <code>format=json</code>): envia um JSON com formato fixo, o status HTTP certo e encerra a aplicação.</li><li><strong>Requisições de página</strong> (formulário HTML comum): coloca a mensagem na fila de mensagens do Joomla e, se configurado, redireciona.</li></ul><div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/ApiResponseHelper.php&#x27;;
+
+class LojaControllerProdutos extends JControllerLegacy
+{
+    public function salvar()
+    {
+        try {
+            $produto = ProdutoService::salvar(InputHelper::array(&#x27;produto&#x27;, array(), &#x27;post&#x27;));
+
+            return ApiResponseHelper::success(&#x27;Produto salvo.&#x27;, $produto);
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e);   // log completo, mensagem genérica, HTTP 500
+        }
+    }
+}</code></pre></div><h2 id="formato" data-titulo="Formato da resposta JSON">Formato da resposta JSON</h2><p>Toda resposta JSON tem as mesmas chaves, de sucesso ou de erro. O front-end sempre sabe onde procurar:</p><div class="codigo"><div class="titulo-codigo">Resposta JSON</div><pre><code data-lang="text">{
+    &quot;success&quot;: false,
+    &quot;status&quot;: &quot;erro&quot;,
+    &quot;mensagem&quot;: &quot;O campo E-mail deve conter um e-mail válido.&quot;,
+    &quot;data&quot;: null,
+    &quot;errors&quot;: {
+        &quot;email&quot;: [&quot;O campo E-mail deve conter um e-mail válido.&quot;],
+        &quot;itens.1.quantidade&quot;: [&quot;O campo Quantidade (item 2) deve ser maior ou igual a 1.&quot;]
+    },
+    &quot;request_id&quot;: &quot;9f2c4e7a1b3d5f60718293a4b5c6d7e8&quot;,
+    &quot;meta&quot;: { &quot;paginacao&quot;: { &quot;total&quot;: 41, &quot;por_pagina&quot;: 20, &quot;pagina_atual&quot;: 3, &quot;total_paginas&quot;: 3 } }
+}</code></pre></div><div class="tabela"><table><thead><tr><th>Chave</th><th>Tipo</th><th>Conteúdo</th></tr></thead><tbody><tr><td><code>success</code></td><td>bool</td><td><code>true</code> em sucesso, informação e aviso; <code>false</code> em erro.</td></tr><tr><td><code>status</code></td><td>string</td><td><code>sucesso</code>, <code>info</code>, <code>aviso</code> ou <code>erro</code>.</td></tr><tr><td><code>mensagem</code></td><td>string</td><td>Texto para mostrar ao usuário.</td></tr><tr><td><code>data</code></td><td>qualquer</td><td>Os dados enviados, <strong>exatamente como estão</strong>: números, booleanos e <code>null</code> mantêm o tipo.</td></tr><tr><td><code>errors</code></td><td>objeto</td><td><code>{"campo": ["mensagem", …]}</code>. Erros gerais ficam em <code>_general</code>. Vazio (<code>[]</code>) em sucesso.</td></tr><tr><td><code>request_id</code></td><td>string</td><td>Identificador da requisição: o mesmo dos logs do <code>LogHelper</code>. Peça ao usuário ao investigar um problema.</td></tr><tr><td><code>meta</code></td><td>objeto</td><td>Só aparece quando há dados extras: paginação, debug, ou o que você passar em <code>meta</code>.</td></tr></tbody></table></div><h3 id="cabecalhos">Cabeçalhos enviados</h3><div class="tabela"><table><thead><tr><th>Cabeçalho</th><th>Valor</th></tr></thead><tbody><tr><td>Status</td><td>O código HTTP do método (200, 201, 422, 500…).</td></tr><tr><td><code>Content-Type</code></td><td><code>application/json; charset=utf-8</code></td></tr><tr><td><code>Cache-Control</code></td><td><code>no-store, no-cache, must-revalidate</code>: respostas com dados do usuário não ficam em cache.</td></tr><tr><td><code>X-Request-Id</code></td><td>O mesmo <code>request_id</code> do corpo.</td></tr><tr><td><code>Retry-After</code></td><td>Em <code>tooManyRequests()</code> com <code>retry_after</code>.</td></tr><tr><td>outros</td><td>Os que você passar na opção <code>headers</code>.</td></tr></tbody></table></div><div class="nota"><p>Antes de enviar o JSON, o helper descarta o que já tinha sido impresso: <em>Notices</em> do PHP, espaços, HTML do componente. Isso evita o erro "Unexpected token &lt; in JSON" no JavaScript. Se o UTF-8 de algum texto for inválido, o caractere é trocado por "�" em vez de a resposta sair vazia.</p></div><h2 id="json-ou-html" data-titulo="JSON ou página HTML?">JSON ou página HTML?</h2><p>A requisição é tratada como JSON quando qualquer uma destas condições vale:</p><div class="tabela"><table><thead><tr><th>Sinal</th><th>Exemplo</th></tr></thead><tbody><tr><td>Parâmetro <code>format=json</code></td><td><code>index.php?option=com_loja&amp;task=pedidos.salvar&amp;format=json</code></td></tr><tr><td>Cabeçalho <code>X-Requested-With: XMLHttpRequest</code></td><td>jQuery <code>$.ajax</code></td></tr><tr><td>Cabeçalho <code>Accept</code> com <code>application/json</code></td><td><code>fetch(url, { headers: { Accept: 'application/json' } })</code></td></tr><tr><td>Corpo enviado como JSON (<code>Content-Type: application/json</code>)</td><td><code>fetch(url, { method: 'POST', body: JSON.stringify(dados), headers: {…} })</code></td></tr></tbody></table></div><p>Para decidir sem depender da detecção, use a opção <code>'json' =&gt; true</code> (ou <code>false</code>). Para perguntar antes, use <a href="#isJson"><code>isJson()</code></a>.</p><h3 id="modo-html">Comportamento em requisições de página</h3><div class="tabela"><table><thead><tr><th>Método</th><th>Tipo da mensagem do Joomla</th></tr></thead><tbody><tr><td><code>success</code>, <code>created</code>, <code>updated</code>, <code>deleted</code>, <code>paginated</code></td><td><code>message</code> (verde)</td></tr><tr><td><code>info</code></td><td><code>notice</code> (azul)</td></tr><tr><td><code>warning</code></td><td><code>warning</code> (amarelo)</td></tr><tr><td>todos os de erro</td><td><code>error</code> (vermelho)</td></tr></tbody></table></div><p>Depois de colocar a mensagem na fila, o helper redireciona para a URL da opção <code>redirect</code> ou, sem ela, para a definida em <a href="#setDefaultRedirect"><code>setDefaultRedirect()</code></a>. Sem nenhuma das duas, ele <strong>não</strong> redireciona: devolve o array da resposta e o controller continua.</p><div class="codigo"><pre><code data-lang="php">// Formulário HTML tradicional
+public function salvar()
+{
+    JSession::checkToken() or jexit(&#x27;Token inválido.&#x27;);
+
+    try {
+        ProdutoService::salvar($this-&gt;dadosDoFormulario());
+
+        return ApiResponseHelper::success(&#x27;Produto salvo.&#x27;, null, array(
+            &#x27;redirect&#x27; =&gt; &#x27;index.php?option=com_loja&amp;view=produtos&#x27;,
+        ));
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e, &#x27;Não foi possível salvar o produto.&#x27;, array(
+            &#x27;redirect&#x27; =&gt; &#x27;index.php?option=com_loja&amp;view=produto&amp;layout=edit&#x27;,
+        ));
+    }
+}</code></pre></div><div class="nota aviso"><p>Só são aceitos redirecionamentos para URLs do próprio site. Uma URL externa é bloqueada e registrada no log, o que impede <em>open redirect</em> quando a URL vem da requisição (o clássico parâmetro <code>return</code>). Para um destino externo confiável, passe <code>'allow_external_redirect' =&gt; true</code>.</p></div><h2 id="encerramento" data-titulo="A resposta JSON encerra a aplicação">A resposta JSON encerra a aplicação</h2><p>Por padrão, depois de enviar o JSON o helper chama <code>$app-&gt;close()</code>: <strong>nenhum código depois da chamada é executado</strong>. É o que se espera de um endpoint, e por isso os exemplos usam <code>return ApiResponseHelper::…</code>, deixando claro que ali termina o fluxo.</p><div class="codigo"><pre><code data-lang="php">ApiResponseHelper::success(&#x27;Salvo.&#x27;);
+EmailHelper::enviar($pedido);          // NUNCA executa numa requisição JSON
+
+// Faça o que precisar antes de responder:
+EmailHelper::enviar($pedido);
+return ApiResponseHelper::success(&#x27;Salvo.&#x27;);</code></pre></div><p>Para continuar depois de responder (raro), use <code>'close' =&gt; false</code> numa chamada, ou <a href="#setCloseApplication"><code>setCloseApplication(false)</code></a> para todas. Nesse caso, o array da resposta é devolvido.</p><h2 id="sucesso" data-titulo="Respostas de sucesso">Respostas de sucesso</h2><div class="metodo"><h3 id="success"><code>success()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::success(string $message = &#x27;Operação realizada com sucesso.&#x27;, mixed $data = null, array $options = array())</div><p>Sucesso genérico, HTTP 200.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$message</code></td><td>string</td><td>Mensagem para o usuário.</td></tr><tr><td><code>$data</code></td><td>mixed</td><td>Dados da resposta: array, objeto, lista, valor.</td></tr><tr><td><code>$options</code></td><td>array</td><td>Veja <a href="#opcoes">opções</a>.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">$produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;find($id);
+
+return ApiResponseHelper::success(&#x27;Produto carregado.&#x27;, $produto);</code></pre></div></div><div class="metodo"><h3 id="created"><code>created() / updated() / deleted()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::created(string $message = &#x27;Registro criado com sucesso.&#x27;, mixed $data = null, array $options = array())
+ApiResponseHelper::updated(string $message = &#x27;Registro atualizado com sucesso.&#x27;, mixed $data = null, array $options = array())
+ApiResponseHelper::deleted(string $message = &#x27;Registro excluído com sucesso.&#x27;, mixed $data = null, array $options = array())</div><p>Atalhos com mensagens prontas. <code>created()</code> responde <strong>HTTP 201</strong>; <code>updated()</code> e <code>deleted()</code> respondem 200.</p><div class="codigo"><pre><code data-lang="php">$pedido = PedidoService::criar($dados);
+
+return ApiResponseHelper::created(&#x27;Pedido criado.&#x27;, $pedido);</code></pre></div></div><div class="metodo"><h3 id="paginated"><code>paginated()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::paginated(array $result, string $message = &#x27;Registros carregados.&#x27;, array $options = array())</div><p>Resposta de listagem a partir do resultado de <a href="orm-base-leitura.html#paginate"><code>paginate()</code></a> do ORM: os itens vão em <code>data</code> e os números em <code>meta.paginacao</code>. O objeto <code>JPagination</code>, inútil em JSON, é descartado.</p><div class="codigo"><pre><code data-lang="php">$p = InputHelper::pagination(20, 100);
+
+$resultado = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;latest()
+    -&gt;paginate($p[&#x27;limit&#x27;], $p[&#x27;page&#x27;]);
+
+return ApiResponseHelper::paginated($resultado, &#x27;Pedidos carregados.&#x27;);
+// data: [...itens], meta: { paginacao: { total, por_pagina, pagina_atual, total_paginas } }</code></pre></div></div><div class="metodo"><h3 id="info"><code>info() / warning()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::info(string $message, mixed $data = null, array $options = array())
+ApiResponseHelper::warning(string $message, mixed $data = null, array $options = array())</div><p>A operação funcionou, mas há algo a comunicar. Respondem HTTP 200 com <code>success: true</code> e <code>status</code> <code>info</code> ou <code>aviso</code>.</p><div class="codigo"><pre><code data-lang="php">$resultado = ImportacaoService::importar($linhas);
+
+if (!empty($resultado[&#x27;ignorados&#x27;])) {
+    return ApiResponseHelper::warning(
+        count($resultado[&#x27;ignorados&#x27;]) . &#x27; linhas foram ignoradas por duplicidade.&#x27;,
+        $resultado
+    );
+}
+
+return ApiResponseHelper::success(&#x27;Importação concluída.&#x27;, $resultado);</code></pre></div></div><h2 id="erros" data-titulo="Respostas de erro">Respostas de erro</h2><div class="tabela"><table><thead><tr><th>Método</th><th>HTTP</th><th>Mensagem padrão</th><th>Grava log?</th><th>Quando usar</th></tr></thead><tbody><tr><td><a href="#validationError"><code>validationError()</code></a> / <code>fromValidation()</code></td><td>422</td><td>Corrija os campos informados.</td><td>não</td><td>Dados do formulário inválidos.</td></tr><tr><td><a href="#badRequest"><code>badRequest()</code></a></td><td>400</td><td>Requisição inválida.</td><td>sim</td><td>Requisição malformada ou regra de negócio violada.</td></tr><tr><td><code>unauthorized()</code></td><td>401</td><td>Usuário não autenticado.</td><td>sim</td><td>Precisa estar logado.</td></tr><tr><td><code>forbidden()</code></td><td>403</td><td>Você não possui permissão para esta operação.</td><td>sim</td><td>Logado, mas sem permissão; token CSRF inválido.</td></tr><tr><td><code>notFound()</code></td><td>404</td><td>Registro não encontrado.</td><td>sim</td><td>O registro pedido não existe.</td></tr><tr><td><code>methodNotAllowed()</code></td><td>405</td><td>Método de requisição não permitido.</td><td>sim</td><td>GET onde só se aceita POST.</td></tr><tr><td><code>conflict()</code></td><td>409</td><td>A operação não pode ser concluída devido a um conflito de dados.</td><td>sim</td><td>Estado não permite: já pago, estoque insuficiente, duplicidade.</td></tr><tr><td><code>tooManyRequests()</code></td><td>429</td><td>Muitas tentativas…</td><td>sim</td><td>Limite de tentativas atingido.</td></tr><tr><td><code>serviceUnavailable()</code></td><td>503</td><td>Serviço temporariamente indisponível.</td><td>sim</td><td>Manutenção; serviço externo fora do ar.</td></tr><tr><td><a href="#exception"><code>exception()</code></a></td><td>500</td><td>Ocorreu um erro interno…</td><td>sim, completo</td><td>Qualquer erro técnico inesperado.</td></tr><tr><td><a href="#error"><code>error()</code></a></td><td>400 (ajustável)</td><td>Não foi possível concluir a operação.</td><td>sim</td><td>Base dos outros; para casos não cobertos.</td></tr></tbody></table></div><p>Para não registrar um erro esperado (por exemplo, 404 de busca), passe <code>'log' =&gt; false</code>.</p><div class="metodo"><h3 id="validationError"><code>validationError() / fromValidation()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::validationError(array $errors, string $message = &#x27;Corrija os campos informados.&#x27;, array $options = array())
+ApiResponseHelper::fromValidation(array $validation, string $message = &#x27;Corrija os campos informados.&#x27;, array $options = array())</div><p>Erro de validação, HTTP 422, com os erros por campo. <code>fromValidation()</code> recebe direto o resultado de <a href="validation-helper.html"><code>ValidationHelper::validate()</code></a> e usa a primeira mensagem de erro como <code>mensagem</code>.</p><div class="codigo"><pre><code data-lang="php">$validacao = ValidationHelper::validate($dados, $regras);
+
+if (!$validacao[&#x27;valid&#x27;]) {
+    return ApiResponseHelper::fromValidation($validacao);
+}
+
+// Erros montados à mão
+return ApiResponseHelper::validationError(array(
+    &#x27;cupom&#x27; =&gt; array(&#x27;Este cupom expirou.&#x27;),
+));</code></pre></div><div class="nota aviso"><p>Chame <code>fromValidation()</code> só quando a validação <strong>falhou</strong>. Com um resultado válido, ele responde sucesso ("Dados válidos.", ou <code>success_message</code>/<code>data</code> das opções) e, numa requisição JSON, encerra a aplicação.</p></div></div><div class="metodo"><h3 id="badRequest"><code>badRequest() / conflict()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::badRequest(string $message = &#x27;Requisição inválida.&#x27;, mixed $data = null, array $options = array())
+ApiResponseHelper::conflict(string $message = &#x27;…conflito de dados.&#x27;, mixed $data = null, array $options = array())</div><p>Erros causados pela requisição ou pelo estado dos dados. Aceitam <code>$data</code> para enviar detalhes ao front-end.</p><div class="codigo"><pre><code data-lang="php">if ($pedido-&gt;status !== &#x27;aberto&#x27;) {
+    return ApiResponseHelper::conflict(&#x27;Este pedido já foi faturado.&#x27;, array(&#x27;status&#x27; =&gt; $pedido-&gt;status));
+}</code></pre></div></div><div class="metodo"><h3 id="unauthorized"><code>unauthorized() / forbidden() / notFound() / methodNotAllowed() / serviceUnavailable()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::unauthorized(string $message = &#x27;Usuário não autenticado.&#x27;, array $options = array())
+ApiResponseHelper::forbidden(string $message = &#x27;Você não possui permissão para esta operação.&#x27;, array $options = array())
+ApiResponseHelper::notFound(string $message = &#x27;Registro não encontrado.&#x27;, array $options = array())
+ApiResponseHelper::methodNotAllowed(string $message = &#x27;Método de requisição não permitido.&#x27;, array $options = array())
+ApiResponseHelper::serviceUnavailable(string $message = &#x27;Serviço temporariamente indisponível.&#x27;, array $options = array())</div><p>Atalhos para os códigos HTTP correspondentes, sem <code>$data</code>.</p><div class="codigo"><pre><code data-lang="php">if (!InputHelper::isPost()) {
+    return ApiResponseHelper::methodNotAllowed();
+}
+
+if (!JSession::checkToken()) {
+    return ApiResponseHelper::forbidden(&#x27;Sessão expirada. Recarregue a página.&#x27;);
+}
+
+if (JFactory::getUser()-&gt;guest) {
+    return ApiResponseHelper::unauthorized();
+}
+
+if (!JFactory::getUser()-&gt;authorise(&#x27;core.edit&#x27;, &#x27;com_loja&#x27;)) {
+    return ApiResponseHelper::forbidden();
+}</code></pre></div></div><div class="metodo"><h3 id="tooManyRequests"><code>tooManyRequests()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::tooManyRequests(string $message = &#x27;Muitas tentativas…&#x27;, array $options = array())</div><p>HTTP 429. Com <code>retry_after</code> (segundos), envia o cabeçalho <code>Retry-After</code>, que bibliotecas HTTP usam para esperar antes de tentar de novo.</p><div class="codigo"><pre><code data-lang="php">return ApiResponseHelper::tooManyRequests(&#x27;Muitas tentativas de login. Aguarde 1 minuto.&#x27;, array(
+    &#x27;retry_after&#x27; =&gt; 60,
+));</code></pre></div></div><div class="metodo"><h3 id="exception"><code>exception()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::exception(Throwable $error, string $publicMessage = &#x27;Ocorreu um erro interno ao processar a solicitação.&#x27;, array $options = array())</div><p>Para erros técnicos inesperados: registra a exceção no log (classe, mensagem, arquivo, linha e, com o <code>LogHelper</code> carregado, a pilha de chamadas) e responde HTTP 500 com uma mensagem <strong>genérica</strong>. Detalhes como SQL e caminhos de arquivo nunca chegam ao usuário.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$error</code></td><td>Throwable</td><td>A exceção capturada.</td></tr><tr><td><code>$publicMessage</code></td><td>string</td><td>Mensagem mostrada ao usuário.</td></tr><tr><td><code>$options</code></td><td>array</td><td>Além das <a href="#opcoes">opções comuns</a>: <code>context</code> (dados extras para o log) e <code>log_category</code>.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">try {
+    $pedido = PedidoService::criar($dados);
+
+    return ApiResponseHelper::created(&#x27;Pedido criado.&#x27;, $pedido);
+} catch (EstoqueInsuficienteException $e) {
+    return ApiResponseHelper::conflict($e-&gt;getMessage());       // regra de negócio: mostra a mensagem
+} catch (Throwable $e) {
+    return ApiResponseHelper::exception($e, &#x27;Não foi possível criar o pedido.&#x27;, array(
+        &#x27;context&#x27; =&gt; array(&#x27;cliente_id&#x27; =&gt; $dados[&#x27;cliente_id&#x27;]),
+    ));
+}</code></pre></div><div class="nota aviso"><p>Com o <strong>debug do Joomla ligado</strong> (Configuração Global → Sistema → Depurar sistema), a resposta inclui <code>meta.debug</code> com tipo, mensagem, arquivo e linha da exceção, o que ajuda no desenvolvimento. Deixe o debug <strong>desligado em produção</strong>.</p></div><div class="nota"><p><code>exception()</code> sempre responde 500. Uma exceção que representa "não encontrado" (por exemplo, a de <code>findOrFail()</code>, com código 404) deve ser tratada antes: <code>if ($e-&gt;getCode() === 404) return ApiResponseHelper::notFound();</code></p></div></div><div class="metodo"><h3 id="error"><code>error()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::error(string $message = &#x27;Não foi possível concluir a operação.&#x27;, mixed $data = null, array $errors = array(), array $options = array())</div><p>A base de todas as respostas de erro: HTTP 400 por padrão (ajustável com <code>http_status</code>), com dados e erros opcionais. Se <code>$message</code> vier vazia, usa a primeira mensagem de <code>$errors</code>.</p><div class="codigo"><pre><code data-lang="php">return ApiResponseHelper::error(&#x27;Pagamento recusado.&#x27;, array(&#x27;codigo&#x27; =&gt; &#x27;cartao_expirado&#x27;), array(), array(
+    &#x27;http_status&#x27; =&gt; 402,
+));
+
+// $errors aceita: array por campo, lista simples (vai para _general) ou uma string
+return ApiResponseHelper::error(&#x27;&#x27;, null, array(&#x27;Prazo encerrado.&#x27;, &#x27;Pedido bloqueado.&#x27;));</code></pre></div></div><h2 id="opcoes" data-titulo="Opções">Opções</h2><p>Todos os métodos de resposta aceitam um array <code>$options</code>:</p><div class="tabela"><table><thead><tr><th>Opção</th><th>Tipo</th><th>Efeito</th></tr></thead><tbody><tr><td><code>http_status</code></td><td>int</td><td>Troca o código HTTP (em <code>success</code>, <code>info</code>, <code>warning</code>, <code>error</code>, <code>validationError</code>).</td></tr><tr><td><code>meta</code></td><td>array</td><td>Dados extras em <code>meta</code> (totais, versão, filtros aplicados…).</td></tr><tr><td><code>headers</code></td><td>array</td><td>Cabeçalhos extras: <code>array('X-Total-Count' =&gt; 41)</code>.</td></tr><tr><td><code>json</code></td><td>bool</td><td>Força resposta JSON (<code>true</code>) ou HTML (<code>false</code>), ignorando a detecção.</td></tr><tr><td><code>close</code></td><td>bool</td><td>Encerrar a aplicação depois do JSON. Padrão: <code>true</code>.</td></tr><tr><td><code>redirect</code></td><td>string|false</td><td>Em requisições HTML, para onde ir depois. <code>false</code> desliga o redirecionamento padrão.</td></tr><tr><td><code>allow_external_redirect</code></td><td>bool</td><td>Permite redirecionar para outro domínio.</td></tr><tr><td><code>log</code></td><td>bool</td><td>Registrar o erro no log. Padrão: <code>true</code> nos erros, <code>false</code> em <code>validationError</code>.</td></tr><tr><td><code>retry_after</code></td><td>int</td><td>Só em <code>tooManyRequests()</code>: segundos para o cabeçalho <code>Retry-After</code>.</td></tr><tr><td><code>context</code>, <code>log_category</code></td><td>array, string</td><td>Só em <code>exception()</code>: contexto e categoria do log.</td></tr><tr><td><code>success_message</code>, <code>data</code></td><td>string, mixed</td><td>Só em <code>fromValidation()</code> com resultado válido.</td></tr></tbody></table></div><h2 id="configuracao" data-titulo="Configuração global">Configuração global</h2><div class="metodo"><h3 id="setDefaultRedirect"><code>setDefaultRedirect()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::setDefaultRedirect(string $url): void</div><p>Destino padrão das respostas em requisições HTML. A opção <code>redirect</code> de cada chamada tem prioridade. String vazia desliga.</p><div class="codigo"><pre><code data-lang="php">// No display() do controller do formulário de pedidos
+ApiResponseHelper::setDefaultRedirect(&#x27;index.php?option=com_loja&amp;view=pedidos&#x27;);</code></pre></div></div><div class="metodo"><h3 id="setCloseApplication"><code>setCloseApplication()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::setCloseApplication(bool $close): void</div><p>Define se as respostas JSON encerram a aplicação (padrão <code>true</code>). Use <code>false</code> só se o componente monta a resposta de outra forma, como em <code>view.json.php</code> com documento JSON do Joomla.</p></div><div class="metodo"><h3 id="setLogErrors"><code>setLogErrors() / setLogCategory()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::setLogErrors(bool $logErrors): void
+ApiResponseHelper::setLogCategory(string $category): void</div><p>Liga ou desliga o registro de erros (padrão ligado) e define a categoria do log (padrão <code>api_response</code>). Os erros vão para o <code>LogHelper</code>, se carregado, ou para o <code>JLog</code>. Os dados registrados passam pela sanitização do <code>LogHelper</code> (senhas e tokens mascarados), o que vale só para o log: a resposta ao cliente não é alterada.</p></div><div class="metodo"><h3 id="isJson"><code>isJson()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ApiResponseHelper::isJson(): bool</div><p>A requisição atual será respondida em JSON? Segue as regras de <a href="#json-ou-html">detecção</a>.</p><div class="codigo"><pre><code data-lang="php">if (!ApiResponseHelper::isJson()) {
+    // requisição de página: exibe a view normalmente
+    return parent::display();
+}</code></pre></div></div><h2 id="front-end" data-titulo="Consumindo no front-end">Consumindo no front-end</h2><p>Como o formato é sempre o mesmo, um único trecho de JavaScript trata todas as respostas:</p><div class="codigo"><div class="titulo-codigo">JavaScript</div><pre><code data-lang="text">async function enviar(url, dados) {
+    const resposta = await fetch(url, {
+        method: &#x27;POST&#x27;,
+        headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27; },
+        body: JSON.stringify(dados)
+    });
+
+    const json = await resposta.json();
+
+    if (json.success) {
+        mostrarMensagem(json.mensagem, json.status === &#x27;aviso&#x27; ? &#x27;warning&#x27; : &#x27;success&#x27;);
+        return json.data;
+    }
+
+    if (resposta.status === 422) {
+        // erros por campo: { &quot;email&quot;: [&quot;...&quot;], &quot;itens.1.quantidade&quot;: [&quot;...&quot;] }
+        Object.entries(json.errors).forEach(([campo, mensagens]) =&gt; marcarCampo(campo, mensagens[0]));
+    }
+
+    mostrarMensagem(json.mensagem + &#x27; (código: &#x27; + json.request_id.slice(0, 8) + &#x27;)&#x27;, &#x27;error&#x27;);
+    throw new Error(json.mensagem);
+}</code></pre></div><div class="nota dica"><p>Mostrar parte do <code>request_id</code> no erro ajuda o suporte: com ele, você encontra no log exatamente aquela requisição.</p></div><h2 id="padrao-controller" data-titulo="Padrão completo no controller">Padrão completo no controller</h2><div class="codigo"><div class="titulo-codigo">controllers/pedidos.php</div><pre><code data-lang="php">public function criar()
+{
+    if (!InputHelper::isPost()) {
+        return ApiResponseHelper::methodNotAllowed();
+    }
+
+    if (!JSession::checkToken(&#x27;get&#x27;)) {
+        return ApiResponseHelper::forbidden(&#x27;Sessão expirada. Recarregue a página.&#x27;);
+    }
+
+    $dados = array(
+        &#x27;cliente_id&#x27; =&gt; InputHelper::uint(&#x27;cliente_id&#x27;, null),
+        &#x27;itens&#x27; =&gt; InputHelper::array(&#x27;itens&#x27;),
+    );
+
+    $validacao = ValidationHelper::validate($dados, array(
+        &#x27;cliente_id&#x27; =&gt; &#x27;required&#x27;,
+        &#x27;itens&#x27; =&gt; &#x27;required|array|min:1&#x27;,
+        &#x27;itens.*.produto_id&#x27; =&gt; &#x27;required|integer&#x27;,
+        &#x27;itens.*.quantidade&#x27; =&gt; &#x27;required|integer|min:1&#x27;,
+    ));
+
+    if (!$validacao[&#x27;valid&#x27;]) {
+        return ApiResponseHelper::fromValidation($validacao);                    // 422
+    }
+
+    try {
+        $pedido = PedidoService::criar($dados[&#x27;cliente_id&#x27;], $dados[&#x27;itens&#x27;]);
+
+        return ApiResponseHelper::created(&#x27;Pedido criado.&#x27;, $pedido);           // 201
+    } catch (EstoqueInsuficienteException $e) {
+        return ApiResponseHelper::conflict($e-&gt;getMessage());                    // 409
+    } catch (PedidoException $e) {
+        return ApiResponseHelper::badRequest($e-&gt;getMessage());                  // 400
+    } catch (Throwable $e) {
+        if ($e-&gt;getCode() === 404) {
+            return ApiResponseHelper::notFound(&#x27;Produto não encontrado.&#x27;, array(&#x27;log&#x27; =&gt; false));
+        }
+
+        return ApiResponseHelper::exception($e, &#x27;Não foi possível criar o pedido.&#x27;);   // 500
+    }
+}</code></pre></div><h2 id="constantes" data-titulo="Constantes">Constantes</h2><div class="tabela"><table><thead><tr><th>Constante</th><th>Valor</th></tr></thead><tbody><tr><td><code>STATUS_SUCCESS</code>, <code>STATUS_INFO</code>, <code>STATUS_WARNING</code>, <code>STATUS_ERROR</code></td><td><code>'sucesso'</code>, <code>'info'</code>, <code>'aviso'</code>, <code>'erro'</code></td></tr><tr><td><code>HTTP_OK</code>, <code>HTTP_CREATED</code>, <code>HTTP_NO_CONTENT</code></td><td>200, 201, 204</td></tr><tr><td><code>HTTP_BAD_REQUEST</code>, <code>HTTP_UNAUTHORIZED</code>, <code>HTTP_FORBIDDEN</code>, <code>HTTP_NOT_FOUND</code></td><td>400, 401, 403, 404</td></tr><tr><td><code>HTTP_METHOD_NOT_ALLOWED</code>, <code>HTTP_CONFLICT</code>, <code>HTTP_UNPROCESSABLE_ENTITY</code></td><td>405, 409, 422</td></tr><tr><td><code>HTTP_TOO_MANY_REQUESTS</code>, <code>HTTP_INTERNAL_SERVER_ERROR</code>, <code>HTTP_SERVICE_UNAVAILABLE</code></td><td>429, 500, 503</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">return ApiResponseHelper::success(&#x27;Aceito para processamento.&#x27;, $job, array(
+    &#x27;http_status&#x27; =&gt; 202,
+));</code></pre></div><h2 id="cuidados" data-titulo="Cuidados">Cuidados</h2><ul><li><strong>Escolha os dados enviados.</strong> <code>data</code> vai ao cliente exatamente como está, sem mascaramento automático. Não devolva registros inteiros com colunas sensíveis (senha, hash, tokens internos): selecione as colunas com <code>select()</code> do ORM ou monte o array de resposta.</li><li><strong>Mensagens de exceção não são para o usuário.</strong> Use <code>exception()</code> para erros técnicos e mostre <code>$e-&gt;getMessage()</code> só de exceções de regra de negócio que você mesmo lançou.</li><li><strong>Depois de responder, nada mais roda</strong> numa requisição JSON (veja <a href="#encerramento">encerramento</a>).</li><li><strong>Redirecionamentos</strong> só para o próprio site, a menos que <code>allow_external_redirect</code> seja passado.</li><li><strong>Debug do Joomla desligado em produção</strong>: com ele ligado, <code>exception()</code> expõe detalhes do erro.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="validation-helper.html"><small>← Anterior</small>ValidationHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code> e <code>ApiResponseHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>
