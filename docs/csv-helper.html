@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CsvHelper · helpers-joomla</title>
+<meta name="description" content="Referência do CsvHelper: leitura, análise de dialeto, importação em lote e exportação de linhas rejeitadas.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › CsvHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" class="ativo" aria-current="page" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>CsvHelper</h1>
+<p class="lead">Leitura, análise e importação inteligente de arquivos CSV de qualquer tamanho com detecção automática de delimitadores, codificações de caracteres, cabeçalhos e tipos de dados.</p>
+<div id="nesta-pagina"></div>
+
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O <code>CsvHelper</code> automatiza o trabalho repetitivo e sujeito a erros de importar planilhas fornecidas por usuários finais ou geradas por sistemas terceiros (ERP, CRM, Excel). O helper consegue identificar e resolver sozinho as variações mais comuns de arquivos de texto delimitados:</p>
+<ul>
+    <li><strong>Codificação de caracteres:</strong> Descobre se o arquivo é <code>UTF-8</code>, <code>UTF-8 com BOM</code>, <code>UTF-16LE</code>, <code>UTF-16BE</code> ou <code>Windows-1252</code> (padrão de exportações legadas do Excel em português).</li>
+    <li><strong>Delimitadores (Dialeto):</strong> Identifica se o separador é ponto e vírgula (<code>;</code>), vírgula (<code>,</code>), tabulação (<code>\t</code>) ou pipe (<code>|</code>), respeitando inclusive a instrução explícita de cabeçalho <code>sep=;</code> do Microsoft Excel.</li>
+    <li><strong>Cabeçalho inteligente:</strong> Localiza em qual linha estão os títulos das colunas, ignorando linhas em branco ou textos introdutórios que fiquem acima do cabeçalho.</li>
+    <li><strong>Normalização de colunas:</strong> Converte títulos de colunas cheios de espaços ou acentos em chaves de banco limpas (ex.: <code>"Descrição do Produto (ICMS)"</code> vira <code>"descricao_do_produto_icms"</code>).</li>
+    <li><strong>Inferência de tipos:</strong> Analisa uma amostra do arquivo para deduzir o tipo de dados de cada coluna (inteiro, decimal localizado com vírgula, data em formato brasileiro, booleano "Sim/Não", etc.) e seus respectivos formatos.</li>
+    <li><strong>Escalabilidade:</strong> Lê o arquivo sob demanda linha por linha utilizando geradores PHP (<code>yield</code>), permitindo processar planilhas gigantes de centenas de megabytes com consumo fixo e mínimo de memória.</li>
+</ul>
+
+<div class="codigo">
+<div class="titulo-codigo">Fluxo básico de uso</div>
+<pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/CsvHelper.php';
+
+// 1. Analisar o arquivo (descobre colunas, encoding, delimitador)
+$analise = CsvHelper::analyze('uploads/clientes.csv');
+
+if (!$analise['success']) {
+    die($analise['message']); // Exceção amigável de validação do arquivo
+}
+
+// 2. Mostrar uma prévia amigável ao usuário na tela
+$previa = CsvHelper::preview('uploads/clientes.csv', null, 5);
+
+// 3. Importar em lotes para uma tabela do banco de dados
+$resultado = CsvHelper::import('uploads/clientes.csv', '#__loja_clientes', null, [
+    'mode' => 'upsert',
+    'unique_by' => 'documento',
+    'defaults' => ['status' => 'ativo']
+]);
+
+echo "Sucesso! Inseridos: {$resultado['data']['inserted_rows']}, Atualizados: {$resultado['data']['updated_rows']}";
+</code></pre>
+</div>
+
+<h2 id="configuracao-global" data-titulo="Configurações globais">Configurações globais</h2>
+<p>Valores e diretórios padrões para todo o ciclo de vida de processamento de CSVs na aplicação.</p>
+
+<div class="metodo">
+<h3 id="setBaseDirectory"><code>setBaseDirectory() / getBaseDirectory()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::setBaseDirectory(string|null $directory): void<br>CsvHelper::getBaseDirectory(): string|null</div>
+<p>Define ou consulta o diretório raiz para os arquivos de dados. Se definido, todos os caminhos de arquivos passados para as funções do helper que não forem caminhos absolutos serão resolvidos relativamente a esta pasta.</p>
+<div class="codigo">
+<pre><code data-lang="php">CsvHelper::setBaseDirectory(JPATH_COMPONENT_ADMINISTRATOR . '/data');
+
+// Resolverá para JPATH_COMPONENT_ADMINISTRATOR . '/data/planilhas/vendas.csv'
+$analise = CsvHelper::analyze('planilhas/vendas.csv');
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="setLogDirectory"><code>setLogDirectory() / setLogCategory()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::setLogDirectory(string|null $directory): void<br>CsvHelper::setLogCategory(string $category): void</div>
+<p>Configura o diretório e a categoria onde o helper registrará suas ações, avisos de conversão e erros internos de processamento. Por padrão, ele usa a categoria do logger nativo do Joomla: <code>"csv_helper"</code>.</p>
+</div>
+
+<div class="metodo">
+<h3 id="setMaxFileSize"><code>setMaxFileSize()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::setMaxFileSize(int $bytes): void</div>
+<p>Limita o tamanho máximo permitido de um arquivo CSV a ser aberto (padrão: 100MB). Arquivos que excederem esse limite dispararão uma exceção <code>CsvHelperException</code>.</p>
+</div>
+
+<div class="metodo">
+<h3 id="setDefaultChunkSize"><code>setDefaultChunkSize() / setMaxChunkSize()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::setDefaultChunkSize(int $chunkSize): void<br>CsvHelper::setMaxChunkSize(int $chunkSize): void</div>
+<p>Define e limita os tamanhos padrões de lotes (chunks) de linhas repassados aos callbacks durante o processamento (padrão de lote: 500 linhas; padrão limite máximo: 5000 linhas).</p>
+</div>
+
+<div class="metodo">
+<h3 id="setDefaultDelimiter"><code>setDefaultDelimiter()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::setDefaultDelimiter(string|null $delimiter): void</div>
+<p>Define um delimitador padrão fixo (ex.: <code>","</code> ou <code>";"</code>) para ignorar o processo de auto-detecção por sniff de candidatos.</p>
+</div>
+
+<h2 id="deteccao-analise" data-titulo="Detecção e Análise">Detecção e Análise</h2>
+<p>Métodos para investigar a estrutura e metadados de um arquivo CSV antes de efetuar qualquer gravação ou processamento complexo.</p>
+
+<div class="metodo">
+<h3 id="detectEncoding"><code>detectEncoding()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::detectEncoding(string $path, string|null $baseDirectory = null): string</div>
+<p>Retorna o conjunto de caracteres detectado para o arquivo (<code>'UTF-8'</code>, <code>'UTF-16LE'</code>, <code>'UTF-16BE'</code> ou <code>'Windows-1252'</code>).</p>
+</div>
+
+<div class="metodo">
+<h3 id="detectDelimiter"><code>detectDelimiter()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::detectDelimiter(string $path, string|null $baseDirectory = null, array $options = []): string</div>
+<p>Realiza uma análise estatística das primeiras 40 linhas (ajustáveis nas configurações) para adivinhar qual o delimitador correto na linha de cabeçalho do arquivo. Retorna um caractere (ex.: <code>";"</code>).</p>
+</div>
+
+<div class="metodo">
+<h3 id="analyze"><code>analyze()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::analyze(string $path, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Varre e analisa toda a estrutura do CSV (codificação, separador, linha do cabeçalho, tipo provável de cada coluna com amostras de valores). É ideal para mostrar ao usuário o que o sistema "entendeu" antes de confirmar a importação física.</p>
+<p>Retorna um array padronizado pelo <code>ApiResponseHelper</code>:</p>
+<div class="codigo">
+<pre><code data-lang="text">[
+    'success' => true,
+    'message' => 'CSV analisado com sucesso.',
+    'data' => [
+        'file_name' => 'clientes.csv',
+        'file_size' => 12450,
+        'encoding' => 'UTF-8',
+        'delimiter' => ';',
+        'has_header' => true,
+        'header_line' => 1,
+        'sampled_rows' => 300,
+        'headers_original' => ['Nome Completo', 'CPF', 'Ativo?', 'Valor Total'],
+        'headers_normalized' => ['nome_completo', 'cpf', 'ativo', 'valor_total'],
+        'columns' => [
+            [
+                'index' => 0,
+                'name' => 'nome_completo',
+                'original' => 'Nome Completo',
+                'type' => 'string',
+                'nulls_count' => 0,
+                'examples' => ['João Silva', 'Maria Santos']
+            ],
+            [
+                'index' => 2,
+                'name' => 'ativo',
+                'original' => 'Ativo?',
+                'type' => 'bool',
+                'nulls_count' => 5,
+                'examples' => ['Sim', 'Não']
+            ]
+        ]
+    ]
+]
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="preview"><code>preview()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::preview(string $path, string|null $baseDirectory = null, int $limit = 10, array $options = []): array</div>
+<p>Retorna os metadados do arquivo junto com as primeiras <code>$limit</code> linhas (máximo 100), já convertendo e mapeando as células nos tipos inferidos ou declarados.</p>
+<p>Cada linha do array <code>rows</code> de retorno contém as chaves:</p>
+<ul>
+    <li><code>line</code>: O número físico da linha no arquivo CSV.</li>
+    <li><code>raw</code>: O array original de strings lido diretamente.</li>
+    <li><code>mapped</code>: Array associativo onde as chaves são os nomes normalizados das colunas e os valores são strings brutas.</li>
+    <li><code>converted</code>: Array associativo com os valores convertidos e tipados (ex.: booleanos reais, floats de PHP).</li>
+    <li><code>errors</code>: Lista de erros de conversão encontrados especificamente nesta linha, se existirem.</li>
+</ul>
+</div>
+
+<h2 id="processamento" data-titulo="Processamento em lote">Processamento em lote</h2>
+<p>Leitura sequencial sob demanda com delegação para callbacks, validação por linha e manipulação eficiente de memória.</p>
+
+<div class="metodo">
+<h3 id="process"><code>process()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::process(string $path, callable $callback, string|null $baseDirectory = null, array $options = []): array</div>
+<p>Lê todo o arquivo CSV de forma encadeada, agrupa as linhas processadas em lotes e entrega cada lote para a função de retorno configurada.</p>
+<div class="codigo">
+<div class="titulo-codigo">Callback de processamento</div>
+<pre><code data-lang="php">$resultado = CsvHelper::process('vendas.csv', function (array $lote, array $relatorio) {
+    foreach ($lote as $linha) {
+        $nroLinha = $linha['line'];
+        $dados    = $linha['data']; // Convertidos segundo o mapeamento e tipos
+        $originais = $linha['raw'];  // Strings originais lidas
+        
+        // Ex.: Enviar a API externa ou processar customizado
+        FaturamentoService::registrar($dados);
+    }
+}, null, [
+    'chunk_size' => 100,
+    'convert' => true
+]);
+</code></pre>
+</div>
+
+<p>As opções aceitas pelo método <code>process()</code> e pelo método <code>import()</code> são:</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Opção</th>
+            <th>Tipo</th>
+            <th>Padrão</th>
+            <th>Descrição</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>chunk_size</code></td>
+            <td>int</td>
+            <td><code>500</code></td>
+            <td>Tamanho do lote enviado ao callback ou banco.</td>
+        </tr>
+        <tr>
+            <td><code>encoding</code></td>
+            <td>string</td>
+            <td><code>null</code></td>
+            <td>Força um charset (ex.: <code>'UTF-8'</code>, <code>'Windows-1252'</code>). Se nulo, auto-detecta.</td>
+        </tr>
+        <tr>
+            <td><code>delimiter</code></td>
+            <td>string</td>
+            <td><code>null</code></td>
+            <td>Força o delimitador (ex.: <code>','</code>). Se nulo, auto-detecta.</td>
+        </tr>
+        <tr>
+            <td><code>convert</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Se <code>true</code>, converte os valores das células para os tipos de dados correspondentes.</td>
+        </tr>
+        <tr>
+            <td><code>types</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Tipos de colunas declarados explicitamente (ex.: <code>['registro_id' => 'int', 'saldo' => 'decimal']</code>). Veja <a href="#tipagem">Mapeamento de tipos</a>.</td>
+        </tr>
+        <tr>
+            <td><code>columns</code></td>
+            <td>array</td>
+            <td><code>null</code></td>
+            <td>Lista de nomes de colunas esperados. Se enviado, realiza correspondência aproximada (Fuzzy Match) com as colunas do CSV.</td>
+        </tr>
+        <tr>
+            <td><code>mapping</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Mapeamento manual de colunas: <code>['Título da Coluna CSV' => 'nome_banco']</code>.</td>
+        </tr>
+        <tr>
+            <td><code>empty_as_null</code></td>
+            <td>bool</td>
+            <td><code>true</code></td>
+            <td>Campos em branco no CSV viram <code>null</code>.</td>
+        </tr>
+        <tr>
+            <td><code>transform</code></td>
+            <td>callable</td>
+            <td><code>null</code></td>
+            <td>Callback para mutar o array da linha de dados antes de validar e processar: <code>fn($data, $line, $raw) => $data</code>. Se retornar <code>false</code>, a linha é ignorada.</td>
+        </tr>
+        <tr>
+            <td><code>rules</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Regras declarativas do <code>ValidationHelper</code> para validação. Exige que o ValidationHelper esteja presente.</td>
+        </tr>
+        <tr>
+            <td><code>validate_row</code></td>
+            <td>callable</td>
+            <td><code>null</code></td>
+            <td>Callback de validação personalizado: <code>fn($data, $line, $raw)</code>. Deve retornar <code>true</code> se válido, <code>false</code> ou uma <code>string</code> de erro se inválido.</td>
+        </tr>
+        <tr>
+            <td><code>stop_on_error</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Interrompe o processamento na primeira linha que apresentar falha de conversão ou de validação.</td>
+        </tr>
+        <tr>
+            <td><code>max_errors</code></td>
+            <td>int</td>
+            <td><code>1000</code></td>
+            <td>Quantidade máxima de erros permitidos antes de abortar o processamento.</td>
+        </tr>
+        <tr>
+            <td><code>required_headers</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Lista de cabeçalhos originais que devem obrigatoriamente constar no arquivo CSV.</td>
+        </tr>
+        <tr>
+            <td><code>enforce_column_count</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Se <code>true</code>, rejeita linhas que tenham número de células diferente do cabeçalho.</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<p>O retorno de <code>process()</code> é um array detalhando o relatório da importação:</p>
+<div class="codigo">
+<pre><code data-lang="text">[
+    'success' => true,
+    'message' => 'Processamento CSV concluído.',
+    'data' => [
+        'delimiter' => ';',
+        'encoding' => 'UTF-8',
+        'total_rows' => 1250,      // Total de linhas de dados no arquivo
+        'processed_rows' => 1250,  // Linhas analisadas (inclui rejeitadas e ignoradas)
+        'success_rows' => 1242,    // Linhas processadas com êxito
+        'skipped_rows' => 8,       // Linhas rejeitadas/ignoradas
+        'errors_count' => 8,       // Total de falhas registradas
+        'errors' => [              // Detalhamento dos erros por linha
+            [
+                'line' => 12,
+                'message' => 'e_mail: O campo E-mail deve conter um e-mail válido.',
+                'data' => [
+                    'errors' => ['e_mail' => ['O campo E-mail deve conter um e-mail válido.']],
+                    'row' => ['nome' => 'Carlos', 'e_mail' => 'invalido-email']
+                ]
+            ]
+        ]
+    ]
+]
+</code></pre>
+</div>
+</div>
+
+<h2 id="importacao-tabela" data-titulo="Importação para banco de dados">Importação para banco de dados</h2>
+<p>Importa diretamente o conteúdo de um CSV para uma tabela do banco de dados, utilizando <code>OrmTables</code> e controle transacional avançado por savepoints.</p>
+
+<div class="metodo">
+<h3 id="import"><code>import()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::import(string $path, string $table, string|null $baseDirectory = null, array $options = []): array</div>
+<p>O método <code>import()</code> configura por baixo dos panos uma chamada para <code>process()</code>, onde a função de callback executa inserções ou atualizações na tabela informada.</p>
+<p>Para máxima confiabilidade, o helper utiliza um mecanismo híbrido de segurança:</p>
+<ul>
+    <li><strong>Definição implícita de tipos pela tabela:</strong> Se a tabela do banco possuir uma coluna <code>saldo DECIMAL(10,2)</code> e outra <code>ativo INT</code>, o helper mapeia e converte as strings correspondentes do CSV para float e int automaticamente.</li>
+    <li><strong>Isolamento de lote por Savepoint (DbTransactionHelper):</strong> Cada lote de linhas é importado dentro de uma transação do banco. Se uma linha específica falhar por um erro de banco (violando um índice UNIQUE, por exemplo), <strong>apenas aquela linha é revertida</strong> via savepoint interno da transação. As outras linhas bem-sucedidas do lote são salvas normalmente, e a falha é registrada amigavelmente no relatório geral para o usuário.</li>
+</ul>
+
+<div class="codigo">
+<div class="titulo-codigo">Importando em modo Upsert</div>
+<pre><code data-lang="php">// Importa os cooperados. Se o CPF já existir, atualiza o nome e o telefone
+$relatorio = CsvHelper::import(
+    'uploads/cooperados.csv',
+    '#__cooperados',
+    null,
+    [
+        'mode' => 'upsert',
+        'unique_by' => 'cpf',
+        'defaults' => [
+            'grupo_id' => 3,
+            'atualizado_em' => JFactory::getDate()->toSql()
+        ],
+        'atomic' => false // Se true, qualquer erro na planilha desfaz todo o processo
+    ]
+);
+</code></pre>
+</div>
+
+<p>Opções exclusivas do método <code>import()</code> (além das aceitas por <code>process()</code>):</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Opção</th>
+            <th>Tipo</th>
+            <th>Padrão</th>
+            <th>Descrição</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>connection</code></td>
+            <td>string|object</td>
+            <td><code>null</code></td>
+            <td>Uma conexão cadastrada no <code>DbConnectionHelper</code> para onde a importação será enviada.</td>
+        </tr>
+        <tr>
+            <td><code>mode</code></td>
+            <td>string</td>
+            <td><code>'insert'</code></td>
+            <td>Usa <code>'insert'</code> para apenas adicionar novas linhas, ou <code>'upsert'</code> para adicionar ou atualizar registros que já existam.</td>
+        </tr>
+        <tr>
+            <td><code>unique_by</code></td>
+            <td>string|array</td>
+            <td><code>[]</code></td>
+            <td>A coluna ou colunas chaves da tabela que identificam o registro para efetuar a atualização no modo <code>upsert</code>.</td>
+        </tr>
+        <tr>
+            <td><code>defaults</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Array associativo com valores fixos aplicados para preencher colunas da tabela que não existam no CSV (ex.: <code>['categoria_id' => 5]</code>).</td>
+        </tr>
+        <tr>
+            <td><code>dry_run</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Simulação de importação. Executa toda a leitura, mapeamento de colunas, conversão e regras de validação sem gravar fisicamente nada no banco.</td>
+        </tr>
+        <tr>
+            <td><code>atomic</code></td>
+            <td>bool</td>
+            <td><code>false</code></td>
+            <td>Tudo ou nada. Se definido como <code>true</code>, se houver um erro em qualquer linha, a transação inteira do banco é cancelada (Rollback), desfazendo toda a planilha.</td>
+        </tr>
+        <tr>
+            <td><code>orm</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Opções adicionais repassadas diretamente na inicialização interna do <code>OrmTables::table()</code>.</td>
+        </tr>
+        <tr>
+            <td><code>use_table_types</code></td>
+            <td>bool</td>
+            <td><code>true</code></td>
+            <td>Habilita o carregamento automático dos tipos de dados de cada coluna diretamente da definição da tabela física do banco de dados.</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<h2 id="tipagem" data-titulo="Mapeamento de tipos">Mapeamento de tipos</h2>
+<p>No array <code>types</code> das opções de processamento ou na inferência automática do analisador, o helper suporta e trata as seguintes conversões de tipos:</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Tipo declarado</th>
+            <th>Sinônimos</th>
+            <th>Regra de conversão / Tratamento localizado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>'int'</code></td>
+            <td><code>integer</code></td>
+            <td>Remove pontos de milhar, trata vírgula decimal se houver e faz o cast para <code>(int)</code>.</td>
+        </tr>
+        <tr>
+            <td><code>'decimal'</code></td>
+            <td><code>float</code>, <code>number</code>, <code>money</code></td>
+            <td>Converte formatos numéricos locais. Suporta tanto padrão inglês (<code>1,250.55</code>) quanto brasileiro (<code>1.250,55</code>), resultando em <code>(float)</code>.</td>
+        </tr>
+        <tr>
+            <td><code>'bool'</code></td>
+            <td><code>boolean</code></td>
+            <td>Retorna boolean real. Mapeia como <code>true</code> as palavras: <code>'1', 'sim', 's', 'true', 'yes', 'y', 'verdadeiro', 'v', 'x'</code> (não diferencia maiúsculas). Todo o restante vira <code>false</code>.</td>
+        </tr>
+        <tr>
+            <td><code>'date'</code></td>
+            <td>—</td>
+            <td>Identifica datas. Suporta formatos normais (<code>YYYY-MM-DD</code>) e localizados (<code>DD/MM/YYYY</code>), convertendo e salvando no padrão de banco <code>YYYY-MM-DD</code>.</td>
+        </tr>
+        <tr>
+            <td><code>'datetime'</code></td>
+            <td><code>timestamp</code></td>
+            <td>Combina data com horário localizado (ex.: <code>"03/10/2026 14:30:00"</code>) e exporta em formato de banco SQL <code>YYYY-MM-DD HH:MM:SS</code>.</td>
+        </tr>
+        <tr>
+            <td><code>'intbool'</code></td>
+            <td>—</td>
+            <td>Se o valor for uma palavra booleana (Sim/Não), avalia para booleano (0 ou 1). Caso contrário, tenta fazer cast direto para inteiro numérico.</td>
+        </tr>
+        <tr>
+            <td><code>'digits'</code></td>
+            <td>—</td>
+            <td>Filtragem agressiva. Elimina do texto qualquer caractere que não seja um número (ex.: CPF com pontos e traços <code>"123.456.789-00"</code> vira apenas string <code>"12345678900"</code>).</td>
+        </tr>
+        <tr>
+            <td><code>'string'</code></td>
+            <td><code>text</code></td>
+            <td>Retorna o valor como string normal do PHP, aplicando a codificação de caracteres correta (com limpeza automática de caracteres truncados).</td>
+        </tr>
+        <tr>
+            <td><em>Callable</em></td>
+            <td>—</td>
+            <td>
+                Passagem de um callback anônimo para customizar totalmente a conversão:<br>
+                <code>'slug' => function($value, $line, $colName) { return strtolower(trim($value)); }</code>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+
+<h2 id="gerenciamento-rejeitados" data-titulo="Gerenciamento de Rejeitados">Gerenciamento de Rejeitados</h2>
+<p>Permite gerar planilhas de correção sob medida com os dados rejeitados, de forma a fechar o ciclo de importação de ponta a ponta sem perdas.</p>
+
+<div class="metodo">
+<h3 id="writeRejectedCsv"><code>writeRejectedCsv()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">CsvHelper::writeRejectedCsv(string $destinationPath, array $errors, string|null $baseDirectory = null, array $options = []): bool</div>
+<p>Grava um arquivo CSV contendo todas as linhas que foram recusadas (por erro de validação ou erro de banco) durante o processamento.</p>
+<p>Por padrão, utiliza as seguintes configurações padrão no arquivo resultante:</p>
+<ul>
+    <li><strong>Formato Reimportável:</strong> Com a opção default <code>'reimportable' => true</code>, a planilha gerada possui exatamente o mesmo layout e colunas do arquivo original que o usuário enviou, acrescentando apenas as colunas <code>"linha"</code> e <code>"erro"</code> na frente.</li>
+    <li><strong>UTF-8 com BOM automático:</strong> Insere o Byte Order Mark (BOM) UTF-8 no início do arquivo para garantir que os caracteres especiais e acentos sejam exibidos perfeitamente no Microsoft Excel de qualquer usuário sem configurações adicionais.</li>
+</ul>
+
+<div class="codigo">
+<div class="titulo-codigo">Tratamento de rejeitados no controller</div>
+<pre><code data-lang="php">public function importar()
+{
+    $arquivoTmp = InputHelper::file('planilha');
+    
+    $resultado = CsvHelper::import($arquivoTmp['tmp_name'], '#__clientes', null, [
+        'mode' => 'insert',
+        'rules' => [
+            'email' => 'required|email',
+            'cpf' => 'required|cpf'
+        ]
+    ]);
+    
+    // Se houve erros, salvamos a planilha de rejeitados para download
+    if ($resultado['data']['errors_count'] > 0) {
+        $caminhoErro = 'tmp/rejeitados_' . time() . '.csv';
+        
+        CsvHelper::writeRejectedCsv($caminhoErro, $resultado['data']['errors'], null, [
+            'reimportable' => true
+        ]);
+        
+        return ApiResponseHelper::warning('Algumas linhas possuíam erros e foram rejeitadas.', [
+            'importados' => $resultado['data']['success_rows'],
+            'rejeitados_count' => $resultado['data']['errors_count'],
+            'download_rejeitados' => $caminhoErro
+        ]);
+    }
+    
+    return ApiResponseHelper::success('Todos os dados foram importados com sucesso.');
+}
+</code></pre>
+</div>
+</div>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul>
+    <li><a href="validation-helper.html">ValidationHelper</a>: Regras declarativas de validação.</li>
+    <li><a href="db-transaction-helper.html">DbTransactionHelper</a>: Gerenciamento transacional manual ou automático.</li>
+    <li><a href="receitas.html">Receitas</a>: Exemplos integrados de fluxo de importação e processamento de planilhas.</li>
+</ul>
+
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="api-response-helper.html"><small>← Anterior</small>ApiResponseHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>ApiResponseHelper</code> e <code>CsvHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>
