@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ValidationHelper · helpers-joomla</title>
+<meta name="description" content="Referência do ValidationHelper: regras, mensagens, rótulos, listas com *, regras personalizadas e uso no controller.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › ValidationHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" class="ativo" aria-current="page" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>ValidationHelper</h1>
+<p class="lead">Valide formulários e APIs com regras declarativas e mensagens em português, inclusive listas de itens e regras que consultam o banco.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>O <code>ValidationHelper</code> confere um array de dados contra um conjunto de regras e devolve, de uma vez, <strong>todas</strong> as mensagens de erro, em português e prontas para mostrar ao usuário.</p><div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/ValidationHelper.php&#x27;;
+
+$resultado = ValidationHelper::validate(
+    array(
+        &#x27;nome&#x27; =&gt; &#x27;Ana&#x27;,
+        &#x27;email&#x27; =&gt; &#x27;ana@&#x27;,
+        &#x27;cpf&#x27; =&gt; &#x27;52998224725&#x27;,
+    ),
+    array(
+        &#x27;nome&#x27; =&gt; &#x27;required|max_length:150&#x27;,
+        &#x27;email&#x27; =&gt; &#x27;required|email&#x27;,
+        &#x27;cpf&#x27; =&gt; &#x27;required|cpf&#x27;,
+    )
+);
+
+if (!$resultado[&#x27;valid&#x27;]) {
+    echo $resultado[&#x27;first_error&#x27;];   // &quot;O campo Email deve conter um e-mail válido.&quot;
+}</code></pre></div><h3 id="resultado">O resultado</h3><div class="tabela"><table><thead><tr><th>Chave</th><th>Tipo</th><th>Conteúdo</th></tr></thead><tbody><tr><td><code>valid</code></td><td>bool</td><td><code>true</code> se nenhuma regra falhou.</td></tr><tr><td><code>errors</code></td><td>array</td><td><code>['campo' =&gt; ['mensagem', …]]</code>. Um campo pode ter várias mensagens. Vazio quando válido.</td></tr><tr><td><code>first_error</code></td><td>string|null</td><td>A primeira mensagem, para avisos curtos ("toast").</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">// Formato de $resultado[&#x27;errors&#x27;]
+$erros = array(
+    &#x27;email&#x27; =&gt; array(&#x27;O campo Email deve conter um e-mail válido.&#x27;),
+    &#x27;itens.1.quantidade&#x27; =&gt; array(&#x27;O campo Quantidade (item 2) deve ser maior ou igual a 1.&#x27;),
+);</code></pre></div><div class="nota dica"><p>Em controllers que respondem JSON, <code>ApiResponseHelper::fromValidation($resultado)</code> já monta a resposta de erro, com a lista de erros, a primeira mensagem e o status HTTP da constante <code>ApiResponseHelper::HTTP_UNPROCESSABLE_ENTITY</code>.</p></div><div class="nota"><p>O helper <strong>valida</strong>; ele não converte nem limpa os dados. Leia os valores com o <a href="input-helper.html"><code>InputHelper</code></a> e valide o array resultante. Veja o <a href="#padrao-controller">padrão no controller</a>.</p></div><h2 id="escrevendo-regras" data-titulo="Como escrever regras">Como escrever regras</h2><p>As regras de cada campo podem ser escritas de três formas, que podem ser combinadas:</p><div class="codigo"><pre><code data-lang="php">$regras = array(
+    // 1. String separada por |
+    &#x27;nome&#x27; =&gt; &#x27;required|max_length:150&#x27;,
+
+    // 2. Array de regras
+    &#x27;email&#x27; =&gt; array(&#x27;required&#x27;, &#x27;email&#x27;, &#x27;max_length:150&#x27;),
+
+    // 3. Chave =&gt; valor: parâmetros como array, ou uma função
+    &#x27;status&#x27; =&gt; array(&#x27;required&#x27;, &#x27;in&#x27; =&gt; array(&#x27;aberto&#x27;, &#x27;pago&#x27;, &#x27;cancelado&#x27;)),
+    &#x27;codigo&#x27; =&gt; array(&#x27;regex&#x27; =&gt; &#x27;/^(PED|ORC)-\d{4}$/&#x27;),
+    &#x27;email_comercial&#x27; =&gt; array(
+        &#x27;email&#x27;,
+        &#x27;unique&#x27; =&gt; function ($email) {
+            return !OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;where(&#x27;email&#x27;, $email)-&gt;exists();
+        },
+    ),
+);</code></pre></div><div class="tabela"><table><thead><tr><th>Elemento</th><th>Significado</th></tr></thead><tbody><tr><td><code>regra</code></td><td>Regra sem parâmetros: <code>required</code>, <code>email</code>.</td></tr><tr><td><code>regra:p1,p2</code></td><td>Regra com parâmetros separados por vírgula: <code>between:1,10</code>, <code>in:a,b</code>.</td></tr><tr><td><code>'regra' =&gt; array(…)</code></td><td>Parâmetros como array: permite valores que contêm vírgula.</td></tr><tr><td><code>'regra' =&gt; function</code></td><td>Regra personalizada; a mensagem de erro é a da regra (por exemplo, <code>unique</code>).</td></tr><tr><td><code>function</code> sem chave</td><td>Regra personalizada com a mensagem genérica <code>callback</code>.</td></tr><tr><td><code>callback:Classe::metodo</code></td><td>Método estático de uma classe, pelo nome.</td></tr></tbody></table></div><div class="nota aviso"><p><strong>regex numa string:</strong> como o padrão pode conter <code>|</code> e vírgulas, ela precisa ser a <strong>última</strong> regra da string: <code>'required|regex:/^(a|b)$/'</code>. Em caso de dúvida, use a forma <code>'regex' =&gt; '/…/'</code>.</p></div><h2 id="como-funciona" data-titulo="Como a validação funciona">Como a validação funciona</h2><h3 id="opcional">Campos são opcionais por padrão</h3><p>Um campo <strong>vazio</strong> (ausente, <code>null</code>, texto só com espaços, lista vazia ou arquivo não enviado) só é verificado pelas <strong>regras de presença</strong>: <code>required</code>, <code>required_if</code>, <code>required_with</code> e <code>accepted</code>. As demais regras só se aplicam quando há valor.</p><div class="codigo"><pre><code data-lang="text">&#x27;telefone&#x27; =&gt; &#x27;phone&#x27;            // vazio: válido.  &quot;123&quot;: inválido
+&#x27;email&#x27; =&gt; &#x27;required|email&#x27;      // vazio: só &quot;obrigatório&quot;, sem &quot;e-mail inválido&quot; junto
+&#x27;cnpj&#x27; =&gt; &#x27;required_if:tipo,pj|cnpj&#x27;   // tipo = pf e cnpj vazio: válido</code></pre></div><p>A regra <code>nullable</code> existe para deixar a intenção explícita, mas não muda nada: todo campo sem regra de presença já é opcional.</p><div class="nota aviso"><p><code>0</code>, <code>'0'</code> e <code>false</code> <strong>são valores</strong>: passam no <code>required</code>. Para "o checkbox precisa estar marcado", use <a href="#presenca"><code>accepted</code></a>.</p></div><h3 id="varios-erros">Todas as regras são verificadas</h3><p>Quando o campo tem valor, todas as regras rodam, e o campo pode acumular mais de uma mensagem. Os campos aparecem em <code>errors</code> na ordem em que as regras foram declaradas.</p><div class="codigo"><pre><code data-lang="php">// &#x27;codigo&#x27; =&gt; &#x27;integer|max_length:5&#x27; com &quot;abcdefgh&quot;:
+&#x27;codigo&#x27; =&gt; array(
+    &#x27;O campo Codigo deve ser um número inteiro válido.&#x27;,
+    &#x27;O campo Codigo deve ter no máximo 5 caracteres.&#x27;,
+)</code></pre></div><h3 id="aninhados">Campos aninhados e listas</h3><p>Use ponto para chegar em campos dentro de arrays, e <code>*</code> para validar <strong>cada item de uma lista</strong>:</p><div class="codigo"><pre><code data-lang="php">$dados = array(
+    &#x27;endereco&#x27; =&gt; array(&#x27;cep&#x27; =&gt; &#x27;01310-100&#x27;, &#x27;numero&#x27; =&gt; &#x27;100&#x27;),
+    &#x27;itens&#x27; =&gt; array(
+        array(&#x27;produto_id&#x27; =&gt; 7, &#x27;quantidade&#x27; =&gt; 2),
+        array(&#x27;produto_id&#x27; =&gt; &#x27;&#x27;, &#x27;quantidade&#x27; =&gt; 0),
+    ),
+);
+
+$resultado = ValidationHelper::validate($dados, array(
+    &#x27;endereco.cep&#x27; =&gt; &#x27;required|cep&#x27;,
+    &#x27;itens&#x27; =&gt; &#x27;required|array|min:1&#x27;,              // a lista em si: ao menos 1 item
+    &#x27;itens.*.produto_id&#x27; =&gt; &#x27;required|integer&#x27;,     // cada item
+    &#x27;itens.*.quantidade&#x27; =&gt; &#x27;required|integer|min:1&#x27;,
+));
+
+// errors:
+// &#x27;itens.1.produto_id&#x27; =&gt; [&#x27;O campo Produto id (item 2) é obrigatório.&#x27;]
+// &#x27;itens.1.quantidade&#x27; =&gt; [&#x27;O campo Quantidade (item 2) deve ser maior ou igual a 1.&#x27;]</code></pre></div><div class="tabela"><table><thead><tr><th>Detalhe</th><th>Comportamento</th></tr></thead><tbody><tr><td>Chave do erro</td><td>O caminho real do item: <code>itens.1.quantidade</code> (índice começando em 0).</td></tr><tr><td>Rótulo</td><td>Nome do campo + número do item, contando a partir de 1: <em>Quantidade (item 2)</em>. Rótulo personalizado por padrão: <code>'itens.*.quantidade' =&gt; 'Quantidade'</code>.</td></tr><tr><td>Lista vazia ou ausente</td><td>As regras com <code>*</code> não têm itens para validar e não geram erro. Para exigir itens, valide a própria lista: <code>'itens' =&gt; 'required|array|min:1'</code>.</td></tr><tr><td>Vários níveis</td><td><code>grupos.*.itens.*.valor</code> também funciona.</td></tr><tr><td>Lista de valores simples</td><td><code>'tags.*' =&gt; 'max_length:30'</code> valida cada valor da lista.</td></tr></tbody></table></div><h2 id="catalogo" data-titulo="Catálogo de regras">Catálogo de regras</h2><h3 id="presenca">Presença</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>required</code></td><td>—</td><td>O campo tem valor (não é ausente, <code>null</code>, só espaços nem lista vazia).</td><td><code>'nome' => 'required'</code></td></tr><tr><td><code>required_if</code></td><td>campo, valor1, valor2…</td><td>Obrigatório quando o outro campo tem um dos valores.</td><td><code>'cnpj' => 'required_if:tipo,pj'</code></td></tr><tr><td><code>required_with</code></td><td>campo1, campo2…</td><td>Obrigatório quando algum dos outros campos foi preenchido.</td><td><code>'senha_confirmacao' => 'required_with:senha'</code></td></tr><tr><td><code>accepted</code></td><td>—</td><td>Marcado/aceito: <code>1</code>, <code>true</code>, <code>on</code>, <code>yes</code>, <code>sim</code>. Ausente é inválido.</td><td><code>'termos' => 'accepted'</code></td></tr><tr><td><code>nullable</code></td><td>—</td><td>Sempre. Apenas documenta que o campo é opcional.</td><td><code>'apelido' => 'nullable|max_length:30'</code></td></tr></tbody></table></div><h3 id="tipos">Tipos</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>string</code></td><td>—</td><td>É texto (<code>is_string</code>). Um número inteiro do PHP falha.</td><td><code>'nome' => 'string'</code></td></tr><tr><td><code>integer, int</code></td><td>—</td><td>Inteiro: <code>42</code> ou <code>"42"</code>, <code>"-3"</code>. Não aceita <code>"+5"</code>, <code>" 5"</code> nem <code>"4.0"</code>.</td><td><code>'idade' => 'integer'</code></td></tr><tr><td><code>numeric</code></td><td>—</td><td>Número no formato do PHP: <code>"10.5"</code>, <code>"1e3"</code>. <strong>Não</strong> aceita <code>"10,5"</code>.</td><td><code>'latitude' => 'numeric'</code></td></tr><tr><td><code>decimal</code></td><td>—</td><td>Número digitado por pessoas: <code>"10,5"</code>, <code>"1.234,56"</code>, <code>"1,234.56"</code>, <code>"R$ 9,90"</code>. Recusa <code>"1.2.3"</code>.</td><td><code>'preco' => 'decimal'</code></td></tr><tr><td><code>boolean, bool</code></td><td>—</td><td><code>true</code>/<code>false</code>, <code>0</code>/<code>1</code>, <code>on</code>/<code>off</code>, <code>yes</code>/<code>no</code>, <code>y</code>/<code>n</code>, <code>sim</code>/<code>não</code>, <code>s</code>/<code>n</code>.</td><td><code>'ativo' => 'boolean'</code></td></tr><tr><td><code>array</code></td><td>—</td><td>É um array.</td><td><code>'itens' => 'array'</code></td></tr><tr><td><code>json</code></td><td>—</td><td>Texto JSON válido, ou já um array.</td><td><code>'config' => 'json'</code></td></tr></tbody></table></div><h3 id="tamanhos">Tamanho e intervalo</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>min</code></td><td>n</td><td>Número ≥ n; texto com ≥ n caracteres; lista com ≥ n itens.</td><td><code>'quantidade' => 'integer|min:1'</code></td></tr><tr><td><code>max</code></td><td>n</td><td>Número ≤ n; texto com ≤ n caracteres; lista com ≤ n itens.</td><td><code>'desconto' => 'decimal|max:100'</code></td></tr><tr><td><code>between</code></td><td>min, max</td><td>Entre os limites, inclusive (mesma lógica de <code>min</code>/<code>max</code>).</td><td><code>'nota' => 'between:0,10'</code></td></tr><tr><td><code>min_length</code></td><td>n</td><td>Texto com pelo menos n caracteres.</td><td><code>'senha' => 'min_length:8'</code></td></tr><tr><td><code>max_length</code></td><td>n</td><td>Texto com no máximo n caracteres.</td><td><code>'nome' => 'max_length:150'</code></td></tr><tr><td><code>length</code></td><td>n</td><td>Texto com exatamente n caracteres.</td><td><code>'uf' => 'length:2'</code></td></tr></tbody></table></div><div class="nota aviso"><p><code>min</code>, <code>max</code> e <code>between</code> comparam o <strong>valor</strong> sempre que o texto parece um número, inclusive no formato brasileiro (<code>"1.234,56"</code> = 1234,56). Para tamanho de textos só com dígitos (CEP, código, telefone), use <code>min_length</code>/<code>max_length</code>/<code>length</code>: com <code>min:8</code>, um CEP <code>"9"</code> passaria (9 ≥ 8).</p></div><h3 id="listas-valores">Valores permitidos</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>in</code></td><td>v1, v2…</td><td>O valor está na lista (comparado como texto).</td><td><code>'status' => 'in:aberto,pago'</code></td></tr><tr><td><code>not_in</code></td><td>v1, v2…</td><td>O valor não está na lista.</td><td><code>'usuario' => 'not_in:admin,root'</code></td></tr></tbody></table></div><p>Para valores que contêm vírgula, use a forma com chave: <code>'faixa' =&gt; array('in' =&gt; array('0,5', '1,0'))</code>.</p><h3 id="formatos">Formatos</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>email</code></td><td>—</td><td>E-mail válido.</td><td><code>'email' => 'email'</code></td></tr><tr><td><code>url</code></td><td>esquemas (opcional)</td><td>URL válida com esquema <code>http</code> ou <code>https</code>. Outros esquemas só se informados.</td><td><code>'site' => 'url'  'repo' => 'url:https,git'</code></td></tr><tr><td><code>uuid</code></td><td>—</td><td>UUID versões 1 a 8.</td><td><code>'token' => 'uuid'</code></td></tr><tr><td><code>ip</code></td><td>—</td><td>Endereço IPv4 ou IPv6.</td><td><code>'servidor' => 'ip'</code></td></tr><tr><td><code>alpha</code></td><td>—</td><td>Só letras (com acento) e espaços.</td><td><code>'nome' => 'alpha'</code></td></tr><tr><td><code>alpha_num</code></td><td>—</td><td>Só letras e números, sem espaços.</td><td><code>'codigo' => 'alpha_num'</code></td></tr><tr><td><code>alpha_dash</code></td><td>—</td><td>Letras, números, <code>-</code> e <code>_</code>.</td><td><code>'slug' => 'alpha_dash'</code></td></tr><tr><td><code>regex</code></td><td>padrão</td><td>Casa com a expressão regular.</td><td><code>'placa' => 'regex:/^[A-Z]{3}\d[A-Z0-9]\d{2}$/'</code></td></tr></tbody></table></div><div class="nota"><p>A restrição de <code>url</code> a http/https impede que um link com <code>javascript:</code> seja aceito e depois exibido como <code>&lt;a href&gt;</code>.</p></div><h3 id="brasil">Documentos e contatos (Brasil)</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>cpf</code></td><td>—</td><td>CPF com dígitos verificadores corretos. Aceita com ou sem máscara.</td><td><code>'cpf' => 'cpf'</code></td></tr><tr><td><code>cnpj</code></td><td>—</td><td>CNPJ com dígitos verificadores corretos. Aceita com ou sem máscara.</td><td><code>'cnpj' => 'cnpj'</code></td></tr><tr><td><code>cpf_cnpj</code></td><td>—</td><td>CPF ou CNPJ válido.</td><td><code>'documento' => 'cpf_cnpj'</code></td></tr><tr><td><code>phone, telefone</code></td><td>—</td><td>De 10 a 13 dígitos, ignorando a máscara (com DDD, com ou sem 55).</td><td><code>'celular' => 'phone'</code></td></tr><tr><td><code>cep</code></td><td>—</td><td>8 dígitos, ignorando a máscara.</td><td><code>'cep' => 'cep'</code></td></tr></tbody></table></div><p>Sequências repetidas (<code>111.111.111-11</code>) são recusadas.</p><h3 id="datas">Datas e horários</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>date</code></td><td>formato (opcional)</td><td>Data de calendário válida. Padrão <code>Y-m-d</code>.</td><td><code>'nascimento' => 'date'  'venc' => 'date:d/m/Y'</code></td></tr><tr><td><code>date_br</code></td><td>—</td><td>Data válida no formato <code>DD/MM/AAAA</code>.</td><td><code>'nascimento' => 'date_br'</code></td></tr><tr><td><code>datetime</code></td><td>formato (opcional)</td><td>Data e hora válidas. Padrão <code>Y-m-d H:i:s</code>.</td><td><code>'agendado' => 'datetime:Y-m-d H:i'</code></td></tr><tr><td><code>time</code></td><td>formato (opcional)</td><td>Horário válido. Sem formato, aceita <code>H:i</code> e <code>H:i:s</code>.</td><td><code>'abertura' => 'time'</code></td></tr><tr><td><code>after</code></td><td>campo ou data</td><td>Data posterior à referência.</td><td><code>'entrega' => 'after:today'</code></td></tr><tr><td><code>after_or_equal</code></td><td>campo ou data</td><td>Data igual ou posterior.</td><td><code>'fim' => 'after_or_equal:inicio'</code></td></tr><tr><td><code>before</code></td><td>campo ou data</td><td>Data anterior.</td><td><code>'nascimento' => 'before:today'</code></td></tr><tr><td><code>before_or_equal</code></td><td>campo ou data</td><td>Data igual ou anterior.</td><td><code>'inicio' => 'before_or_equal:fim'</code></td></tr></tbody></table></div><p>A referência de <code>after</code>/<code>before</code> pode ser o <strong>nome de outro campo</strong> dos dados, ou uma data: <code>today</code>, <code>now</code>, <code>tomorrow</code>, <code>yesterday</code>, <code>2026-01-01</code>, <code>01/01/2026</code>. Datas no formato <code>DD/MM/AAAA</code> são lidas corretamente (e não como mês/dia).</p><div class="codigo"><pre><code data-lang="php">$resultado = ValidationHelper::validate($periodo, array(
+    &#x27;inicio&#x27; =&gt; &#x27;required|date&#x27;,
+    &#x27;fim&#x27; =&gt; &#x27;required|date|after_or_equal:inicio&#x27;,
+), array(), array(
+    &#x27;inicio&#x27; =&gt; &#x27;data inicial&#x27;,
+    &#x27;fim&#x27; =&gt; &#x27;Data final&#x27;,
+));
+// &quot;O campo Data final deve ser uma data igual ou posterior a data inicial.&quot;</code></pre></div><h3 id="comparacao">Comparação entre campos</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>same</code></td><td>campo</td><td>Igual ao outro campo (comparação exata, inclusive do tipo).</td><td><code>'senha_confirmacao' => 'same:senha'</code></td></tr><tr><td><code>different</code></td><td>campo</td><td>Diferente do outro campo.</td><td><code>'nova_senha' => 'different:senha_atual'</code></td></tr></tbody></table></div><div class="nota"><p>Por ser exata, <code>same</code> considera <code>"1"</code> e <code>1</code> diferentes. Leia os dois campos do mesmo jeito.</p></div><h3 id="arquivos">Arquivos</h3><p>O valor é o array de upload (<code>name</code>, <code>tmp_name</code>, <code>error</code>, <code>size</code>), como devolvido por <a href="input-helper.html#file"><code>InputHelper::file()</code></a>.</p><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>file</code></td><td>—</td><td>Upload concluído sem erro.</td><td><code>'documento' => 'required|file'</code></td></tr><tr><td><code>file_size</code></td><td>tamanho máximo</td><td>Até o tamanho informado: bytes (<code>2048</code>) ou <code>500K</code>, <code>2M</code>, <code>1G</code>.</td><td><code>'documento' => 'file_size:5M'</code></td></tr><tr><td><code>file_extension</code></td><td>ext1, ext2…</td><td>Extensão do nome está na lista (sem diferenciar maiúsculas).</td><td><code>'foto' => 'file_extension:jpg,png'</code></td></tr><tr><td><code>file_mime</code></td><td>tipo1, tipo2…</td><td>Tipo real do conteúdo (lido do arquivo, com <code>finfo</code>).</td><td><code>'foto' => 'file_mime:image/jpeg,image/png'</code></td></tr><tr><td><code>image</code></td><td>—</td><td>O conteúdo é uma imagem (JPEG, PNG, GIF, WebP…).</td><td><code>'foto' => 'image'</code></td></tr><tr><td><code>image_dimensions</code></td><td>largura, altura máximas</td><td>Imagem dentro das dimensões (0 = sem limite).</td><td><code>'avatar' => 'image_dimensions:1024,1024'</code></td></tr></tbody></table></div><div class="nota aviso"><p><code>file_extension</code> olha só o <strong>nome</strong> do arquivo, que vem do navegador e pode ser falsificado. Combine sempre com <code>file_mime</code> ou <code>image</code>, que leem o conteúdo:</p><div class="codigo"><pre><code data-lang="php">&#x27;documento&#x27; =&gt; &#x27;required|file|file_size:5M|file_extension:pdf|file_mime:application/pdf&#x27;,
+&#x27;foto&#x27; =&gt; &#x27;file|image|file_size:2M|file_extension:jpg,jpeg,png|image_dimensions:2000,2000&#x27;,</code></pre></div></div><h3 id="personalizadas">Regras personalizadas</h3><div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Válido quando</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>unique</code></td><td>função</td><td>A função devolve verdadeiro (valor livre). Mensagem: "já está em uso".</td><td></td></tr><tr><td><code>exists</code></td><td>função</td><td>A função devolve verdadeiro (valor existe). Mensagem: "não foi encontrado".</td><td></td></tr><tr><td><code>callback</code></td><td>função ou Classe::metodo</td><td>A função devolve verdadeiro. Mensagem: "é inválido".</td><td><code>'cupom' => 'callback:Cupons::valido'</code></td></tr></tbody></table></div><p>Toda função de regra recebe <code>($valor, $dados, $campo)</code> e pode devolver:</p><div class="tabela"><table><thead><tr><th>Retorno</th><th>Resultado</th></tr></thead><tbody><tr><td>verdadeiro (<code>true</code>, <code>1</code>…)</td><td>válido</td></tr><tr><td><code>false</code>, <code>null</code>, <code>0</code> (inclusive esquecer o <code>return</code>)</td><td>inválido, com a mensagem da regra</td></tr><tr><td>uma string</td><td>inválido, com essa string como mensagem (aceita <code>:field</code>)</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">$id = InputHelper::uint(&#x27;id&#x27;, 0, &#x27;post&#x27;);
+
+$regras = array(
+    &#x27;email&#x27; =&gt; array(
+        &#x27;required&#x27;,
+        &#x27;email&#x27;,
+        // unique: o e-mail não pode pertencer a OUTRO cliente
+        &#x27;unique&#x27; =&gt; function ($email) use ($id) {
+            return !OrmTables::table(&#x27;#__loja_clientes&#x27;)
+                -&gt;where(&#x27;email&#x27;, $email)
+                -&gt;where(&#x27;id&#x27;, &#x27;!=&#x27;, $id)
+                -&gt;exists();
+        },
+    ),
+    &#x27;cliente_id&#x27; =&gt; array(
+        &#x27;required&#x27;,
+        &#x27;integer&#x27;,
+        &#x27;exists&#x27; =&gt; function ($clienteId) {
+            return OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;where(&#x27;id&#x27;, (int) $clienteId)-&gt;exists();
+        },
+    ),
+    &#x27;cupom&#x27; =&gt; array(
+        function ($codigo, $dados) {
+            $cupom = OrmTables::table(&#x27;#__loja_cupons&#x27;)-&gt;where(&#x27;codigo&#x27;, $codigo)-&gt;first();
+
+            if ($cupom === null) {
+                return &#x27;Cupom não encontrado.&#x27;;
+            }
+
+            if ($cupom-&gt;validade &lt; date(&#x27;Y-m-d&#x27;)) {
+                return &#x27;Este cupom expirou.&#x27;;
+            }
+
+            return true;
+        },
+    ),
+);</code></pre></div><div class="nota"><p>Strings nunca são executadas como função: <code>'date'</code>, <code>'time'</code> e <code>'file'</code> são regras, não as funções do PHP. Para chamar um método pelo nome, use <code>callback:Classe::metodo</code>.</p></div><h2 id="mensagens" data-titulo="Mensagens e rótulos">Mensagens e rótulos</h2><p>As mensagens usam o <strong>rótulo</strong> do campo. Sem rótulo definido, ele é gerado do nome: <code>data_nascimento</code> vira "Data nascimento" e <code>endereco.rua</code> vira "Endereco rua", sem acentos. Defina rótulos para os campos que aparecem na tela:</p><div class="codigo"><pre><code data-lang="php">$resultado = ValidationHelper::validate(
+    $dados,
+    $regras,
+    // 3º parâmetro: mensagens
+    array(
+        &#x27;email.unique&#x27; =&gt; &#x27;Já existe um cliente com este e-mail.&#x27;,   // campo.regra
+        &#x27;itens.*.quantidade.min&#x27; =&gt; &#x27;Informe ao menos 1 unidade.&#x27;,    // padrão com *
+        &#x27;required&#x27; =&gt; &#x27;Preencha o campo :field.&#x27;,                     // regra (todos os campos)
+    ),
+    // 4º parâmetro: rótulos
+    array(
+        &#x27;data_nascimento&#x27; =&gt; &#x27;Data de nascimento&#x27;,
+        &#x27;endereco.rua&#x27; =&gt; &#x27;Rua&#x27;,
+        &#x27;itens.*.quantidade&#x27; =&gt; &#x27;Quantidade&#x27;,
+    )
+);</code></pre></div><div class="tabela"><table><thead><tr><th>Ordem</th><th>Mensagem usada</th></tr></thead><tbody><tr><td>1</td><td><code>campo.regra</code> (por exemplo, <code>email.unique</code>)</td></tr><tr><td>2</td><td><code>padrão.regra</code> para itens de lista (<code>itens.*.quantidade.min</code>)</td></tr><tr><td>3</td><td><code>regra</code>, para todos os campos</td></tr><tr><td>4</td><td>mensagem padrão do helper</td></tr></tbody></table></div><div class="tabela"><table><thead><tr><th>Marcador</th><th>Substituído por</th><th>Regras</th></tr></thead><tbody><tr><td><code>:field</code></td><td>rótulo do campo</td><td>todas</td></tr><tr><td><code>:value</code></td><td>o parâmetro</td><td><code>min</code>, <code>max</code>, <code>min_length</code>, <code>max_length</code>, <code>length</code>, <code>file_size</code></td></tr><tr><td><code>:min</code>, <code>:max</code></td><td>os limites</td><td><code>between</code></td></tr><tr><td><code>:other</code></td><td>rótulo do outro campo</td><td><code>same</code>, <code>different</code>, <code>required_with</code></td></tr><tr><td><code>:date</code></td><td>rótulo do campo de referência, ou a data ("hoje", "amanhã"…)</td><td><code>after</code>, <code>before</code>…</td></tr></tbody></table></div><h3 id="globais">Configuração global</h3><p>Para não repetir rótulos e mensagens em todas as chamadas, configure uma vez no carregamento do componente. Os parâmetros de <code>validate()</code> valem só para aquela chamada e têm prioridade.</p><div class="metodo"><h3 id="setLabels"><code>setLabels() / setCustomMessages() / reset()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ValidationHelper::setLabels(array $labels): void
+ValidationHelper::setCustomMessages(array $messages): void
+ValidationHelper::reset(): void</div><p>Rótulos e mensagens personalizadas para todas as validações seguintes do request. <code>reset()</code> remove os dois.</p><div class="codigo"><pre><code data-lang="php">ValidationHelper::setLabels(array(
+    &#x27;cpf&#x27; =&gt; &#x27;CPF&#x27;,
+    &#x27;cnpj&#x27; =&gt; &#x27;CNPJ&#x27;,
+    &#x27;cep&#x27; =&gt; &#x27;CEP&#x27;,
+    &#x27;email&#x27; =&gt; &#x27;e-mail&#x27;,
+));</code></pre></div></div><div class="metodo"><h3 id="setMessages"><code>setMessages()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ValidationHelper::setMessages(array $messages): void</div><p>Substitui as mensagens <strong>padrão</strong> das regras, por exemplo para padronizar o tom do sistema. A mudança vale até o fim do request: <code>reset()</code> não a desfaz.</p><div class="codigo"><pre><code data-lang="php">ValidationHelper::setMessages(array(
+    &#x27;required&#x27; =&gt; &#x27;Preencha :field.&#x27;,
+    &#x27;email&#x27; =&gt; &#x27;Informe um e-mail válido em :field.&#x27;,
+));</code></pre></div></div><h2 id="metodos" data-titulo="Métodos">Métodos</h2><div class="metodo"><h3 id="validate"><code>validate()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ValidationHelper::validate(array $data, array $rules, array $messages = array(), array $labels = array()): array</div><p>Valida <code>$data</code> e devolve <code>['valid', 'errors', 'first_error']</code>. Nunca lança exceção: se algo der errado internamente (por exemplo, uma função de regra lançar exceção), devolve inválido com o erro em <code>errors['_system']</code> e registra o detalhe no log (categoria <code>validation_helper</code>).</p></div><div class="metodo"><h3 id="passes"><code>passes() / fails()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ValidationHelper::passes(array $data, array $rules, array $messages = array(), array $labels = array()): bool
+ValidationHelper::fails(array $data, array $rules, array $messages = array(), array $labels = array()): bool</div><p>Só o resultado, sem as mensagens.</p><div class="codigo"><pre><code data-lang="php">if (ValidationHelper::fails($filtros, array(&#x27;de&#x27; =&gt; &#x27;date&#x27;, &#x27;ate&#x27; =&gt; &#x27;date|after_or_equal:de&#x27;))) {
+    $filtros = array();   // ignora filtros inválidos da URL
+}</code></pre></div></div><div class="metodo"><h3 id="firstError"><code>firstError()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ValidationHelper::firstError(array $errors): string|null</div><p>A primeira mensagem de um array de erros. É o mesmo valor de <code>first_error</code>.</p></div><div class="metodo"><h3 id="cpf"><code>cpf() / cnpj() / email() / date() / file() / image()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ValidationHelper::cpf(string $cpf): bool
+ValidationHelper::cnpj(string $cnpj): bool
+ValidationHelper::email(string $email): bool
+ValidationHelper::date(string $date, string $format = &#x27;Y-m-d&#x27;): bool
+ValidationHelper::file(array $file): bool
+ValidationHelper::image(array $file): bool</div><p>Validações avulsas de um único valor, com as mesmas regras do catálogo.</p><div class="codigo"><pre><code data-lang="php">if (!ValidationHelper::cpf($cpf)) {
+    return ApiResponseHelper::badRequest(&#x27;CPF inválido.&#x27;);
+}</code></pre></div></div><h2 id="padrao-controller" data-titulo="Padrão no controller">Padrão no controller</h2><p>Ler com o <code>InputHelper</code>, validar, gravar e responder:</p><div class="codigo"><div class="titulo-codigo">controllers/pedidos.php</div><pre><code data-lang="php">public function criar()
+{
+    if (!JSession::checkToken()) {
+        return ApiResponseHelper::forbidden(&#x27;Token inválido.&#x27;);
+    }
+
+    $dados = array(
+        &#x27;cliente_id&#x27; =&gt; InputHelper::uint(&#x27;cliente_id&#x27;, null, &#x27;post&#x27;),
+        &#x27;entrega&#x27; =&gt; InputHelper::date(&#x27;entrega&#x27;, &#x27;&#x27;, &#x27;post&#x27;),
+        &#x27;observacao&#x27; =&gt; InputHelper::text(&#x27;observacao&#x27;, &#x27;&#x27;, &#x27;post&#x27;),
+        &#x27;itens&#x27; =&gt; InputHelper::array(&#x27;itens&#x27;, array(), &#x27;post&#x27;),
+        &#x27;termos&#x27; =&gt; InputHelper::bool(&#x27;termos&#x27;, false, &#x27;post&#x27;),
+    );
+
+    $validacao = ValidationHelper::validate($dados, array(
+        &#x27;cliente_id&#x27; =&gt; array(
+            &#x27;required&#x27;,
+            &#x27;exists&#x27; =&gt; function ($id) {
+                return OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;where(&#x27;id&#x27;, $id)-&gt;exists();
+            },
+        ),
+        &#x27;entrega&#x27; =&gt; &#x27;required|date|after:today&#x27;,
+        &#x27;observacao&#x27; =&gt; &#x27;max_length:500&#x27;,
+        &#x27;itens&#x27; =&gt; &#x27;required|array|min:1|max:50&#x27;,
+        &#x27;itens.*.produto_id&#x27; =&gt; &#x27;required|integer&#x27;,
+        &#x27;itens.*.quantidade&#x27; =&gt; &#x27;required|integer|min:1&#x27;,
+        &#x27;termos&#x27; =&gt; &#x27;accepted&#x27;,
+    ), array(
+        &#x27;termos.accepted&#x27; =&gt; &#x27;Aceite os termos para continuar.&#x27;,
+    ), array(
+        &#x27;cliente_id&#x27; =&gt; &#x27;Cliente&#x27;,
+        &#x27;entrega&#x27; =&gt; &#x27;Data de entrega&#x27;,
+        &#x27;observacao&#x27; =&gt; &#x27;Observação&#x27;,
+        &#x27;itens.*.produto_id&#x27; =&gt; &#x27;Produto&#x27;,
+        &#x27;itens.*.quantidade&#x27; =&gt; &#x27;Quantidade&#x27;,
+    ));
+
+    if (!$validacao[&#x27;valid&#x27;]) {
+        return ApiResponseHelper::fromValidation($validacao);
+    }
+
+    try {
+        $pedido = PedidoService::criar($dados);
+
+        return ApiResponseHelper::created(&#x27;Pedido criado.&#x27;, $pedido);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div><div class="nota dica"><p>Repare em <code>'termos' =&gt; 'accepted'</code> com <code>InputHelper::bool()</code>: <code>false</code> passaria em <code>required</code> (é um valor), mas não em <code>accepted</code>.</p></div><h2 id="armadilhas" data-titulo="Armadilhas comuns">Armadilhas comuns</h2><div class="tabela"><table><thead><tr><th>Situação</th><th>O que acontece</th><th>Como fazer</th></tr></thead><tbody><tr><td><code>numeric</code> com valor digitado em reais</td><td><code>"10,50"</code> é inválido</td><td>Use <code>decimal</code>, ou converta antes com <code>InputHelper::decimal()</code>.</td></tr><tr><td><code>min:8</code> num CEP ou código</td><td>Compara o valor: <code>"9"</code> passa</td><td>Use <code>length:8</code> ou <code>min_length</code>.</td></tr><tr><td><code>string</code> num valor lido com <code>InputHelper::int()</code></td><td>Falha: o valor é <code>int</code></td><td>Use <code>integer</code>.</td></tr><tr><td><code>required</code> num checkbox de aceite</td><td><code>false</code> passa</td><td>Use <code>accepted</code>.</td></tr><tr><td><code>regex</code> no meio de uma string de regras</td><td>As regras seguintes viram parte do padrão</td><td>Deixe o <code>regex</code> por último, ou use <code>'regex' =&gt; '…'</code>.</td></tr><tr><td><code>itens.*.campo</code> sem regra para <code>itens</code></td><td>Lista vazia passa</td><td>Adicione <code>'itens' =&gt; 'required|array|min:1'</code>.</td></tr><tr><td>Rótulos com acento</td><td>"Endereco rua", "Observacao"</td><td>Defina <code>$labels</code> ou <code>setLabels()</code>.</td></tr><tr><td><code>url</code> para FTP/Git</td><td>Inválido por padrão</td><td>Informe os esquemas: <code>url:https,ftp</code>.</td></tr></tbody></table></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="input-helper.html"><small>← Anterior</small>InputHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code> e <code>ValidationHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>
