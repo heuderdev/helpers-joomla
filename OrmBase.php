@@ -50,59 +50,77 @@ class OrmBase
 
     protected $allowMassOperation = false;
 
-    public function __construct($table, array $opcoes = [])
-    {
-        $table = trim((string) $table);
+    /*
+     * Opções aceitas no construtor. Só as informadas sobrescrevem as
+     * propriedades; as demais mantêm o valor definido na classe, o que
+     * permite models do tipo:
+     *
+     * class PedidoModel extends OrmBase
+     * {
+     *     protected $table = '#__pedidos';
+     *     protected $softDeletes = true;
+     * }
+     */
+    protected static $opcoesPermitidas = [
+        'primaryKey' => 'string',
+        'timestamps' => 'bool',
+        'createdAtColumn' => 'string',
+        'updatedAtColumn' => 'string',
+        'softDeletes' => 'bool',
+        'deletedAtColumn' => 'string',
+        'casts' => 'array',
+        'fillable' => 'array',
+        'guarded' => 'array',
+    ];
 
-        if ($table === '') {
+    public function __construct($table = null, array $opcoes = [])
+    {
+        if ($table !== null) {
+            $this->table = $table;
+        }
+
+        $this->table = trim((string) $this->table);
+
+        if ($this->table === '') {
             throw new InvalidArgumentException(
-                'A tabela deve ser informada ao instanciar OrmBase.'
+                'A tabela deve ser informada ao instanciar ' .
+                static::class .
+                ' (parâmetro $table ou propriedade protected $table).'
             );
         }
 
         $this->db = JFactory::getDbo();
-        $this->table = $table;
 
-        $this->primaryKey = isset($opcoes['primaryKey'])
-            ? $opcoes['primaryKey']
-            : 'id';
+        foreach (static::$opcoesPermitidas as $opcao => $tipo) {
+            if (!isset($opcoes[$opcao])) {
+                continue;
+            }
 
-        $this->timestamps = isset($opcoes['timestamps'])
-            ? (bool) $opcoes['timestamps']
-            : true;
+            $valor = $opcoes[$opcao];
 
-        $this->createdAtColumn = isset($opcoes['createdAtColumn'])
-            ? $opcoes['createdAtColumn']
-            : 'created_at';
+            if ($tipo === 'bool') {
+                $valor = (bool) $valor;
+            } elseif ($tipo === 'array') {
+                $valor = (array) $valor;
+            }
 
-        $this->updatedAtColumn = isset($opcoes['updatedAtColumn'])
-            ? $opcoes['updatedAtColumn']
-            : 'updated_at';
+            $this->$opcao = $valor;
+        }
+    }
 
-        $this->softDeletes = isset($opcoes['softDeletes'])
-            ? (bool) $opcoes['softDeletes']
-            : false;
-
-        $this->deletedAtColumn = isset($opcoes['deletedAtColumn'])
-            ? $opcoes['deletedAtColumn']
-            : 'deleted_at';
-
-        $this->casts = isset($opcoes['casts'])
-            ? (array) $opcoes['casts']
-            : [];
-
-        $this->fillable = isset($opcoes['fillable'])
-            ? (array) $opcoes['fillable']
-            : [];
-
-        $this->guarded = isset($opcoes['guarded'])
-            ? (array) $opcoes['guarded']
-            : [];
+    /*
+     * Ponto de entrada dos models: PedidoModel::query()->where(...)->get().
+     * Cada chamada devolve uma instância nova, sem filtros de consultas
+     * anteriores.
+     */
+    public static function query(array $opcoes = [])
+    {
+        return new static(null, $opcoes);
     }
 
     public static function tabela($table, array $opcoes = [])
     {
-        return new self($table, $opcoes);
+        return new static($table, $opcoes);
     }
 
     public function db()
