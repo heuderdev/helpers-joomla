@@ -250,6 +250,156 @@ $logsApagados = AuditHelper::purge('2025-01-01 00:00:00', 2000);
 </div>
 </div>
 
+<h2 id="exemplo-controller" data-titulo="Exemplo no Controller">Exemplo prático no Controller</h2>
+<p>Abaixo, veja um exemplo prático de como utilizar o <code>AuditHelper</code> dentro de um Controller Joomla de CRUD de Clientes. O exemplo ilustra como auditar inserções, exclusões e modificações (fazendo o diff inteligente automático que registra apenas as colunas que mudaram de valor) e como capturar exceções imprevistas de banco.</p>
+
+<div class="codigo">
+<div class="titulo-codigo">Exemplo: Controller de Clientes com Trilhas de Auditoria (Audit Trail)</div>
+<pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/InputHelper.php';
+require_once JPATH_COMPONENT . '/helpers/AuditHelper.php';
+require_once JPATH_COMPONENT . '/helpers/OrmTables.php';
+require_once JPATH_COMPONENT . '/helpers/ApiResponseHelper.php';
+
+class LojaControllerClientes extends JControllerLegacy
+{
+    /**
+     * Salva ou atualiza um cliente e registra a trilha de auditoria correspondente
+     */
+    public function salvar()
+    {
+        JSession::checkToken() or jexit('Token inválido.');
+
+        try {
+            $id = InputHelper::int('id');
+            $dadosForm = [
+                'nome' => InputHelper::string('nome'),
+                'email' => InputHelper::string('email'),
+                'telefone' => InputHelper::string('telefone'),
+                'saldo' => InputHelper::float('saldo'),
+                'status' => InputHelper::string('status', 'ativo'),
+                'senha' => InputHelper::string('senha') // O AuditHelper irá ofuscar esta chave automaticamente!
+            ];
+
+            $orm = OrmTables::table('#__clientes');
+
+            if ($id > 0) {
+                // --- MODO ATUALIZAÇÃO ---
+                // 1. Carregar os dados atuais de antes para passar ao AuditHelper
+                $clienteAntes = $orm->find($id);
+
+                if (!$clienteAntes) {
+                    return ApiResponseHelper::notFound('Cliente não encontrado.');
+                }
+
+                // Removemos o campo senha do update se ele estiver vazio
+                if (empty($dadosForm['senha'])) {
+                    unset($dadosForm['senha']);
+                }
+
+                // 2. Atualizar no banco via ORM
+                $clienteDepois = $orm->update($id, $dadosForm);
+
+                // 3. Registrar a trilha de auditoria de atualização
+                // Dica: O AuditHelper comparará $clienteAntes com $clienteDepois e guardará 
+                // apenas as colunas modificadas (ex.: se só o status mudou, só ele é gravado)
+                AuditHelper::updated(
+                    'cliente', 
+                    $id, 
+                    (array) $clienteAntes, 
+                    (array) $clienteDepois, 
+                    [
+                        'category' => 'clientes_management',
+                        'description' => 'Atualização cadastral do cliente #' . $id
+                    ]
+                );
+
+                return ApiResponseHelper::success('Cliente atualizado com sucesso.', $clienteDepois);
+            } else {
+                // --- MODO CRIAÇÃO ---
+                // 1. Criar novo registro de cliente no banco via ORM
+                $novoCliente = $orm->create($dadosForm);
+
+                // 2. Registrar a auditoria de criação física de registro
+                AuditHelper::created(
+                    'cliente', 
+                    $novoCliente->id, 
+                    (array) $novoCliente, 
+                    [
+                        'category' => 'clientes_management',
+                        'description' => 'Cadastro de novo cliente'
+                    ]
+                );
+
+                return ApiResponseHelper::success('Cliente criado com sucesso.', $novoCliente);
+            }
+
+        } catch (Throwable $e) {
+            // Se houver qualquer falha física de banco ou regra de negócio imprevista, 
+            // registramos a exceção na tabela de auditoria com nível critical e status de falha
+            AuditHelper::exception($e, [
+                'category' => 'security',
+                'metadata' => [
+                    'payload_enviado' => $dadosForm,
+                    'cliente_id_tentado' => $id
+                ]
+            ]);
+
+            return ApiResponseHelper::exception($e, 'Não foi possível salvar o cliente.');
+        }
+    }
+
+    /**
+     * Exclui um cliente e audita a remoção com os dados históricos que sumiram do banco
+     */
+    public function excluir()
+    {
+        JSession::checkToken() or jexit('Token inválido.');
+
+        try {
+            $id = InputHelper::int('id');
+
+            if ($id <= 0) {
+                return ApiResponseHelper::badRequest('ID de cliente inválido.');
+            }
+
+            $orm = OrmTables::table('#__clientes');
+            
+            // 1. Carregar os dados históricos que serão removidos para auditoria de histórico
+            $clienteAntes = $orm->find($id);
+
+            if (!$clienteAntes) {
+                return ApiResponseHelper::notFound('Cliente não encontrado para exclusão.');
+            }
+
+            // 2. Excluir fisicamente do banco
+            $orm->delete($id);
+
+            // 3. Auditar a exclusão, salvando todos os dados que deixaram de existir
+            AuditHelper::deleted(
+                'cliente', 
+                $id, 
+                (array) $clienteAntes, 
+                [
+                    'category' => 'clientes_management',
+                    'description' => 'Cliente removido permanentemente do sistema.'
+                ]
+            );
+
+            return ApiResponseHelper::success('Cliente excluído com sucesso.');
+
+        } catch (Throwable $e) {
+            AuditHelper::exception($e, [
+                'category' => 'security',
+                'metadata' => ['cliente_id_tentado' => $id]
+            ]);
+
+            return ApiResponseHelper::exception($e, 'Não foi possível excluir o cliente.');
+        }
+    }
+}
+</code></pre>
+</div>
+
 <h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
 <ul>
     <li><a href="orm-tables.html">OrmTables</a>: Motor dinâmico do ORM para tabelas do banco de dados.</li>
