@@ -142,12 +142,18 @@ class DbTransactionHelper
         return false;
     }
 
+    /*
+     * Todas as chamadas ao driver usam o modo savepoint (true). Assim o
+     * próprio driver do Joomla decide entre START TRANSACTION e SAVEPOINT
+     * conforme a profundidade interna dele. Com false, um START TRANSACTION
+     * dentro de outra transação faz commit implícito da externa no MySQL.
+     */
     private static function startInternal()
     {
         $db = self::db();
 
         if (self::$transactionDepth === 0) {
-            $db->transactionStart(false);
+            $db->transactionStart(true);
             self::$transactionActive = true;
             self::$transactionDepth = 1;
 
@@ -185,7 +191,7 @@ class DbTransactionHelper
         $db = self::db();
 
         if (self::$transactionDepth === 1) {
-            $db->transactionCommit(false);
+            $db->transactionCommit(true);
 
             self::$transactionDepth = 0;
             self::$transactionActive = false;
@@ -221,9 +227,20 @@ class DbTransactionHelper
 
         $db = self::db();
 
-        if (self::$transactionDepth === 1) {
-            $db->transactionRollback(false);
+        try {
+            $db->transactionRollback(true);
+        } catch (Throwable $error) {
+            /*
+             * Deadlock e lock wait timeout fazem o MySQL desfazer a transação
+             * inteira, e o ROLLBACK TO SAVEPOINT falha. Faz rollback completo
+             * para zerar também a profundidade interna do driver.
+             */
+            self::rollbackAll($db);
 
+            throw $error;
+        }
+
+        if (self::$transactionDepth === 1) {
             self::$transactionDepth = 0;
             self::$transactionActive = false;
 
@@ -238,7 +255,6 @@ class DbTransactionHelper
             return;
         }
 
-        $db->transactionRollback(true);
         self::$transactionDepth--;
 
         self::log(
@@ -246,6 +262,24 @@ class DbTransactionHelper
             'Savepoint de transação revertido.',
             array(
                 'depth' => self::$transactionDepth
+            )
+        );
+    }
+
+    private static function rollbackAll($db)
+    {
+        try {
+            $db->transactionRollback(false);
+        } catch (Throwable $error) {
+        }
+
+        self::resetState();
+
+        self::log(
+            'warning',
+            'Transação revertida por completo.',
+            array(
+                'depth' => 0
             )
         );
     }
@@ -425,6 +459,13 @@ class DbTransactionHelper
 
         $attempt = 0;
 
+        /*
+         * Só a transação mais externa pode repetir: um deadlock desfaz a
+         * transação inteira, então repetir apenas o trecho aninhado perderia
+         * o trabalho feito antes dele. Nos níveis internos o erro sobe.
+         */
+        $isOutermost = self::$transactionDepth === 0;
+
         while (true) {
             $attempt++;
             $started = false;
@@ -489,7 +530,9 @@ class DbTransactionHelper
                 }
 
                 $retryable = self::isRetryable($error);
-                $canRetry = $retryable && $attempt <= $retries;
+                $canRetry = $retryable
+                    && $isOutermost
+                    && $attempt <= $retries;
 
                 self::log(
                     $canRetry ? 'warning' : 'error',

@@ -2,6 +2,10 @@
 
 defined('_JEXEC') or die;
 
+if (!class_exists('DbTransactionHelper')) {
+    require_once __DIR__ . '/DbTransactionHelper.php';
+}
+
 class OrmBase
 {
     protected $db;
@@ -43,6 +47,8 @@ class OrmBase
     protected $limitValue = null;
 
     protected $offsetValue = null;
+
+    protected $allowMassOperation = false;
 
     public function __construct($table, array $opcoes = [])
     {
@@ -119,8 +125,35 @@ class OrmBase
         $this->havings = [];
         $this->limitValue = null;
         $this->offsetValue = null;
+        $this->allowMassOperation = false;
 
         return $this;
+    }
+
+    /*
+     * Libera updateWhere()/deleteWhere() sem nenhum where, ou seja,
+     * atingindo a tabela inteira. Vale só para a próxima operação.
+     */
+    public function allowMassOperation()
+    {
+        $this->allowMassOperation = true;
+
+        return $this;
+    }
+
+    protected function garantirFiltroParaOperacaoEmMassa($operacao)
+    {
+        if (!empty($this->wheres) || $this->allowMassOperation) {
+            return;
+        }
+
+        $this->newQuery();
+
+        throw new LogicException(
+            'Operação ' . $operacao . ' sem where na tabela ' .
+            $this->table . ' atingiria todos os registros. ' .
+            'Chame allowMassOperation() se for intencional.'
+        );
     }
 
     protected function getTableColumns()
@@ -577,7 +610,11 @@ class OrmBase
             $expressoes[] = $condicao['conector'] . ' ' . $sql;
         }
 
-        $query->where(implode(' ', $expressoes));
+        /*
+         * Parênteses isolam os OR do usuário dos filtros adicionados depois
+         * (ex.: soft delete), já que o Joomla junta os where com AND.
+         */
+        $query->where('(' . implode(' ', $expressoes) . ')');
 
         return $query;
     }
@@ -761,8 +798,6 @@ class OrmBase
 
             $resultado = $this->db->loadObjectList();
 
-            $this->newQuery();
-
             return $this->aplicarCastsEmLista($resultado);
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -771,6 +806,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -838,8 +875,6 @@ class OrmBase
 
             $resultado = $this->db->loadResult();
 
-            $this->newQuery();
-
             return $resultado;
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -851,6 +886,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -880,8 +917,6 @@ class OrmBase
                 $resultado = $this->db->loadColumn();
             }
 
-            $this->newQuery();
-
             return $resultado;
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -891,6 +926,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -907,8 +944,6 @@ class OrmBase
 
             $resultado = $this->db->loadResult();
 
-            $this->newQuery();
-
             return $resultado !== null;
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -918,6 +953,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -938,8 +975,6 @@ class OrmBase
 
             $resultado = (int) $this->db->loadResult();
 
-            $this->newQuery();
-
             return $resultado;
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -949,6 +984,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -988,8 +1025,6 @@ class OrmBase
 
             $resultado = $this->db->loadResult();
 
-            $this->newQuery();
-
             return $resultado !== null
                 ? (float) $resultado
                 : null;
@@ -1003,6 +1038,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -1013,7 +1050,13 @@ class OrmBase
 
         $clone = clone $this;
 
-        $totalGeral = $clone->count();
+        try {
+            $totalGeral = $clone->count();
+        } catch (Throwable $e) {
+            $this->newQuery();
+
+            throw $e;
+        }
 
         $offset = ($paginaAtual - 1) * $porPagina;
 
@@ -1080,24 +1123,20 @@ class OrmBase
 
     public function createMany(array $listaDeDados)
     {
-        $criados = [];
-
         try {
-            $this->db->transactionStart();
+            return DbTransactionHelper::run(
+                function () use ($listaDeDados) {
+                    $criados = [];
 
-            foreach ($listaDeDados as $dados) {
-                $criados[] = $this->create($dados);
-            }
+                    foreach ($listaDeDados as $dados) {
+                        $criados[] = $this->create($dados);
+                    }
 
-            $this->db->transactionCommit();
-
-            return $criados;
-        } catch (Exception $e) {
-            try {
-                $this->db->transactionRollback();
-            } catch (Exception $rollbackException) {
-            }
-
+                    return $criados;
+                },
+                ['retries' => 0]
+            );
+        } catch (Throwable $e) {
             throw new RuntimeException(
                 'Erro ao criar múltiplos registros na tabela ' .
                 $this->table .
@@ -1206,6 +1245,8 @@ class OrmBase
 
     public function updateWhere(array $dados)
     {
+        $this->garantirFiltroParaOperacaoEmMassa('updateWhere');
+
         try {
             $dadosFiltrados = $this->filtrarColunasValidas($dados);
 
@@ -1216,8 +1257,6 @@ class OrmBase
             }
 
             if (empty($dadosFiltrados)) {
-                $this->newQuery();
-
                 return 0;
             }
 
@@ -1245,8 +1284,6 @@ class OrmBase
 
             $linhasAfetadas = (int) $this->db->getAffectedRows();
 
-            $this->newQuery();
-
             return $linhasAfetadas;
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -1256,6 +1293,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -1397,6 +1436,8 @@ class OrmBase
 
     public function deleteWhere()
     {
+        $this->garantirFiltroParaOperacaoEmMassa('deleteWhere');
+
         try {
             if ($this->softDeletes) {
                 $query = $this->db->getQuery(true);
@@ -1416,8 +1457,6 @@ class OrmBase
 
                 $linhasAfetadas = (int) $this->db->getAffectedRows();
 
-                $this->newQuery();
-
                 return $linhasAfetadas;
             }
 
@@ -1432,8 +1471,6 @@ class OrmBase
 
             $linhasAfetadas = (int) $this->db->getAffectedRows();
 
-            $this->newQuery();
-
             return $linhasAfetadas;
         } catch (Exception $e) {
             throw new RuntimeException(
@@ -1443,6 +1480,8 @@ class OrmBase
                 500,
                 $e
             );
+        } finally {
+            $this->newQuery();
         }
     }
 
@@ -1511,22 +1550,23 @@ class OrmBase
         }
     }
 
-    public function transaction(callable $callback)
+    /*
+     * $opcoes é repassado ao DbTransactionHelper::run(). Por padrão não há
+     * retry; passe ['retries' => N] só se o callback puder ser reexecutado
+     * com segurança (sem e-mails, chamadas HTTP etc.).
+     */
+    public function transaction(callable $callback, array $opcoes = [])
     {
+        $opcoes += ['retries' => 0];
+
         try {
-            $this->db->transactionStart();
-
-            $resultado = $callback($this);
-
-            $this->db->transactionCommit();
-
-            return $resultado;
-        } catch (Exception $e) {
-            try {
-                $this->db->transactionRollback();
-            } catch (Exception $rollbackException) {
-            }
-
+            return DbTransactionHelper::run(
+                function () use ($callback) {
+                    return $callback($this);
+                },
+                $opcoes
+            );
+        } catch (Throwable $e) {
             throw new RuntimeException(
                 'Erro durante transação na tabela ' .
                 $this->table .
