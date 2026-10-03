@@ -52,16 +52,58 @@
  * ) ENGINE=InnoDB;
  *
  * Importante: transações só funcionam em tabelas InnoDB.
+ *
+ * A seção 3.1 usa um segundo banco, o ERP, em PostgreSQL:
+ *
+ * CREATE TABLE erp_clientes (
+ *   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ *   documento VARCHAR(20) NOT NULL UNIQUE,
+ *   nome VARCHAR(150) NOT NULL,
+ *   ativo BOOLEAN NOT NULL DEFAULT TRUE,
+ *   created_at TIMESTAMP NULL,
+ *   updated_at TIMESTAMP NULL
+ * );
+ *
+ * CREATE TABLE erp_titulos (
+ *   id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+ *   pedido_id INTEGER NOT NULL UNIQUE,   -- garante 1 título por pedido
+ *   cliente_id INTEGER NOT NULL,
+ *   valor NUMERIC(10,2) NOT NULL,
+ *   created_at TIMESTAMP NULL,
+ *   updated_at TIMESTAMP NULL
+ * );
+ *
+ * Nomes de tabela e coluna em minúsculas: no PostgreSQL, os helpers
+ * colocam aspas nos nomes, e "Nome" e "nome" seriam colunas diferentes.
  */
 
 defined('_JEXEC') or die;
 
 $helpers = JPATH_SITE . '/components/com_generico/helpers';
 
+require_once $helpers . '/DbConnectionHelper.php';
 require_once $helpers . '/DbTransactionHelper.php';
 require_once $helpers . '/OrmTables.php';
 require_once $helpers . '/ApiResponseHelper.php';
 require_once $helpers . '/InputHelper.php';
+
+/*
+ * Registro da conexão extra. Faça uma vez, no carregamento do
+ * componente. Nada é aberto aqui: a conexão só conecta no primeiro uso.
+ * Em produção, leia os dados da configuração do componente em vez de
+ * deixar a senha no código.
+ */
+if (!DbConnectionHelper::has('erp')) {
+    DbConnectionHelper::register('erp', [
+        'driver' => 'pgsql',         // também aceita 'postgresql'; no J3 e no J4
+        'host' => 'erp.interno',
+        'port' => 5432,
+        'user' => 'loja',
+        'password' => 'troque-me',
+        'database' => 'erp',
+        'prefix' => 'erp_',          // "#__clientes" vira "erp_clientes" nesta conexão
+    ]);
+}
 
 
 /* =====================================================================
@@ -582,6 +624,164 @@ class PedidoService
             'referencia_id' => (int) $referenciaId,
             'descricao' => $descricao,
         ]);
+    }
+}
+
+
+/* =====================================================================
+ * 3.1 OUTRA CONEXÃO: ERP EM POSTGRESQL
+ *
+ * Os mesmos models, consultas e transações funcionam em qualquer
+ * conexão. O OrmBase gera o SQL certo para cada banco (ILIKE,
+ * INSERT ... RETURNING, LIMIT/OFFSET etc.).
+ * ===================================================================== */
+
+class ClienteErpModel extends OrmBase
+{
+    protected $table = '#__clientes';
+
+    // Nome registrado no DbConnectionHelper. Sem isso: banco do Joomla.
+    protected $connection = 'erp';
+
+    // O PostgreSQL devolve boolean como 't'/'f'; o cast trata isso.
+    protected $casts = ['ativo' => 'bool'];
+
+    protected $fillable = ['documento', 'nome', 'ativo'];
+}
+
+class TituloErpModel extends OrmBase
+{
+    protected $table = '#__titulos';
+
+    protected $connection = 'erp';
+
+    protected $casts = ['valor' => 'float'];
+
+    protected $fillable = ['pedido_id', 'cliente_id', 'valor'];
+}
+
+class ErpService
+{
+    /*
+     * Leitura no ERP: nada de especial, só o model aponta para lá.
+     * whereLike vira ILIKE no PostgreSQL, então "ana" encontra "Ana".
+     */
+    public static function buscarClientes($termo)
+    {
+        return ClienteErpModel::query()
+            ->where('ativo', true)
+            ->whereLike('nome', $termo)
+            ->orderBy('nome')
+            ->limit(20)
+            ->get();
+    }
+
+    /*
+     * Consulta pontual em outra conexão, sem criar model.
+     */
+    public static function totalFaturado()
+    {
+        return OrmTables::table('#__titulos', ['connection' => 'erp'])
+            ->sum('valor');
+    }
+
+    /*
+     * Gravar nos DOIS bancos: marca o pedido como pago (Joomla) e gera o
+     * título no ERP.
+     *
+     * Não existe transação que cubra dois bancos. Cada run() confirma só
+     * o seu. O padrão abaixo reduz o risco:
+     *
+     * 1. A transação do Joomla fica por fora e faz primeiro o que pode
+     *    falhar por regra de negócio (pedido inexistente, status errado).
+     * 2. A gravação no ERP é o ÚLTIMO passo, numa transação própria.
+     * 3. Se o ERP falhar, a exceção sobe e a transação do Joomla é
+     *    desfeita: nada muda nos dois bancos.
+     * 4. Sobra uma janela pequena: o ERP confirmou e o COMMIT do Joomla
+     *    falha logo depois. Por isso a gravação no ERP é IDEMPOTENTE: a
+     *    coluna pedido_id é UNIQUE e firstOrCreate não duplica. Rodar de
+     *    novo depois de uma falha é seguro.
+     */
+    public static function faturarPedido($pedidoId, $clienteErpId)
+    {
+        return DbTransactionHelper::run(function () use ($pedidoId, $clienteErpId) {
+            $pedido = PedidoModel::query()
+                ->where('id', (int) $pedidoId)
+                ->lockForUpdate()                 // trava no banco do Joomla
+                ->first();
+
+            if ($pedido === null || $pedido->status !== PedidoModel::STATUS_ABERTO) {
+                throw new PedidoException('Pedido inexistente ou já faturado.');
+            }
+
+            PedidoModel::query()->update($pedido->id, [
+                'status' => PedidoModel::STATUS_PAGO,
+            ]);
+
+            // Último passo: transação própria na conexão 'erp'.
+            return DbTransactionHelper::run(function () use ($pedido, $clienteErpId) {
+                return TituloErpModel::query()->firstOrCreate(
+                    ['pedido_id' => $pedido->id],
+                    ['cliente_id' => (int) $clienteErpId, 'valor' => $pedido->total]
+                );
+            }, ['connection' => 'erp']);
+        });
+    }
+
+    /*
+     * Regra do PostgreSQL: depois de qualquer erro dentro de uma
+     * transação, ela fica "abortada" e recusa todos os comandos seguintes
+     * até o rollback. No MySQL, o comando que falhou é desfeito e a
+     * transação continua.
+     *
+     * Para capturar um erro e seguir em frente (aqui: pular clientes
+     * duplicados), coloque o trecho num run() aninhado. Ele vira um
+     * SAVEPOINT, e o rollback do savepoint limpa o estado abortado. Esse
+     * código funciona igual nos dois bancos.
+     */
+    public static function importarClientes(array $clientes)
+    {
+        return DbTransactionHelper::run(function () use ($clientes) {
+            $importados = 0;
+
+            foreach ($clientes as $cliente) {
+                try {
+                    DbTransactionHelper::run(function () use ($cliente) {
+                        ClienteErpModel::query()->create([
+                            'documento' => $cliente['documento'],
+                            'nome' => $cliente['nome'],
+                        ]);
+                    }, ['connection' => 'erp', 'retries' => 0]);
+
+                    $importados++;
+                } catch (RuntimeException $e) {
+                    // Só duplicidade é esperada; qualquer outro erro sobe.
+                    if (!self::ehDuplicidade($e)) {
+                        throw $e;
+                    }
+                }
+            }
+
+            return $importados;
+        }, ['connection' => 'erp']);
+    }
+
+    /*
+     * MySQL: erro 1062 "Duplicate entry".
+     * PostgreSQL: SQLSTATE 23505 "duplicate key value".
+     * Os helpers embrulham o erro do banco, então percorre getPrevious().
+     */
+    protected static function ehDuplicidade(Throwable $erro)
+    {
+        for ($atual = $erro; $atual !== null; $atual = $atual->getPrevious()) {
+            $mensagem = strtolower($atual->getMessage());
+
+            if (strpos($mensagem, 'duplicate') !== false || strpos($mensagem, '23505') !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

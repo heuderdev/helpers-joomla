@@ -2,11 +2,27 @@
 
 defined('_JEXEC') or die;
 
+if (!class_exists('DbConnectionHelper')) {
+    require_once __DIR__ . '/DbConnectionHelper.php';
+}
+
+/*
+ * Transações com savepoints e retry de deadlock, em MySQL e PostgreSQL.
+ *
+ * Cada conexão tem a sua própria profundidade de transação: uma
+ * transação aberta na conexão do Joomla não interfere em outra aberta
+ * numa conexão registrada no DbConnectionHelper, e vice-versa.
+ *
+ * Atenção: uma transação nunca abrange dois bancos. Ver o exemplo em
+ * exemplos/ComoUsarOrm.php (seção de múltiplas conexões).
+ */
 class DbTransactionHelper
 {
-    private static $transactionDepth = 0;
-
-    private static $transactionActive = false;
+    /*
+     * Estado por conexão: [hash do driver => profundidade]. Só existe
+     * entrada enquanto há transação aberta naquela conexão.
+     */
+    private static $depths = array();
 
     private static $logCategory = 'db_transaction';
 
@@ -18,14 +34,40 @@ class DbTransactionHelper
 
     private static $retryDelayMicroseconds = 250000;
 
+    /*
+     * MySQL: 1205 (lock wait timeout), 1213 (deadlock).
+     * PostgreSQL (SQLSTATE): 40001 (serialization failure), 40P01 (deadlock).
+     */
     private static $retryableErrorCodes = array(
-        1205,
-        1213
+        '1205',
+        '1213',
+        '40001',
+        '40P01'
     );
 
-    private static function db()
+    private static function db($connection = null)
     {
-        return JFactory::getDbo();
+        return DbConnectionHelper::resolve($connection);
+    }
+
+    private static function getDepth($db)
+    {
+        $key = spl_object_hash($db);
+
+        return isset(self::$depths[$key]) ? self::$depths[$key] : 0;
+    }
+
+    private static function setDepth($db, $depth)
+    {
+        $key = spl_object_hash($db);
+
+        if ($depth <= 0) {
+            unset(self::$depths[$key]);
+
+            return;
+        }
+
+        self::$depths[$key] = $depth;
     }
 
     private static function log($level, $message, array $context = array())
@@ -91,51 +133,70 @@ class DbTransactionHelper
         }
     }
 
+    /*
+     * Coleta os códigos do erro e das exceções encadeadas (getPrevious):
+     * - getCode() (PDO devolve o SQLSTATE como string, ex.: '40P01');
+     * - SQLSTATE na mensagem: "SQLSTATE[40P01]" ou "40P01, 7, ERROR: ..."
+     *   (formato do driver PDO do Joomla 4, cujo getCode() vira 40);
+     * - 1205/1213 na mensagem, só quando não há código (legado MySQL).
+     */
+    private static function getErrorCodes(Throwable $error)
+    {
+        $codes = array();
+
+        for ($current = $error; $current !== null; $current = $current->getPrevious()) {
+            $code = strtoupper(trim((string) $current->getCode()));
+            $message = (string) $current->getMessage();
+
+            if ($code !== '' && $code !== '0') {
+                $codes[] = $code;
+            }
+
+            if (preg_match('/SQLSTATE\[([0-9A-Z]{5})\]/i', $message, $matches)
+                || preg_match('/^\s*([0-9A-Z]{5}),/i', $message, $matches)) {
+                $codes[] = strtoupper($matches[1]);
+            }
+
+            if (($code === '' || $code === '0')
+                && preg_match('/\b(1205|1213)\b/', $message, $matches)) {
+                $codes[] = $matches[1];
+            }
+        }
+
+        return array_values(array_unique($codes));
+    }
+
     private static function getExceptionCode(Throwable $error)
     {
-        $code = (int) $error->getCode();
+        $codes = self::getErrorCodes($error);
 
-        if ($code > 0) {
-            return $code;
-        }
-
-        $message = $error->getMessage();
-
-        if (
-            preg_match(
-                '/\b(1205|1213)\b/',
-                $message,
-                $matches
-            )
-        ) {
-            return (int) $matches[1];
-        }
-
-        return 0;
+        return empty($codes) ? 0 : implode(',', $codes);
     }
 
     private static function isRetryable(Throwable $error)
     {
-        $code = self::getExceptionCode($error);
-
-        if (in_array($code, self::$retryableErrorCodes, true)) {
+        if (array_intersect(self::getErrorCodes($error), self::$retryableErrorCodes)) {
             return true;
         }
 
-        $message = strtolower(
-            (string) $error->getMessage()
-        );
-
         $retryableMessages = array(
+            // MySQL / MariaDB
             'deadlock found',
             'lock wait timeout',
             'try restarting transaction',
+            // PostgreSQL
+            'deadlock detected',
+            'could not serialize access',
             'serialization failure'
         );
 
-        foreach ($retryableMessages as $retryableMessage) {
-            if (strpos($message, $retryableMessage) !== false) {
-                return true;
+        for ($current = $error; $current !== null; $current = $current->getPrevious()) {
+            $message = strtolower((string) $current->getMessage());
+
+            foreach ($retryableMessages as $retryableMessage) {
+                if (strpos($message, $retryableMessage) !== false) {
+                    return true;
+                }
             }
         }
 
@@ -144,88 +205,61 @@ class DbTransactionHelper
 
     /*
      * Todas as chamadas ao driver usam o modo savepoint (true). Assim o
-     * próprio driver do Joomla decide entre START TRANSACTION e SAVEPOINT
-     * conforme a profundidade interna dele. Com false, um START TRANSACTION
-     * dentro de outra transação faz commit implícito da externa no MySQL.
+     * próprio driver do Joomla decide entre iniciar a transação e criar um
+     * SAVEPOINT conforme a profundidade interna dele. Com false, um
+     * START TRANSACTION dentro de outra transação faz commit implícito da
+     * externa no MySQL.
      */
-    private static function startInternal()
+    private static function startInternal($db)
     {
-        $db = self::db();
-
-        if (self::$transactionDepth === 0) {
-            $db->transactionStart(true);
-            self::$transactionActive = true;
-            self::$transactionDepth = 1;
-
-            self::log(
-                'debug',
-                'Transação iniciada.',
-                array(
-                    'depth' => self::$transactionDepth
-                )
-            );
-
-            return;
-        }
-
         $db->transactionStart(true);
-        self::$transactionDepth++;
+
+        $depth = self::getDepth($db) + 1;
+        self::setDepth($db, $depth);
 
         self::log(
             'debug',
-            'Savepoint de transação iniciado.',
+            $depth === 1
+                ? 'Transação iniciada.'
+                : 'Savepoint de transação iniciado.',
             array(
-                'depth' => self::$transactionDepth
+                'depth' => $depth
             )
         );
     }
 
-    private static function commitInternal()
+    private static function commitInternal($db)
     {
-        if (self::$transactionDepth <= 0) {
+        $depth = self::getDepth($db);
+
+        if ($depth <= 0) {
             throw new RuntimeException(
                 'Não existe transação ativa para confirmar.'
             );
         }
 
-        $db = self::db();
-
-        if (self::$transactionDepth === 1) {
-            $db->transactionCommit(true);
-
-            self::$transactionDepth = 0;
-            self::$transactionActive = false;
-
-            self::log(
-                'debug',
-                'Transação confirmada.',
-                array(
-                    'depth' => 0
-                )
-            );
-
-            return;
-        }
-
         $db->transactionCommit(true);
-        self::$transactionDepth--;
+
+        self::setDepth($db, $depth - 1);
 
         self::log(
             'debug',
-            'Savepoint de transação confirmado.',
+            $depth === 1
+                ? 'Transação confirmada.'
+                : 'Savepoint de transação confirmado.',
             array(
-                'depth' => self::$transactionDepth
+                'depth' => $depth - 1
             )
         );
     }
 
-    private static function rollbackInternal()
+    private static function rollbackInternal($db)
     {
-        if (self::$transactionDepth <= 0) {
+        $depth = self::getDepth($db);
+
+        if ($depth <= 0) {
             return;
         }
-
-        $db = self::db();
 
         try {
             $db->transactionRollback(true);
@@ -240,28 +274,15 @@ class DbTransactionHelper
             throw $error;
         }
 
-        if (self::$transactionDepth === 1) {
-            self::$transactionDepth = 0;
-            self::$transactionActive = false;
-
-            self::log(
-                'warning',
-                'Transação revertida.',
-                array(
-                    'depth' => 0
-                )
-            );
-
-            return;
-        }
-
-        self::$transactionDepth--;
+        self::setDepth($db, $depth - 1);
 
         self::log(
             'warning',
-            'Savepoint de transação revertido.',
+            $depth === 1
+                ? 'Transação revertida.'
+                : 'Savepoint de transação revertido.',
             array(
-                'depth' => self::$transactionDepth
+                'depth' => $depth - 1
             )
         );
     }
@@ -273,7 +294,7 @@ class DbTransactionHelper
         } catch (Throwable $error) {
         }
 
-        self::resetState();
+        self::resetState($db);
 
         self::log(
             'warning',
@@ -284,10 +305,9 @@ class DbTransactionHelper
         );
     }
 
-    private static function resetState()
+    private static function resetState($db)
     {
-        self::$transactionDepth = 0;
-        self::$transactionActive = false;
+        self::setDepth($db, 0);
     }
 
     private static function delayForRetry($attempt)
@@ -357,7 +377,9 @@ class DbTransactionHelper
     public static function setRetryableErrorCodes(array $codes)
     {
         $codes = array_map(
-            'intval',
+            function ($code) {
+                return strtoupper(trim((string) $code));
+            },
             $codes
         );
 
@@ -366,24 +388,30 @@ class DbTransactionHelper
         );
     }
 
-    public static function isActive()
+    /*
+     * $connection: null (conexão do Joomla), nome registrado no
+     * DbConnectionHelper ou um driver.
+     */
+    public static function isActive($connection = null)
     {
-        return self::$transactionActive;
+        return self::getDepth(self::db($connection)) > 0;
     }
 
-    public static function depth()
+    public static function depth($connection = null)
     {
-        return self::$transactionDepth;
+        return self::getDepth(self::db($connection));
     }
 
-    public static function begin()
+    public static function begin($connection = null)
     {
+        $db = self::db($connection);
+
         try {
-            self::startInternal();
+            self::startInternal($db);
 
             return true;
         } catch (Throwable $error) {
-            self::resetState();
+            self::resetState($db);
 
             self::log(
                 'error',
@@ -397,10 +425,12 @@ class DbTransactionHelper
         }
     }
 
-    public static function commit()
+    public static function commit($connection = null)
     {
+        $db = self::db($connection);
+
         try {
-            self::commitInternal();
+            self::commitInternal($db);
 
             return true;
         } catch (Throwable $error) {
@@ -416,14 +446,16 @@ class DbTransactionHelper
         }
     }
 
-    public static function rollback()
+    public static function rollback($connection = null)
     {
+        $db = self::db($connection);
+
         try {
-            self::rollbackInternal();
+            self::rollbackInternal($db);
 
             return true;
         } catch (Throwable $error) {
-            self::resetState();
+            self::resetState($db);
 
             self::log(
                 'error',
@@ -457,6 +489,21 @@ class DbTransactionHelper
             ? (array) $options['context']
             : array();
 
+        /*
+         * 'connection': nome registrado no DbConnectionHelper ou driver.
+         * Sem ela, usa a conexão do Joomla. O callback recebe o driver
+         * dessa conexão como primeiro parâmetro.
+         */
+        $connection = isset($options['connection'])
+            ? $options['connection']
+            : null;
+
+        $db = self::db($connection);
+
+        if (is_string($connection)) {
+            $context['conexao'] = $connection;
+        }
+
         $attempt = 0;
 
         /*
@@ -464,23 +511,23 @@ class DbTransactionHelper
          * transação inteira, então repetir apenas o trecho aninhado perderia
          * o trabalho feito antes dele. Nos níveis internos o erro sobe.
          */
-        $isOutermost = self::$transactionDepth === 0;
+        $isOutermost = self::getDepth($db) === 0;
 
         while (true) {
             $attempt++;
             $started = false;
 
             try {
-                self::startInternal();
+                self::startInternal($db);
                 $started = true;
 
                 $result = call_user_func(
                     $callback,
-                    self::db(),
+                    $db,
                     $attempt
                 );
 
-                self::commitInternal();
+                self::commitInternal($db);
 
                 if ($auditEvent !== '') {
                     self::audit(
@@ -510,9 +557,9 @@ class DbTransactionHelper
             } catch (Throwable $error) {
                 if ($started) {
                     try {
-                        self::rollbackInternal();
+                        self::rollbackInternal($db);
                     } catch (Throwable $rollbackError) {
-                        self::resetState();
+                        self::resetState($db);
 
                         self::log(
                             'critical',

@@ -2,6 +2,10 @@
 
 defined('_JEXEC') or die;
 
+if (!class_exists('DbConnectionHelper')) {
+    require_once __DIR__ . '/DbConnectionHelper.php';
+}
+
 if (!class_exists('DbTransactionHelper')) {
     require_once __DIR__ . '/DbTransactionHelper.php';
 }
@@ -9,6 +13,15 @@ if (!class_exists('DbTransactionHelper')) {
 class OrmBase
 {
     protected $db;
+
+    /*
+     * Conexão usada pelo model: null (conexão do Joomla), nome registrado
+     * no DbConnectionHelper ou um driver. Pode ser sobrescrita com a
+     * opção 'connection' no construtor/query().
+     */
+    protected $connection = null;
+
+    protected $serverType = null;
 
     protected $table;
 
@@ -91,7 +104,11 @@ class OrmBase
             );
         }
 
-        $this->db = JFactory::getDbo();
+        if (array_key_exists('connection', $opcoes)) {
+            $this->connection = $opcoes['connection'];
+        }
+
+        $this->db = DbConnectionHelper::resolve($this->connection);
 
         foreach (static::$opcoesPermitidas as $opcao => $tipo) {
             if (!isset($opcoes[$opcao])) {
@@ -128,6 +145,42 @@ class OrmBase
     public function db()
     {
         return $this->db;
+    }
+
+    /*
+     * DbConnectionHelper::MYSQL ou ::POSTGRESQL. Usado para gerar o SQL
+     * certo onde os dois bancos diferem.
+     */
+    public function serverType()
+    {
+        if ($this->serverType === null) {
+            $this->serverType = DbConnectionHelper::serverType($this->db);
+        }
+
+        return $this->serverType;
+    }
+
+    protected function isPostgres()
+    {
+        return $this->serverType() === DbConnectionHelper::POSTGRESQL;
+    }
+
+    /*
+     * Converte um valor do PHP para literal SQL: null vira NULL e bool
+     * vira 1/0. Sem isso, quote(false) gera '' (erro em colunas numéricas
+     * e booleanas no PostgreSQL) e quote(null) também gera ''.
+     */
+    protected function valorSql($valor)
+    {
+        if ($valor === null) {
+            return 'NULL';
+        }
+
+        if (is_bool($valor)) {
+            $valor = $valor ? 1 : 0;
+        }
+
+        return $this->db->quote($valor);
     }
 
     public function tabelaAtual()
@@ -247,6 +300,22 @@ class OrmBase
 
             case 'bool':
             case 'boolean':
+                /*
+                 * O driver nativo do PostgreSQL devolve 't'/'f', e
+                 * (bool) 'f' seria true.
+                 */
+                if (is_string($valor)) {
+                    $texto = strtolower(trim($valor));
+
+                    if (in_array($texto, ['t', 'true'], true)) {
+                        return true;
+                    }
+
+                    if (in_array($texto, ['f', 'false', ''], true)) {
+                        return false;
+                    }
+                }
+
                 return (bool) $valor;
 
             case 'string':
@@ -419,6 +488,24 @@ class OrmBase
             throw new InvalidArgumentException(
                 'Operador de comparação inválido: ' . $operador
             );
+        }
+
+        /*
+         * "coluna = NULL" nunca é verdadeiro em SQL. where('col', null)
+         * vira IS NULL, e where('col', '!=', null) vira IS NOT NULL.
+         */
+        if ($valor === null) {
+            if (!in_array($operador, ['=', '!=', '<>'], true)) {
+                throw new InvalidArgumentException(
+                    'O operador ' . $operador . ' não pode ser usado com null.'
+                );
+            }
+
+            return $this->adicionarWhere([
+                'tipo' => 'nulo',
+                'coluna' => $argumentos[0],
+                'negado' => $operador !== '=',
+            ], $conector);
         }
 
         return $this->adicionarWhere([
@@ -773,7 +860,7 @@ class OrmBase
             case 'basico':
                 return $this->db->quoteName($condicao['coluna']) .
                     ' ' . $condicao['operador'] .
-                    ' ' . $this->db->quote($condicao['valor']);
+                    ' ' . $this->valorSql($condicao['valor']);
 
             case 'in':
                 if (empty($condicao['valores'])) {
@@ -781,7 +868,7 @@ class OrmBase
                 }
 
                 $valoresEscapados = array_map(
-                    [$this->db, 'quote'],
+                    [$this, 'valorSql'],
                     $condicao['valores']
                 );
 
@@ -797,9 +884,9 @@ class OrmBase
             case 'entre':
                 return $this->db->quoteName($condicao['coluna']) .
                     ' BETWEEN ' .
-                    $this->db->quote($condicao['valorInicial']) .
+                    $this->valorSql($condicao['valorInicial']) .
                     ' AND ' .
-                    $this->db->quote($condicao['valorFinal']);
+                    $this->valorSql($condicao['valorFinal']);
 
             case 'like':
                 $valorEscapado = $this->db->escape(
@@ -807,8 +894,12 @@ class OrmBase
                     true
                 );
 
+                /*
+                 * No PostgreSQL o LIKE diferencia maiúsculas; no MySQL, com
+                 * as collations usuais, não. ILIKE dá o mesmo resultado.
+                 */
                 return $this->db->quoteName($condicao['coluna']) .
-                    ' LIKE ' .
+                    ($this->isPostgres() ? ' ILIKE ' : ' LIKE ') .
                     $this->db->quote('%' . $valorEscapado . '%', false);
 
             case 'raw':
@@ -923,8 +1014,9 @@ class OrmBase
 
     /*
      * Prepara o SELECT no driver. Com lockForUpdate(), o LIMIT é montado
-     * aqui, porque o MySQL exige "... LIMIT n FOR UPDATE" e o driver
-     * acrescentaria o LIMIT depois do FOR UPDATE.
+     * aqui, porque o FOR UPDATE precisa vir depois do LIMIT e o driver
+     * acrescentaria o LIMIT no fim. "LIMIT n OFFSET m" funciona tanto no
+     * MySQL quanto no PostgreSQL.
      */
     protected function prepararSelect($query, $offset = 0, $limite = 0)
     {
@@ -937,7 +1029,7 @@ class OrmBase
             return;
         }
 
-        if (!DbTransactionHelper::isActive()) {
+        if (!DbTransactionHelper::isActive($this->db)) {
             throw new LogicException(
                 'lockForUpdate() só tem efeito dentro de uma transação. ' .
                 'Use DbTransactionHelper::run() ou $orm->transaction().'
@@ -947,10 +1039,29 @@ class OrmBase
         $sql = (string) $query;
 
         if ($limite > 0) {
-            $sql .= ' LIMIT ' . $offset . ', ' . $limite;
+            $sql .= ' LIMIT ' . $limite . ' OFFSET ' . $offset;
         }
 
         $this->db->setQuery($sql . ' FOR UPDATE');
+    }
+
+    /*
+     * O PostgreSQL não aceita FOR UPDATE com COUNT/SUM/AVG/MIN/MAX. Para
+     * o código funcionar igual nos dois bancos, recusa nos dois: trave as
+     * linhas com get()/first() e calcule a partir delas.
+     */
+    protected function recusarLockEmAgregacao($funcao)
+    {
+        if (!$this->lockForUpdate) {
+            return;
+        }
+
+        $this->newQuery();
+
+        throw new LogicException(
+            'lockForUpdate() não pode ser usado com ' . $funcao . '(). ' .
+            'Trave as linhas com get()/first() e calcule a partir delas.'
+        );
     }
 
     public function get()
@@ -1064,6 +1175,8 @@ class OrmBase
 
     public function count($coluna = '*')
     {
+        $this->recusarLockEmAgregacao('count');
+
         $this->selects = [
             'COUNT(' .
             ($coluna === '*'
@@ -1101,6 +1214,8 @@ class OrmBase
 
     protected function agregar($funcao, $coluna)
     {
+        $this->recusarLockEmAgregacao(strtolower($funcao));
+
         $this->selects = [
             $funcao .
             '(' .
@@ -1240,7 +1355,7 @@ class OrmBase
             $query->set(
                 $this->db->quoteName($coluna) .
                 ' = ' .
-                ($valor === null ? 'NULL' : $this->db->quote($valor))
+                $this->valorSql($valor)
             );
         }
 
@@ -1302,16 +1417,53 @@ class OrmBase
     public function create(array $dados)
     {
         return $this->executar(function () use ($dados) {
-            $objeto = (object) $this->prepararDadosParaGravar($dados, true);
+            $dados = $this->prepararDadosParaGravar($dados, true);
 
-            $this->db->insertObject(
-                $this->table,
-                $objeto,
-                $this->primaryKey
-            );
+            $id = $this->isPostgres()
+                ? $this->inserirComReturning($dados)
+                : $this->inserirComInsertObject($dados);
 
-            return $this->find($objeto->{$this->primaryKey});
+            return $this->find($id);
         }, 'Erro ao criar registro');
+    }
+
+    protected function inserirComInsertObject(array $dados)
+    {
+        $objeto = (object) $dados;
+
+        $this->db->insertObject(
+            $this->table,
+            $objeto,
+            $this->primaryKey
+        );
+
+        return $objeto->{$this->primaryKey};
+    }
+
+    /*
+     * No PostgreSQL, o insertObject do Joomla descobre o id gerado
+     * procurando a sequence da coluna, o que falha em colunas IDENTITY.
+     * "INSERT ... RETURNING id" devolve o id em qualquer caso.
+     */
+    protected function inserirComReturning(array $dados)
+    {
+        $sql = 'INSERT INTO ' . $this->db->quoteName($this->table);
+
+        if (empty($dados)) {
+            $sql .= ' DEFAULT VALUES';
+        } else {
+            $sql .= ' (' .
+                implode(', ', array_map([$this->db, 'quoteName'], array_keys($dados))) .
+                ') VALUES (' .
+                implode(', ', array_map([$this, 'valorSql'], $dados)) .
+                ')';
+        }
+
+        $this->db->setQuery(
+            $sql . ' RETURNING ' . $this->db->quoteName($this->primaryKey)
+        );
+
+        return $this->db->loadResult();
     }
 
     public function createMany(array $listaDeDados)
@@ -1327,7 +1479,7 @@ class OrmBase
 
                     return $criados;
                 },
-                ['retries' => 0]
+                ['retries' => 0, 'connection' => $this->db]
             );
         }, 'Erro ao criar múltiplos registros');
     }
@@ -1508,6 +1660,9 @@ class OrmBase
     {
         $opcoes += ['retries' => 0];
 
+        // A transação é sempre na conexão deste model.
+        $opcoes['connection'] = $this->db;
+
         try {
             return DbTransactionHelper::run(
                 function () use ($callback) {
@@ -1531,7 +1686,9 @@ class OrmBase
      *
      * ATENÇÃO:
      * - TRUNCATE TABLE é destrutivo.
-     * - Em MySQL, normalmente executa commit implícito.
+     * - Em MySQL, executa commit implícito: não volta com rollback e
+     *   confirma a transação que estiver aberta.
+     * - Em PostgreSQL, é transacional e reinicia o id (RESTART IDENTITY).
      * - Não deve ser tratado como operação com rollback.
      *
      * @param bool $confirmar Deve ser obrigatoriamente true.
@@ -1559,7 +1716,7 @@ class OrmBase
 
             if (
                 !preg_match(
-                    '/^[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)?$/',
+                    '/^(?:#__)?[a-zA-Z0-9_]+(?:\.[a-zA-Z0-9_]+)?$/',
                     $tabela
                 )
             ) {
@@ -1599,6 +1756,11 @@ class OrmBase
 
                 $sql = 'TRUNCATE TABLE ' .
                     $this->db->quoteName($tabela);
+
+                // No PostgreSQL a sequence do id só reinicia se pedido.
+                if ($this->isPostgres()) {
+                    $sql .= ' RESTART IDENTITY';
+                }
 
                 $this->db->setQuery($sql);
                 $this->db->execute();
