@@ -284,6 +284,197 @@ class LojaControllerSincronismo extends JControllerLegacy
 </code></pre>
 </div>
 
+<p>Dica: O exemplo acima é excelente para acionamento sequencial via Ajax. Mas para o **melhor cenário de UX/Arquitetura**, o fluxo ideal deve ser dividido em duas etapas distintas:</p>
+<ol>
+    <li><strong>Etapa 1 (Upload do arquivo):</strong> O usuário envia a planilha física, o sistema a salva no disco de forma segura e registra um registro de controle (com status <code>'pendente'</code>, total de linhas, etc.) no banco de dados.</li>
+    <li><strong>Etapa 2 (Processamento assíncrono acionado por clique):</strong> O usuário aciona uma segunda view, que carrega o caminho salvo no banco e inicia o processamento dos lotes através do <code>ChunkHelper</code>, atualizando o progresso da importação em tempo real diretamente na tabela de controle para monitoramento.</li>
+</ol>
+
+<div class="codigo">
+<div class="titulo-codigo">Exemplo Avançado: Fluxo Completo de Upload, Registro e Processamento</div>
+<pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/IncludeHelper.php';
+
+// Garantir o ecossistema carregado via IncludeHelper!
+IncludeHelper::load(['InputHelper', 'ApiResponseHelper', 'ChunkUploadHelper', 'FileHelper', 'OrmTables', 'AuditHelper']);
+
+class LojaControllerImportacao extends JControllerLegacy
+{
+    /**
+     * Etapa 1: Recebe o upload da planilha física, salva em pasta segura e cria o registro de controle no banco
+     */
+    public function uploadPlanilha()
+    {
+        JSession::checkToken() or jexit('Token inválido.');
+
+        try {
+            $arquivo = InputHelper::file('planilha_dados');
+
+            if ($arquivo === null) {
+                return ApiResponseHelper::validationError(['planilha' => ['Por favor, envie um arquivo válido.']]);
+            }
+
+            // 1. Configurar diretórios usando FileHelper
+            $baseDir = JPATH_SITE . '/administrator/components/com_loja';
+            FileHelper::setBaseDirectory($baseDir);
+            FileHelper::ensureDirectory('uploads_planilhas');
+
+            // 2. Gerar nome físico único e seguro
+            $extensao = FileHelper::fileGetExt($arquivo['name']);
+            $nomeFisico = FileHelper::randomFileName('import', $extensao);
+            $caminhoRelativo = 'uploads_planilhas/' . $nomeFisico;
+
+            // 3. Salvar o arquivo
+            $salvar = FileHelper::move($arquivo['tmp_name'], $caminhoRelativo, null, $baseDir);
+
+            if (!$salvar['success']) {
+                throw new RuntimeException('Falha física ao salvar o arquivo enviado no servidor.');
+            }
+
+            // 4. Analisar rapidamente o arquivo para contar as fatias totais de linhas
+            $info = ChunkHelper::info($caminhoRelativo, $baseDir);
+
+            // 5. Registrar no banco via ORM para controle da view de monitoramento
+            $importacao = OrmTables::table('#__loja_importacoes')->create([
+                'caminho_arquivo' => $caminhoRelativo,
+                'nome_original' => $arquivo['name'],
+                'status' => 'pendente',
+                'linhas_totais' => $info['data']['lines_count'],
+                'linhas_processadas' => 0,
+                'created_at' => JFactory::getDate()->toSql()
+            ]);
+
+            // Auditar ação de upload
+            AuditHelper::created('importacao_planilha', $importacao->id, (array) $importacao, [
+                'description' => 'Upload e registro da planilha de faturamento #' . $importacao->id
+            ]);
+
+            return ApiResponseHelper::success('Planilha enviada com sucesso! Pronto para iniciar o processamento.', [
+                'import_id' => $importacao->id,
+                'linhas_totais' => $importacao->linhas_totais
+            ]);
+
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e, 'Não foi possível processar o upload do arquivo.');
+        }
+    }
+
+    /**
+     * Etapa 2: Acionada via clique do botão "Importar", processa as linhas da planilha em chunks resilientes
+     */
+    public function processarPlanilha()
+    {
+        JSession::checkToken('get') or jexit('Token inválido.');
+
+        try {
+            $importId = InputHelper::int('import_id');
+
+            if ($importId <= 0) {
+                return ApiResponseHelper::badRequest('ID de importação inválido.');
+            }
+
+            // 1. Localizar o registro de faturamento no banco de dados via ORM
+            $ormImport = OrmTables::table('#__loja_importacoes');
+            $import = $ormImport->find($importId);
+
+            if (!$import) {
+                return ApiResponseHelper::notFound('Registro de importação não cadastrado.');
+            }
+
+            if ($import->status === 'concluido') {
+                return ApiResponseHelper::success('Esta importação já foi totalmente processada anteriormente!', [
+                    'finalizado' => true
+                ]);
+            }
+
+            // 2. Marcar o status como em andamento no banco de dados
+            $ormImport->update($importId, ['status' => 'processando']);
+
+            // 3. Definir sandbox e caminhos do faturamento e checkpoint
+            $baseDir = JPATH_SITE . '/administrator/components/com_loja';
+            $arquivoCheckpoint = 'data/checkpoints/import_' . $importId . '.json';
+
+            // 4. Iniciar processamento por lotes com ChunkHelper
+            $resultado = ChunkHelper::resumeLines(
+                $import->caminho_arquivo,
+                $arquivoCheckpoint,
+                function (array $linhas, array $status) use ($importId) {
+                    $loteClientes = [];
+                    foreach ($linhas as $linha) {
+                        $colunas = explode(';', $linha);
+                        if (count($colunas) >= 2) {
+                            $loteClientes[] = [
+                                'nome' => trim($colunas[0]),
+                                'documento' => trim($colunas[1])
+                            ];
+                        }
+                    }
+
+                    // Gravar os clientes do lote
+                    if (!empty($loteClientes)) {
+                        ClientesService::salvarEmLote($loteClientes);
+                    }
+
+                    // ATUALIZAÇÃO EM TEMPO REAL:
+                    // Atualiza a tabela de controle com o progresso exato deste lote,
+                    // permitindo que requisições Ajax de polling mostrem a barra de progresso real ao usuário!
+                    OrmTables::table('#__loja_importacoes')->update($importId, [
+                        'linhas_processadas' => $status['processed_lines']
+                    ]);
+                },
+                $baseDir,
+                [
+                    'rows_per_chunk' => 1000,
+                    'checkpoint_interval' => 1
+                ]
+            );
+
+            // 5. Verificar estado de conclusão
+            if ($resultado['data']['status'] === 'completed') {
+                // Sincronia concluída com sucesso
+                $ormImport->update($importId, [
+                    'status' => 'concluido',
+                    'linhas_processadas' => $resultado['data']['processed_lines']
+                ]);
+
+                ChunkHelper::deleteCheckpoint($arquivoCheckpoint, $baseDir);
+
+                // Auditar conclusão
+                AuditHelper::log('import_completed', [
+                    'category' => 'importacao',
+                    'entity_type' => 'importacao_planilha',
+                    'entity_id' => $importId,
+                    'description' => 'Processamento da planilha #' . $importId . ' concluído com sucesso total.'
+                ]);
+
+                return ApiResponseHelper::success('Importação de dados faturados finalizada com sucesso!', [
+                    'finalizado' => true,
+                    'linhas_processadas' => $resultado['data']['processed_lines']
+                ]);
+            }
+
+            // Caso o lote tenha parado parcialmente (por limitações de execução ou requisição)
+            return ApiResponseHelper::success('Lote processado, reexecute para continuar o progresso.', [
+                'finalizado' => false,
+                'linhas_processadas' => $resultado['data']['processed_lines']
+            ]);
+
+        } catch (Throwable $e) {
+            // Em caso de quebra, salva o status de erro e registra na auditoria
+            if (isset($importId) && $importId > 0) {
+                OrmTables::table('#__loja_importacoes')->update($importId, ['status' => 'erro']);
+                AuditHelper::exception($e, [
+                    'category' => 'importacao',
+                    'metadata' => ['import_id' => $importId]
+                ]);
+            }
+
+            return ApiResponseHelper::exception($e, 'Erro fatal durante o processamento da planilha.');
+        }
+    }
+}
+</code></pre>
+</div>
+
 <h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
 <ul>
     <li><a href="file-helper.html">FileHelper</a>: Métodos de manipulação física, cópia, exclusão e downloads por stream.</li>
