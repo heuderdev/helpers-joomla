@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Receitas · Helpers de banco</title>
+<title>Receitas · helpers-joomla</title>
 <meta name="description" content="Exemplos completos de uso dos helpers em situações comuns.">
 <link rel="stylesheet" href="assets/docs.css">
 <script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
@@ -12,29 +12,28 @@
 <body>
 <header class="topo">
 <button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
-<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
 <span class="trilha"><a href="index.html">Documentação</a> › Guias › Receitas</span>
 <span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
 </header>
 <div class="layout">
-<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" class="ativo" aria-current="page" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" class="ativo" aria-current="page" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
 <main class="conteudo">
 <h1>Receitas</h1>
 <p class="lead">Soluções prontas para copiar e adaptar: filtros de tela, estoque, importação, exportação, filas, lixeira e mais.</p>
 <div id="nesta-pagina"></div>
-<p>Soluções completas para situações comuns. Todas usam <code>OrmTables</code> direto, para funcionar sem models. Com models, troque <code>OrmTables::table('#__x')</code> por <code>XModel::query()</code>.</p><h2 id="filtros-da-tela" data-titulo="Listagem com filtros, ordenação e paginação">Listagem com filtros, ordenação e paginação</h2><p>Filtros opcionais com <code>when()</code>, ordenação restrita a uma lista de colunas permitidas e paginação para API JSON.</p><div class="codigo"><div class="titulo-codigo">Controller</div><pre><code data-lang="php">public function listar()
+<p>Soluções completas para situações comuns. Todas usam <code>OrmTables</code> direto, para funcionar sem models. Com models, troque <code>OrmTables::table('#__x')</code> por <code>XModel::query()</code>.</p><h2 id="filtros-da-tela" data-titulo="Listagem com filtros, ordenação e paginação">Listagem com filtros, ordenação e paginação</h2><p>Filtros opcionais com <code>when()</code>, valores e ordenação restritos a listas permitidas (<a href="input-helper.html#oneOf"><code>oneOf()</code></a>, <a href="input-helper.html#sorting"><code>sorting()</code></a>) e paginação para API JSON.</p><div class="codigo"><div class="titulo-codigo">Controller</div><pre><code data-lang="php">public function listar()
 {
     $filtros = [
-        &#x27;status&#x27; =&gt; InputHelper::cmd(&#x27;status&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
+        &#x27;status&#x27; =&gt; InputHelper::oneOf(&#x27;status&#x27;, [&#x27;aberto&#x27;, &#x27;pago&#x27;, &#x27;cancelado&#x27;], &#x27;&#x27;, &#x27;get&#x27;),
         &#x27;busca&#x27; =&gt; InputHelper::string(&#x27;busca&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
-        &#x27;de&#x27; =&gt; InputHelper::string(&#x27;de&#x27;, &#x27;&#x27;, &#x27;get&#x27;),          // 2026-10-01
-        &#x27;ate&#x27; =&gt; InputHelper::string(&#x27;ate&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
+        &#x27;de&#x27; =&gt; InputHelper::date(&#x27;de&#x27;, &#x27;&#x27;, &#x27;get&#x27;),            // 2026-10-01 (data inválida → &#x27;&#x27;)
+        &#x27;ate&#x27; =&gt; InputHelper::date(&#x27;ate&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
     ];
 
-    $ordenaveis = [&#x27;created_at&#x27;, &#x27;total&#x27;, &#x27;status&#x27;];
-    $ordenar = InputHelper::cmd(&#x27;ordenar&#x27;, &#x27;created_at&#x27;, &#x27;get&#x27;);
-    $ordenar = in_array($ordenar, $ordenaveis, true) ? $ordenar : &#x27;created_at&#x27;;
-    $direcao = InputHelper::cmd(&#x27;direcao&#x27;, &#x27;desc&#x27;, &#x27;get&#x27;);
+    // ?sort=total&amp;direction=desc (só colunas da lista)
+    $ordem = InputHelper::sorting([&#x27;created_at&#x27;, &#x27;total&#x27;, &#x27;status&#x27;], &#x27;created_at&#x27;, &#x27;DESC&#x27;, &#x27;get&#x27;);
+    $pagina = InputHelper::pagination(20, 100, &#x27;get&#x27;);           // ?page=2&amp;limit=50
 
     try {
         $resultado = OrmTables::table(&#x27;#__loja_pedidos&#x27;, [&#x27;casts&#x27; =&gt; [&#x27;total&#x27; =&gt; &#x27;float&#x27;]])
@@ -53,8 +52,8 @@
             -&gt;when($filtros[&#x27;ate&#x27;], function ($q, $ate) {
                 $q-&gt;where(&#x27;created_at&#x27;, &#x27;&lt;=&#x27;, $ate . &#x27; 23:59:59&#x27;);
             })
-            -&gt;orderBy($ordenar, $direcao)
-            -&gt;paginate(20, InputHelper::uint(&#x27;pagina&#x27;, 1, &#x27;get&#x27;));
+            -&gt;orderBy($ordem[&#x27;field&#x27;], $ordem[&#x27;direction&#x27;])
+            -&gt;paginate($pagina[&#x27;limit&#x27;], $pagina[&#x27;page&#x27;]);
 
         unset($resultado[&#x27;paginacao&#x27;]);
 
@@ -251,7 +250,7 @@ $saldo = OrmTables::table(&#x27;#__titulos&#x27;, [&#x27;connection&#x27; =&gt; 
     -&gt;whereNull(&#x27;pago_em&#x27;)
     -&gt;sum(&#x27;valor&#x27;);</code></pre></div><p>Mais detalhes no <a href="guia-multiplos-bancos.html">guia de múltiplos bancos</a>.</p>
 <nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="guia-mysql-postgresql.html"><small>← Anterior</small>MySQL e PostgreSQL</a><a class="proxima" href="referencia-rapida.html"><small>Próxima →</small>Referência rápida</a></nav>
-<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code> e <code>InputHelper</code>.</p>
 </main>
 </div>
 </body>
