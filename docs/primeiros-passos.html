@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Primeiros passos · Helpers de banco</title>
+<meta name="description" content="Instalação dos helpers e primeiro CRUD com OrmTables e DbTransactionHelper.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Começando › Primeiros passos</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" class="ativo" aria-current="page" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Primeiros passos</h1>
+<p class="lead">Instale os arquivos, faça o primeiro CRUD e a primeira transação em poucos minutos.</p>
+<div id="nesta-pagina"></div>
+<h2 id="instalacao" data-titulo="Instalação">Instalação</h2><ol class="passos"><li><p><strong>Copie os quatro arquivos</strong> para a pasta de helpers do seu componente, por exemplo <code>components/com_loja/helpers/</code>:</p><div class="codigo"><pre><code data-lang="text">components/com_loja/helpers/
+├── DbConnectionHelper.php
+├── DbTransactionHelper.php
+├── OrmBase.php
+└── OrmTables.php</code></pre></div></li><li><p><strong>Carregue</strong> onde for usar (controller, model, script). Um único <code>require_once</code> basta:</p><div class="codigo"><pre><code data-lang="php">require_once JPATH_SITE . &#x27;/components/com_loja/helpers/OrmTables.php&#x27;;</code></pre></div><p>Cada arquivo carrega o que precisa:</p><div class="tabela"><table><thead><tr><th>Arquivo carregado</th><th>Também carrega</th></tr></thead><tbody><tr><td><code>OrmTables.php</code></td><td><code>OrmBase.php</code>, <code>DbTransactionHelper.php</code>, <code>DbConnectionHelper.php</code></td></tr><tr><td><code>OrmBase.php</code></td><td><code>DbTransactionHelper.php</code>, <code>DbConnectionHelper.php</code></td></tr><tr><td><code>DbTransactionHelper.php</code></td><td><code>DbConnectionHelper.php</code></td></tr><tr><td><code>DbConnectionHelper.php</code></td><td>(nada)</td></tr></tbody></table></div></li><li><p><strong>Pronto.</strong> Não há configuração obrigatória: tudo usa a conexão do Joomla (<code>JFactory::getDbo()</code>) até você registrar outra.</p></li></ol><div class="nota aviso"><strong class="rotulo">Só dentro do Joomla</strong><p>Todos os arquivos começam com <code>defined('_JEXEC') or die;</code>. Eles só funcionam dentro do Joomla, inclusive em scripts CLI que façam o bootstrap do Joomla.</p></div><h2 id="tabela-exemplo" data-titulo="Tabela usada nos exemplos">Tabela usada nos exemplos</h2><p>Os exemplos desta documentação usam uma loja simples. O prefixo <code>#__</code> é trocado automaticamente pelo prefixo das tabelas do Joomla (por exemplo, <code>jos_</code>).</p><div class="codigo"><div class="titulo-codigo">MySQL</div><pre><code data-lang="sql">CREATE TABLE `#__loja_produtos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `nome` VARCHAR(150) NOT NULL,
+  `preco` DECIMAL(10,2) NOT NULL DEFAULT 0,
+  `estoque` INT NOT NULL DEFAULT 0,
+  `ativo` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL
+) ENGINE=InnoDB;</code></pre></div><div class="codigo"><div class="titulo-codigo">PostgreSQL</div><pre><code data-lang="sql">CREATE TABLE jos_loja_produtos (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  nome VARCHAR(150) NOT NULL,
+  preco NUMERIC(10,2) NOT NULL DEFAULT 0,
+  estoque INTEGER NOT NULL DEFAULT 0,
+  ativo BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL
+);</code></pre></div><div class="nota"><p>As colunas <code>created_at</code> e <code>updated_at</code> existem porque o <code>OrmBase</code> as preenche sozinho por padrão. Se a sua tabela não tiver essas colunas, passe <code>['timestamps' =&gt; false]</code>. Veja <a href="orm-base-configuracao.html#timestamps">timestamps</a>.</p></div><h2 id="primeiro-crud" data-titulo="Seu primeiro CRUD">Seu primeiro CRUD</h2><h3 id="criar">Criar</h3><div class="codigo"><pre><code data-lang="php">$produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;create([
+    &#x27;nome&#x27; =&gt; &#x27;Caneta azul&#x27;,
+    &#x27;preco&#x27; =&gt; 2.50,
+    &#x27;estoque&#x27; =&gt; 100,
+]);
+
+echo $produto-&gt;id;          // id gerado pelo banco
+echo $produto-&gt;created_at;  // preenchido automaticamente</code></pre></div><p><code>create()</code> devolve o registro recém-gravado, lido de volta do banco, como <code>stdClass</code>.</p><h3 id="ler">Ler</h3><div class="codigo"><pre><code data-lang="php">$produtos = OrmTables::table(&#x27;#__loja_produtos&#x27;);
+
+$um = $produtos-&gt;find(1);                          // por id, ou null
+
+$ativos = $produtos
+    -&gt;where(&#x27;ativo&#x27;, 1)
+    -&gt;where(&#x27;preco&#x27;, &#x27;&lt;=&#x27;, 10)
+    -&gt;orderBy(&#x27;nome&#x27;)
+    -&gt;get();                                       // array de stdClass
+
+foreach ($ativos as $produto) {
+    echo $produto-&gt;nome . &#x27; - &#x27; . $produto-&gt;preco . PHP_EOL;
+}
+
+$total = $produtos-&gt;where(&#x27;ativo&#x27;, 1)-&gt;count();    // int</code></pre></div><div class="nota dica"><p>Reaproveitar a variável <code>$produtos</code> é seguro: cada método que executa a consulta (<code>get</code>, <code>count</code>, <code>first</code>…) limpa os filtros ao terminar, mesmo quando dá erro. Veja <a href="conceitos.html#ciclo">o ciclo de uma consulta</a>.</p></div><h3 id="atualizar">Atualizar</h3><div class="codigo"><pre><code data-lang="php">// Um registro, pelo id: devolve o registro atualizado
+$produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;update(1, [
+    &#x27;preco&#x27; =&gt; 2.90,
+]);
+
+// Vários registros, pelos filtros: devolve quantas linhas mudaram
+$alterados = OrmTables::table(&#x27;#__loja_produtos&#x27;)
+    -&gt;where(&#x27;estoque&#x27;, 0)
+    -&gt;updateWhere([&#x27;ativo&#x27; =&gt; 0]);</code></pre></div><h3 id="excluir">Excluir</h3><div class="codigo"><pre><code data-lang="php">OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;delete(1);
+
+$removidos = OrmTables::table(&#x27;#__loja_produtos&#x27;)
+    -&gt;where(&#x27;ativo&#x27;, 0)
+    -&gt;deleteWhere();</code></pre></div><div class="nota aviso"><p><code>updateWhere()</code> e <code>deleteWhere()</code> <strong>sem nenhum filtro</strong> lançam erro, para você não alterar a tabela inteira por engano. Veja <a href="orm-base-escrita.html#allowMassOperation">allowMassOperation()</a>.</p></div><h2 id="primeira-transacao" data-titulo="Sua primeira transação">Sua primeira transação</h2><p>Quando várias gravações precisam acontecer juntas (todas ou nenhuma), coloque-as dentro de <code>DbTransactionHelper::run()</code>. Se qualquer exceção acontecer lá dentro, tudo é desfeito.</p><div class="codigo"><pre><code data-lang="php">try {
+    $pedido = DbTransactionHelper::run(function () {
+        $pedido = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;create([
+            &#x27;cliente_id&#x27; =&gt; 7,
+            &#x27;status&#x27; =&gt; &#x27;aberto&#x27;,
+        ]);
+
+        $produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;decrement(10, &#x27;estoque&#x27;, 2);
+
+        if ($produto-&gt;estoque &lt; 0) {
+            // A exceção desfaz o pedido E a baixa de estoque
+            throw new RuntimeException(&#x27;Estoque insuficiente.&#x27;);
+        }
+
+        return $pedido;
+    });
+} catch (RuntimeException $e) {
+    echo $e-&gt;getMessage();
+}</code></pre></div><h2 id="proximos-passos" data-titulo="Próximos passos">Próximos passos</h2><ul><li><a href="conceitos.html">Conceitos</a>: as regras que valem para tudo. Leitura curta e recomendada.</li><li><a href="orm-tables.html">OrmTables</a> e <a href="orm-base-models.html">Models</a>: as formas de organizar o código.</li><li><a href="receitas.html">Receitas</a>: soluções completas para casos comuns.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="index.html"><small>← Anterior</small>Início</a><a class="proxima" href="conceitos.html"><small>Próxima →</small>Conceitos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

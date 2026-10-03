@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrmTables · Helpers de banco</title>
+<meta name="description" content="Referência do OrmTables: uso direto do ORM sem criar classes e registro de tabelas por nome.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › OrmTables</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" class="ativo" aria-current="page" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>OrmTables</h1>
+<p class="lead">Use o ORM direto, sem criar classes: uma linha para consultar qualquer tabela, em qualquer conexão.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>O <code>OrmTables</code> é a porta de entrada mais curta para o ORM. Ele cria instâncias de <a href="orm-base-configuracao.html"><code>OrmBase</code></a> sem que você precise escrever uma classe. O objeto devolvido tem <strong>todos</strong> os métodos do <code>OrmBase</code>: consultas, escrita, transações, travas e outras conexões.</p><div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/OrmTables.php&#x27;;
+
+$produtos = OrmTables::table(&#x27;#__loja_produtos&#x27;)
+    -&gt;where(&#x27;ativo&#x27;, 1)
+    -&gt;orderBy(&#x27;nome&#x27;)
+    -&gt;get();</code></pre></div><p>Há duas formas de uso:</p><div class="tabela"><table><thead><tr><th>Forma</th><th>Como</th><th>Quando</th></tr></thead><tbody><tr><td>Direta</td><td><code>OrmTables::table('#__tabela', $opcoes)</code></td><td>Consultas pontuais. A configuração vai na chamada.</td></tr><tr><td>Registrada</td><td><code>OrmTables::register('nome', '#__tabela', $opcoes)</code> uma vez, e depois <code>OrmTables::get('nome')</code></td><td>A mesma tabela usada em vários lugares, configurada uma vez só.</td></tr></tbody></table></div><p>As opções (<code>$opcoes</code>) são as mesmas do construtor do <code>OrmBase</code>: <code>casts</code>, <code>fillable</code>, <code>guarded</code>, <code>timestamps</code>, <code>softDeletes</code>, <code>primaryKey</code>, <code>connection</code>… Veja a <a href="orm-base-configuracao.html#opcoes">lista completa</a>.</p><h2 id="metodos" data-titulo="Métodos">Métodos</h2><div class="metodo"><h3 id="table"><code>table()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::table(string $table, array $opcoes = []): OrmBase</div><p>Cria uma instância nova do ORM para a tabela. Cada chamada devolve um objeto novo, sem filtros.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$table</code></td><td>string</td><td>Nome da tabela, normalmente com <code>#__</code>. Aceita alias para consultas: <code>'#__loja_produtos AS p'</code>.</td></tr><tr><td><code>$opcoes</code></td><td>array</td><td><a href="orm-base-configuracao.html#opcoes">Opções de configuração</a>.</td></tr></tbody></table></div><p class="retorno"><strong>Retorna:</strong> <code>OrmBase</code>.</p><div class="codigo"><pre><code data-lang="php">// Mínimo
+$total = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;count();
+
+// Com opções
+$pedidos = OrmTables::table(&#x27;#__loja_pedidos&#x27;, [
+    &#x27;softDeletes&#x27; =&gt; true,
+    &#x27;casts&#x27; =&gt; [&#x27;total&#x27; =&gt; &#x27;float&#x27;, &#x27;metadados&#x27; =&gt; &#x27;json&#x27;],
+]);
+
+$recentes = $pedidos-&gt;latest()-&gt;limit(10)-&gt;get();
+
+// Em outro banco
+$clientes = OrmTables::table(&#x27;#__clientes&#x27;, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;])-&gt;get();
+
+// Tabela sem created_at/updated_at
+OrmTables::table(&#x27;#__loja_logs&#x27;, [&#x27;timestamps&#x27; =&gt; false])-&gt;create([
+    &#x27;mensagem&#x27; =&gt; &#x27;Importação concluída&#x27;,
+]);</code></pre></div><div class="nota aviso"><p>Alias no nome da tabela (<code>'#__x AS x'</code>) funciona em consultas (<code>get</code>, <code>join</code>…), mas <strong>não</strong> em <code>create</code>, <code>update</code> e <code>delete</code>. Para gravar, use o nome sem alias.</p></div></div><div class="metodo"><h3 id="make"><code>make()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::make(string $table, array $opcoes = []): OrmBase</div><p>Sinônimo de <code>table()</code>.</p></div><div class="metodo"><h3 id="register"><code>register()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::register(string $nome, string $table, array $opcoes = []): OrmBase</div><p>Guarda uma configuração de tabela com um nome, para reutilizar com <code>get()</code>. Registrar de novo o mesmo nome substitui a configuração. Devolve uma instância pronta para uso.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$nome</code></td><td>string</td><td>Nome curto, à sua escolha.</td></tr><tr><td><code>$table</code></td><td>string</td><td>Tabela.</td></tr><tr><td><code>$opcoes</code></td><td>array</td><td>Opções de configuração.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">// No carregamento do componente
+OrmTables::register(&#x27;produtos&#x27;, &#x27;#__loja_produtos&#x27;, [
+    &#x27;casts&#x27; =&gt; [&#x27;preco&#x27; =&gt; &#x27;float&#x27;, &#x27;estoque&#x27; =&gt; &#x27;int&#x27;, &#x27;ativo&#x27; =&gt; &#x27;bool&#x27;],
+    &#x27;fillable&#x27; =&gt; [&#x27;nome&#x27;, &#x27;preco&#x27;, &#x27;estoque&#x27;, &#x27;ativo&#x27;],
+]);
+
+OrmTables::register(&#x27;pedidos&#x27;, &#x27;#__loja_pedidos&#x27;, [
+    &#x27;softDeletes&#x27; =&gt; true,
+    &#x27;casts&#x27; =&gt; [&#x27;total&#x27; =&gt; &#x27;float&#x27;],
+]);
+
+OrmTables::register(&#x27;clientesErp&#x27;, &#x27;#__clientes&#x27;, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;]);</code></pre></div></div><div class="metodo"><h3 id="get"><code>get()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::get(string $nome, string|null $table = null, array $opcoes = []): OrmBase</div><p>Devolve uma <strong>cópia nova</strong> da instância registrada. Como é uma cópia, os filtros de uma consulta nunca vazam para outra. Se o nome ainda não foi registrado e você passar <code>$table</code>, registra e devolve. Sem <code>$table</code> e sem registro, lança <code>InvalidArgumentException</code>.</p><div class="codigo"><pre><code data-lang="php">$baratos = OrmTables::get(&#x27;produtos&#x27;)-&gt;where(&#x27;preco&#x27;, &#x27;&lt;&#x27;, 5)-&gt;get();
+$total = OrmTables::get(&#x27;produtos&#x27;)-&gt;count();     // não herda o where acima
+
+// Registra na primeira chamada, se ainda não existir
+$logs = OrmTables::get(&#x27;logs&#x27;, &#x27;#__loja_logs&#x27;, [&#x27;timestamps&#x27; =&gt; false]);</code></pre></div><div class="nota aviso"><p>Se o nome já estiver registrado, <code>$table</code> e <code>$opcoes</code> são <strong>ignorados</strong>: vale o registro existente. Para mudar a configuração, use <code>register()</code>.</p></div></div><div class="metodo"><h3 id="has"><code>has()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::has(string $nome): bool</div><p>Indica se o nome foi registrado.</p></div><div class="metodo"><h3 id="forget"><code>forget()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::forget(string $nome): bool</div><p>Remove um registro. Devolve <code>true</code> se ele existia.</p></div><div class="metodo"><h3 id="flush"><code>flush()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::flush(): void</div><p>Remove todos os registros. Útil em testes e scripts longos.</p></div><div class="metodo"><h3 id="all"><code>all()</code><span class="tag estatico">estático</span></h3><div class="assinatura">OrmTables::all(): string[]</div><p>Lista os nomes registrados.</p></div><div class="nota"><p>Os registros ficam em memória e duram <strong>um request</strong>, ou uma execução de script CLI. Registre no carregamento do componente para que estejam disponíveis em todas as telas.</p></div><h2 id="exemplo-controller" data-titulo="Exemplo completo: controller sem models">Exemplo completo: controller sem models</h2><div class="codigo"><div class="titulo-codigo">controllers/produtos.php</div><pre><code data-lang="php">&lt;?php
+
+defined(&#x27;_JEXEC&#x27;) or die;
+
+require_once JPATH_COMPONENT . &#x27;/helpers/OrmTables.php&#x27;;
+require_once JPATH_COMPONENT . &#x27;/helpers/ApiResponseHelper.php&#x27;;
+require_once JPATH_COMPONENT . &#x27;/helpers/InputHelper.php&#x27;;
+
+class LojaControllerProdutos extends JControllerLegacy
+{
+    protected function produtos()
+    {
+        return OrmTables::table(&#x27;#__loja_produtos&#x27;, [
+            &#x27;casts&#x27; =&gt; [&#x27;preco&#x27; =&gt; &#x27;float&#x27;, &#x27;estoque&#x27; =&gt; &#x27;int&#x27;, &#x27;ativo&#x27; =&gt; &#x27;bool&#x27;],
+            &#x27;fillable&#x27; =&gt; [&#x27;nome&#x27;, &#x27;preco&#x27;, &#x27;estoque&#x27;, &#x27;ativo&#x27;],
+        ]);
+    }
+
+    public function listar()
+    {
+        try {
+            $resultado = $this-&gt;produtos()
+                -&gt;where(&#x27;ativo&#x27;, true)
+                -&gt;when(InputHelper::string(&#x27;busca&#x27;, &#x27;&#x27;, &#x27;get&#x27;), function ($q, $busca) {
+                    $q-&gt;whereLike(&#x27;nome&#x27;, $busca);
+                })
+                -&gt;orderBy(&#x27;nome&#x27;)
+                -&gt;paginate(20, InputHelper::uint(&#x27;pagina&#x27;, 1, &#x27;get&#x27;));
+
+            unset($resultado[&#x27;paginacao&#x27;]);
+
+            return ApiResponseHelper::success(&#x27;Produtos carregados.&#x27;, $resultado);
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e);
+        }
+    }
+
+    public function salvar()
+    {
+        try {
+            $id = InputHelper::uint(&#x27;id&#x27;, 0, &#x27;post&#x27;);
+            $dados = [
+                &#x27;nome&#x27; =&gt; InputHelper::string(&#x27;nome&#x27;, &#x27;&#x27;, &#x27;post&#x27;),
+                &#x27;preco&#x27; =&gt; InputHelper::decimal(&#x27;preco&#x27;, 0, &#x27;post&#x27;),
+                &#x27;estoque&#x27; =&gt; InputHelper::uint(&#x27;estoque&#x27;, 0, &#x27;post&#x27;),
+            ];
+
+            $produto = $id &gt; 0
+                ? $this-&gt;produtos()-&gt;update($id, $dados)
+                : $this-&gt;produtos()-&gt;create($dados);
+
+            return ApiResponseHelper::success(&#x27;Produto salvo.&#x27;, $produto);
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e);
+        }
+    }
+
+    public function excluir()
+    {
+        try {
+            $this-&gt;produtos()-&gt;delete(InputHelper::uint(&#x27;id&#x27;, 0, &#x27;post&#x27;));
+
+            return ApiResponseHelper::deleted();
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e);
+        }
+    }
+}</code></pre></div><div class="nota dica"><p>O método <code>produtos()</code> do controller centraliza a configuração da tabela. É um passo intermediário natural antes de um <a href="orm-base-models.html">model</a>: quando a configuração começar a se repetir em outros controllers, mova-a para uma classe.</p></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="db-transaction-helper.html"><small>← Anterior</small>DbTransactionHelper</a><a class="proxima" href="orm-base-configuracao.html"><small>Próxima →</small>OrmBase — configuração</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

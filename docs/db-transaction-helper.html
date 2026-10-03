@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DbTransactionHelper · Helpers de banco</title>
+<meta name="description" content="Referência do DbTransactionHelper: transações, savepoints, retry e auditoria.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › DbTransactionHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" class="ativo" aria-current="page" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>DbTransactionHelper</h1>
+<p class="lead">Transações "tudo ou nada" com savepoints, retry automático em deadlock e uma transação independente por conexão.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>Uma transação garante que um conjunto de gravações aconteça <strong>por inteiro ou não aconteça</strong>. O <code>DbTransactionHelper</code> cuida de tudo: abre a transação, confirma no final, desfaz se houver exceção, usa savepoints quando uma transação está dentro de outra e repete automaticamente em caso de deadlock.</p><div class="codigo"><pre><code data-lang="php">$pedido = DbTransactionHelper::run(function () use ($clienteId, $itens) {
+    $pedido = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;create([
+        &#x27;cliente_id&#x27; =&gt; $clienteId,
+        &#x27;status&#x27; =&gt; &#x27;aberto&#x27;,
+    ]);
+
+    foreach ($itens as $item) {
+        OrmTables::table(&#x27;#__loja_pedido_itens&#x27;)-&gt;create([
+            &#x27;pedido_id&#x27; =&gt; $pedido-&gt;id,
+            &#x27;produto_id&#x27; =&gt; $item[&#x27;produto_id&#x27;],
+            &#x27;quantidade&#x27; =&gt; $item[&#x27;quantidade&#x27;],
+        ]);
+    }
+
+    return $pedido;   // o retorno do callback é o retorno de run()
+});</code></pre></div><div class="tabela"><table><thead><tr><th>O callback…</th><th>Resultado</th></tr></thead><tbody><tr><td>termina normalmente</td><td><code>COMMIT</code>. <code>run()</code> devolve o que o callback devolveu.</td></tr><tr><td>lança qualquer exceção</td><td><code>ROLLBACK</code>. <code>run()</code> relança <strong>a mesma exceção</strong>, com o tipo original.</td></tr><tr><td>sofre deadlock / lock timeout</td><td><code>ROLLBACK</code>, espera um pouco e executa o callback de novo (até <code>retries</code> vezes).</td></tr></tbody></table></div><h2 id="run" data-titulo="run(): o jeito recomendado">run(): o jeito recomendado</h2><div class="metodo"><h3 id="run-metodo"><code>run()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::run(callable $callback, array $options = []): mixed</div><p>Executa <code>$callback</code> dentro de uma transação. O callback recebe dois parâmetros, ambos opcionais: o driver da conexão e o número da tentativa (1, 2, 3…).</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$callback</code></td><td>callable</td><td><code>function ($db, $tentativa) { … }</code></td></tr><tr><td><code>$options</code></td><td>array</td><td>Veja a tabela de opções abaixo.</td></tr></tbody></table></div><p class="retorno"><strong>Retorna:</strong> o valor devolvido pelo callback.</p><div class="codigo"><pre><code data-lang="php">$resultado = DbTransactionHelper::run(
+    function ($db, $tentativa) {
+        // $db: driver do Joomla da conexão usada
+        // $tentativa: 1 na primeira execução, 2 no primeiro retry…
+        return OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;increment(10, &#x27;estoque&#x27;, 5);
+    },
+    [
+        &#x27;retries&#x27; =&gt; 3,
+        &#x27;context&#x27; =&gt; [&#x27;produto_id&#x27; =&gt; 10, &#x27;usuario&#x27; =&gt; JFactory::getUser()-&gt;id],
+    ]
+);</code></pre></div><div class="tabela"><table><thead><tr><th>Opção</th><th>Tipo</th><th>Padrão</th><th>Descrição</th></tr></thead><tbody><tr><td><code>connection</code></td><td>string|object|null</td><td><code>null</code></td><td>Conexão onde a transação acontece: nome registrado no <a href="db-connection-helper.html">DbConnectionHelper</a>, driver ou <code>null</code> para a do Joomla.</td></tr><tr><td><code>retries</code></td><td>int (0–10)</td><td><code>3</code></td><td>Quantas vezes repetir em deadlock/lock timeout. <code>0</code> desliga. Com 3, são até 4 execuções.</td></tr><tr><td><code>context</code></td><td>array</td><td><code>[]</code></td><td>Dados extras gravados no log e na auditoria (ids, usuário…).</td></tr><tr><td><code>audit_event</code></td><td>string</td><td><code>''</code></td><td>Nome do evento de auditoria. Só tem efeito com <a href="#setAuditEnabled">auditoria ligada</a>.</td></tr></tbody></table></div></div><h3 id="retry">Quando o callback é repetido</h3><p>O callback só é executado de novo quando <strong>todas</strong> as condições abaixo valem:</p><ul><li>o erro é de concorrência: deadlock ou lock timeout no MySQL (códigos 1205 e 1213), deadlock ou falha de serialização no PostgreSQL (SQLSTATE <code>40P01</code> e <code>40001</code>);</li><li>esta é a transação <strong>mais externa</strong> da conexão. Transações aninhadas nunca repetem sozinhas: o erro sobe e a externa repete tudo, porque um deadlock desfaz a transação inteira;</li><li>ainda há tentativas: <code>tentativa &lt;= retries</code>.</li></ul><p>Entre as tentativas há uma espera que dobra a cada vez: 250 ms, 500 ms, 1 s… (máximo 5 s). Qualquer outro erro (duplicidade, SQL inválido, exceção sua) <strong>nunca</strong> é repetido.</p><div class="nota aviso"><strong class="rotulo">Efeitos colaterais</strong><p>Como o callback pode rodar mais de uma vez, ele deve conter <strong>apenas operações de banco</strong>. Envie e-mails, chame APIs ou grave arquivos <strong>depois</strong> do <code>run()</code>:</p><div class="codigo"><pre><code data-lang="php">$pedido = DbTransactionHelper::run(function () use ($dados) {
+    return PedidoService::gravar($dados);    // só banco
+});
+
+EmailHelper::enviarConfirmacao($pedido);      // depois do COMMIT</code></pre></div><p>Se o callback não puder ser repetido, passe <code>['retries' =&gt; 0]</code>.</p></div><h3 id="aninhadas">Transações aninhadas (savepoints)</h3><p>Chamar <code>run()</code> dentro de outro <code>run()</code> na <strong>mesma conexão</strong> cria um <em>savepoint</em>. Se o trecho interno falhar, só ele é desfeito, e a transação externa decide o que fazer.</p><div class="codigo"><pre><code data-lang="php">DbTransactionHelper::run(function () use ($lote) {          // BEGIN
+    foreach ($lote as $item) {
+        try {
+            DbTransactionHelper::run(function () use ($item) {  // SAVEPOINT
+                ImportadorService::gravar($item);
+            });                                                 // RELEASE SAVEPOINT
+        } catch (RuntimeException $e) {
+            // ROLLBACK TO SAVEPOINT: só este item foi desfeito
+            LogHelper::write(&#x27;warning&#x27;, &#x27;Item ignorado: &#x27; . $e-&gt;getMessage());
+        }
+    }
+});                                                             // COMMIT</code></pre></div><p>Isso permite compor funções: um service que usa <code>run()</code> funciona tanto sozinho (com transação própria) quanto chamado de dentro de outra transação (como savepoint), sem mudar nada.</p><div class="nota dica"><p>No PostgreSQL, depois de qualquer erro de SQL a transação fica bloqueada até um rollback. Capturar o erro só funciona se o trecho estiver num <code>run()</code> aninhado, como acima. Veja o <a href="guia-mysql-postgresql.html#transacao-abortada">guia de PostgreSQL</a>.</p></div><h3 id="por-conexao">Uma transação por conexão</h3><p>Cada conexão tem a sua própria transação. Um <code>run()</code> no ERP dentro de um <code>run()</code> no banco do Joomla abre uma transação <strong>independente</strong> no ERP, não um savepoint. As duas são confirmadas separadamente, e <strong>não existe garantia de "tudo ou nada" entre bancos diferentes</strong>. Veja o padrão recomendado no <a href="guia-multiplos-bancos.html#escrita-em-dois-bancos">guia de múltiplos bancos</a>.</p><h2 id="attempt" data-titulo="attempt() e transaction()">attempt() e transaction()</h2><div class="metodo"><h3 id="attempt-metodo"><code>attempt()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::attempt(callable $callback, array $options = []): array</div><p>Igual a <code>run()</code>, mas <strong>nunca lança exceção</strong>: devolve um array com o resultado. O erro técnico vai só para o log. Útil quando você quer responder sem <code>try/catch</code>.</p><p class="retorno"><strong>Retorna:</strong> array com as chaves abaixo.</p><div class="codigo"><pre><code data-lang="php">$resultado = DbTransactionHelper::attempt(function () use ($id) {
+    return OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;update($id, [&#x27;ativo&#x27; =&gt; 0]);
+});
+
+if (!$resultado[&#x27;success&#x27;]) {
+    return ApiResponseHelper::error($resultado[&#x27;mensagem&#x27;]);
+}
+
+return ApiResponseHelper::success(&#x27;Produto desativado.&#x27;, $resultado[&#x27;data&#x27;]);</code></pre></div><div class="tabela"><table><thead><tr><th>Chave</th><th>Sucesso</th><th>Falha</th></tr></thead><tbody><tr><td><code>success</code></td><td><code>true</code></td><td><code>false</code></td></tr><tr><td><code>status</code></td><td><code>'sucesso'</code></td><td><code>'erro'</code></td></tr><tr><td><code>mensagem</code></td><td><code>'Transação concluída com sucesso.'</code></td><td><code>'Não foi possível concluir a operação no banco de dados.'</code></td></tr><tr><td><code>data</code></td><td>retorno do callback</td><td><code>null</code></td></tr><tr><td><code>error</code></td><td><code>null</code></td><td><code>null</code> (o detalhe fica no log)</td></tr></tbody></table></div><div class="nota"><p>Com <code>attempt()</code> você perde o tipo da exceção. Para responder diferente a erros de regra de negócio (por exemplo, "estoque insuficiente") e erros técnicos, use <code>run()</code> com <code>try/catch</code>.</p></div></div><div class="metodo"><h3 id="transaction"><code>transaction()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::transaction(callable $callback, array $options = []): mixed</div><p>Sinônimo de <code>run()</code>, com o mesmo comportamento.</p></div><h2 id="manual" data-titulo="Controle manual: begin, commit, rollback">Controle manual: begin, commit, rollback</h2><p>Para os raros casos em que um callback não serve. Prefira <code>run()</code>: no controle manual, esquecer um <code>rollback()</code> deixa a transação aberta.</p><div class="nota aviso"><p>Estes três métodos <strong>não lançam exceção</strong>: devolvem <code>false</code> e registram o erro no log. Sempre confira o retorno.</p></div><div class="codigo"><pre><code data-lang="php">if (!DbTransactionHelper::begin()) {
+    throw new RuntimeException(&#x27;Não foi possível iniciar a transação.&#x27;);
+}
+
+try {
+    OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;update(10, [&#x27;preco&#x27; =&gt; 9.90]);
+    OrmTables::table(&#x27;#__loja_precos_historico&#x27;)-&gt;create([&#x27;produto_id&#x27; =&gt; 10, &#x27;preco&#x27; =&gt; 9.90]);
+
+    if (!DbTransactionHelper::commit()) {
+        throw new RuntimeException(&#x27;Falha ao confirmar.&#x27;);
+    }
+} catch (Throwable $e) {
+    DbTransactionHelper::rollback();
+    throw $e;
+}</code></pre></div><div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>Descrição</th></tr></thead><tbody><tr><td><code>begin($connection = null)</code></td><td><code>bool</code></td><td>Abre uma transação, ou um savepoint se já houver uma aberta.</td></tr><tr><td><code>commit($connection = null)</code></td><td><code>bool</code></td><td>Confirma o nível atual. <code>false</code> se não houver transação aberta.</td></tr><tr><td><code>rollback($connection = null)</code></td><td><code>bool</code></td><td>Desfaz o nível atual. Sem transação aberta, não faz nada e devolve <code>true</code>.</td></tr></tbody></table></div><p>O controle manual não repete em deadlock: retry só existe em <code>run()</code>/<code>attempt()</code>.</p><h2 id="estado" data-titulo="Consultando o estado">Consultando o estado</h2><div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>Descrição</th></tr></thead><tbody><tr><td><code>isActive($connection = null)</code></td><td><code>bool</code></td><td>Há transação aberta nesta conexão?</td></tr><tr><td><code>depth($connection = null)</code></td><td><code>int</code></td><td>0 = nenhuma; 1 = transação; 2 ou mais = savepoints.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">DbTransactionHelper::run(function () {
+    DbTransactionHelper::isActive();       // true
+    DbTransactionHelper::depth();          // 1
+    DbTransactionHelper::isActive(&#x27;erp&#x27;);  // false: outra conexão
+});</code></pre></div><h2 id="configuracao" data-titulo="Configuração global">Configuração global</h2><p>Valem para todas as chamadas seguintes no mesmo request. Configure no carregamento do componente.</p><div class="metodo"><h3 id="setMaxRetries"><code>setMaxRetries()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::setMaxRetries(int $maxRetries): void</div><p>Padrão de <code>retries</code> quando a opção não é passada. Aceita de 0 a 10; padrão 3. Fora dessa faixa, lança <code>InvalidArgumentException</code>.</p></div><div class="metodo"><h3 id="setRetryDelayMicroseconds"><code>setRetryDelayMicroseconds()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::setRetryDelayMicroseconds(int $microseconds): void</div><p>Espera antes do primeiro retry, em microssegundos (padrão <code>250000</code> = 250 ms). Dobra a cada tentativa, até 5 s.</p></div><div class="metodo"><h3 id="setRetryableErrorCodes"><code>setRetryableErrorCodes()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::setRetryableErrorCodes(array $codes): void</div><p><strong>Substitui</strong> a lista de códigos de erro que disparam retry. Padrão: <code>['1205', '1213', '40001', '40P01']</code>. Mensagens conhecidas de deadlock continuam sendo reconhecidas mesmo fora da lista.</p><div class="codigo"><pre><code data-lang="php">// Mantém os padrões e acrescenta 55P03 (lock_not_available, PostgreSQL)
+DbTransactionHelper::setRetryableErrorCodes([&#x27;1205&#x27;, &#x27;1213&#x27;, &#x27;40001&#x27;, &#x27;40P01&#x27;, &#x27;55P03&#x27;]);</code></pre></div></div><div class="metodo"><h3 id="setAuditEnabled"><code>setAuditEnabled()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::setAuditEnabled(bool $enabled): void</div><p>Liga a auditoria (padrão: desligada). Com ela ligada e a opção <code>audit_event</code> em <code>run()</code>, cada transação gera um registro via <code>AuditHelper::custom()</code>: o evento com <code>status =&gt; 'committed'</code> no sucesso, ou <code>evento.failed</code> com o erro em cada tentativa que falhar. Sem a classe <code>AuditHelper</code> carregada, não faz nada.</p><div class="codigo"><pre><code data-lang="php">DbTransactionHelper::setAuditEnabled(true);
+
+DbTransactionHelper::run(function () use ($id) {
+    OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;update($id, [&#x27;status&#x27; =&gt; &#x27;cancelado&#x27;]);
+}, [
+    &#x27;audit_event&#x27; =&gt; &#x27;pedido.cancelado&#x27;,
+    &#x27;context&#x27; =&gt; [&#x27;pedido_id&#x27; =&gt; $id],
+]);</code></pre></div></div><div class="metodo"><h3 id="setLogCategory"><code>setLogCategory() / setLogDirectory()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbTransactionHelper::setLogCategory(string $category): void
+DbTransactionHelper::setLogDirectory(string $directory): void</div><p>Categoria (padrão <code>'db_transaction'</code>) e diretório dos logs. O helper usa <code>LogHelper::write()</code> se essa classe estiver carregada; senão, <code>JLog::add()</code>. O diretório só é usado pelo <code>LogHelper</code>.</p></div><h3 id="o-que-e-logado">O que vai para o log</h3><div class="tabela"><table><thead><tr><th>Nível</th><th>Evento</th></tr></thead><tbody><tr><td>debug</td><td>Início, commit e savepoints; transação concluída.</td></tr><tr><td>warning</td><td>Rollback; falha que <em>vai</em> ser repetida.</td></tr><tr><td>error</td><td>Falha que não será repetida; falha em begin/commit/rollback manuais.</td></tr><tr><td>critical</td><td>O próprio rollback falhou depois de um erro.</td></tr></tbody></table></div><h2 id="cuidados" data-titulo="Cuidados">Cuidados</h2><ul><li><strong>MySQL:</strong> comandos de estrutura (<code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, <code>TRUNCATE</code>) fazem <em>commit implícito</em> e encerram a transação aberta. Não os use dentro de <code>run()</code>.</li><li><strong>MySQL:</strong> tabelas MyISAM ignoram transações. Use InnoDB.</li><li><strong>Transações curtas:</strong> linhas alteradas ficam travadas até o fim. Não faça chamadas lentas (HTTP, arquivos grandes) lá dentro.</li><li><strong>Exceções:</strong> qualquer <code>Throwable</code> causa rollback, inclusive <code>TypeError</code> e exceções suas.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="db-connection-helper.html"><small>← Anterior</small>DbConnectionHelper</a><a class="proxima" href="orm-tables.html"><small>Próxima →</small>OrmTables</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrmBase: montando consultas · Helpers de banco</title>
+<meta name="description" content="Construtor de consultas do OrmBase: select, where, grupos, when, joins, ordenação, limite e trava.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › OrmBase — consultas</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" class="ativo" aria-current="page" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>OrmBase: montando consultas</h1>
+<p class="lead">Filtros, grupos, joins, ordenação e travas: tudo o que define <em>quais</em> linhas a consulta vai buscar ou alterar.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>Os métodos desta página só <strong>montam</strong> a consulta: devolvem a própria instância (<code>$this</code>) para você encadear o próximo. Nada vai ao banco até um <a href="orm-base-leitura.html">método de leitura</a> (<code>get</code>, <code>first</code>, <code>count</code>…) ou de <a href="orm-base-escrita.html#updateWhere">escrita em massa</a>.</p><div class="codigo"><pre><code data-lang="php">$pedidos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;select([&#x27;id&#x27;, &#x27;cliente_id&#x27;, &#x27;total&#x27;, &#x27;status&#x27;])
+    -&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)
+    -&gt;where(&#x27;total&#x27;, &#x27;&gt;=&#x27;, 100)
+    -&gt;whereBetween(&#x27;created_at&#x27;, &#x27;2026-01-01 00:00:00&#x27;, &#x27;2026-12-31 23:59:59&#x27;)
+    -&gt;orderBy(&#x27;total&#x27;, &#x27;DESC&#x27;)
+    -&gt;limit(10)
+    -&gt;get();</code></pre></div><h2 id="select" data-titulo="Colunas: select()">Colunas: select()</h2><div class="metodo"><h3 id="select-metodo"><code>select()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;select(array $colunas): $this
+$orm-&gt;select(string $coluna1, string $coluna2, ...): $this</div><p>Define as colunas do <code>SELECT</code>. Sem <code>select()</code>, busca todas (<code>*</code>). Chamadas seguidas acumulam colunas.</p><div class="codigo"><pre><code data-lang="php">-&gt;select([&#x27;id&#x27;, &#x27;nome&#x27;, &#x27;preco&#x27;])
+-&gt;select(&#x27;id&#x27;, &#x27;nome&#x27;)                              // mesma coisa
+-&gt;select([&#x27;p.nome&#x27;, &#x27;COUNT(i.id) AS itens&#x27;])        // expressões e alias</code></pre></div><div class="nota aviso"><p>Os itens vão para o SQL <strong>sem escape</strong>, para permitir expressões. Nunca coloque dados do usuário aqui.</p></div></div><h2 id="where" data-titulo="Filtros: where()">Filtros: where()</h2><div class="metodo"><h3 id="where-metodo"><code>where() / orWhere()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;where(string $coluna, mixed $valor): $this
+$orm-&gt;where(string $coluna, string $operador, mixed $valor): $this
+$orm-&gt;orWhere(...mesmos parâmetros...): $this</div><p>Compara uma coluna com um valor. Com dois parâmetros, o operador é <code>=</code>. O valor é sempre escapado.</p><div class="codigo"><pre><code data-lang="php">-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)                 // status = &#x27;pago&#x27;
+-&gt;where(&#x27;total&#x27;, &#x27;&gt;&#x27;, 100)                // total &gt; &#x27;100&#x27;
+-&gt;where(&#x27;status&#x27;, &#x27;!=&#x27;, &#x27;cancelado&#x27;)      // status != &#x27;cancelado&#x27;
+-&gt;orWhere(&#x27;prioridade&#x27;, 1)                // OR prioridade = &#x27;1&#x27;
+
+-&gt;where(&#x27;ativo&#x27;, true)                    // ativo = &#x27;1&#x27;
+-&gt;where(&#x27;ativo&#x27;, false)                   // ativo = &#x27;0&#x27;
+
+-&gt;where(&#x27;deleted_at&#x27;, null)               // deleted_at IS NULL
+-&gt;where(&#x27;aprovado_em&#x27;, &#x27;!=&#x27;, null)        // aprovado_em IS NOT NULL</code></pre></div><div class="tabela"><table><thead><tr><th>Operadores aceitos</th><th>Com <code>null</code></th></tr></thead><tbody><tr><td><code>=</code> <code>!=</code> <code>&lt;&gt;</code> <code>&gt;</code> <code>&lt;</code> <code>&gt;=</code> <code>&lt;=</code></td><td><code>=</code> vira <code>IS NULL</code>; <code>!=</code> e <code>&lt;&gt;</code> viram <code>IS NOT NULL</code>; os outros lançam <code>InvalidArgumentException</code>.</td></tr></tbody></table></div><div class="nota"><p>Qualquer outro operador (<code>LIKE</code>, <code>IN</code>…) lança <code>InvalidArgumentException</code>. Use os métodos próprios: <a href="#whereLike"><code>whereLike</code></a>, <a href="#whereIn"><code>whereIn</code></a>.</p></div></div><h3 id="precedencia">AND, OR e parênteses</h3><p>Os filtros são unidos na ordem em que são chamados: <code>where</code> adiciona com <code>AND</code>, <code>orWhere</code> com <code>OR</code>. Como no SQL, <strong><code>AND</code> tem precedência sobre <code>OR</code></strong>:</p><div class="codigo"><pre><code data-lang="text">-&gt;where(&#x27;ativo&#x27;, 1)-&gt;where(&#x27;estoque&#x27;, 0)-&gt;orWhere(&#x27;preco&#x27;, 0)
+// ativo = 1 AND estoque = 0 OR preco = 0
+// = (ativo = 1 AND estoque = 0) OR preco = 0   ← inclui produtos INATIVOS com preço 0</code></pre></div><p>Para agrupar do jeito certo, use <a href="#whereGroup"><code>whereGroup()</code></a>. O conjunto dos seus filtros é sempre colocado entre parênteses, então o filtro automático de <code>softDeletes</code> nunca se mistura com os seus <code>OR</code>.</p><h2 id="outros-filtros" data-titulo="Outros filtros">Outros filtros</h2><div class="metodo"><h3 id="whereIn"><code>whereIn() / orWhereIn() / whereNotIn()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;whereIn(string $coluna, array $valores): $this
+$orm-&gt;orWhereIn(string $coluna, array $valores): $this
+$orm-&gt;whereNotIn(string $coluna, array $valores): $this</div><p>A coluna está (ou não está) na lista.</p><div class="codigo"><pre><code data-lang="php">-&gt;whereIn(&#x27;status&#x27;, [&#x27;aberto&#x27;, &#x27;pago&#x27;])     // status IN (&#x27;aberto&#x27;,&#x27;pago&#x27;)
+-&gt;whereNotIn(&#x27;id&#x27;, [3, 7])                  // id NOT IN (&#x27;3&#x27;,&#x27;7&#x27;)</code></pre></div><div class="nota"><p>Lista vazia é tratada com segurança: <code>whereIn('id', [])</code> não encontra nada (<code>1 = 0</code>) e <code>whereNotIn('id', [])</code> não filtra nada (<code>1 = 1</code>).</p></div></div><div class="metodo"><h3 id="whereNull"><code>whereNull() / orWhereNull() / whereNotNull()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;whereNull(string $coluna): $this
+$orm-&gt;orWhereNull(string $coluna): $this
+$orm-&gt;whereNotNull(string $coluna): $this</div><p>Coluna vazia (<code>IS NULL</code>) ou preenchida (<code>IS NOT NULL</code>).</p><div class="codigo"><pre><code data-lang="php">-&gt;whereNull(&#x27;pago_em&#x27;)            // ainda não pagos
+-&gt;whereNotNull(&#x27;enviado_em&#x27;)      // já enviados</code></pre></div></div><div class="metodo"><h3 id="whereBetween"><code>whereBetween()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;whereBetween(string $coluna, mixed $inicio, mixed $fim): $this</div><p>Valor entre dois limites, <strong>inclusive</strong>.</p><div class="codigo"><pre><code data-lang="php">-&gt;whereBetween(&#x27;total&#x27;, 100, 500)
+-&gt;whereBetween(&#x27;created_at&#x27;, &#x27;2026-10-01 00:00:00&#x27;, &#x27;2026-10-31 23:59:59&#x27;)</code></pre></div></div><div class="metodo"><h3 id="whereLike"><code>whereLike() / orWhereLike()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;whereLike(string $coluna, string $texto): $this
+$orm-&gt;orWhereLike(string $coluna, string $texto): $this</div><p>A coluna <strong>contém</strong> o texto (<code>LIKE '%texto%'</code>). Os caracteres <code>%</code> e <code>_</code> digitados pelo usuário são tratados como texto comum. No PostgreSQL vira <code>ILIKE</code>, sem diferenciar maiúsculas, como no MySQL.</p><div class="codigo"><pre><code data-lang="php">-&gt;whereLike(&#x27;nome&#x27;, &#x27;caneta&#x27;)       // nome LIKE &#x27;%caneta%&#x27;
+-&gt;whereLike(&#x27;codigo&#x27;, &#x27;50%&#x27;)        // procura literalmente &quot;50%&quot;</code></pre></div></div><div class="metodo"><h3 id="whereRaw"><code>whereRaw()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;whereRaw(string $sql): $this</div><p>Condição em SQL puro, para o que os outros métodos não cobrem. Entra com <code>AND</code>.</p><div class="codigo"><pre><code data-lang="php">-&gt;whereRaw(&#x27;estoque &lt; estoque_minimo&#x27;)
+-&gt;whereRaw(&#x27;YEAR(created_at) = 2026&#x27;)           // só MySQL</code></pre></div><div class="nota perigo"><p>O SQL vai <strong>como está</strong>. Nunca concatene dados do usuário. Ele também não é adaptado entre MySQL e PostgreSQL: funções como <code>YEAR()</code> só existem no MySQL.</p></div></div><h2 id="grupos" data-titulo="Grupos e filtros condicionais">Grupos e filtros condicionais</h2><div class="metodo"><h3 id="whereGroup"><code>whereGroup() / orWhereGroup()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;whereGroup(callable $callback): $this
+$orm-&gt;orWhereGroup(callable $callback): $this</div><p>Coloca as condições criadas dentro do callback <strong>entre parênteses</strong>. O callback recebe a própria instância. Grupos podem conter outros grupos.</p><div class="codigo"><pre><code data-lang="php">// ativo = 1 AND (estoque &lt;= 5 OR preco &lt;= 0)
+-&gt;where(&#x27;ativo&#x27;, 1)
+-&gt;whereGroup(function ($q) {
+    $q-&gt;where(&#x27;estoque&#x27;, &#x27;&lt;=&#x27;, 5)
+      -&gt;orWhere(&#x27;preco&#x27;, &#x27;&lt;=&#x27;, 0);
+})
+
+// status = &#x27;pago&#x27; OR (status = &#x27;aberto&#x27; AND total &gt; 1000)
+-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)
+-&gt;orWhereGroup(function ($q) {
+    $q-&gt;where(&#x27;status&#x27;, &#x27;aberto&#x27;)
+      -&gt;where(&#x27;total&#x27;, &#x27;&gt;&#x27;, 1000);
+})
+
+// Busca em várias colunas
+-&gt;whereGroup(function ($q) use ($termo) {
+    $q-&gt;whereLike(&#x27;nome&#x27;, $termo)
+      -&gt;orWhereLike(&#x27;email&#x27;, $termo)
+      -&gt;orWhereLike(&#x27;documento&#x27;, $termo);
+})</code></pre></div><div class="nota"><p>Dentro do callback, use apenas métodos <code>where*</code>. Um grupo vazio é ignorado.</p></div></div><div class="metodo"><h3 id="when"><code>when()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;when(mixed $valor, callable $callback, callable|null $senao = null): $this</div><p>Aplica <code>$callback</code> só se <code>$valor</code> for verdadeiro; senão, aplica <code>$senao</code> (se houver). O callback recebe a instância e o valor. Ideal para filtros opcionais vindos da tela, sem quebrar a cadeia com <code>if</code>.</p><div class="codigo"><pre><code data-lang="php">$resultado = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;when($filtros[&#x27;status&#x27;], function ($q, $status) {
+        $q-&gt;where(&#x27;status&#x27;, $status);
+    })
+    -&gt;when($filtros[&#x27;de&#x27;], function ($q, $de) {
+        $q-&gt;where(&#x27;created_at&#x27;, &#x27;&gt;=&#x27;, $de);
+    })
+    -&gt;when($filtros[&#x27;ordenar_por_total&#x27;], function ($q) {
+        $q-&gt;orderBy(&#x27;total&#x27;, &#x27;DESC&#x27;);
+    }, function ($q) {
+        $q-&gt;latest();                               // senão: mais recentes
+    })
+    -&gt;paginate(20, $pagina);</code></pre></div><div class="nota aviso"><p>"Verdadeiro" segue as regras do PHP: <code>0</code>, <code>'0'</code>, <code>''</code>, <code>null</code> e <code>[]</code> contam como falso. Para um filtro em que <code>0</code> é válido, use uma condição explícita: <code>when($valor !== '', …)</code>, e use <code>$valor</code> com <code>use</code> dentro do callback.</p></div></div><h2 id="joins" data-titulo="Joins">Joins</h2><div class="metodo"><h3 id="join"><code>join() e atalhos</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;join(string $tabela, string|null $condicao = null, string $tipo = &#x27;INNER&#x27;): $this
+$orm-&gt;innerJoin(string $tabela, string $condicao): $this
+$orm-&gt;leftJoin(string $tabela, string $condicao): $this
+$orm-&gt;leftOuterJoin(string $tabela, string $condicao): $this
+$orm-&gt;rightJoin(string $tabela, string $condicao): $this
+$orm-&gt;rightOuterJoin(string $tabela, string $condicao): $this
+$orm-&gt;crossJoin(string $tabela): $this</div><p>Junta outra tabela. Use alias nas duas tabelas e prefixe as colunas com o alias em <code>select</code>, <code>where</code> e <code>orderBy</code>.</p><div class="codigo"><pre><code data-lang="php">$itens = OrmTables::table(&#x27;#__loja_pedido_itens AS i&#x27;)
+    -&gt;select([&#x27;i.quantidade&#x27;, &#x27;i.preco_unitario&#x27;, &#x27;p.nome AS produto&#x27;])
+    -&gt;innerJoin(&#x27;#__loja_produtos AS p&#x27;, &#x27;p.id = i.produto_id&#x27;)
+    -&gt;leftJoin(&#x27;#__loja_categorias AS c&#x27;, &#x27;c.id = p.categoria_id&#x27;)
+    -&gt;where(&#x27;i.pedido_id&#x27;, $pedidoId)
+    -&gt;orderBy(&#x27;p.nome&#x27;)
+    -&gt;get();</code></pre></div><div class="tabela"><table><thead><tr><th>Regra</th><th>Detalhe</th></tr></thead><tbody><tr><td>Tipos aceitos</td><td><code>INNER</code>, <code>LEFT</code>, <code>LEFT OUTER</code>, <code>RIGHT</code>, <code>RIGHT OUTER</code>, <code>CROSS</code> (também com o sufixo <code>JOIN</code>).</td></tr><tr><td>Condição</td><td>Obrigatória, exceto em <code>CROSS</code>. É SQL cru: escreva só texto fixo.</td></tr><tr><td><code>FULL OUTER JOIN</code></td><td>Não suportado: lança <code>RuntimeException</code>.</td></tr><tr><td>Soft delete</td><td>O filtro <code>deleted_at IS NULL</code> usa a coluna sem prefixo. Se a outra tabela também tiver <code>deleted_at</code>, a coluna fica ambígua. Nesse caso, use uma instância sem <code>softDeletes</code> e filtre com <code>whereNull('i.deleted_at')</code>.</td></tr></tbody></table></div></div><h2 id="ordenacao" data-titulo="Ordenação, agrupamento e limite">Ordenação, agrupamento e limite</h2><div class="metodo"><h3 id="orderBy"><code>orderBy() / latest() / oldest()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;orderBy(string $coluna, string $direcao = &#x27;ASC&#x27;): $this
+$orm-&gt;latest(string|null $coluna = null): $this
+$orm-&gt;oldest(string|null $coluna = null): $this</div><p>Ordena o resultado. Qualquer direção diferente de <code>DESC</code> vira <code>ASC</code>. <code>latest()</code> e <code>oldest()</code> ordenam por <code>created_at</code> (ou pela coluna informada), decrescente e crescente.</p><div class="codigo"><pre><code data-lang="php">-&gt;orderBy(&#x27;nome&#x27;)                    // ASC
+-&gt;orderBy(&#x27;total&#x27;, &#x27;desc&#x27;)           // DESC
+-&gt;latest()                           // created_at DESC
+-&gt;latest(&#x27;pago_em&#x27;)                  // pago_em DESC</code></pre></div></div><div class="metodo"><h3 id="groupBy"><code>groupBy() / having()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;groupBy(string $coluna): $this
+$orm-&gt;having(string $sql): $this</div><p>Agrupamento. <code>having()</code> recebe SQL cru.</p><div class="codigo"><pre><code data-lang="php">$porStatus = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;select([&#x27;status&#x27;, &#x27;COUNT(*) AS quantidade&#x27;, &#x27;SUM(total) AS valor&#x27;])
+    -&gt;groupBy(&#x27;status&#x27;)
+    -&gt;having(&#x27;COUNT(*) &gt; 10&#x27;)
+    -&gt;get();</code></pre></div><div class="nota"><p>No PostgreSQL, toda coluna do <code>select</code> que não é agregada precisa estar no <code>groupBy</code>.</p></div></div><div class="metodo"><h3 id="limit"><code>limit()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;limit(int $quantidade, int $offset = 0): $this</div><p>Quantidade máxima de linhas e quantas pular. Para páginas, prefira <a href="orm-base-leitura.html#paginate"><code>paginate()</code></a>.</p><div class="codigo"><pre><code data-lang="php">-&gt;limit(10)          // 10 primeiros
+-&gt;limit(10, 20)      // 10 linhas, pulando 20 (3ª página de 10)</code></pre></div></div><h2 id="trava" data-titulo="Trava de linhas: lockForUpdate()">Trava de linhas: lockForUpdate()</h2><div class="metodo"><h3 id="lockForUpdate"><code>lockForUpdate()</code><span class="tag">encadeável</span></h3><div class="assinatura">$orm-&gt;lockForUpdate(): $this</div><p>Gera <code>SELECT … FOR UPDATE</code>: as linhas lidas ficam travadas até o fim da transação. Outra transação que tente travar ou alterar essas linhas <strong>espera</strong>. É o jeito correto de fazer "ler, conferir, gravar" sem que dois usuários ao mesmo tempo leiam o mesmo valor.</p><div class="codigo"><pre><code data-lang="php">DbTransactionHelper::run(function () use ($produtoId, $quantidade) {
+    $produtos = OrmTables::table(&#x27;#__loja_produtos&#x27;);
+
+    $produto = $produtos-&gt;where(&#x27;id&#x27;, $produtoId)-&gt;lockForUpdate()-&gt;first();
+
+    if ($produto === null || $produto-&gt;estoque &lt; $quantidade) {
+        throw new RuntimeException(&#x27;Estoque insuficiente.&#x27;);
+    }
+
+    // Ninguém altera este produto entre a leitura acima e esta linha
+    $produtos-&gt;decrement($produtoId, &#x27;estoque&#x27;, $quantidade);
+});</code></pre></div><div class="tabela"><table><thead><tr><th>Regra</th><th>Por quê</th></tr></thead><tbody><tr><td>Só dentro de uma transação <strong>da mesma conexão</strong>; fora dela, lança <code>LogicException</code>.</td><td>Sem transação, a trava seria liberada no mesmo instante.</td></tr><tr><td>Funciona com <code>get</code>, <code>first</code>, <code>value</code>, <code>pluck</code>, <code>exists</code>.</td><td></td></tr><tr><td>Com <code>count</code>, <code>sum</code>, <code>avg</code>, <code>min</code>, <code>max</code>, lança <code>LogicException</code>.</td><td>O PostgreSQL não aceita <code>FOR UPDATE</code> com agregação. Trave com <code>get()</code> e calcule no PHP.</td></tr><tr><td>Vale só para a próxima consulta.</td><td>É limpo junto com os outros filtros.</td></tr></tbody></table></div></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="orm-base-configuracao.html"><small>← Anterior</small>OrmBase — configuração</a><a class="proxima" href="orm-base-leitura.html"><small>Próxima →</small>OrmBase — leitura</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

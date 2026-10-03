@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia: múltiplos bancos · Helpers de banco</title>
+<meta name="description" content="Como consultar e gravar em mais de um banco de dados com os helpers, e o padrão seguro para gravar em dois bancos.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Guias › Múltiplos bancos</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" class="ativo" aria-current="page" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Guia: múltiplos bancos</h1>
+<p class="lead">Consulte outros bancos ao lado do Joomla, e entenda o que dá e o que não dá para garantir quando se grava em dois bancos.</p>
+<div id="nesta-pagina"></div>
+<h2 id="quando" data-titulo="Quando usar">Quando usar</h2><p>Quando o componente precisa ler ou gravar em outro banco além do Joomla: um ERP, um sistema legado, uma réplica só de leitura para relatórios. Os dois bancos podem ser de tipos diferentes (por exemplo, Joomla em MySQL e ERP em PostgreSQL), e tudo continua funcionando com a mesma API.</p><h2 id="configurar" data-titulo="Configurar em três passos">Configurar em três passos</h2><ol class="passos"><li><p><strong>Registre a conexão</strong> com um nome, uma vez, no carregamento do componente:</p><div class="codigo"><pre><code data-lang="php">if (!DbConnectionHelper::has(&#x27;erp&#x27;)) {
+    DbConnectionHelper::register(&#x27;erp&#x27;, [
+        &#x27;driver&#x27; =&gt; &#x27;pgsql&#x27;,
+        &#x27;host&#x27; =&gt; $params-&gt;get(&#x27;erp_host&#x27;),
+        &#x27;user&#x27; =&gt; $params-&gt;get(&#x27;erp_user&#x27;),
+        &#x27;password&#x27; =&gt; $params-&gt;get(&#x27;erp_password&#x27;),
+        &#x27;database&#x27; =&gt; &#x27;erp&#x27;,
+        &#x27;prefix&#x27; =&gt; &#x27;erp_&#x27;,
+    ]);
+}</code></pre></div></li><li><p><strong>Aponte as consultas</strong> para ela, de uma destas formas:</p><div class="codigo"><pre><code data-lang="php">// No model (todas as consultas do model vão para o ERP)
+class ClienteErpModel extends OrmBase
+{
+    protected $table = &#x27;#__clientes&#x27;;
+    protected $connection = &#x27;erp&#x27;;
+}
+
+// Pontual, sem model
+OrmTables::table(&#x27;#__clientes&#x27;, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;])-&gt;get();
+
+// Registrada por nome
+OrmTables::register(&#x27;clientesErp&#x27;, &#x27;#__clientes&#x27;, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;]);
+OrmTables::get(&#x27;clientesErp&#x27;)-&gt;get();</code></pre></div></li><li><p><strong>Use transações</strong> passando a conexão:</p><div class="codigo"><pre><code data-lang="php">DbTransactionHelper::run(function () {
+    ClienteErpModel::query()-&gt;update(5, [&#x27;ativo&#x27; =&gt; false]);
+}, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;]);</code></pre></div></li></ol><div class="nota dica"><p>O prefixo <code>#__</code> é trocado pelo <code>prefix</code> de cada conexão: <code>#__clientes</code> vira <code>jos_clientes</code> no Joomla e <code>erp_clientes</code> no ERP. Se as tabelas do outro banco não têm prefixo, use <code>'prefix' =&gt; ''</code> e escreva o nome completo.</p></div><h2 id="lendo-de-um-gravando-em-outro" data-titulo="Lendo de um banco e gravando em outro">Lendo de um banco e gravando em outro</h2><div class="codigo"><pre><code data-lang="php">// Copia clientes ativos do ERP para o Joomla
+DbTransactionHelper::run(function () {                       // transação no Joomla
+    ClienteErpModel::query()
+        -&gt;where(&#x27;ativo&#x27;, true)
+        -&gt;chunk(500, function ($lote) {                      // leitura no ERP
+            foreach ($lote as $clienteErp) {
+                OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;updateOrCreate(
+                    [&#x27;documento&#x27; =&gt; $clienteErp-&gt;documento],
+                    [&#x27;nome&#x27; =&gt; $clienteErp-&gt;nome]
+                );
+            }
+        });
+});</code></pre></div><p>A leitura no ERP não precisa de transação. A gravação no Joomla fica toda numa transação só.</p><h2 id="transacoes" data-titulo="Transações em várias conexões">Transações em várias conexões</h2><p>Cada conexão tem a sua própria transação, controlada separadamente:</p><div class="codigo"><pre><code data-lang="php">DbTransactionHelper::run(function () {
+    DbTransactionHelper::depth();          // 1: Joomla
+    DbTransactionHelper::depth(&#x27;erp&#x27;);     // 0: ERP sem transação
+
+    DbTransactionHelper::run(function () {
+        DbTransactionHelper::depth(&#x27;erp&#x27;); // 1: transação própria no ERP, não um savepoint
+    }, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;]);           // COMMIT no ERP aqui
+});                                        // COMMIT no Joomla aqui</code></pre></div><div class="nota"><p><code>lockForUpdate()</code> exige transação <strong>na conexão da consulta</strong>. Travar uma linha do ERP dentro de uma transação que só existe no Joomla lança <code>LogicException</code>.</p></div><h2 id="escrita-em-dois-bancos" data-titulo="Gravando nos dois bancos: o limite importante">Gravando nos dois bancos: o limite importante</h2><div class="nota perigo"><p><strong>Não existe transação que cubra dois bancos.</strong> Cada <code>run()</code> confirma só a sua conexão. Se um banco confirmar e o outro falhar depois, o primeiro <strong>não</strong> é desfeito.</p></div><p>Não há como eliminar esse risco, mas dá para reduzi-lo bastante com este padrão:</p><ol class="passos"><li><p><strong>Transação principal por fora.</strong> Ela faz primeiro tudo o que pode falhar por regra de negócio.</p></li><li><p><strong>O outro banco por último</strong>, numa transação própria aninhada. Se ele falhar, a exceção sobe e a principal é desfeita: nenhum dos dois muda.</p></li><li><p><strong>Gravação idempotente no outro banco.</strong> Sobra uma janela pequena: o outro banco confirmou e o <code>COMMIT</code> da principal falha logo depois. Se a gravação puder ser repetida sem duplicar (índice <code>UNIQUE</code> + <code>firstOrCreate</code>), basta executar a operação de novo.</p></li></ol><div class="codigo"><div class="titulo-codigo">Padrão recomendado</div><pre><code data-lang="php">public static function faturarPedido($pedidoId)
+{
+    return DbTransactionHelper::run(function () use ($pedidoId) {          // 1. Joomla
+        $pedido = PedidoModel::query()
+            -&gt;where(&#x27;id&#x27;, (int) $pedidoId)
+            -&gt;lockForUpdate()
+            -&gt;first();
+
+        if ($pedido === null || $pedido-&gt;status !== &#x27;aberto&#x27;) {
+            throw new RuntimeException(&#x27;Pedido inexistente ou já faturado.&#x27;);
+        }
+
+        PedidoModel::query()-&gt;update($pedido-&gt;id, [&#x27;status&#x27; =&gt; &#x27;pago&#x27;]);
+
+        return DbTransactionHelper::run(function () use ($pedido) {         // 2. ERP por último
+            return TituloErpModel::query()-&gt;firstOrCreate(                  // 3. idempotente
+                [&#x27;pedido_id&#x27; =&gt; $pedido-&gt;id],                               //    (pedido_id é UNIQUE)
+                [&#x27;valor&#x27; =&gt; $pedido-&gt;total]
+            );
+        }, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;]);
+    });
+}</code></pre></div><div class="tabela"><table><thead><tr><th>Se falhar…</th><th>Resultado</th></tr></thead><tbody><tr><td>a validação do pedido</td><td>Nada muda em nenhum banco.</td></tr><tr><td>a gravação no ERP</td><td>O ERP desfaz a sua parte; a exceção sobe e o Joomla também desfaz. Nada muda.</td></tr><tr><td>o COMMIT do Joomla, depois do ERP confirmar</td><td>O título existe no ERP, mas o pedido continua "aberto". Executar de novo só marca o pedido, porque o <code>firstOrCreate</code> não duplica o título.</td></tr></tbody></table></div><div class="nota dica"><p>Para fluxos críticos com muito volume, considere uma <em>fila</em>: grave no Joomla a intenção ("faturar pedido 10") na mesma transação do pedido, e um job separado aplica no ERP e marca como concluído.</p></div><h2 id="desempenho" data-titulo="Conexões e desempenho">Conexões e desempenho</h2><ul><li>A conexão só abre na primeira consulta. Registrar e não usar não custa nada.</li><li>A mesma conexão é reaproveitada no request inteiro.</li><li>Em scripts longos (CLI, jobs), feche conexões que não vai mais usar com <code>DbConnectionHelper::forget('erp')</code>.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="orm-base-models.html"><small>← Anterior</small>OrmBase — models</a><a class="proxima" href="guia-mysql-postgresql.html"><small>Próxima →</small>MySQL e PostgreSQL</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receitas · Helpers de banco</title>
+<meta name="description" content="Exemplos completos de uso dos helpers em situações comuns.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Guias › Receitas</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" class="ativo" aria-current="page" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Receitas</h1>
+<p class="lead">Soluções prontas para copiar e adaptar: filtros de tela, estoque, importação, exportação, filas, lixeira e mais.</p>
+<div id="nesta-pagina"></div>
+<p>Soluções completas para situações comuns. Todas usam <code>OrmTables</code> direto, para funcionar sem models. Com models, troque <code>OrmTables::table('#__x')</code> por <code>XModel::query()</code>.</p><h2 id="filtros-da-tela" data-titulo="Listagem com filtros, ordenação e paginação">Listagem com filtros, ordenação e paginação</h2><p>Filtros opcionais com <code>when()</code>, ordenação restrita a uma lista de colunas permitidas e paginação para API JSON.</p><div class="codigo"><div class="titulo-codigo">Controller</div><pre><code data-lang="php">public function listar()
+{
+    $filtros = [
+        &#x27;status&#x27; =&gt; InputHelper::cmd(&#x27;status&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
+        &#x27;busca&#x27; =&gt; InputHelper::string(&#x27;busca&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
+        &#x27;de&#x27; =&gt; InputHelper::string(&#x27;de&#x27;, &#x27;&#x27;, &#x27;get&#x27;),          // 2026-10-01
+        &#x27;ate&#x27; =&gt; InputHelper::string(&#x27;ate&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
+    ];
+
+    $ordenaveis = [&#x27;created_at&#x27;, &#x27;total&#x27;, &#x27;status&#x27;];
+    $ordenar = InputHelper::cmd(&#x27;ordenar&#x27;, &#x27;created_at&#x27;, &#x27;get&#x27;);
+    $ordenar = in_array($ordenar, $ordenaveis, true) ? $ordenar : &#x27;created_at&#x27;;
+    $direcao = InputHelper::cmd(&#x27;direcao&#x27;, &#x27;desc&#x27;, &#x27;get&#x27;);
+
+    try {
+        $resultado = OrmTables::table(&#x27;#__loja_pedidos&#x27;, [&#x27;casts&#x27; =&gt; [&#x27;total&#x27; =&gt; &#x27;float&#x27;]])
+            -&gt;when($filtros[&#x27;status&#x27;], function ($q, $status) {
+                $q-&gt;where(&#x27;status&#x27;, $status);
+            })
+            -&gt;when($filtros[&#x27;busca&#x27;], function ($q, $busca) {
+                $q-&gt;whereGroup(function ($g) use ($busca) {
+                    $g-&gt;whereLike(&#x27;cliente_nome&#x27;, $busca)
+                      -&gt;orWhereLike(&#x27;cliente_email&#x27;, $busca);
+                });
+            })
+            -&gt;when($filtros[&#x27;de&#x27;], function ($q, $de) {
+                $q-&gt;where(&#x27;created_at&#x27;, &#x27;&gt;=&#x27;, $de . &#x27; 00:00:00&#x27;);
+            })
+            -&gt;when($filtros[&#x27;ate&#x27;], function ($q, $ate) {
+                $q-&gt;where(&#x27;created_at&#x27;, &#x27;&lt;=&#x27;, $ate . &#x27; 23:59:59&#x27;);
+            })
+            -&gt;orderBy($ordenar, $direcao)
+            -&gt;paginate(20, InputHelper::uint(&#x27;pagina&#x27;, 1, &#x27;get&#x27;));
+
+        unset($resultado[&#x27;paginacao&#x27;]);
+
+        return ApiResponseHelper::success(&#x27;Pedidos carregados.&#x27;, $resultado);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div><h2 id="select-opcoes" data-titulo="Opções para um campo select">Opções para um campo select</h2><div class="codigo"><pre><code data-lang="php">$categorias = OrmTables::table(&#x27;#__loja_categorias&#x27;)
+    -&gt;where(&#x27;ativo&#x27;, 1)
+    -&gt;orderBy(&#x27;nome&#x27;)
+    -&gt;pluck(&#x27;nome&#x27;, &#x27;id&#x27;);           // [3 =&gt; &#x27;Escritório&#x27;, 5 =&gt; &#x27;Papelaria&#x27;]
+
+foreach ($categorias as $id =&gt; $nome) {
+    echo &#x27;&lt;option value=&quot;&#x27; . (int) $id . &#x27;&quot;&gt;&#x27; . htmlspecialchars($nome) . &#x27;&lt;/option&gt;&#x27;;
+}</code></pre></div><h2 id="dashboard" data-titulo="Números de um painel">Números de um painel</h2><p>Uma consulta base e várias derivadas com <code>clone</code>, sem repetir filtros.</p><div class="codigo"><pre><code data-lang="php">$doMes = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;whereBetween(&#x27;created_at&#x27;, date(&#x27;Y-m-01 00:00:00&#x27;), date(&#x27;Y-m-t 23:59:59&#x27;));
+
+$painel = [
+    &#x27;pedidos&#x27; =&gt; (clone $doMes)-&gt;count(),
+    &#x27;pagos&#x27; =&gt; (clone $doMes)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;count(),
+    &#x27;faturamento&#x27; =&gt; (float) (clone $doMes)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;sum(&#x27;total&#x27;),
+    &#x27;ticket_medio&#x27; =&gt; (float) (clone $doMes)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;avg(&#x27;total&#x27;),
+    &#x27;cancelados&#x27; =&gt; (clone $doMes)-&gt;where(&#x27;status&#x27;, &#x27;cancelado&#x27;)-&gt;count(),
+];</code></pre></div><h2 id="relatorio-agrupado" data-titulo="Relatório agrupado">Relatório agrupado</h2><div class="codigo"><pre><code data-lang="php">$porStatus = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;select([&#x27;status&#x27;, &#x27;COUNT(*) AS quantidade&#x27;, &#x27;SUM(total) AS valor&#x27;])
+    -&gt;where(&#x27;created_at&#x27;, &#x27;&gt;=&#x27;, &#x27;2026-01-01 00:00:00&#x27;)
+    -&gt;groupBy(&#x27;status&#x27;)
+    -&gt;orderBy(&#x27;status&#x27;)
+    -&gt;get();
+
+foreach ($porStatus as $linha) {
+    echo $linha-&gt;status . &#x27;: &#x27; . $linha-&gt;quantidade . &#x27; pedidos, R$ &#x27; . number_format($linha-&gt;valor, 2, &#x27;,&#x27;, &#x27;.&#x27;) . PHP_EOL;
+}</code></pre></div><h2 id="estoque" data-titulo="Baixa de estoque sem vender o que não tem">Baixa de estoque sem vender o que não tem</h2><p>Dois clientes compram a última unidade ao mesmo tempo. Com <code>lockForUpdate()</code>, o segundo espera o primeiro terminar e então já vê o estoque zerado.</p><div class="codigo"><div class="titulo-codigo">Service</div><pre><code data-lang="php">public static function baixarEstoque($produtoId, $quantidade)
+{
+    return DbTransactionHelper::run(function () use ($produtoId, $quantidade) {
+        $produtos = OrmTables::table(&#x27;#__loja_produtos&#x27;, [&#x27;casts&#x27; =&gt; [&#x27;estoque&#x27; =&gt; &#x27;int&#x27;]]);
+
+        $produto = $produtos-&gt;where(&#x27;id&#x27;, (int) $produtoId)-&gt;lockForUpdate()-&gt;first();
+
+        if ($produto === null) {
+            throw new RuntimeException(&#x27;Produto não encontrado.&#x27;, 404);
+        }
+
+        if ($produto-&gt;estoque &lt; $quantidade) {
+            throw new DomainException(&#x27;Estoque insuficiente para &#x27; . $produto-&gt;nome . &#x27;.&#x27;);
+        }
+
+        return $produtos-&gt;decrement($produto-&gt;id, &#x27;estoque&#x27;, $quantidade);
+    });
+}</code></pre></div><div class="nota dica"><p><code>DomainException</code> é uma exceção de regra de negócio. Como <code>run()</code> relança o tipo original, o controller pode responder com a mensagem dela, e responder com uma mensagem genérica para erros técnicos.</p></div><h2 id="pedido-com-itens" data-titulo="Pedido com itens: tudo ou nada">Pedido com itens: tudo ou nada</h2><div class="codigo"><div class="titulo-codigo">Service (usa a receita anterior)</div><pre><code data-lang="php">public static function criarPedido($clienteId, array $itens)
+{
+    return DbTransactionHelper::run(function () use ($clienteId, $itens) {
+        $pedido = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;create([
+            &#x27;cliente_id&#x27; =&gt; (int) $clienteId,
+            &#x27;status&#x27; =&gt; &#x27;aberto&#x27;,
+            &#x27;total&#x27; =&gt; 0,
+        ]);
+
+        $total = 0.0;
+        $linhas = [];
+
+        foreach ($itens as $item) {
+            $produto = self::baixarEstoque($item[&#x27;produto_id&#x27;], (int) $item[&#x27;quantidade&#x27;]);  // savepoint
+
+            $linhas[] = [
+                &#x27;pedido_id&#x27; =&gt; $pedido-&gt;id,
+                &#x27;produto_id&#x27; =&gt; $produto-&gt;id,
+                &#x27;quantidade&#x27; =&gt; (int) $item[&#x27;quantidade&#x27;],
+                &#x27;preco_unitario&#x27; =&gt; $produto-&gt;preco,
+            ];
+
+            $total += $produto-&gt;preco * $item[&#x27;quantidade&#x27;];
+        }
+
+        OrmTables::table(&#x27;#__loja_pedido_itens&#x27;, [&#x27;timestamps&#x27; =&gt; false])-&gt;createMany($linhas);
+
+        return OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;update($pedido-&gt;id, [&#x27;total&#x27; =&gt; round($total, 2)]);
+    });
+}</code></pre></div><p><code>baixarEstoque()</code> tem o seu próprio <code>run()</code>. Chamado aqui dentro, ele vira um savepoint: se faltar estoque no terceiro item, o pedido inteiro é desfeito, inclusive a baixa dos dois primeiros.</p><h2 id="importacao-com-duplicados" data-titulo="Importação que ignora duplicados">Importação que ignora duplicados</h2><p>Cada linha num <code>run()</code> aninhado: um erro desfaz só aquela linha. Funciona também no PostgreSQL, onde um erro sem savepoint bloquearia o resto da transação.</p><div class="codigo"><div class="titulo-codigo">Service</div><pre><code data-lang="php">public static function importar(array $linhas)
+{
+    $relatorio = [];
+
+    DbTransactionHelper::run(function () use ($linhas, &amp;$relatorio) {
+        // Zera aqui: em deadlock, o callback roda de novo do começo
+        $relatorio = [&#x27;importados&#x27; =&gt; 0, &#x27;ignorados&#x27; =&gt; []];
+
+        foreach ($linhas as $numero =&gt; $linha) {
+            try {
+                DbTransactionHelper::run(function () use ($linha) {
+                    OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;create([
+                        &#x27;documento&#x27; =&gt; $linha[&#x27;documento&#x27;],
+                        &#x27;nome&#x27; =&gt; $linha[&#x27;nome&#x27;],
+                        &#x27;email&#x27; =&gt; $linha[&#x27;email&#x27;],
+                    ]);
+                }, [&#x27;retries&#x27; =&gt; 0]);
+
+                $relatorio[&#x27;importados&#x27;]++;
+            } catch (RuntimeException $e) {
+                if (!self::ehDuplicidade($e)) {
+                    throw $e;                 // erro inesperado: desfaz tudo
+                }
+
+                $relatorio[&#x27;ignorados&#x27;][] = $numero + 1;
+            }
+        }
+    });
+
+    return $relatorio;
+}
+
+// MySQL: &quot;Duplicate entry&quot; (1062) / PostgreSQL: &quot;duplicate key&quot; (23505)
+protected static function ehDuplicidade(Throwable $erro)
+{
+    for ($atual = $erro; $atual !== null; $atual = $atual-&gt;getPrevious()) {
+        $mensagem = strtolower($atual-&gt;getMessage());
+
+        if (strpos($mensagem, &#x27;duplicate&#x27;) !== false || strpos($mensagem, &#x27;23505&#x27;) !== false) {
+            return true;
+        }
+    }
+
+    return false;
+}</code></pre></div><div class="nota"><p>O <code>$relatorio</code> é zerado <em>dentro</em> do callback porque, em caso de deadlock, <code>run()</code> executa o callback de novo desde o início. Zerado fora, ele somaria as contagens da tentativa que foi desfeita.</p></div><h2 id="exportar-csv" data-titulo="Exportar milhares de registros para CSV">Exportar milhares de registros para CSV</h2><div class="codigo"><pre><code data-lang="php">public static function exportarClientes($caminho)
+{
+    $arquivo = fopen($caminho, &#x27;w&#x27;);
+
+    try {
+        fputcsv($arquivo, [&#x27;id&#x27;, &#x27;nome&#x27;, &#x27;email&#x27;, &#x27;cadastro&#x27;], &#x27;;&#x27;, &#x27;&quot;&#x27;, &#x27;\\&#x27;);
+
+        OrmTables::table(&#x27;#__loja_clientes&#x27;)
+            -&gt;select([&#x27;id&#x27;, &#x27;nome&#x27;, &#x27;email&#x27;, &#x27;created_at&#x27;])
+            -&gt;where(&#x27;ativo&#x27;, 1)
+            -&gt;chunk(1000, function ($lote) use ($arquivo) {
+                foreach ($lote as $cliente) {
+                    fputcsv($arquivo, [$cliente-&gt;id, $cliente-&gt;nome, $cliente-&gt;email, $cliente-&gt;created_at], &#x27;;&#x27;, &#x27;&quot;&#x27;, &#x27;\\&#x27;);
+                }
+            });
+    } finally {
+        fclose($arquivo);
+    }
+}</code></pre></div><h2 id="fila-em-lotes" data-titulo="Processar uma fila em lotes">Processar uma fila em lotes</h2><p>Quando o processamento <strong>muda a coluna do filtro</strong> (de <code>pendente</code> para <code>enviado</code>), <code>chunk()</code> pularia registros, porque avança por <code>OFFSET</code>. Avance pelo id:</p><div class="codigo"><pre><code data-lang="php">public static function enviarPendentes()
+{
+    $ultimoId = 0;
+    $enviados = 0;
+
+    do {
+        $lote = OrmTables::table(&#x27;#__loja_notificacoes&#x27;)
+            -&gt;where(&#x27;status&#x27;, &#x27;pendente&#x27;)
+            -&gt;where(&#x27;id&#x27;, &#x27;&gt;&#x27;, $ultimoId)
+            -&gt;orderBy(&#x27;id&#x27;)
+            -&gt;limit(100)
+            -&gt;get();
+
+        foreach ($lote as $notificacao) {
+            $ultimoId = $notificacao-&gt;id;
+            $ok = NotificacaoService::enviar($notificacao);
+
+            OrmTables::table(&#x27;#__loja_notificacoes&#x27;)-&gt;update($notificacao-&gt;id, [
+                &#x27;status&#x27; =&gt; $ok ? &#x27;enviado&#x27; : &#x27;erro&#x27;,
+            ]);
+
+            $enviados += $ok ? 1 : 0;
+        }
+    } while (count($lote) === 100);
+
+    return $enviados;
+}</code></pre></div><h2 id="lixeira" data-titulo="Lixeira com soft delete">Lixeira com soft delete</h2><div class="codigo"><pre><code data-lang="php">// Instância normal: esconde os excluídos
+function pedidos()
+{
+    return OrmTables::table(&#x27;#__loja_pedidos&#x27;, [&#x27;softDeletes&#x27; =&gt; true]);
+}
+
+// Instância da lixeira: sem softDeletes, para enxergar os excluídos
+function lixeira()
+{
+    return OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;whereNotNull(&#x27;deleted_at&#x27;);
+}
+
+pedidos()-&gt;delete(10);                               // vai para a lixeira
+
+$naLixeira = lixeira()-&gt;latest(&#x27;deleted_at&#x27;)-&gt;get(); // lista a lixeira
+pedidos()-&gt;restore(10);                              // tira da lixeira
+
+// Esvazia a lixeira: só os excluídos há mais de 30 dias
+$removidos = lixeira()
+    -&gt;where(&#x27;deleted_at&#x27;, &#x27;&lt;&#x27;, date(&#x27;Y-m-d H:i:s&#x27;, strtotime(&#x27;-30 days&#x27;)))
+    -&gt;deleteWhere();                                 // DELETE de verdade</code></pre></div><h2 id="contador" data-titulo="Contador de visualizações">Contador de visualizações</h2><div class="codigo"><pre><code data-lang="php">// Atômico: dois acessos simultâneos nunca perdem uma contagem
+OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;increment($produtoId, &#x27;visualizacoes&#x27;);   // não altera updated_at</code></pre></div><h2 id="outro-banco" data-titulo="Consultar outro banco">Consultar outro banco</h2><div class="codigo"><pre><code data-lang="php">// Uma vez, no bootstrap
+DbConnectionHelper::register(&#x27;erp&#x27;, $configErp);
+
+// Em qualquer lugar
+$saldo = OrmTables::table(&#x27;#__titulos&#x27;, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;])
+    -&gt;where(&#x27;cliente_id&#x27;, $clienteId)
+    -&gt;whereNull(&#x27;pago_em&#x27;)
+    -&gt;sum(&#x27;valor&#x27;);</code></pre></div><p>Mais detalhes no <a href="guia-multiplos-bancos.html">guia de múltiplos bancos</a>.</p>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="guia-mysql-postgresql.html"><small>← Anterior</small>MySQL e PostgreSQL</a><a class="proxima" href="referencia-rapida.html"><small>Próxima →</small>Referência rápida</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

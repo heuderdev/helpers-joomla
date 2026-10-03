@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia: MySQL e PostgreSQL · Helpers de banco</title>
+<meta name="description" content="Diferenças entre MySQL e PostgreSQL nos helpers: o que é automático e o que exige cuidado.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Guias › MySQL e PostgreSQL</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" class="ativo" aria-current="page" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Guia: MySQL e PostgreSQL</h1>
+<p class="lead">O que o ORM adapta sozinho entre MySQL e PostgreSQL, e as poucas regras que você precisa conhecer.</p>
+<div id="nesta-pagina"></div>
+<h2 id="resumo" data-titulo="Resumo">Resumo</h2><p>O mesmo código funciona nos dois bancos. O ORM detecta o banco de cada conexão (<code>DbConnectionHelper::serverType()</code>) e adapta o SQL que <strong>ele</strong> gera. O que você escreve como SQL cru (<code>whereRaw</code>, <code>having</code>, <code>select</code>, condições de <code>join</code>) não é adaptado, e é aí que moram as diferenças.</p><h2 id="automatico" data-titulo="O que o ORM adapta sozinho">O que o ORM adapta sozinho</h2><div class="tabela"><table><thead><tr><th>Situação</th><th>MySQL / MariaDB</th><th>PostgreSQL</th></tr></thead><tbody><tr><td>Aspas de identificador</td><td><code>`coluna`</code></td><td><code>"coluna"</code></td></tr><tr><td><code>whereLike()</code></td><td><code>LIKE</code></td><td><code>ILIKE</code>, para ignorar maiúsculas como o MySQL</td></tr><tr><td><code>create()</code>: id gerado</td><td>auto incremento</td><td><code>INSERT … RETURNING id</code> (funciona com <code>SERIAL</code> e <code>IDENTITY</code>)</td></tr><tr><td><code>lockForUpdate()</code> com limite</td><td><code>LIMIT n OFFSET m FOR UPDATE</code></td><td>igual</td></tr><tr><td>Cast <code>bool</code> ao ler</td><td><code>"1"</code>/<code>"0"</code> → <code>true</code>/<code>false</code></td><td><code>"t"</code>/<code>"f"</code> → <code>true</code>/<code>false</code></td></tr><tr><td><code>true</code>/<code>false</code> em filtros e gravação</td><td><code>'1'</code>/<code>'0'</code></td><td><code>'1'</code>/<code>'0'</code> (aceitos em colunas <code>BOOLEAN</code>)</td></tr><tr><td><code>truncate()</code></td><td><code>TRUNCATE TABLE</code> (reinicia o auto incremento)</td><td><code>TRUNCATE TABLE … RESTART IDENTITY</code></td></tr><tr><td>Retry de deadlock</td><td>erros 1205 e 1213</td><td>SQLSTATE <code>40P01</code> e <code>40001</code></td></tr></tbody></table></div><h2 id="transacao-abortada" data-titulo="A regra mais importante: transação abortada">A regra mais importante: transação abortada</h2><div class="nota aviso"><p>No PostgreSQL, depois de <strong>qualquer</strong> erro de SQL dentro de uma transação, ela fica <em>abortada</em>: todo comando seguinte falha com "current transaction is aborted" até um rollback. No MySQL, só o comando que falhou é desfeito e a transação continua.</p></div><p>Isso só importa quando você <strong>captura</strong> um erro de banco e quer continuar na mesma transação. A solução, que funciona igual nos dois bancos, é colocar o trecho que pode falhar num <code>run()</code> aninhado. Ele vira um <em>savepoint</em>, e o rollback do savepoint limpa o estado abortado.</p><div class="codigo"><pre><code data-lang="php">// ERRADO no PostgreSQL: depois do primeiro duplicado, todos os seguintes falham
+DbTransactionHelper::run(function () use ($clientes) {
+    foreach ($clientes as $cliente) {
+        try {
+            OrmTables::table(&#x27;#__clientes&#x27;)-&gt;create($cliente);
+        } catch (RuntimeException $e) {
+            // duplicado: ignora... mas a transação ficou abortada
+        }
+    }
+});
+
+// CERTO nos dois bancos
+DbTransactionHelper::run(function () use ($clientes) {
+    foreach ($clientes as $cliente) {
+        try {
+            DbTransactionHelper::run(function () use ($cliente) {   // savepoint
+                OrmTables::table(&#x27;#__clientes&#x27;)-&gt;create($cliente);
+            }, [&#x27;retries&#x27; =&gt; 0]);
+        } catch (RuntimeException $e) {
+            // só este cliente foi desfeito; a transação continua válida
+        }
+    }
+});</code></pre></div><h2 id="cuidados" data-titulo="O que você precisa cuidar">O que você precisa cuidar</h2><div class="tabela"><table><thead><tr><th>Tema</th><th>Cuidado</th><th>Como fazer</th></tr></thead><tbody><tr><td>Nomes de tabela e coluna</td><td>O ORM coloca aspas nos nomes. No PostgreSQL, com aspas, <code>"Nome"</code> e <code>"nome"</code> são colunas diferentes.</td><td>Crie tabelas e colunas em <strong>minúsculas</strong> (<code>snake_case</code>).</td></tr><tr><td>SQL cru com crases</td><td>Crases (<code>`coluna`</code>) são só do MySQL.</td><td>Em <code>whereRaw</code>/<code>select</code>, escreva o nome sem aspas ou use <code>$orm-&gt;db()-&gt;quoteName('coluna')</code>.</td></tr><tr><td>Texto entre aspas duplas</td><td>No PostgreSQL, <code>"texto"</code> é nome de coluna, não texto.</td><td>Use aspas simples para textos em SQL cru.</td></tr><tr><td>Funções</td><td><code>NOW()</code> existe nos dois; <code>YEAR()</code>, <code>IFNULL()</code>, <code>DATE_FORMAT()</code> só no MySQL.</td><td>Prefira filtros do ORM (<code>whereBetween</code> com datas) ou <code>COALESCE()</code>, que existe nos dois.</td></tr><tr><td><code>GROUP BY</code></td><td>O PostgreSQL exige que toda coluna não agregada do <code>select</code> esteja no <code>groupBy</code>.</td><td>Liste todas no <code>groupBy()</code>.</td></tr><tr><td><code>whereLike</code> em número/data</td><td>O PostgreSQL não aplica <code>ILIKE</code> em colunas numéricas ou de data.</td><td>Use <code>where</code>/<code>whereBetween</code> nessas colunas.</td></tr><tr><td>Comparação de tipos</td><td>O PostgreSQL é estrito: <code>where('id', 'abc')</code> numa coluna inteira dá erro (no MySQL, vira 0).</td><td>Converta valores da tela (<code>InputHelper::uint</code>, <code>(int)</code>).</td></tr><tr><td><code>lockForUpdate</code> + agregação</td><td>O PostgreSQL não aceita <code>FOR UPDATE</code> com <code>COUNT</code>/<code>SUM</code>.</td><td>O ORM recusa nos dois bancos; trave com <code>get()</code>.</td></tr><tr><td>DDL em transação</td><td>No MySQL, <code>CREATE</code>/<code>ALTER</code>/<code>TRUNCATE</code> fazem commit implícito; no PostgreSQL, não.</td><td>Não misture DDL com gravações na mesma transação.</td></tr></tbody></table></div><h2 id="ddl" data-titulo="Criando tabelas nos dois bancos">Criando tabelas nos dois bancos</h2><div class="tabela"><table><thead><tr><th>Conceito</th><th>MySQL</th><th>PostgreSQL</th></tr></thead><tbody><tr><td>Id automático</td><td><code>INT AUTO_INCREMENT PRIMARY KEY</code></td><td><code>INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY</code> (ou <code>SERIAL</code>)</td></tr><tr><td>Booleano</td><td><code>TINYINT(1)</code></td><td><code>BOOLEAN</code></td></tr><tr><td>Data e hora</td><td><code>DATETIME</code></td><td><code>TIMESTAMP</code></td></tr><tr><td>Decimal</td><td><code>DECIMAL(10,2)</code></td><td><code>NUMERIC(10,2)</code></td></tr><tr><td>JSON</td><td><code>JSON</code></td><td><code>JSONB</code> (ou <code>JSON</code>)</td></tr><tr><td>Motor</td><td><code>ENGINE=InnoDB</code> (obrigatório para transações)</td><td>—</td></tr></tbody></table></div><div class="codigo"><div class="titulo-codigo">MySQL</div><pre><code data-lang="sql">CREATE TABLE `#__loja_pedidos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `cliente_id` INT NOT NULL,
+  `status` VARCHAR(20) NOT NULL,
+  `total` DECIMAL(10,2) NOT NULL DEFAULT 0,
+  `pago` TINYINT(1) NOT NULL DEFAULT 0,
+  `metadados` JSON NULL,
+  `created_at` DATETIME NULL,
+  `updated_at` DATETIME NULL,
+  `deleted_at` DATETIME NULL
+) ENGINE=InnoDB;</code></pre></div><div class="codigo"><div class="titulo-codigo">PostgreSQL</div><pre><code data-lang="sql">CREATE TABLE jos_loja_pedidos (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  cliente_id INTEGER NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  total NUMERIC(10,2) NOT NULL DEFAULT 0,
+  pago BOOLEAN NOT NULL DEFAULT FALSE,
+  metadados JSONB NULL,
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
+  deleted_at TIMESTAMP NULL
+);</code></pre></div><div class="nota"><p>Com <code>GENERATED ALWAYS AS IDENTITY</code>, o PostgreSQL recusa um id informado por você. Se precisar gravar ids explícitos (migrações, importações), use <code>GENERATED BY DEFAULT AS IDENTITY</code>.</p></div><h2 id="codigo-especifico" data-titulo="Escrevendo código específico de um banco">Escrevendo código específico de um banco</h2><p>Quando for inevitável, pergunte à conexão qual é o banco:</p><div class="codigo"><pre><code data-lang="php">$orm = OrmTables::table(&#x27;#__loja_pedidos&#x27;, [&#x27;connection&#x27; =&gt; $conexao]);
+
+$mesExpr = $orm-&gt;serverType() === DbConnectionHelper::POSTGRESQL
+    ? &quot;to_char(created_at, &#x27;YYYY-MM&#x27;)&quot;
+    : &quot;DATE_FORMAT(created_at, &#x27;%Y-%m&#x27;)&quot;;
+
+$porMes = $orm
+    -&gt;select([$mesExpr . &#x27; AS mes&#x27;, &#x27;SUM(total) AS total&#x27;])
+    -&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)
+    -&gt;groupBy(&#x27;mes&#x27;)
+    -&gt;get();</code></pre></div><div class="nota"><p><code>groupBy()</code> coloca aspas no nome (<code>"mes"</code>), o que funciona porque <code>mes</code> é um alias do <code>select</code>. No PostgreSQL, agrupar por alias é permitido no <code>GROUP BY</code>.</p></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="guia-multiplos-bancos.html"><small>← Anterior</small>Múltiplos bancos</a><a class="proxima" href="receitas.html"><small>Próxima →</small>Receitas</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

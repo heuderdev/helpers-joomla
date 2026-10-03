@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DbConnectionHelper · Helpers de banco</title>
+<meta name="description" content="Referência do DbConnectionHelper: registro de conexões e drivers.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › DbConnectionHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" class="ativo" aria-current="page" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>DbConnectionHelper</h1>
+<p class="lead">Registro de conexões de banco. Use o banco do Joomla por padrão e outros bancos por nome.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>O <code>DbConnectionHelper</code> decide <strong>qual banco</strong> cada consulta usa. Sem configuração, é sempre a conexão do Joomla. Para consultar outro banco (um ERP, um sistema legado, um banco de relatórios), registre a conexão uma vez com um nome e use esse nome onde precisar.</p><div class="codigo"><pre><code data-lang="php">// 1. Registrar (uma vez, no carregamento do componente)
+DbConnectionHelper::register(&#x27;erp&#x27;, [
+    &#x27;driver&#x27; =&gt; &#x27;pgsql&#x27;,
+    &#x27;host&#x27; =&gt; &#x27;erp.interno&#x27;,
+    &#x27;user&#x27; =&gt; &#x27;loja&#x27;,
+    &#x27;password&#x27; =&gt; &#x27;segredo&#x27;,
+    &#x27;database&#x27; =&gt; &#x27;erp&#x27;,
+    &#x27;prefix&#x27; =&gt; &#x27;erp_&#x27;,
+]);
+
+// 2. Usar
+$clientes = OrmTables::table(&#x27;#__clientes&#x27;, [&#x27;connection&#x27; =&gt; &#x27;erp&#x27;])-&gt;get();</code></pre></div><p>Os outros helpers aceitam a opção <code>connection</code>, sempre com o mesmo significado:</p><div class="tabela"><table><thead><tr><th>Valor de <code>connection</code></th><th>Conexão usada</th></tr></thead><tbody><tr><td>ausente ou <code>null</code></td><td>A do Joomla (<code>JFactory::getDbo()</code>)</td></tr><tr><td><code>'default'</code></td><td>A do Joomla</td></tr><tr><td>nome registrado, ex.: <code>'erp'</code></td><td>A conexão registrada com esse nome</td></tr><tr><td>um objeto driver</td><td>Esse driver, sem precisar registrar</td></tr></tbody></table></div><h2 id="onde-registrar" data-titulo="Onde registrar">Onde registrar</h2><p>Registre num ponto que roda antes de qualquer consulta: o arquivo de entrada do componente, um helper de bootstrap ou o <code>display()</code> do controller principal. Registrar <strong>não abre a conexão</strong>: ela só conecta no primeiro uso, então registrar sem usar não custa nada.</p><div class="codigo"><div class="titulo-codigo">Lendo os dados da configuração do componente</div><pre><code data-lang="php">// components/com_loja/loja.php (ou o bootstrap do seu componente)
+require_once JPATH_COMPONENT . &#x27;/helpers/OrmTables.php&#x27;;
+
+$params = JComponentHelper::getParams(&#x27;com_loja&#x27;);
+
+if (!DbConnectionHelper::has(&#x27;erp&#x27;)) {
+    DbConnectionHelper::register(&#x27;erp&#x27;, [
+        &#x27;driver&#x27; =&gt; $params-&gt;get(&#x27;erp_driver&#x27;, &#x27;pgsql&#x27;),
+        &#x27;host&#x27; =&gt; $params-&gt;get(&#x27;erp_host&#x27;),
+        &#x27;port&#x27; =&gt; (int) $params-&gt;get(&#x27;erp_port&#x27;, 5432),
+        &#x27;user&#x27; =&gt; $params-&gt;get(&#x27;erp_user&#x27;),
+        &#x27;password&#x27; =&gt; $params-&gt;get(&#x27;erp_password&#x27;),
+        &#x27;database&#x27; =&gt; $params-&gt;get(&#x27;erp_database&#x27;),
+        &#x27;prefix&#x27; =&gt; $params-&gt;get(&#x27;erp_prefix&#x27;, &#x27;&#x27;),
+    ]);
+}</code></pre></div><div class="nota aviso"><strong class="rotulo">Credenciais</strong><p>Não deixe usuário e senha fixos no código-fonte. Use os parâmetros do componente, o <code>configuration.php</code> ou variáveis de ambiente.</p></div><h2 id="configuracao" data-titulo="Opções de configuração">Opções de configuração</h2><div class="tabela"><table><thead><tr><th>Chave</th><th>Obrigatória</th><th>Descrição</th></tr></thead><tbody><tr><td><code>driver</code></td><td>sim</td><td>Tipo de banco. Veja a tabela de drivers abaixo.</td></tr><tr><td><code>host</code></td><td>sim</td><td>Endereço do servidor.</td></tr><tr><td><code>port</code></td><td>não</td><td>Porta. Padrão do banco: 3306 (MySQL) ou 5432 (PostgreSQL).</td></tr><tr><td><code>user</code></td><td>sim</td><td>Usuário.</td></tr><tr><td><code>password</code></td><td>sim</td><td>Senha.</td></tr><tr><td><code>database</code></td><td>sim</td><td>Nome do banco.</td></tr><tr><td><code>prefix</code></td><td>não</td><td>Valor que substitui <code>#__</code> nas consultas desta conexão. Ex.: com <code>'erp_'</code>, <code>#__clientes</code> vira <code>erp_clientes</code>.</td></tr><tr><td>outras</td><td>não</td><td>Qualquer outra chave é repassada ao driver do Joomla sem alteração.</td></tr></tbody></table></div><p>O nome do driver pode ser escrito de várias formas. O helper converte para o nome que a versão do Joomla em execução espera:</p><div class="tabela"><table><thead><tr><th>Você escreve</th><th>Joomla 3</th><th>Joomla 4 / 5</th></tr></thead><tbody><tr><td><code>mysql</code>, <code>mysqli</code>, <code>mariadb</code></td><td><code>mysqli</code></td><td><code>mysqli</code></td></tr><tr><td><code>pdomysql</code></td><td><code>pdomysql</code></td><td><code>mysql</code> (PDO)</td></tr><tr><td><code>pgsql</code>, <code>postgres</code>, <code>postgresql</code></td><td><code>postgresql</code></td><td><code>pgsql</code></td></tr></tbody></table></div><p>A versão é detectada sozinha: com <code>Joomla\Database\DatabaseFactory</code> disponível (Joomla 4/5), é ele que cria o driver; senão, <code>JDatabaseDriver::getInstance()</code> (Joomla 3).</p><h2 id="constantes" data-titulo="Constantes">Constantes</h2><div class="tabela"><table><thead><tr><th>Constante</th><th>Valor</th><th>Uso</th></tr></thead><tbody><tr><td><code>DbConnectionHelper::PADRAO</code></td><td><code>'default'</code></td><td>Nome reservado da conexão do Joomla.</td></tr><tr><td><code>DbConnectionHelper::MYSQL</code></td><td><code>'mysql'</code></td><td>Retorno de <code>serverType()</code> para MySQL e MariaDB.</td></tr><tr><td><code>DbConnectionHelper::POSTGRESQL</code></td><td><code>'postgresql'</code></td><td>Retorno de <code>serverType()</code> para PostgreSQL.</td></tr></tbody></table></div><h2 id="metodos" data-titulo="Métodos">Métodos</h2><div class="metodo"><h3 id="register"><code>register()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::register(string $nome, array|object $configuracaoOuDriver): void</div><p>Registra uma conexão com um nome. Aceita um array de configuração (a conexão é criada no primeiro uso) ou um driver já criado.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$nome</code></td><td>string</td><td>Nome da conexão. Não pode ser vazio nem <code>'default'</code>.</td></tr><tr><td><code>$configuracaoOuDriver</code></td><td>array|object</td><td>Array com <a href="#configuracao">as opções</a> (exige <code>driver</code>) ou um objeto driver do Joomla.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">// Com configuração
+DbConnectionHelper::register(&#x27;relatorios&#x27;, [
+    &#x27;driver&#x27; =&gt; &#x27;mysql&#x27;,
+    &#x27;host&#x27; =&gt; &#x27;replica.interna&#x27;,
+    &#x27;user&#x27; =&gt; &#x27;leitura&#x27;,
+    &#x27;password&#x27; =&gt; &#x27;segredo&#x27;,
+    &#x27;database&#x27; =&gt; &#x27;loja&#x27;,
+    &#x27;prefix&#x27; =&gt; &#x27;jos_&#x27;,
+]);
+
+// Com um driver que você já tem
+DbConnectionHelper::register(&#x27;legado&#x27;, $driverLegado);</code></pre></div><div class="nota aviso"><p>Registrar de novo um nome existente <strong>substitui</strong> o registro anterior. Se a conexão antiga já estava aberta, ela não é fechada. Chame <a href="#forget"><code>forget()</code></a> antes para fechá-la.</p></div></div><div class="metodo"><h3 id="get"><code>get()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::get(string|null $nome = null): object</div><p>Devolve o driver da conexão. Sem nome, com <code>null</code>, <code>''</code> ou <code>'default'</code>, devolve a conexão do Joomla. Na primeira chamada de um nome registrado por configuração, cria o driver; nas seguintes, devolve a mesma instância.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$nome</code></td><td>string|null</td><td>Nome registrado.</td></tr></tbody></table></div><p class="retorno"><strong>Retorna:</strong> o driver do Joomla.</p><div class="codigo"><pre><code data-lang="php">$db = DbConnectionHelper::get(&#x27;erp&#x27;);
+
+$query = $db-&gt;getQuery(true)
+    -&gt;select(&#x27;COUNT(*)&#x27;)
+    -&gt;from($db-&gt;quoteName(&#x27;#__clientes&#x27;));
+
+$total = (int) $db-&gt;setQuery($query)-&gt;loadResult();</code></pre></div><p>Lança <code>InvalidArgumentException</code> se o nome não estiver registrado.</p></div><div class="metodo"><h3 id="resolve"><code>resolve()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::resolve(string|object|null $conexao = null): object</div><p>Igual a <code>get()</code>, mas também aceita um objeto driver, que é devolvido como está. É o que os outros helpers usam para interpretar a opção <code>connection</code>. Útil nas suas próprias funções que também querem aceitar "nome ou driver".</p><div class="codigo"><pre><code data-lang="php">function contarClientes($conexao = null)
+{
+    return OrmTables::table(&#x27;#__clientes&#x27;, [&#x27;connection&#x27; =&gt; DbConnectionHelper::resolve($conexao)])
+        -&gt;count();
+}
+
+contarClientes();          // banco do Joomla
+contarClientes(&#x27;erp&#x27;);     // banco do ERP</code></pre></div></div><div class="metodo"><h3 id="has"><code>has()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::has(string $nome): bool</div><p>Indica se o nome está registrado. <code>'default'</code> sempre existe.</p><div class="codigo"><pre><code data-lang="php">if (!DbConnectionHelper::has(&#x27;erp&#x27;)) {
+    DbConnectionHelper::register(&#x27;erp&#x27;, $config);
+}</code></pre></div></div><div class="metodo"><h3 id="forget"><code>forget()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::forget(string $nome): bool</div><p>Remove o registro e fecha a conexão, se ela estiver aberta e o driver tiver <code>disconnect()</code>. Devolve <code>true</code> se o nome existia.</p><div class="codigo"><pre><code data-lang="php">// Script longo que só precisava do legado no começo
+DbConnectionHelper::forget(&#x27;legado&#x27;);</code></pre></div></div><div class="metodo"><h3 id="all"><code>all()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::all(): string[]</div><p>Lista os nomes conhecidos, sempre começando por <code>'default'</code>.</p><div class="codigo"><pre><code data-lang="php">print_r(DbConnectionHelper::all());   // [&#x27;default&#x27;, &#x27;erp&#x27;, &#x27;relatorios&#x27;]</code></pre></div></div><div class="metodo"><h3 id="serverType"><code>serverType()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::serverType(string|object|null $conexao = null): string</div><p>Tipo do servidor da conexão: <code>DbConnectionHelper::MYSQL</code> (MySQL e MariaDB), <code>DbConnectionHelper::POSTGRESQL</code> ou, para outros bancos, o nome informado pelo driver.</p><div class="codigo"><pre><code data-lang="php">if (DbConnectionHelper::serverType(&#x27;erp&#x27;) === DbConnectionHelper::POSTGRESQL) {
+    // SQL específico do PostgreSQL
+}</code></pre></div></div><div class="metodo"><h3 id="isPostgres"><code>isPostgres() / isMysql()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DbConnectionHelper::isPostgres(string|object|null $conexao = null): bool
+DbConnectionHelper::isMysql(string|object|null $conexao = null): bool</div><p>Atalhos para <code>serverType()</code>. Use para escrever SQL cru diferente em cada banco, que é raro: o ORM já adapta o SQL que ele gera.</p><div class="codigo"><pre><code data-lang="php">$agora = DbConnectionHelper::isPostgres(&#x27;erp&#x27;) ? &#x27;NOW()&#x27; : &#x27;CURRENT_TIMESTAMP()&#x27;;</code></pre></div></div><h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2><ul><li><a href="guia-multiplos-bancos.html">Guia: múltiplos bancos</a>: models, transações e escrita em dois bancos.</li><li><a href="guia-mysql-postgresql.html">Guia: MySQL e PostgreSQL</a>: o que muda entre os bancos.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="conceitos.html"><small>← Anterior</small>Conceitos</a><a class="proxima" href="db-transaction-helper.html"><small>Próxima →</small>DbTransactionHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

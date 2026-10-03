@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrmBase: models · Helpers de banco</title>
+<meta name="description" content="Como criar models que estendem o OrmBase, com propriedades, scopes e organização em camadas.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › OrmBase — models</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" class="ativo" aria-current="page" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>OrmBase: models</h1>
+<p class="lead">Classes que guardam a configuração de uma tabela e dão nome às regras do domínio. Opcionais, mas úteis nas tabelas centrais.</p>
+<div id="nesta-pagina"></div>
+<h2 id="por-que" data-titulo="Por que criar um model">Por que criar um model</h2><p>Models são <strong>opcionais</strong>. Tudo o que um model faz também pode ser feito com <a href="orm-tables.html"><code>OrmTables</code></a>. Crie um quando a tabela é central no sistema e você quer:</p><ul><li>declarar a configuração (casts, colunas permitidas, soft delete, conexão) <strong>uma vez só</strong>;</li><li>dar nome às regras do domínio, como <code>PedidoModel::query()-&gt;pagos()-&gt;doCliente($id)</code>, em vez de repetir os <code>where</code>;</li><li>ter um lugar óbvio para constantes como status e tipos.</li></ul><h2 id="minimo" data-titulo="O model mínimo">O model mínimo</h2><div class="codigo"><pre><code data-lang="php">class ProdutoModel extends OrmBase
+{
+    protected $table = &#x27;#__loja_produtos&#x27;;
+}
+
+$produtos = ProdutoModel::query()-&gt;where(&#x27;ativo&#x27;, 1)-&gt;get();
+$produto = ProdutoModel::query()-&gt;find(10);</code></pre></div><p>Só <code>$table</code> é obrigatória. O resto usa os padrões: chave <code>id</code>, timestamps ligados, sem soft delete, conexão do Joomla.</p><h2 id="completo" data-titulo="Um model completo">Um model completo</h2><div class="codigo"><div class="titulo-codigo">models/PedidoModel.php</div><pre><code data-lang="php">&lt;?php
+
+defined(&#x27;_JEXEC&#x27;) or die;
+
+require_once JPATH_COMPONENT . &#x27;/helpers/OrmBase.php&#x27;;
+
+class PedidoModel extends OrmBase
+{
+    const STATUS_ABERTO = &#x27;aberto&#x27;;
+    const STATUS_PAGO = &#x27;pago&#x27;;
+    const STATUS_CANCELADO = &#x27;cancelado&#x27;;
+
+    protected $table = &#x27;#__loja_pedidos&#x27;;
+
+    protected $softDeletes = true;
+
+    protected $casts = [
+        &#x27;cliente_id&#x27; =&gt; &#x27;int&#x27;,
+        &#x27;total&#x27; =&gt; &#x27;float&#x27;,
+        &#x27;metadados&#x27; =&gt; &#x27;json&#x27;,
+    ];
+
+    protected $fillable = [
+        &#x27;cliente_id&#x27;,
+        &#x27;status&#x27;,
+        &#x27;total&#x27;,
+        &#x27;metadados&#x27;,
+    ];
+
+    // ---- Scopes: filtros com nome ----
+
+    public function doCliente($clienteId)
+    {
+        return $this-&gt;where(&#x27;cliente_id&#x27;, (int) $clienteId);
+    }
+
+    public function pagos()
+    {
+        return $this-&gt;where(&#x27;status&#x27;, self::STATUS_PAGO);
+    }
+
+    public function comStatus($status)
+    {
+        // Filtro opcional: vazio não filtra
+        return $this-&gt;when($status, function ($q, $status) {
+            $q-&gt;where(&#x27;status&#x27;, $status);
+        });
+    }
+
+    public function recentes()
+    {
+        return $this-&gt;latest();
+    }
+}</code></pre></div><h2 id="propriedades" data-titulo="Propriedades que você pode declarar">Propriedades que você pode declarar</h2><div class="tabela"><table><thead><tr><th>Propriedade</th><th>Padrão</th><th>Equivale à opção</th></tr></thead><tbody><tr><td><code>protected $table</code></td><td>— (obrigatória)</td><td>parâmetro <code>$table</code></td></tr><tr><td><code>protected $primaryKey</code></td><td><code>'id'</code></td><td><code>primaryKey</code></td></tr><tr><td><code>protected $timestamps</code></td><td><code>true</code></td><td><code>timestamps</code></td></tr><tr><td><code>protected $createdAtColumn</code></td><td><code>'created_at'</code></td><td><code>createdAtColumn</code></td></tr><tr><td><code>protected $updatedAtColumn</code></td><td><code>'updated_at'</code></td><td><code>updatedAtColumn</code></td></tr><tr><td><code>protected $softDeletes</code></td><td><code>false</code></td><td><code>softDeletes</code></td></tr><tr><td><code>protected $deletedAtColumn</code></td><td><code>'deleted_at'</code></td><td><code>deletedAtColumn</code></td></tr><tr><td><code>protected $casts</code></td><td><code>[]</code></td><td><code>casts</code></td></tr><tr><td><code>protected $fillable</code></td><td><code>[]</code></td><td><code>fillable</code></td></tr><tr><td><code>protected $guarded</code></td><td><code>[]</code></td><td><code>guarded</code></td></tr><tr><td><code>protected $connection</code></td><td><code>null</code></td><td><code>connection</code></td></tr></tbody></table></div><p>O significado de cada uma está em <a href="orm-base-configuracao.html#opcoes">OrmBase — configuração</a>.</p><h2 id="query" data-titulo="Usando: query()">Usando: query()</h2><div class="metodo"><h3 id="query-metodo"><code>query()</code><span class="tag estatico">estático</span></h3><div class="assinatura">Model::query(array $opcoes = []): static</div><p>Ponto de entrada do model. Cada chamada devolve uma <strong>instância nova</strong>, sem filtros de consultas anteriores. As <code>$opcoes</code> sobrescrevem as propriedades da classe só nessa instância.</p><div class="codigo"><pre><code data-lang="php">// Uso normal
+$pedidos = PedidoModel::query()-&gt;pagos()-&gt;doCliente(7)-&gt;recentes()-&gt;get();
+
+// Sobrescrevendo uma opção só nesta consulta: incluir excluídos
+$todos = PedidoModel::query([&#x27;softDeletes&#x27; =&gt; false])-&gt;doCliente(7)-&gt;get();
+
+// Mesmo model, outro banco
+$arquivados = PedidoModel::query([&#x27;connection&#x27; =&gt; &#x27;arquivo&#x27;])-&gt;pagos()-&gt;count();</code></pre></div><div class="nota dica"><p>Comece cada consulta com <code>Model::query()</code>. Guardar uma instância numa propriedade e reutilizá-la funciona, porque os métodos finais limpam os filtros, mas <code>query()</code> deixa claro que cada consulta é independente.</p></div></div><p>Também funcionam <code>new PedidoModel()</code> e <code>PedidoModel::tabela('#__outra_tabela')</code>, que usa a configuração do model numa tabela de mesmo formato.</p><h2 id="scopes" data-titulo="Scopes: filtros com nome">Scopes: filtros com nome</h2><p>Um <em>scope</em> é um método público do model que adiciona filtros e devolve <code>$this</code>. Ele mantém a cadeia fluente e dá nome às regras de negócio:</p><div class="codigo"><pre><code data-lang="php">// Sem scopes: a regra se repete em todo lugar
+OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;where(&#x27;cliente_id&#x27;, $id)-&gt;get();
+
+// Com scopes: a regra tem nome e mora num lugar só
+PedidoModel::query()-&gt;pagos()-&gt;doCliente($id)-&gt;get();</code></pre></div><h3 id="regras-scopes">Regras para escrever scopes</h3><ul><li>Sempre <code>return $this</code>, ou o retorno de um método encadeável como <code>where()</code> ou <code>when()</code>.</li><li>Um scope só <strong>monta</strong> filtros. Não chame <code>get()</code> nem <code>count()</code> dentro dele.</li><li>Para filtros opcionais, use <code>when()</code>: um valor vazio não filtra.</li><li>Scopes podem usar outros scopes e <code>whereGroup()</code>.</li></ul><div class="codigo"><pre><code data-lang="php">public function emDestaque()
+{
+    return $this-&gt;where(&#x27;ativo&#x27;, true)
+        -&gt;whereGroup(function ($q) {
+            $q-&gt;where(&#x27;destaque&#x27;, true)
+              -&gt;orWhere(&#x27;estoque&#x27;, &#x27;&lt;=&#x27;, 3);
+        });
+}</code></pre></div><h2 id="organizacao" data-titulo="Onde colocar a lógica">Onde colocar a lógica</h2><div class="tabela"><table><thead><tr><th>Camada</th><th>Responsabilidade</th><th>Exemplo</th></tr></thead><tbody><tr><td>Model</td><td>Configuração da tabela e scopes. Sem regra de negócio de várias tabelas.</td><td><code>PedidoModel::pagos()</code></td></tr><tr><td>Service</td><td>Regras de negócio, transações, várias tabelas.</td><td><code>PedidoService::criar($cliente, $itens)</code></td></tr><tr><td>Controller</td><td>Ler a entrada, chamar o service, responder. Sem SQL.</td><td><code>LojaControllerPedidos::criar()</code></td></tr></tbody></table></div><div class="codigo"><div class="titulo-codigo">services/PedidoService.php</div><pre><code data-lang="php">class PedidoService
+{
+    public static function cancelar($pedidoId)
+    {
+        return DbTransactionHelper::run(function () use ($pedidoId) {
+            $pedido = PedidoModel::query()
+                -&gt;where(&#x27;id&#x27;, (int) $pedidoId)
+                -&gt;lockForUpdate()
+                -&gt;first();
+
+            if ($pedido === null || $pedido-&gt;status !== PedidoModel::STATUS_ABERTO) {
+                throw new RuntimeException(&#x27;Só pedidos em aberto podem ser cancelados.&#x27;);
+            }
+
+            PedidoModel::query()-&gt;update($pedido-&gt;id, [&#x27;status&#x27; =&gt; PedidoModel::STATUS_CANCELADO]);
+            PedidoModel::query()-&gt;delete($pedido-&gt;id);
+
+            return true;
+        });
+    }
+}</code></pre></div><div class="nota dica"><p>Um exemplo completo, com models, exceções de negócio, service e controller, está em <code>exemplos/ComoUsarOrm.php</code> no repositório.</p></div><h2 id="cuidados" data-titulo="Cuidados">Cuidados</h2><ul><li>Não sobrescreva o construtor sem chamar <code>parent::__construct($table, $opcoes)</code>.</li><li>Evite criar métodos com nomes já usados pelo <code>OrmBase</code> (<code>get</code>, <code>count</code>, <code>delete</code>…). Consulte a <a href="referencia-rapida.html">referência rápida</a>.</li><li>Use em <code>$table</code> só o nome da tabela, sem alias: o alias quebra <code>create</code>/<code>update</code>/<code>delete</code>.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="orm-base-escrita.html"><small>← Anterior</small>OrmBase — escrita</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

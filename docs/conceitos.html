@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conceitos · Helpers de banco</title>
+<meta name="description" content="Regras gerais do ORM: formas de uso, ciclo da consulta, retornos, segurança e erros.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Começando › Conceitos</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" class="ativo" aria-current="page" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Conceitos</h1>
+<p class="lead">As regras que valem para todos os métodos. Ler esta página evita os erros mais comuns.</p>
+<div id="nesta-pagina"></div>
+<h2 id="tres-formas" data-titulo="Três formas de usar o ORM">Três formas de usar o ORM</h2><p>As três dão acesso aos <strong>mesmos</strong> recursos. O que muda é onde fica a configuração da tabela (casts, colunas permitidas, soft delete, conexão…). Você pode misturar as três no mesmo projeto, inclusive na mesma transação.</p><div class="codigo"><pre><code data-lang="php">// 1. Direto: configuração na própria chamada
+OrmTables::table(&#x27;#__loja_produtos&#x27;, [&#x27;casts&#x27; =&gt; [&#x27;ativo&#x27; =&gt; &#x27;bool&#x27;]])
+    -&gt;where(&#x27;ativo&#x27;, true)
+    -&gt;get();
+
+// 2. Registro por nome: configura uma vez, usa em qualquer lugar
+OrmTables::register(&#x27;produtos&#x27;, &#x27;#__loja_produtos&#x27;, [&#x27;casts&#x27; =&gt; [&#x27;ativo&#x27; =&gt; &#x27;bool&#x27;]]);
+OrmTables::get(&#x27;produtos&#x27;)-&gt;where(&#x27;ativo&#x27;, true)-&gt;get();
+
+// 3. Model: configuração numa classe, com métodos próprios
+class ProdutoModel extends OrmBase
+{
+    protected $table = &#x27;#__loja_produtos&#x27;;
+    protected $casts = [&#x27;ativo&#x27; =&gt; &#x27;bool&#x27;];
+
+    public function ativos()
+    {
+        return $this-&gt;where(&#x27;ativo&#x27;, true);
+    }
+}
+
+ProdutoModel::query()-&gt;ativos()-&gt;get();</code></pre></div><div class="tabela"><table><thead><tr><th>Situação</th><th>Forma recomendada</th></tr></thead><tbody><tr><td>Consulta pontual, relatório, script, tabela de log</td><td><a href="orm-tables.html#table"><code>OrmTables::table()</code></a></td></tr><tr><td>Mesma tabela em vários lugares, sem regras próprias</td><td><a href="orm-tables.html#register"><code>OrmTables::register()</code></a> + <code>get()</code></td></tr><tr><td>Tabela central do domínio, com regras e filtros nomeados</td><td><a href="orm-base-models.html">Model que estende <code>OrmBase</code></a></td></tr></tbody></table></div><h2 id="ciclo" data-titulo="O ciclo de uma consulta">O ciclo de uma consulta</h2><p>Uma instância do ORM guarda os filtros que você vai encadeando (<code>where</code>, <code>orderBy</code>, <code>limit</code>…). Nada vai ao banco até você chamar um <strong>método final</strong>. O método final executa a consulta e <strong>limpa os filtros</strong>, deixando a instância pronta para a próxima.</p><div class="codigo"><pre><code data-lang="php">$produtos = OrmTables::table(&#x27;#__loja_produtos&#x27;);
+
+$produtos-&gt;where(&#x27;ativo&#x27;, 1);      // só guarda o filtro
+$produtos-&gt;orderBy(&#x27;nome&#x27;);        // só guarda a ordenação
+$lista = $produtos-&gt;get();         // executa e limpa
+
+$todos = $produtos-&gt;count();       // sem filtros: conta a tabela inteira</code></pre></div><div class="tabela"><table><thead><tr><th>Tipo</th><th>Métodos</th><th>O que acontece com os filtros</th></tr></thead><tbody><tr><td>Montagem (encadeáveis)</td><td><code>select</code>, <code>where*</code>, <code>orWhere*</code>, <code>whereGroup</code>, <code>when</code>, <code>join*</code>, <code>orderBy</code>, <code>latest</code>, <code>oldest</code>, <code>groupBy</code>, <code>having</code>, <code>limit</code>, <code>lockForUpdate</code>, <code>allowMassOperation</code></td><td>Acumulam.</td></tr><tr><td>Finais que <strong>usam</strong> os filtros</td><td><code>get</code>, <code>first</code>, <code>value</code>, <code>pluck</code>, <code>exists</code>, <code>count</code>, <code>sum</code>, <code>avg</code>, <code>min</code>, <code>max</code>, <code>paginate</code>, <code>chunk</code>, <code>updateWhere</code>, <code>deleteWhere</code></td><td>Usam e limpam, com sucesso ou erro.</td></tr><tr><td>Finais que <strong>descartam</strong> os filtros</td><td><code>find</code>, <code>findOrFail</code>, <code>findBy</code>, <code>all</code>, <code>firstOrCreate</code>, <code>updateOrCreate</code></td><td>Limpam <em>antes</em> e montam a própria condição.</td></tr><tr><td>Por id (ignoram os filtros)</td><td><code>create</code>, <code>update</code>, <code>increment</code>, <code>decrement</code>, <code>touch</code>, <code>delete</code>, <code>restore</code>, <code>forceDelete</code></td><td>Não usam os filtros. Os que devolvem o registro (<code>create</code>, <code>update</code>, <code>increment</code>, <code>decrement</code>, <code>touch</code>, <code>restore</code>) o relêem com <code>find()</code> e por isso descartam filtros pendentes. <code>delete</code> e <code>forceDelete</code> não mexem neles.</td></tr></tbody></table></div><div class="nota aviso"><strong class="rotulo">Armadilha comum</strong><p><code>$produtos-&gt;where('ativo', 1)-&gt;find(5)</code> <strong>não</strong> verifica <code>ativo</code>: <code>find()</code> descarta os filtros. Para "este id e mais uma condição", use <code>where('id', 5)-&gt;where('ativo', 1)-&gt;first()</code>.</p></div><div class="nota dica"><strong class="rotulo">Reaproveitar filtros</strong><p>Para manter uma consulta base e derivar várias outras, use <code>clone</code>:</p><div class="codigo"><pre><code data-lang="php">$base = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;cliente_id&#x27;, 7);
+
+$abertos = (clone $base)-&gt;where(&#x27;status&#x27;, &#x27;aberto&#x27;)-&gt;count();
+$pagos = (clone $base)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;count();</code></pre></div></div><h2 id="retornos" data-titulo="O que as consultas devolvem">O que as consultas devolvem</h2><div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>Casts aplicados?</th></tr></thead><tbody><tr><td><code>get</code>, <code>all</code>, <code>chunk</code> (cada lote)</td><td><code>array</code> de <code>stdClass</code> (vazio se nada for encontrado)</td><td>Sim</td></tr><tr><td><code>first</code>, <code>find</code>, <code>findBy</code>, <code>create</code>, <code>update</code>…</td><td><code>stdClass</code> ou <code>null</code></td><td>Sim</td></tr><tr><td><code>value</code></td><td>valor da coluna (como o driver devolve) ou <code>null</code></td><td>Não</td></tr><tr><td><code>pluck</code></td><td><code>array</code> de valores, ou <code>[chave =&gt; valor]</code></td><td>Não</td></tr><tr><td><code>count</code></td><td><code>int</code></td><td>—</td></tr><tr><td><code>sum</code>, <code>avg</code>, <code>min</code>, <code>max</code></td><td><code>float</code> ou <code>null</code></td><td>—</td></tr><tr><td><code>exists</code></td><td><code>bool</code></td><td>—</td></tr><tr><td><code>updateWhere</code>, <code>deleteWhere</code></td><td><code>int</code> (linhas afetadas)</td><td>—</td></tr></tbody></table></div><p>Sem cast, o banco devolve quase tudo como <strong>string</strong> (<code>"2.50"</code>, <code>"1"</code>). Declare <a href="orm-base-configuracao.html#casts">casts</a> para receber <code>float</code>, <code>int</code>, <code>bool</code> ou arrays de JSON.</p><h2 id="prefixo" data-titulo="Prefixo de tabela (#__)">Prefixo de tabela (#__)</h2><p>Escreva os nomes de tabela com <code>#__</code>. O driver troca pelo prefixo configurado na conexão: o do Joomla na conexão padrão, ou o <code>prefix</code> que você informar ao <a href="db-connection-helper.html#register">registrar outra conexão</a>.</p><h2 id="seguranca" data-titulo="Segurança: o que é escapado">Segurança: o que é escapado</h2><p><strong>Valores</strong> passados aos métodos são sempre escapados. Já os parâmetros que recebem <strong>SQL cru</strong> são enviados como estão e <strong>nunca</strong> devem receber dados do usuário.</p><div class="tabela"><table><thead><tr><th>Seguro para dados do usuário</th><th>SQL cru: só texto fixo do seu código</th></tr></thead><tbody><tr><td>Valores de <code>where</code>, <code>orWhere</code>, <code>whereIn</code>, <code>whereBetween</code>, <code>whereLike</code></td><td><code>whereRaw($sql)</code></td></tr><tr><td>Valores de <code>create</code>, <code>update</code>, <code>updateWhere</code>, <code>firstOrCreate</code>…</td><td><code>having($sql)</code></td></tr><tr><td>Ids de <code>find</code>, <code>update</code>, <code>delete</code>… (convertidos para inteiro)</td><td>Condição do <code>join($tabela, $condicao)</code></td></tr><tr><td></td><td>Itens de <code>select()</code> (permitem expressões como <code>COUNT(*) AS total</code>)</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">// ERRADO: injeção de SQL
+$q-&gt;whereRaw(&quot;nome = &#x27;&quot; . $_GET[&#x27;nome&#x27;] . &quot;&#x27;&quot;);
+
+// CERTO
+$q-&gt;where(&#x27;nome&#x27;, InputHelper::string(&#x27;nome&#x27;));</code></pre></div><div class="nota aviso"><strong class="rotulo">Ordenação vinda da tela</strong><p>Nomes de coluna em <code>where</code>, <code>orderBy</code> e <code>groupBy</code> recebem aspas de identificador, mas mesmo assim <strong>não aceite nomes de coluna vindos da tela</strong> sem uma lista permitida. Uma coluna inexistente vira erro de SQL.</p><div class="codigo"><pre><code data-lang="php">$permitidas = [&#x27;nome&#x27;, &#x27;preco&#x27;, &#x27;created_at&#x27;];
+$coluna = InputHelper::cmd(&#x27;ordenar&#x27;, &#x27;nome&#x27;, &#x27;get&#x27;);
+
+if (!in_array($coluna, $permitidas, true)) {
+    $coluna = &#x27;nome&#x27;;
+}
+
+$q-&gt;orderBy($coluna, InputHelper::cmd(&#x27;direcao&#x27;, &#x27;asc&#x27;, &#x27;get&#x27;));</code></pre></div></div><h2 id="erros" data-titulo="Erros e exceções">Erros e exceções</h2><div class="tabela"><table><thead><tr><th>Exceção</th><th>Quando</th><th>O que fazer</th></tr></thead><tbody><tr><td><code>RuntimeException</code> (código 500)</td><td>Erro do banco: SQL inválido, conexão, constraint, deadlock… A mensagem diz a operação e a tabela, e a exceção original fica em <code>getPrevious()</code>.</td><td>Logar e responder com mensagem genérica.</td></tr><tr><td><code>RuntimeException</code> (código 404)</td><td><code>findOrFail()</code> não encontrou o registro.</td><td>Responder "não encontrado".</td></tr><tr><td><code>LogicException</code></td><td>Uso incorreto: <code>deleteWhere()</code> sem filtro, <code>lockForUpdate()</code> fora de transação…</td><td>Corrigir o código. Não é erro de banco.</td></tr><tr><td><code>InvalidArgumentException</code></td><td>Parâmetro inválido: operador desconhecido, tabela vazia, conexão não registrada…</td><td>Corrigir a chamada.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">try {
+    $produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;findOrFail($id);
+} catch (RuntimeException $e) {
+    if ($e-&gt;getCode() === 404) {
+        return ApiResponseHelper::notFound(&#x27;Produto não encontrado.&#x27;);
+    }
+
+    // Detalhe técnico vai para o log, nunca para o usuário
+    return ApiResponseHelper::exception($e);
+}</code></pre></div><p>Mensagens comuns e suas soluções estão em <a href="erros-e-solucoes.html">Erros e soluções</a>.</p><h2 id="datas" data-titulo="Datas e fuso horário">Datas e fuso horário</h2><p><code>created_at</code>, <code>updated_at</code> e <code>deleted_at</code> são preenchidos com <code>date('Y-m-d H:i:s')</code>, ou seja, no <strong>fuso horário configurado no PHP</strong>. Para gravar datas que você mesmo calcula, use a mesma convenção do resto do seu sistema (por exemplo, <code>JFactory::getDate()-&gt;toSql()</code> grava em UTC).</p>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="primeiros-passos.html"><small>← Anterior</small>Primeiros passos</a><a class="proxima" href="db-connection-helper.html"><small>Próxima →</small>DbConnectionHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>

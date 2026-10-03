@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrmBase: leitura · Helpers de banco</title>
+<meta name="description" content="Métodos de leitura do OrmBase: get, first, find, pluck, count, agregados, paginate e chunk.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· banco de dados</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › OrmBase — leitura</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" class="ativo" aria-current="page" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>OrmBase: leitura</h1>
+<p class="lead">Buscar registros, valores, contagens e páginas, e processar grandes volumes em lotes.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>Os métodos desta página <strong>executam</strong> a consulta montada com os <a href="orm-base-consultas.html">filtros</a> e depois os limpam. Com <code>softDeletes</code> ligado, registros excluídos nunca aparecem.</p><div class="tabela"><table><thead><tr><th>Preciso de…</th><th>Use</th></tr></thead><tbody><tr><td>uma lista de registros</td><td><a href="#get"><code>get()</code></a></td></tr><tr><td>o primeiro registro que atende aos filtros</td><td><a href="#first"><code>first()</code></a></td></tr><tr><td>um registro pelo id</td><td><a href="#find"><code>find()</code></a> / <a href="#findOrFail"><code>findOrFail()</code></a></td></tr><tr><td>um registro por outra coluna</td><td><a href="#findBy"><code>findBy()</code></a></td></tr><tr><td>um único valor</td><td><a href="#value"><code>value()</code></a></td></tr><tr><td>uma lista de valores, ou um mapa id ⇒ nome</td><td><a href="#pluck"><code>pluck()</code></a></td></tr><tr><td>saber se existe</td><td><a href="#exists"><code>exists()</code></a></td></tr><tr><td>contar, somar, média, mínimo, máximo</td><td><a href="#count"><code>count()</code></a>, <a href="#agregados"><code>sum()</code>…</a></td></tr><tr><td>uma página de resultados com total</td><td><a href="#paginate"><code>paginate()</code></a></td></tr><tr><td>processar milhares de registros</td><td><a href="#chunk"><code>chunk()</code></a></td></tr></tbody></table></div><h2 id="registros" data-titulo="Buscando registros">Buscando registros</h2><div class="metodo"><h3 id="get"><code>get()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;get(): array</div><p>Executa a consulta e devolve todas as linhas como <code>stdClass</code>, com casts aplicados.</p><p class="retorno"><strong>Retorna:</strong> <code>array</code> de <code>stdClass</code>; vazio se nada for encontrado.</p><div class="codigo"><pre><code data-lang="php">$pedidos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;where(&#x27;cliente_id&#x27;, $clienteId)
+    -&gt;latest()
+    -&gt;get();
+
+if (empty($pedidos)) {
+    echo &#x27;Nenhum pedido.&#x27;;
+}
+
+foreach ($pedidos as $pedido) {
+    echo $pedido-&gt;id . &#x27;: &#x27; . $pedido-&gt;status . PHP_EOL;
+}</code></pre></div></div><div class="metodo"><h3 id="first"><code>first()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;first(): object|null</div><p>Como <code>get()</code>, mas com <code>LIMIT 1</code>: devolve só a primeira linha.</p><div class="codigo"><pre><code data-lang="php">$ultimo = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;where(&#x27;cliente_id&#x27;, $clienteId)
+    -&gt;latest()
+    -&gt;first();
+
+if ($ultimo !== null) {
+    echo $ultimo-&gt;total;
+}</code></pre></div></div><div class="metodo"><h3 id="find"><code>find()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;find(int $id): object|null</div><p>Busca pela chave primária. <strong>Descarta</strong> filtros montados antes. O id é convertido para inteiro.</p><div class="codigo"><pre><code data-lang="php">$produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;find(10);</code></pre></div></div><div class="metodo"><h3 id="findOrFail"><code>findOrFail()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;findOrFail(int $id): object</div><p>Como <code>find()</code>, mas lança <code>RuntimeException</code> com <strong>código 404</strong> se não encontrar.</p><div class="codigo"><pre><code data-lang="php">try {
+    $produto = OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;findOrFail($id);
+} catch (RuntimeException $e) {
+    if ($e-&gt;getCode() === 404) {
+        return ApiResponseHelper::notFound(&#x27;Produto não encontrado.&#x27;);
+    }
+
+    throw $e;
+}</code></pre></div></div><div class="metodo"><h3 id="findBy"><code>findBy()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;findBy(string $coluna, mixed $valor): object|null</div><p>Primeiro registro em que <code>$coluna = $valor</code>. Descarta filtros montados antes.</p><div class="codigo"><pre><code data-lang="php">$cliente = OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;findBy(&#x27;email&#x27;, &#x27;ana@exemplo.com&#x27;);</code></pre></div></div><div class="metodo"><h3 id="all"><code>all()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;all(): array</div><p>Todos os registros da tabela, ignorando filtros montados antes. Cuidado com tabelas grandes: prefira <a href="#chunk"><code>chunk()</code></a>.</p></div><h2 id="valores" data-titulo="Buscando valores">Buscando valores</h2><div class="metodo"><h3 id="value"><code>value()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;value(string $coluna): mixed</div><p>O valor de uma coluna da primeira linha encontrada, ou <code>null</code>. Sem casts.</p><div class="codigo"><pre><code data-lang="php">$email = OrmTables::table(&#x27;#__loja_clientes&#x27;)
+    -&gt;where(&#x27;id&#x27;, 7)
+    -&gt;value(&#x27;email&#x27;);</code></pre></div><div class="nota aviso"><p>Não combine com <code>select()</code>: a coluna é <em>acrescentada</em> às já selecionadas, e o valor devolvido é o da primeira.</p></div></div><div class="metodo"><h3 id="pluck"><code>pluck()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;pluck(string $coluna, string|null $colunaChave = null): array</div><p>Os valores de uma coluna, como lista simples. Com <code>$colunaChave</code>, devolve <code>[chave =&gt; valor]</code>: perfeito para montar <code>&lt;select&gt;</code>. Respeita <code>limit()</code>. Sem casts.</p><div class="codigo"><pre><code data-lang="php">$ids = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;where(&#x27;status&#x27;, &#x27;aberto&#x27;)
+    -&gt;pluck(&#x27;id&#x27;);                    // [&#x27;3&#x27;, &#x27;8&#x27;, &#x27;15&#x27;]
+
+$opcoes = OrmTables::table(&#x27;#__loja_produtos&#x27;)
+    -&gt;where(&#x27;ativo&#x27;, 1)
+    -&gt;orderBy(&#x27;nome&#x27;)
+    -&gt;pluck(&#x27;nome&#x27;, &#x27;id&#x27;);            // [10 =&gt; &#x27;Caneta&#x27;, 12 =&gt; &#x27;Lápis&#x27;]
+
+foreach ($opcoes as $id =&gt; $nome) {
+    echo &#x27;&lt;option value=&quot;&#x27; . (int) $id . &#x27;&quot;&gt;&#x27; . htmlspecialchars($nome) . &#x27;&lt;/option&gt;&#x27;;
+}</code></pre></div><div class="nota aviso"><p>Como em <code>value()</code>, não combine com <code>select()</code>. Com chave, se dois registros tiverem a mesma chave, vale o último.</p></div></div><div class="metodo"><h3 id="exists"><code>exists()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;exists(): bool</div><p>Há ao menos um registro que atende aos filtros? Mais leve que <code>count() &gt; 0</code>.</p><div class="codigo"><pre><code data-lang="php">$emailEmUso = OrmTables::table(&#x27;#__loja_clientes&#x27;)
+    -&gt;where(&#x27;email&#x27;, $email)
+    -&gt;where(&#x27;id&#x27;, &#x27;!=&#x27;, $idAtual)
+    -&gt;exists();</code></pre></div></div><h2 id="agregados" data-titulo="Contagem e agregados">Contagem e agregados</h2><div class="metodo"><h3 id="count"><code>count()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;count(string $coluna = &#x27;*&#x27;): int</div><p>Quantos registros atendem aos filtros. Com uma coluna, conta só os valores não nulos dela.</p><div class="codigo"><pre><code data-lang="php">$abertos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;status&#x27;, &#x27;aberto&#x27;)-&gt;count();
+$comEmail = OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;count(&#x27;email&#x27;);</code></pre></div><div class="nota aviso"><p>Com <code>groupBy()</code>, <code>count()</code> devolve a contagem do <strong>primeiro grupo</strong>, não o número de grupos. Para contar por grupo, use <code>select(['status', 'COUNT(*) AS total'])-&gt;groupBy('status')-&gt;get()</code>.</p></div></div><div class="metodo"><h3 id="sum"><code>sum() / avg() / min() / max()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;sum(string $coluna): float|null
+$orm-&gt;avg(string $coluna): float|null
+$orm-&gt;min(string $coluna): float|null
+$orm-&gt;max(string $coluna): float|null</div><p>Soma, média, menor e maior valor da coluna nos registros filtrados. Devolvem <code>null</code> quando não há registros.</p><div class="codigo"><pre><code data-lang="php">$pagos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;);
+
+$faturamento = (float) (clone $pagos)-&gt;sum(&#x27;total&#x27;);   // 0.0 em vez de null
+$ticketMedio = (clone $pagos)-&gt;avg(&#x27;total&#x27;);
+$maiorPedido = (clone $pagos)-&gt;max(&#x27;total&#x27;);</code></pre></div><div class="nota"><p>Por devolverem <code>float</code>, não use <code>min</code>/<code>max</code> em colunas de data ou texto: para isso, use <code>orderBy('coluna')-&gt;value('coluna')</code>.</p></div></div><h2 id="paginacao" data-titulo="Paginação">Paginação</h2><div class="metodo"><h3 id="paginate"><code>paginate()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;paginate(int $porPagina = 15, int $paginaAtual = 1): array</div><p>Executa duas consultas, uma de contagem e uma da página, e devolve os itens e os dados de paginação. Valores menores que 1 viram 1.</p><p class="retorno"><strong>Retorna:</strong> array com as chaves abaixo.</p><div class="codigo"><pre><code data-lang="php">$resultado = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;where(&#x27;cliente_id&#x27;, $clienteId)
+    -&gt;latest()
+    -&gt;paginate(20, InputHelper::uint(&#x27;pagina&#x27;, 1, &#x27;get&#x27;));
+
+// Em API JSON, remova o objeto JPagination
+unset($resultado[&#x27;paginacao&#x27;]);
+
+return ApiResponseHelper::success(&#x27;Pedidos.&#x27;, $resultado);</code></pre></div><div class="tabela"><table><thead><tr><th>Chave</th><th>Tipo</th><th>Conteúdo</th></tr></thead><tbody><tr><td><code>itens</code></td><td>array</td><td>Registros da página (com casts).</td></tr><tr><td><code>total</code></td><td>int</td><td>Total de registros com os filtros.</td></tr><tr><td><code>por_pagina</code></td><td>int</td><td>Itens por página.</td></tr><tr><td><code>pagina_atual</code></td><td>int</td><td>Página pedida.</td></tr><tr><td><code>total_paginas</code></td><td>int</td><td>Número de páginas.</td></tr><tr><td><code>paginacao</code></td><td>JPagination</td><td>Objeto do Joomla para views HTML (<code>getListFooter()</code>…).</td></tr></tbody></table></div><div class="nota"><p>Uma página além da última devolve <code>itens</code> vazio, e o <code>total</code> continua correto.</p></div></div><h2 id="lotes" data-titulo="Processamento em lotes">Processamento em lotes</h2><div class="metodo"><h3 id="chunk"><code>chunk()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;chunk(int $tamanho, callable $callback): int</div><p>Lê os registros em lotes de <code>$tamanho</code> e chama <code>$callback($lote, $numeroDoLote)</code> para cada um. Assim, milhões de linhas são processadas sem estourar a memória. Devolver <code>false</code> no callback interrompe. Sem <code>orderBy()</code>, ordena pela chave primária para os lotes serem estáveis.</p><p class="retorno"><strong>Retorna:</strong> quantidade de lotes processados.</p><div class="codigo"><pre><code data-lang="php">$arquivo = fopen($caminho, &#x27;w&#x27;);
+
+OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+    -&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)
+    -&gt;select([&#x27;id&#x27;, &#x27;cliente_id&#x27;, &#x27;total&#x27;, &#x27;created_at&#x27;])
+    -&gt;chunk(500, function ($lote, $numero) use ($arquivo) {
+        foreach ($lote as $pedido) {
+            fputcsv($arquivo, [$pedido-&gt;id, $pedido-&gt;cliente_id, $pedido-&gt;total, $pedido-&gt;created_at], &#x27;,&#x27;, &#x27;&quot;&#x27;, &#x27;\\&#x27;);
+        }
+
+        // return false;   // para parar antes do fim
+    });
+
+fclose($arquivo);</code></pre></div><div class="nota aviso"><p>Os lotes avançam por <code>OFFSET</code>. Se o callback <strong>alterar uma coluna usada no filtro</strong> (por exemplo, filtra <code>status = 'pendente'</code> e muda para <code>'processado'</code>), registros serão pulados. Nesse caso, veja a <a href="receitas.html#fila-em-lotes">receita de processamento de fila</a>.</p></div></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="orm-base-consultas.html"><small>← Anterior</small>OrmBase — consultas</a><a class="proxima" href="orm-base-escrita.html"><small>Próxima →</small>OrmBase — escrita</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code> e <code>OrmTables</code>.</p>
+</main>
+</div>
+</body>
+</html>
