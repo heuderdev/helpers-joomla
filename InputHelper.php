@@ -6,9 +6,17 @@ class InputHelper
 {
     private static $logCategory = 'input_helper';
 
+    /*
+     * Joomla 4+: getInput(). O acesso direto a $app->input está obsoleto
+     * e deve deixar de existir; no Joomla 3 é a única forma.
+     */
     private static function input()
     {
-        return JFactory::getApplication()->input;
+        $app = JFactory::getApplication();
+
+        return method_exists($app, 'getInput')
+            ? $app->getInput()
+            : $app->input;
     }
 
     private static function log($method, Throwable $error)

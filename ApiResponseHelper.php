@@ -30,7 +30,7 @@ class ApiResponseHelper
 
     const HTTP_CONFLICT = 409;
 
-    const HTTP_UNPROCESSABLE_ENTITY = 401;
+    const HTTP_UNPROCESSABLE_ENTITY = 422;
 
     const HTTP_TOO_MANY_REQUESTS = 429;
 
@@ -51,14 +51,25 @@ class ApiResponseHelper
         return JFactory::getApplication();
     }
 
+    /*
+     * Joomla 4+: getInput(). O acesso direto a $app->input está obsoleto
+     * e deve deixar de existir; no Joomla 3 é a única forma.
+     */
+    private static function input()
+    {
+        $app = self::app();
+
+        return method_exists($app, 'getInput')
+            ? $app->getInput()
+            : $app->input;
+    }
+
     private static function isJsonRequest()
     {
         try {
-            $app = self::app();
-
             $format = strtolower(
                 trim(
-                    (string) $app->input->getCmd(
+                    (string) self::input()->getCmd(
                         'format',
                         ''
                     )
@@ -87,7 +98,20 @@ class ApiResponseHelper
                 )
                 : '';
 
-            return strpos($accept, 'application/json') !== false;
+            if (strpos($accept, 'application/json') !== false) {
+                return true;
+            }
+
+            /*
+             * fetch()/axios enviando JSON: o Accept padrão do fetch aceita
+             * qualquer tipo e não há X-Requested-With, mas quem envia
+             * JSON espera JSON de volta.
+             */
+            $contentType = isset($_SERVER['CONTENT_TYPE'])
+                ? (string) $_SERVER['CONTENT_TYPE']
+                : (isset($_SERVER['HTTP_CONTENT_TYPE']) ? (string) $_SERVER['HTTP_CONTENT_TYPE'] : '');
+
+            return stripos($contentType, 'application/json') !== false;
         } catch (Throwable $error) {
             return false;
         }
@@ -140,6 +164,22 @@ class ApiResponseHelper
 
         $normalized = array();
 
+        // Lista simples: array('msg 1', 'msg 2') → '_general'.
+        if (!empty($errors) && array_keys($errors) === range(0, count($errors) - 1)) {
+            $scalars = true;
+
+            foreach ($errors as $message) {
+                if (!is_scalar($message)) {
+                    $scalars = false;
+                    break;
+                }
+            }
+
+            if ($scalars) {
+                $errors = array('_general' => $errors);
+            }
+        }
+
         foreach ($errors as $field => $messages) {
             if (!is_array($messages)) {
                 $messages = array($messages);
@@ -177,7 +217,13 @@ class ApiResponseHelper
         return (string) $default;
     }
 
-    private static function sanitizeData($data)
+    /*
+     * Mascara dados sensíveis e reduz textos longos. Só para o LOG: a
+     * sanitização do LogHelper converte os valores em texto, mascara
+     * chaves com "token", "session"... e corta textos longos, o que
+     * corromperia a resposta enviada ao cliente.
+     */
+    private static function sanitizeForLog($data)
     {
         if ($data === null) {
             return null;
@@ -275,28 +321,106 @@ class ApiResponseHelper
         }
     }
 
-    private static function outputJson(array $payload, $statusCode = self::HTTP_OK, $close = null)
+    private static function encodeJson(array $payload)
+    {
+        $flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+
+        // PHP 7.2+: texto com UTF-8 inválido vira "\ufffd" em vez de derrubar tudo.
+        if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+            $flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+        }
+
+        return json_encode($payload, $flags);
+    }
+
+    private static function setHeader($name, $value)
+    {
+        try {
+            self::app()->setHeader($name, (string) $value, true);
+        } catch (Throwable $error) {
+        }
+    }
+
+    /*
+     * Envia os cabeçalhos registrados no Joomla. Necessário quando a
+     * aplicação é encerrada logo depois: $app->close() é só um exit, e o
+     * Joomla só envia os cabeçalhos ao montar a página.
+     */
+    private static function sendHeaders(array $headers)
+    {
+        if (headers_sent()) {
+            return;
+        }
+
+        try {
+            self::app()->sendHeaders();
+
+            return;
+        } catch (Throwable $error) {
+        }
+
+        foreach ($headers as $name => $value) {
+            header($name . ': ' . $value, true);
+        }
+    }
+
+    private static function outputJson(array $payload, $statusCode = self::HTTP_OK, $close = null, array $headers = array())
     {
         if ($close === null) {
             $close = self::$closeApplication;
         }
 
-        self::setHttpStatus($statusCode);
+        $json = self::encodeJson($payload);
 
-        try {
-            self::app()->setHeader(
-                'Content-Type',
-                'application/json; charset=utf-8',
-                true
+        if ($json === false) {
+            self::logError(
+                'Não foi possível converter a resposta para JSON.',
+                array(
+                    'erro' => json_last_error_msg(),
+                    'http_status' => $statusCode
+                )
             );
-        } catch (Throwable $error) {
+
+            $statusCode = self::HTTP_INTERNAL_SERVER_ERROR;
+            $payload = self::buildPayload(
+                false,
+                self::STATUS_ERROR,
+                'Não foi possível gerar a resposta.',
+                null,
+                array(),
+                array()
+            );
+            $json = self::encodeJson($payload);
         }
 
-        echo json_encode(
-            $payload,
-            JSON_UNESCAPED_UNICODE |
-            JSON_UNESCAPED_SLASHES
+        $headers = array_merge(
+            array(
+                'Content-Type' => 'application/json; charset=utf-8',
+                'Cache-Control' => 'no-store, no-cache, must-revalidate',
+                'X-Request-Id' => $payload['request_id']
+            ),
+            $headers
         );
+
+        self::setHttpStatus($statusCode);
+
+        foreach ($headers as $name => $value) {
+            self::setHeader($name, $value);
+        }
+
+        if ($close) {
+            /*
+             * Descarta o que já foi impresso (avisos do PHP, espaços,
+             * HTML do componente): misturado ao JSON, impediria o
+             * JavaScript de ler a resposta.
+             */
+            while (ob_get_level() > 0 && @ob_end_clean()) {
+            }
+
+            self::sendHeaders($headers);
+        }
+
+        echo $json;
 
         if ($close) {
             self::app()->close();
@@ -305,13 +429,27 @@ class ApiResponseHelper
         return $payload;
     }
 
-    private static function redirect($url = null)
+    /*
+     * Só redireciona para URLs do próprio site, a menos que
+     * $allowExternal seja true: evita "open redirect" quando a URL vem
+     * da requisição (parâmetro "return", por exemplo).
+     */
+    private static function redirect($url, $allowExternal = false)
     {
-        $url = $url !== null
-            ? trim((string) $url)
-            : self::$defaultRedirect;
+        $url = trim((string) $url);
 
-        if ($url === null || $url === '') {
+        if ($url === '') {
+            return false;
+        }
+
+        if (!$allowExternal && class_exists('JUri') && !JUri::isInternal($url)) {
+            self::logError(
+                'Redirecionamento para URL externa bloqueado.',
+                array(
+                    'url' => $url
+                )
+            );
+
             return false;
         }
 
@@ -338,7 +476,7 @@ class ApiResponseHelper
             $success,
             $status,
             $message,
-            self::sanitizeData($data),
+            $data,
             $errors,
             isset($options['meta']) && is_array($options['meta'])
                 ? $options['meta']
@@ -351,7 +489,7 @@ class ApiResponseHelper
                 array(
                     'http_status' => $httpStatus,
                     'errors' => $errors,
-                    'data' => self::sanitizeData($data)
+                    'data' => self::sanitizeForLog($data)
                 )
             );
         }
@@ -366,7 +504,10 @@ class ApiResponseHelper
                 $httpStatus,
                 isset($options['close'])
                     ? (bool) $options['close']
-                    : null
+                    : null,
+                isset($options['headers']) && is_array($options['headers'])
+                    ? $options['headers']
+                    : array()
             );
         }
 
@@ -387,16 +528,31 @@ class ApiResponseHelper
             $messageType
         );
 
-        if (!empty($options['redirect'])) {
-            self::redirect($options['redirect']);
+        // 'redirect' => false desliga o redirecionamento padrão.
+        $redirect = array_key_exists('redirect', $options)
+            ? $options['redirect']
+            : self::$defaultRedirect;
+
+        if (!empty($redirect)) {
+            self::redirect(
+                $redirect,
+                !empty($options['allow_external_redirect'])
+            );
         }
 
         return $payload;
     }
 
+    /*
+     * URL para onde as respostas HTML (não JSON) redirecionam depois de
+     * registrar a mensagem. Pode ser trocada por resposta com a opção
+     * 'redirect'. Vazio desliga.
+     */
     public static function setDefaultRedirect($url)
     {
-        self::$defaultRedirect = trim((string) $url);
+        $url = trim((string) $url);
+
+        self::$defaultRedirect = $url === '' ? null : $url;
     }
 
     public static function setCloseApplication($close)
@@ -614,9 +770,20 @@ class ApiResponseHelper
         );
     }
 
+    /*
+     * $options['retry_after']: segundos até poder tentar de novo
+     * (cabeçalho Retry-After).
+     */
     public static function tooManyRequests($message = 'Muitas tentativas. Aguarde alguns instantes e tente novamente.', array $options = array())
     {
         $options['http_status'] = self::HTTP_TOO_MANY_REQUESTS;
+
+        if (isset($options['retry_after']) && (int) $options['retry_after'] > 0) {
+            $options['headers'] = array_merge(
+                isset($options['headers']) ? (array) $options['headers'] : array(),
+                array('Retry-After' => (string) (int) $options['retry_after'])
+            );
+        }
 
         return self::error(
             $message,
@@ -668,10 +835,52 @@ class ApiResponseHelper
         $options['http_status'] = self::HTTP_INTERNAL_SERVER_ERROR;
         $options['log'] = false;
 
+        // Com o debug do Joomla ligado (desenvolvimento), devolve os detalhes.
+        if (defined('JDEBUG') && JDEBUG) {
+            $options['meta'] = array_merge(
+                isset($options['meta']) && is_array($options['meta']) ? $options['meta'] : array(),
+                array(
+                    'debug' => array(
+                        'tipo' => get_class($error),
+                        'mensagem' => $error->getMessage(),
+                        'arquivo' => $error->getFile(),
+                        'linha' => $error->getLine()
+                    )
+                )
+            );
+        }
+
         return self::error(
             $publicMessage,
             null,
             array(),
+            $options
+        );
+    }
+
+    /*
+     * Resposta de listagem a partir do resultado de OrmBase::paginate():
+     * os itens vão em 'data' e os números da paginação em
+     * 'meta.paginacao'. O objeto JPagination é descartado.
+     */
+    public static function paginated(array $result, $message = 'Registros carregados.', array $options = array())
+    {
+        $meta = isset($options['meta']) && is_array($options['meta'])
+            ? $options['meta']
+            : array();
+
+        $meta['paginacao'] = array(
+            'total' => isset($result['total']) ? (int) $result['total'] : 0,
+            'por_pagina' => isset($result['por_pagina']) ? (int) $result['por_pagina'] : 0,
+            'pagina_atual' => isset($result['pagina_atual']) ? (int) $result['pagina_atual'] : 1,
+            'total_paginas' => isset($result['total_paginas']) ? (int) $result['total_paginas'] : 0
+        );
+
+        $options['meta'] = $meta;
+
+        return self::success(
+            $message,
+            isset($result['itens']) ? $result['itens'] : array(),
             $options
         );
     }
