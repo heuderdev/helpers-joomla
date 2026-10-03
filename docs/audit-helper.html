@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AuditHelper · helpers-joomla</title>
+<meta name="description" content="Referência do AuditHelper: auditoria de eventos, logs de segurança, conformidade de dados, rastreamento de UUID de requisição, ofuscação de segredos e integração nativa com OrmBase.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › AuditHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" class="ativo" aria-current="page" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>AuditHelper</h1>
+<p class="lead">Registro e consulta de trilhas de auditoria (audit trail) de forma totalmente agnóstica de banco, integrada ao <code>OrmBase</code>, com ofuscação automática de dados sensíveis e rastreamento de contexto de requisição.</p>
+<div id="nesta-pagina"></div>
+
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O <code>AuditHelper</code> registra tudo o que acontece de relevante na aplicação em uma tabela estruturada (<code>#__audit_logs</code>), servindo tanto para análise de falhas operacionais por parte do suporte quanto para fins de conformidade jurídica de segurança da informação (LGPD).</p>
+<p>A arquitetura do <code>AuditHelper</code> segue padrões de excelência de nível de produção:</p>
+<ul>
+    <li><strong>Portabilidade por ORM (`OrmBase`/`OrmTables`):</strong> Ao invés de usar o driver nativo estático do Joomla, o helper escreve e consulta os logs de auditoria utilizando nosso motor ORM. Isso significa que a tabela de auditoria se torna 100% compatível com qualquer banco (seja <code>MySQL</code>, <code>MariaDB</code>, <code>PostgreSQL</code> ou `SQL Server`) e se adapta de forma transparente às diferenças sintáticas dessas linguagens.</li>
+    <li><strong>Isolamento de Bancos de Dados por Conexão:</strong> Com a integração do <code>DbConnectionHelper</code>, você pode definir em qual conexão o log de auditoria deve ser gravado. Isso permite, por exemplo, guardar logs em um banco de segurança apartado do banco principal da aplicação, apenas com configurações simples.</li>
+    <li><strong>UUID de Requisição Unificado:</strong> Gera um <code>request_id</code> único no formato de UUID v4 para cada requisição HTTP que chega à aplicação. Mesmo se o ciclo da requisição disparar 15 logs de auditoria diferentes em Controllers, Models e Queues, todos compartilharão o mesmo <code>request_id</code>, permitindo rastrear o fluxo completo de uma única ação do usuário.</li>
+    <li><strong>Máscara Automática de Segredos (GDPR/LGPD):</strong> Analisa de forma recursiva todos os arrays de dados passados antes/depois da gravação e substitui valores de chaves sensíveis parametrizadas (como <code>senha</code>, <code>password</code>, <code>token</code>, <code>numero_cartao</code>, <code>cvv</code>) pelo placeholder de segurança <code>"***** [masked]"</code>.</li>
+    <li><strong>Rastreamento Completo de Contexto:</strong> Coleta e grava de forma segura informações do IP do cliente (atrás de proxies), o User-Agent, a URI acessada, o método HTTP, o referer e dados completos do usuário logado (ID, nome e username).</li>
+</ul>
+
+<div class="codigo">
+<div class="titulo-codigo">Estrutura física recomendada da tabela</div>
+<pre><code data-lang="sql">CREATE TABLE `#__audit_logs` (
+    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` char(36) NOT NULL,
+    `request_id` char(36) NOT NULL,
+    `event` varchar(64) NOT NULL,
+    `category` varchar(64) NOT NULL,
+    `level` varchar(32) NOT NULL,
+    `status` varchar(32) NOT NULL,
+    `entity_type` varchar(120) DEFAULT NULL,
+    `entity_id` varchar(120) DEFAULT NULL,
+    `parent_entity_type` varchar(120) DEFAULT NULL,
+    `parent_entity_id` varchar(120) DEFAULT NULL,
+    `user_id` int(10) unsigned DEFAULT NULL,
+    `user_name` varchar(255) DEFAULT NULL,
+    `user_username` varchar(255) DEFAULT NULL,
+    `ip_address` varchar(64) NOT NULL,
+    `user_agent` varchar(1000) NOT NULL,
+    `request_method` varchar(10) NOT NULL,
+    `request_uri` varchar(2000) NOT NULL,
+    `referer` varchar(2000) DEFAULT NULL,
+    `description` text DEFAULT NULL,
+    `before_data` longtext DEFAULT NULL,
+    `after_data` longtext DEFAULT NULL,
+    `metadata` longtext DEFAULT NULL,
+    `created_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_request_id` (`request_id`),
+    KEY `idx_event` (`event`),
+    KEY `idx_entity` (`entity_type`, `entity_id`),
+    KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+</code></pre>
+</div>
+
+<h2 id="configuracao-global" data-titulo="Configurações globais">Configurações globais</h2>
+<p>Valores que controlam para onde os logs são gravados, mascaramento de chaves sensíveis e comportamento de rastreio.</p>
+
+<div class="metodo">
+<h3 id="setConnection"><code>setConnection() / getConnection()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::setConnection(string|null $connection): void<br>AuditHelper::getConnection(): string|null</div>
+<p>Define a conexão alternativa cadastrada no <code>DbConnectionHelper</code> onde os logs de auditoria serão fisicamente guardados (ex: <code>'seguranca'</code> ou <code>'erp'</code>). Se nulo, utiliza a conexão padrão do Joomla.</p>
+</div>
+
+<div class="metodo">
+<h3 id="setTable"><code>setTable()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">FileHelper::setTable(string $table): void</div>
+<p>Muda o nome da tabela física no banco onde a auditoria será efetuada (padrão: <code>'#__audit_logs'</code>).</p>
+</div>
+
+<div class="metodo">
+<h3 id="setRequestId"><code>setRequestId() / getRequestId()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::setRequestId(string $requestId): void<br>AuditHelper::getRequestId(): string</div>
+<p>Define ou lê o ID de requisição unificado da sessão atual (UUID v4 padrão gerado de forma pseudo-aleatória forte).</p>
+</div>
+
+<div class="metodo">
+<h3 id="addSensitiveKey"><code>addSensitiveKey()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::addSensitiveKey(string $key): void</div>
+<p>Registra um nome de campo adicional a ser monitorado de forma recursiva e mascarado nos campos de dados de log, visando proteger dados sigilosos e assegurar conformidade de segurança.</p>
+</div>
+
+<h2 id="registro-eventos" data-titulo="Registro de Eventos">Registro de Eventos</h2>
+<p>Métodos para auditoria manual de ações do sistema e atalhos semânticos de ciclo CRUD.</p>
+
+<div class="metodo">
+<h3 id="log"><code>log()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::log(string $event, array $options = []): int</div>
+<p>Método base que processa o contexto, limpa dados de segredo, limita os tamanhos de texto excessivos e realiza a inserção do registro no banco pelo ORM. Retorna o ID do registro inserido ou <code>0</code> em caso de falha controlada.</p>
+<p>Opções aceitas no array:</p>
+<div class="tabela">
+<table>
+    <thead>
+        <tr>
+            <th>Opção</th>
+            <th>Tipo</th>
+            <th>Padrão</th>
+            <th>Descrição</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>category</code></td>
+            <td>string</td>
+            <td><code>'application'</code></td>
+            <td>Categoria semântica do log (ex: <code>'auth'</code>, <code>'payment'</code>, <code>'system'</code>).</td>
+        </tr>
+        <tr>
+            <td><code>level</code></td>
+            <td>string</td>
+            <td><code>'info'</code></td>
+            <td>Gravidade do evento (<code>debug</code>, <code>info</code>, <code>warning</code>, <code>critical</code>, etc.).</td>
+        </tr>
+        <tr>
+            <td><code>status</code></td>
+            <td>string</td>
+            <td><code>'success'</code></td>
+            <td>Resultado da ação (<code>success</code>, <code>failure</code>, <code>denied</code>, <code>pending</code>).</td>
+        </tr>
+        <tr>
+            <td><code>description</code></td>
+            <td>string</td>
+            <td><code>null</code></td>
+            <td>Resumo amigável em linguagem natural sobre o que aconteceu.</td>
+        </tr>
+        <tr>
+            <td><code>entity_type</code></td>
+            <td>string</td>
+            <td><code>null</code></td>
+            <td>Entidade principal de escopo afetada (ex: <code>'pedido'</code>, <code>'usuario'</code>).</td>
+        </tr>
+        <tr>
+            <td><code>entity_id</code></td>
+            <td>string|int</td>
+            <td><code>null</code></td>
+            <td>Chave primária ou ID único da entidade afetada.</td>
+        </tr>
+        <tr>
+            <td><code>before</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Array associativo descrevendo o estado dos dados **antes** da alteração.</td>
+        </tr>
+        <tr>
+            <td><code>after</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Array associativo descrevendo o estado dos dados **depois** da alteração.</td>
+        </tr>
+        <tr>
+            <td><code>metadata</code></td>
+            <td>array</td>
+            <td><code>[]</code></td>
+            <td>Informações auxiliares contextuais livre que se deseja guardar (ex: tempo de processamento, headers, flags).</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="created"><code>created() / restored()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::created(string $entityType, string|int $entityId, array $afterData = [], array $options = []): int<br>AuditHelper::restored(string $entityType, string|int $entityId, array $afterData = [], array $options = []): int</div>
+<p>Atalhos semânticos para registrar inserção física ou lógica de um registro de banco de dados.</p>
+</div>
+
+<div class="metodo">
+<h3 id="updated"><code>updated()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::updated(string $entityType, string|int $entityId, array $dadosAntes, array $dadosDepois, array $options = []): int</div>
+<p>Registra alterações em registros. Se a opção <code>'only_changes' => true</code> (padrão) for mantida ativa, o helper realiza uma verificação recursiva e grava em `before_data` e `after_data` **apenas as chaves que realmente mudaram de valor**, economizando espaço no banco.</p>
+<div class="codigo">
+<pre><code data-lang="php">// Modificou apenas a coluna de saldo e o status do cliente
+AuditHelper::updated(
+    'cliente', 
+    14, 
+    ['saldo' => 150.00, 'status' => 'ativo', 'nome' => 'João'], // Antes
+    ['saldo' => 50.00, 'status' => 'bloqueado', 'nome' => 'João'] // Depois
+);
+// before_data gravado no log:  {"saldo": 150.0, "status": "ativo"}
+// after_data gravado no log:   {"saldo": 50.0, "status": "bloqueado"}
+</code></pre>
+</div>
+</div>
+
+<div class="metodo">
+<h3 id="deleted"><code>deleted()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::deleted(string $entityType, string|int $entityId, array $dadosAntes = [], array $options = []): int</div>
+<p>Atalho semântico para registrar a exclusão (física ou lógica) de uma linha de dados no sistema.</p>
+</div>
+
+<h2 id="consulta-limpeza" data-titulo="Consulta e Limpeza">Consulta e Limpeza</h2>
+<p>Leitura de dados agregada de logs estruturados e esvaziamento seguro de relatórios legados.</p>
+
+<div class="metodo">
+<h3 id="find"><code>find()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::find(int $id): object|null</div>
+<p>Localiza e retorna um log de auditoria específico cadastrado pela sua chave primária.</p>
+</div>
+
+<div class="metodo">
+<h3 id="list"><code>list()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::list(array $filters = [], int $limit = 50, int $offset = 0): array</div>
+<p>Lista logs de auditoria aplicando filtros flexíveis de forma indexada. Retorna uma lista de objetos.</p>
+<p>Filtros aceitos no array:</p>
+<ul>
+    <li><code>event</code>: Nome do evento (ex: <code>'login_failed'</code>).</li>
+    <li><code>category</code>: Categoria semântica.</li>
+    <li><code>status</code>: Estado do evento (ex: <code>'denied'</code>).</li>
+    <li><code>level</code>: Gravidade do evento.</li>
+    <li><code>entity_type</code> / <code>entity_id</code>: Escopo de registro.</li>
+    <li><code>user_id</code>: ID do usuário operador.</li>
+    <li><code>request_id</code>: Chave de rastreio UUID v4 da requisição.</li>
+    <li><code>date_start</code>: Data inicial de criação (inclusive, ex: <code>'2026-10-01 00:00:00'</code>).</li>
+    <li><code>date_end</code>: Data limite final de criação (inclusive).</li>
+    <li><code>search</code>: Busca textual amigável em múltiplos campos ao mesmo tempo (com cláusula de `whereGroup` e `whereLike` em `description`, `event`, `entity_id` e nos nomes do usuário).</li>
+</ul>
+</div>
+
+<div class="metodo">
+<h3 id="count"><code>count()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::count(array $filters = []): int</div>
+<p>Retorna a contagem agregada de registros de logs que atendam aos mesmos filtros de pesquisa estruturados.</p>
+</div>
+
+<div class="metodo">
+<h3 id="purge"><code>purge()</code><span class="tag estatico">estático</span></h3>
+<div class="assinatura">AuditHelper::purge(string $dateBefore, int $limit = 1000): int</div>
+<p>Exclui definitivamente registros de log que foram criados antes da data fornecida (<code>$dateBefore</code>), de forma escalável e segura. O método apaga em lotes limitados por <code>$limit</code> (máximo 10.000) por transação para poupar gargalo e lock de tabelas de produção em bancos de alta concorrência.</p>
+<div class="codigo">
+<pre><code data-lang="php">// Remover em bloco até 2000 logs de auditoria anteriores a 2025
+$logsApagados = AuditHelper::purge('2025-01-01 00:00:00', 2000);
+</code></pre>
+</div>
+</div>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul>
+    <li><a href="orm-tables.html">OrmTables</a>: Motor dinâmico do ORM para tabelas do banco de dados.</li>
+    <li><a href="db-connection-helper.html">DbConnectionHelper</a>: Configuração de bancos adicionais e tipos de conexão.</li>
+</ul>
+
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="file-helper.html"><small>← Anterior</small>FileHelper</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code>, <code>FileHelper</code> e <code>AuditHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>

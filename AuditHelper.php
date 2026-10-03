@@ -82,6 +82,8 @@ class AuditHelper
 
     private static $table = '#__audit_logs';
 
+    private static $connection = null;
+
     private static $requestId = null;
 
     private static $sensitiveKeys = array(
@@ -118,8 +120,21 @@ class AuditHelper
 
     private static $enabled = true;
 
+    private static function loadHelper($class)
+    {
+        if (!class_exists($class) && is_file(__DIR__ . '/' . $class . '.php')) {
+            require_once __DIR__ . '/' . $class . '.php';
+        }
+
+        return class_exists($class);
+    }
+
     private static function db()
     {
+        if (self::$connection !== null && self::loadHelper('DbConnectionHelper')) {
+            return DbConnectionHelper::get(self::$connection);
+        }
+
         return JFactory::getDbo();
     }
 
@@ -495,35 +510,16 @@ class AuditHelper
 
     private static function inserir(array $dados)
     {
-        $db = self::db();
+        if (!self::loadHelper('OrmTables')) {
+            throw new RuntimeException('AuditHelper exige OrmTables para inserir logs.');
+        }
 
-        $registro = new stdClass();
+        $orm = OrmTables::table(self::$table, array(
+            'connection' => self::$connection,
+            'timestamps' => false
+        ));
 
-        $registro->uuid                  = $dados['uuid'];
-        $registro->request_id            = $dados['request_id'];
-        $registro->event                 = $dados['event'];
-        $registro->category              = $dados['category'];
-        $registro->level                 = $dados['level'];
-        $registro->status                = $dados['status'];
-        $registro->entity_type           = $dados['entity_type'];
-        $registro->entity_id             = $dados['entity_id'];
-        $registro->parent_entity_type    = $dados['parent_entity_type'];
-        $registro->parent_entity_id      = $dados['parent_entity_id'];
-        $registro->user_id               = $dados['user_id'];
-        $registro->user_name             = $dados['user_name'];
-        $registro->user_username         = $dados['user_username'];
-        $registro->ip_address            = $dados['ip_address'];
-        $registro->user_agent            = $dados['user_agent'];
-        $registro->request_method        = $dados['request_method'];
-        $registro->request_uri           = $dados['request_uri'];
-        $registro->referer               = $dados['referer'];
-        $registro->description           = $dados['description'];
-        $registro->before_data           = $dados['before_data'];
-        $registro->after_data            = $dados['after_data'];
-        $registro->metadata              = $dados['metadata'];
-        $registro->created_at            = $dados['created_at'];
-
-        $db->insertObject(self::$table, $registro, 'id');
+        $registro = $orm->create($dados);
 
         return (int) $registro->id;
     }
@@ -546,6 +542,16 @@ class AuditHelper
         }
 
         self::$table = $table;
+    }
+
+    public static function setConnection($connection)
+    {
+        self::$connection = $connection;
+    }
+
+    public static function getConnection()
+    {
+        return self::$connection;
     }
 
     public static function getRequestId()
@@ -1043,16 +1049,16 @@ class AuditHelper
                 return null;
             }
 
-            $db = self::db();
+            if (!self::loadHelper('OrmTables')) {
+                throw new RuntimeException('AuditHelper exige OrmTables.');
+            }
 
-            $query = $db->getQuery(true)
-                ->select('*')
-                ->from($db->quoteName(self::$table))
-                ->where($db->quoteName('id') . ' = ' . $id);
+            $orm = OrmTables::table(self::$table, array(
+                'connection' => self::$connection,
+                'timestamps' => false
+            ));
 
-            $db->setQuery($query);
-
-            return $db->loadObject();
+            return $orm->find($id);
         } catch (Throwable $erro) {
             self::registrarErroInterno(__METHOD__, $erro);
 
@@ -1065,114 +1071,70 @@ class AuditHelper
         try {
             $limit = min(200, max(1, (int) $limit));
             $offset = max(0, (int) $offset);
-            $db = self::db();
 
-            $query = $db->getQuery(true)
-                ->select('*')
-                ->from($db->quoteName(self::$table))
-                ->order($db->quoteName('id') . ' DESC');
+            if (!self::loadHelper('OrmTables')) {
+                throw new RuntimeException('AuditHelper exige OrmTables.');
+            }
+
+            $orm = OrmTables::table(self::$table, array(
+                'connection' => self::$connection,
+                'timestamps' => false
+            ));
+
+            $orm->orderBy('id', 'DESC');
 
             if (isset($filters['event']) && trim((string) $filters['event']) !== '') {
-                $query->where(
-                    $db->quoteName('event') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['event']))
-                );
+                $orm->where('event', trim((string) $filters['event']));
             }
 
             if (isset($filters['category']) && trim((string) $filters['category']) !== '') {
-                $query->where(
-                    $db->quoteName('category') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['category']))
-                );
+                $orm->where('category', trim((string) $filters['category']));
             }
 
             if (isset($filters['status']) && trim((string) $filters['status']) !== '') {
-                $query->where(
-                    $db->quoteName('status') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['status']))
-                );
+                $orm->where('status', trim((string) $filters['status']));
             }
 
             if (isset($filters['level']) && trim((string) $filters['level']) !== '') {
-                $query->where(
-                    $db->quoteName('level') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['level']))
-                );
+                $orm->where('level', trim((string) $filters['level']));
             }
 
             if (isset($filters['entity_type']) && trim((string) $filters['entity_type']) !== '') {
-                $query->where(
-                    $db->quoteName('entity_type') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['entity_type']))
-                );
+                $orm->where('entity_type', trim((string) $filters['entity_type']));
             }
 
             if (isset($filters['entity_id']) && trim((string) $filters['entity_id']) !== '') {
-                $query->where(
-                    $db->quoteName('entity_id') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['entity_id']))
-                );
+                $orm->where('entity_id', trim((string) $filters['entity_id']));
             }
 
             if (isset($filters['user_id']) && (int) $filters['user_id'] > 0) {
-                $query->where(
-                    $db->quoteName('user_id') .
-                    ' = ' .
-                    (int) $filters['user_id']
-                );
+                $orm->where('user_id', (int) $filters['user_id']);
             }
 
             if (isset($filters['request_id']) && trim((string) $filters['request_id']) !== '') {
-                $query->where(
-                    $db->quoteName('request_id') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['request_id']))
-                );
+                $orm->where('request_id', trim((string) $filters['request_id']));
             }
 
             if (isset($filters['date_start']) && trim((string) $filters['date_start']) !== '') {
-                $query->where(
-                    $db->quoteName('created_at') .
-                    ' >= ' .
-                    $db->quote(trim((string) $filters['date_start']))
-                );
+                $orm->where('created_at', '>=', trim((string) $filters['date_start']));
             }
 
             if (isset($filters['date_end']) && trim((string) $filters['date_end']) !== '') {
-                $query->where(
-                    $db->quoteName('created_at') .
-                    ' <= ' .
-                    $db->quote(trim((string) $filters['date_end']))
-                );
+                $orm->where('created_at', '<=', trim((string) $filters['date_end']));
             }
 
             if (isset($filters['search']) && trim((string) $filters['search']) !== '') {
-                $search = '%' . $db->escape(trim((string) $filters['search']), true) . '%';
-
-                $query->where(
-                    '(' .
-                    $db->quoteName('description') . ' LIKE ' . $db->quote($search, false) .
-                    ' OR ' .
-                    $db->quoteName('event') . ' LIKE ' . $db->quote($search, false) .
-                    ' OR ' .
-                    $db->quoteName('entity_id') . ' LIKE ' . $db->quote($search, false) .
-                    ' OR ' .
-                    $db->quoteName('user_name') . ' LIKE ' . $db->quote($search, false) .
-                    ' OR ' .
-                    $db->quoteName('user_username') . ' LIKE ' . $db->quote($search, false) .
-                    ')'
-                );
+                $search = trim((string) $filters['search']);
+                $orm->whereGroup(function ($q) use ($search) {
+                    $q->whereLike('description', $search)
+                      ->orWhereLike('event', $search)
+                      ->orWhereLike('entity_id', $search)
+                      ->orWhereLike('user_name', $search)
+                      ->orWhereLike('user_username', $search);
+                });
             }
 
-            $db->setQuery($query, $offset, $limit);
-
-            return $db->loadObjectList();
+            return $orm->limit($limit)->offset($offset)->get();
         } catch (Throwable $erro) {
             self::registrarErroInterno(__METHOD__, $erro);
 
@@ -1183,63 +1145,40 @@ class AuditHelper
     public static function count(array $filters = array())
     {
         try {
-            $db = self::db();
+            if (!self::loadHelper('OrmTables')) {
+                throw new RuntimeException('AuditHelper exige OrmTables.');
+            }
 
-            $query = $db->getQuery(true)
-                ->select('COUNT(*)')
-                ->from($db->quoteName(self::$table));
+            $orm = OrmTables::table(self::$table, array(
+                'connection' => self::$connection,
+                'timestamps' => false
+            ));
 
             if (isset($filters['event']) && trim((string) $filters['event']) !== '') {
-                $query->where(
-                    $db->quoteName('event') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['event']))
-                );
+                $orm->where('event', trim((string) $filters['event']));
             }
 
             if (isset($filters['category']) && trim((string) $filters['category']) !== '') {
-                $query->where(
-                    $db->quoteName('category') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['category']))
-                );
+                $orm->where('category', trim((string) $filters['category']));
             }
 
             if (isset($filters['status']) && trim((string) $filters['status']) !== '') {
-                $query->where(
-                    $db->quoteName('status') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['status']))
-                );
+                $orm->where('status', trim((string) $filters['status']));
             }
 
             if (isset($filters['entity_type']) && trim((string) $filters['entity_type']) !== '') {
-                $query->where(
-                    $db->quoteName('entity_type') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['entity_type']))
-                );
+                $orm->where('entity_type', trim((string) $filters['entity_type']));
             }
 
             if (isset($filters['entity_id']) && trim((string) $filters['entity_id']) !== '') {
-                $query->where(
-                    $db->quoteName('entity_id') .
-                    ' = ' .
-                    $db->quote(trim((string) $filters['entity_id']))
-                );
+                $orm->where('entity_id', trim((string) $filters['entity_id']));
             }
 
             if (isset($filters['user_id']) && (int) $filters['user_id'] > 0) {
-                $query->where(
-                    $db->quoteName('user_id') .
-                    ' = ' .
-                    (int) $filters['user_id']
-                );
+                $orm->where('user_id', (int) $filters['user_id']);
             }
 
-            $db->setQuery($query);
-
-            return (int) $db->loadResult();
+            return $orm->count();
         } catch (Throwable $erro) {
             self::registrarErroInterno(__METHOD__, $erro);
 
@@ -1257,17 +1196,19 @@ class AuditHelper
                 throw new InvalidArgumentException('A data limite para limpeza é obrigatória.');
             }
 
-            $db = self::db();
+            if (!self::loadHelper('OrmTables')) {
+                throw new RuntimeException('AuditHelper exige OrmTables.');
+            }
 
-            $query = $db->getQuery(true)
-                ->select($db->quoteName('id'))
-                ->from($db->quoteName(self::$table))
-                ->where($db->quoteName('created_at') . ' < ' . $db->quote($dateBefore))
-                ->order($db->quoteName('id') . ' ASC');
+            $orm = OrmTables::table(self::$table, array(
+                'connection' => self::$connection,
+                'timestamps' => false
+            ));
 
-            $db->setQuery($query, 0, $limit);
-
-            $ids = $db->loadColumn();
+            $ids = $orm->where('created_at', '<', $dateBefore)
+                ->orderBy('id', 'ASC')
+                ->limit($limit)
+                ->pluck('id');
 
             if (empty($ids)) {
                 return 0;
@@ -1275,14 +1216,12 @@ class AuditHelper
 
             $ids = array_map('intval', $ids);
 
-            $delete = $db->getQuery(true)
-                ->delete($db->quoteName(self::$table))
-                ->where($db->quoteName('id') . ' IN (' . implode(',', $ids) . ')');
+            $deleter = OrmTables::table(self::$table, array(
+                'connection' => self::$connection,
+                'timestamps' => false
+            ));
 
-            $db->setQuery($delete);
-            $db->execute();
-
-            return (int) $db->getAffectedRows();
+            return (int) $deleter->whereIn('id', $ids)->deleteWhere();
         } catch (Throwable $erro) {
             self::registrarErroInterno(__METHOD__, $erro);
 
