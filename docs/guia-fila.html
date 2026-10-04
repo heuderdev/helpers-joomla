@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia: fila de jobs · helpers-joomla</title>
+<meta name="description" content="Guia completo da fila de jobs: criar jobs, enfileirar, rodar o worker em Joomla 3, 4 e 5, progresso, erros e produção.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Guias › Fila de jobs</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" class="ativo" aria-current="page" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Guia: fila de jobs</h1>
+<p class="lead">Tarefas demoradas em segundo plano, do zero à produção: criar o job, enfileirar, rodar o worker, mostrar o progresso e lidar com erros.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>Algumas tarefas demoram demais para acontecer enquanto o usuário espera a página carregar: importar um CSV com 200 mil linhas, gerar 3 mil PDFs, enviar e-mails em massa, chamar uma API lenta. A <strong>fila de jobs</strong> resolve isso. O controller só <em>anota</em> o trabalho numa tabela e responde na hora. Um processo separado, o <strong>worker</strong>, executa o trabalho em segundo plano, com progresso, novas tentativas em caso de erro e recuperação se o servidor cair.</p><div class="codigo"><pre><code data-lang="text">Navegador ──POST──&gt; Controller ──QueueHelper::push()──&gt; tabela #__queue_jobs
+   ^                    │                                       │
+   │                    └── responde na hora com o uuid         │ QueueHelper::next()
+   │                                                            v
+   └──GET status(uuid)── Controller &lt;──── progresso ──── Worker (CLI) ──&gt; SeuJob::handle()</code></pre></div><div class="tabela"><table><thead><tr><th>Peça</th><th>Arquivo</th><th>Papel</th></tr></thead><tbody><tr><td><a href="queue-helper.html"><code>QueueHelper</code></a></td><td><code>QueueHelper.php</code></td><td>A fila: grava, reserva, conclui, consulta e limpa jobs.</td></tr><tr><td><a href="fila-worker.html#abstractjob"><code>AbstractJob</code></a></td><td><code>fila/AbstractJob.php</code></td><td>Classe base dos seus jobs. Você implementa <code>handle()</code>.</td></tr><tr><td><a href="fila-worker.html#jobregistry"><code>JobRegistry</code></a></td><td><code>fila/JobRegistry.php</code></td><td>Liga cada tipo de job à sua classe e à sua fila.</td></tr><tr><td><a href="fila-worker.html#queueworker"><code>QueueWorker</code></a></td><td><code>fila/QueueWorker.php</code></td><td>O laço que pega jobs e os executa com segurança.</td></tr><tr><td><a href="fila-worker.html#cli">Worker CLI</a></td><td><code>fila/cli/queue-worker.php</code></td><td>Liga o Joomla (3, 4 ou 5) na linha de comando e roda o <code>QueueWorker</code>.</td></tr><tr><td>Tabela</td><td><code>fila/table.sql</code> e <code>fila/table.postgresql.sql</code></td><td>Estrutura da tabela para MySQL/MariaDB e PostgreSQL.</td></tr></tbody></table></div><div class="tabela"><table><thead><tr><th>Requisito</th><th>Versão</th></tr></thead><tbody><tr><td>Joomla</td><td>3.4.5 ou superior, 4.x e 5.x (com ou sem o plugin de compatibilidade)</td></tr><tr><td>PHP</td><td>7.0 ou superior (testado no 8.3)</td></tr><tr><td>Banco</td><td>MySQL 5.5.3+ / MariaDB (utf8mb4) ou PostgreSQL 9.5+</td></tr><tr><td>Worker</td><td>Acesso à linha de comando (cron, SSH, supervisor). Sem isso, veja <a href="#sem-cli">hospedagem sem linha de comando</a>.</td></tr></tbody></table></div><h2 id="ciclo-de-vida" data-titulo="Ciclo de vida de um job">Ciclo de vida de um job</h2><div class="codigo"><pre><code data-lang="text">pending ──next()──&gt; processing ──complete()──&gt; completed
+   ^                    │
+   │                    ├──release()──&gt; pending   (pausa: volta à fila sem gastar tentativa)
+   │                    ├──fail()─────&gt; retry     (volta depois de uma espera)
+   │                    │          └──&gt; failed    (sem tentativas restantes)
+   │                    └──worker morreu (lock expirado)──&gt; retry ou failed
+   └──retry()── failed / cancelled             cancel() ──&gt; cancelled</code></pre></div><div class="tabela"><table><thead><tr><th>Status</th><th>Significa</th><th>Sai dele com</th></tr></thead><tbody><tr><td><code>pending</code></td><td>Esperando um worker.</td><td><code>next()</code>, <code>cancel()</code></td></tr><tr><td><code>processing</code></td><td>Um worker está executando. Tem <code>lock_token</code>.</td><td><code>complete()</code>, <code>release()</code>, <code>fail()</code>, <code>cancel(…, true)</code>, lock expirado</td></tr><tr><td><code>retry</code></td><td>Deu erro e vai tentar de novo depois de <code>disponivel_em</code>.</td><td><code>next()</code>, <code>cancel()</code></td></tr><tr><td><code>completed</code></td><td>Concluído com sucesso. Final.</td><td>—</td></tr><tr><td><code>failed</code></td><td>Esgotou as tentativas, ou falhou de vez. Final.</td><td><code>retry()</code> manual</td></tr><tr><td><code>cancelled</code></td><td>Cancelado. Final.</td><td><code>retry()</code> manual</td></tr></tbody></table></div><h2 id="passo-a-passo" data-titulo="Passo a passo">Passo a passo</h2><h3 id="copiar">1. Copie os arquivos</h3><p>Mantenha a pasta <code>fila/</code> ao lado do <code>QueueHelper.php</code>: o worker CLI encontra os arquivos por essa posição.</p><div class="codigo"><pre><code data-lang="text">components/com_seucomp/
+├── helpers/
+│   ├── QueueHelper.php
+│   └── fila/
+│       ├── AbstractJob.php
+│       ├── JobRegistry.php
+│       ├── QueueWorker.php
+│       └── cli/queue-worker.php
+└── jobs/
+    ├── jobs.php                  ← registro dos jobs (passo 4)
+    └── GerarRelatorioJob.php     ← seus jobs (passo 3)</code></pre></div><h3 id="tabela">2. Crie a tabela</h3><p>Escolha uma forma:</p><div class="tabela"><table><thead><tr><th>Forma</th><th>Como</th></tr></thead><tbody><tr><td>No SQL de instalação do componente</td><td>Copie <code>fila/table.sql</code> (MySQL) ou <code>fila/table.postgresql.sql</code> para o seu <code>install.mysql.utf8.sql</code> / <code>install.postgresql.utf8.sql</code>.</td></tr><tr><td>Pela linha de comando</td><td><code>php components/com_seucomp/helpers/fila/cli/queue-worker.php --install</code></td></tr><tr><td>Por código (ex.: script de instalação)</td><td><code>QueueHelper::createTable();</code> cria se não existir, no banco em uso (MySQL ou PostgreSQL).</td></tr></tbody></table></div><h3 id="job">3. Escreva o job</h3><p>Um job é uma classe que herda <code>AbstractJob</code> e implementa <code>handle()</code>. Os dados chegam pelo <code>getPayload()</code>.</p><div class="codigo"><div class="titulo-codigo">components/com_seucomp/jobs/GerarRelatorioJob.php</div><pre><code data-lang="php">&lt;?php
+
+defined(&#x27;_JEXEC&#x27;) or die;
+
+class GerarRelatorioJob extends AbstractJob
+{
+    public function handle()
+    {
+        $mes = (int) $this-&gt;getPayload(&#x27;mes&#x27;);
+        $ano = (int) $this-&gt;getPayload(&#x27;ano&#x27;);
+
+        if ($mes &lt; 1 || $mes &gt; 12) {
+            // Dado inválido não melhora tentando de novo: falha de vez.
+            return $this-&gt;fail(&#x27;Mês inválido: &#x27; . $mes, true);
+        }
+
+        $arquivo = RelatorioService::gerar($mes, $ano);   // seu código
+
+        // O array devolvido vira o resultado do job (veja status()).
+        return [
+            &#x27;arquivo&#x27; =&gt; $arquivo,
+            &#x27;gerado_em&#x27; =&gt; date(&#x27;c&#x27;),
+        ];
+    }
+}</code></pre></div><div class="tabela"><table><thead><tr><th>Se o handle()…</th><th>O worker faz</th></tr></thead><tbody><tr><td>devolve um array (ou nada)</td><td>Conclui o job com esse array como resultado.</td></tr><tr><td>chama <code>$this-&gt;complete([...])</code></td><td>Nada: o job já foi concluído.</td></tr><tr><td>chama <code>$this-&gt;release()</code></td><td>Nada: o job volta à fila para continuar depois (<a href="#jobs-longos">jobs longos</a>).</td></tr><tr><td>chama <code>$this-&gt;fail('motivo')</code></td><td>Nada: o erro foi registrado e o job vai para <code>retry</code> ou <code>failed</code>.</td></tr><tr><td>lança uma exceção</td><td>Registra a falha com a mensagem e o arquivo/linha.</td></tr><tr><td>causa erro fatal, estoura o tempo ou chama <code>exit</code></td><td>Registra a falha antes de o processo morrer e desfaz a transação aberta.</td></tr></tbody></table></div><h3 id="registro">4. Registre o job</h3><p>Crie um arquivo que registra todos os jobs. Ele é carregado em dois lugares: no componente (para o <code>push()</code> saber a fila de cada tipo) e no worker (opção <code>--bootstrap</code>).</p><div class="codigo"><div class="titulo-codigo">components/com_seucomp/jobs/jobs.php</div><pre><code data-lang="php">&lt;?php
+
+defined(&#x27;_JEXEC&#x27;) or die;
+
+$base = JPATH_SITE . &#x27;/components/com_seucomp&#x27;;
+
+// No worker estas classes já vêm carregadas.
+if (!class_exists(&#x27;QueueHelper&#x27;)) {
+    require_once $base . &#x27;/helpers/QueueHelper.php&#x27;;
+    require_once $base . &#x27;/helpers/fila/AbstractJob.php&#x27;;
+    require_once $base . &#x27;/helpers/fila/JobRegistry.php&#x27;;
+}
+
+//                    tipo                arquivo da classe                     classe               fila
+JobRegistry::register(&#x27;gerar_relatorio&#x27;, $base . &#x27;/jobs/GerarRelatorioJob.php&#x27;, &#x27;GerarRelatorioJob&#x27;, &#x27;relatorios&#x27;);
+JobRegistry::register(&#x27;enviar_email&#x27;,    $base . &#x27;/jobs/EnviarEmailJob.php&#x27;,    &#x27;EnviarEmailJob&#x27;,    &#x27;emails&#x27;);
+
+// Opcional: grava os logs da fila em components/com_seucomp/logs/queue_helper.php
+QueueHelper::setLogDirectory(&#x27;components/com_seucomp/logs&#x27;);</code></pre></div><h3 id="enfileirar">5. Enfileire no controller</h3><div class="codigo"><div class="titulo-codigo">controllers/relatorios.php</div><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/jobs/jobs.php&#x27;;
+
+class SeucompControllerRelatorios extends JControllerLegacy
+{
+    public function gerar()
+    {
+        JSession::checkToken() or jexit(&#x27;Token inválido&#x27;);
+
+        $r = QueueHelper::push(&#x27;gerar_relatorio&#x27;, [
+            &#x27;mes&#x27; =&gt; InputHelper::uint(&#x27;mes&#x27;, 0, &#x27;post&#x27;),
+            &#x27;ano&#x27; =&gt; InputHelper::uint(&#x27;ano&#x27;, 0, &#x27;post&#x27;),
+        ], [
+            &#x27;usuario_id&#x27; =&gt; (int) JFactory::getUser()-&gt;id,
+            &#x27;unico&#x27; =&gt; true,          // dois cliques não geram dois relatórios iguais
+        ]);
+
+        if (!$r[&#x27;success&#x27;]) {
+            return ApiResponseHelper::error($r[&#x27;mensagem&#x27;]);
+        }
+
+        return ApiResponseHelper::created(&#x27;Relatório na fila.&#x27;, [&#x27;uuid&#x27; =&gt; $r[&#x27;data&#x27;][&#x27;uuid&#x27;]]);
+    }
+}</code></pre></div><div class="nota dica"><p>O <code>uuid</code> é o identificador para mostrar ao usuário e consultar o andamento. Prefira-o ao <code>id</code>: ele não é sequencial, então ninguém adivinha o job de outra pessoa.</p></div><h3 id="rodar">6. Rode o worker</h3><p>Primeiro, um teste manual que processa um job e sai:</p><div class="codigo"><pre><code data-lang="bash">php components/com_seucomp/helpers/fila/cli/queue-worker.php \
+    --bootstrap=components/com_seucomp/jobs/jobs.php --once</code></pre></div><div class="codigo"><pre><code data-lang="text">[2026-10-04 13:20:01] Worker iniciado. Fila: all. Tipos: gerar_relatorio, enviar_email.
+[2026-10-04 13:20:01] Job #1 [gerar_relatorio] tentativa 1/3.
+[2026-10-04 13:20:03] Job #1: completed.
+[2026-10-04 13:20:03] Worker encerrado (once). Processados: 1, concluídos: 1, liberados: 0, falhas: 0, cancelados: 0.</code></pre></div><p>Em produção, veja <a href="#producao">como manter o worker rodando</a>.</p><h3 id="acompanhar">7. Mostre o andamento na tela</h3><div class="codigo"><div class="titulo-codigo">controllers/relatorios.php</div><pre><code data-lang="php">public function status()
+{
+    $r = QueueHelper::status(
+        InputHelper::string(&#x27;uuid&#x27;, &#x27;&#x27;, &#x27;get&#x27;),
+        (int) JFactory::getUser()-&gt;id        // só o dono consulta
+    );
+
+    if (!$r[&#x27;success&#x27;]) {
+        return ApiResponseHelper::notFound($r[&#x27;mensagem&#x27;]);
+    }
+
+    $job = $r[&#x27;data&#x27;];
+
+    return ApiResponseHelper::success(&#x27;Status.&#x27;, [
+        &#x27;status&#x27; =&gt; $job[&#x27;status&#x27;],
+        &#x27;percentual&#x27; =&gt; $job[&#x27;percentual&#x27;],
+        &#x27;finalizado&#x27; =&gt; $job[&#x27;finalizado&#x27;],
+        &#x27;resultado&#x27; =&gt; $job[&#x27;status&#x27;] === &#x27;completed&#x27; ? $job[&#x27;resultado&#x27;] : null,
+        &#x27;erro&#x27; =&gt; $job[&#x27;status&#x27;] === &#x27;failed&#x27; ? &#x27;Não foi possível gerar o relatório.&#x27; : null,
+    ]);
+}</code></pre></div><div class="codigo"><div class="titulo-codigo">media/com_seucomp/js/relatorio.js</div><pre><code data-lang="js">function acompanhar(uuid) {
+    fetch(&#x27;index.php?option=com_seucomp&amp;task=relatorios.status&amp;format=json&amp;uuid=&#x27; + uuid)
+        .then(function (r) { return r.json(); })
+        .then(function (resposta) {
+            var job = resposta.data;
+            document.querySelector(&#x27;#barra&#x27;).style.width = job.percentual + &#x27;%&#x27;;
+
+            if (!job.finalizado) {
+                setTimeout(function () { acompanhar(uuid); }, 2000);
+            } else if (job.status === &#x27;completed&#x27;) {
+                window.location = job.resultado.arquivo;
+            } else {
+                alert(job.erro || &#x27;O processamento foi interrompido.&#x27;);
+            }
+        });
+}</code></pre></div><div class="nota aviso"><p>O texto de <code>erro</code> do job pode conter detalhes técnicos (arquivo, linha, SQL). Mostre ao usuário uma mensagem própria e deixe o erro completo para o administrador.</p></div><h2 id="producao" data-titulo="Mantendo o worker rodando">Mantendo o worker rodando</h2><div class="tabela"><table><thead><tr><th>Ambiente</th><th>Como</th><th>Comando</th></tr></thead><tbody><tr><td>Servidor com cron (o mais comum)</td><td>O cron inicia um worker por minuto, que trabalha até 55s ou até a fila esvaziar.</td><td><code>--max-time=55 --stop-when-empty</code></td></tr><tr><td>VPS / servidor próprio</td><td>Um worker permanente por fila, reiniciado pelo supervisor ou systemd se cair.</td><td><code>--queue=emails --max-time=0</code></td></tr><tr><td>Hospedagem sem linha de comando</td><td>Uma URL protegida, chamada por um cron externo.</td><td><a href="#sem-cli">veja abaixo</a></td></tr></tbody></table></div><h3 id="cron">Cron</h3><div class="codigo"><pre><code data-lang="bash"># crontab -e   (usuário do site, nunca root)
+* * * * * php /var/www/site/components/com_seucomp/helpers/fila/cli/queue-worker.php --bootstrap=/var/www/site/components/com_seucomp/jobs/jobs.php --max-time=55 --stop-when-empty --quiet
+
+# limpeza diária dos jobs finalizados há mais de 30 dias (veja purge())
+30 3 * * * php /var/www/site/components/com_seucomp/cli/limpar-fila.php</code></pre></div><div class="nota"><p>Sem <code>--max-time</code>, o worker sai depois de <strong>240 segundos</strong>. Esse padrão evita que um cron sem opções acumule processos. Workers sobrepostos não causam problema: dois workers nunca pegam o mesmo job.</p></div><h3 id="supervisor">Supervisor ou systemd</h3><div class="codigo"><div class="titulo-codigo">/etc/supervisor/conf.d/fila-emails.conf</div><pre><code data-lang="ini">[program:fila-emails]
+command=php /var/www/site/components/com_seucomp/helpers/fila/cli/queue-worker.php --bootstrap=/var/www/site/components/com_seucomp/jobs/jobs.php --queue=emails --max-time=3600
+user=www-data
+numprocs=2
+process_name=%(program_name)s_%(process_num)02d
+autorestart=true
+stopsignal=TERM
+stopwaitsecs=300
+stdout_logfile=/var/log/fila-emails.log
+redirect_stderr=true</code></pre></div><p><code>--max-time=3600</code> faz o worker sair a cada hora e o supervisor iniciar outro: assim, alterações no código dos jobs entram em vigor e eventuais vazamentos de memória são zerados. <strong>Depois de publicar código novo, reinicie os workers</strong> (<code>supervisorctl restart fila-emails:*</code>): um worker em execução continua com o código antigo carregado.</p><p>Ao receber <code>SIGTERM</code> (deploy, reinício), o worker termina o job atual e sai. Por isso <code>stopwaitsecs</code> deve ser maior que o <code>timeout_seconds</code> dos jobs. Um segundo sinal encerra na hora.</p><h3 id="sem-cli">Hospedagem sem linha de comando</h3><p>O <code>QueueWorker</code> roda em qualquer contexto, inclusive num controller. Crie uma tarefa protegida por um segredo e chame-a a cada minuto por um serviço de cron externo (cron-job.org, EasyCron, o cron do painel da hospedagem):</p><div class="codigo"><div class="titulo-codigo">controllers/fila.php</div><pre><code data-lang="php">public function processarFila()
+{
+    $segredo = JComponentHelper::getParams(&#x27;com_seucomp&#x27;)-&gt;get(&#x27;segredo_fila&#x27;);
+
+    if ($segredo === &#x27;&#x27; || !hash_equals($segredo, InputHelper::string(&#x27;chave&#x27;, &#x27;&#x27;, &#x27;get&#x27;))) {
+        return ApiResponseHelper::forbidden();
+    }
+
+    require_once JPATH_COMPONENT . &#x27;/jobs/jobs.php&#x27;;
+    require_once JPATH_COMPONENT . &#x27;/helpers/fila/QueueWorker.php&#x27;;
+
+    ignore_user_abort(true);
+
+    $resumo = QueueWorker::run([
+        &#x27;max_time&#x27; =&gt; 25,             // abaixo do max_execution_time do servidor
+        &#x27;stop_when_empty&#x27; =&gt; true,
+        &#x27;sleep&#x27; =&gt; 1,
+    ]);
+
+    return ApiResponseHelper::success(&#x27;Fila processada.&#x27;, $resumo);
+}</code></pre></div><div class="codigo"><pre><code data-lang="bash">curl -s &quot;https://seusite.com.br/index.php?option=com_seucomp&amp;task=fila.processarFila&amp;format=json&amp;chave=SEGREDO&quot;</code></pre></div><div class="nota aviso"><p>Pela web, o tempo de cada execução é limitado pelo servidor (normalmente 30 a 120 segundos). Use <a href="#jobs-longos">jobs em fatias</a> e <code>timeout_seconds</code> menores que esse limite.</p></div><h2 id="jobs-longos" data-titulo="Jobs longos: processamento em fatias">Jobs longos: processamento em fatias</h2><p>Um job que leva mais tempo que o permitido deve trabalhar em <strong>fatias</strong>: processa um pedaço, salva onde parou com <code>progress()</code> e chama <code>release()</code>. O job volta à fila e, na próxima execução, continua do ponto salvo. <code>release()</code> <strong>não gasta tentativa</strong>: um arquivo pode precisar de 500 fatias sem nunca falhar por isso.</p><div class="codigo"><pre><code data-lang="php">class ImportarClientesJob extends AbstractJob
+{
+    public function handle()
+    {
+        $arquivo = new SplFileObject($this-&gt;getPayload(&#x27;caminho&#x27;));
+        $arquivo-&gt;seek(PHP_INT_MAX);
+        $total = $arquivo-&gt;key();                 // número de linhas
+
+        $linha = (int) $this-&gt;getProgress();      // onde a execução anterior parou (0 na primeira)
+        $arquivo-&gt;seek($linha);
+
+        while (!$arquivo-&gt;eof()) {
+            $dados = $arquivo-&gt;fgetcsv();
+            $linha++;
+
+            if ($dados !== false &amp;&amp; $dados !== [null]) {   // [null] = linha em branco
+                $this-&gt;importarLinha($dados);
+            }
+
+
+            if ($linha % 500 === 0) {
+                $this-&gt;progress($linha, $total);  // salva o ponto e renova o lock
+
+                if ($this-&gt;shouldStop()) {        // tempo acabando, cancelado ou worker encerrando
+                    return $this-&gt;release();      // continua na próxima execução
+                }
+            }
+        }
+
+        return $this-&gt;complete([&#x27;linhas&#x27; =&gt; $linha]);
+    }
+}</code></pre></div><div class="tabela"><table><thead><tr><th>shouldStop() devolve true quando…</th><th>Porque</th></tr></thead><tbody><tr><td>faltam menos de 10 segundos para o <code>timeout_seconds</code> do job</td><td>Sair antes de o worker interromper a execução.</td></tr><tr><td>o job foi cancelado pelo usuário (<code>cancel(…, true)</code>)</td><td>Não adianta continuar: ele não pode mais ser concluído.</td></tr><tr><td>o lock foi perdido (outro worker assumiu o job)</td><td>Evita dois workers processando o mesmo job.</td></tr><tr><td>o worker recebeu <code>SIGTERM</code>/<code>SIGINT</code></td><td>Deploy ou reinício: sai limpo em vez de ser morto no meio.</td></tr></tbody></table></div><div class="nota"><p>Se o job foi cancelado, <code>release()</code> devolve <code>false</code> e nada acontece: o job continua cancelado. Não é preciso tratar esse caso à parte.</p></div><h2 id="tentativas" data-titulo="Erros e novas tentativas">Erros e novas tentativas</h2><p>Cada execução que termina em erro gasta uma tentativa (<code>max_tentativas</code>, padrão 3). Entre as tentativas, a espera dobra: 30s, 60s, 120s… até 1 hora. Esgotadas as tentativas, o job vai para <code>failed</code>.</p><div class="tabela"><table><thead><tr><th>Situação</th><th>Use</th><th>Resultado</th></tr></thead><tbody><tr><td>Erro passageiro (API fora do ar, timeout de rede, deadlock)</td><td>Lance a exceção, ou <code>$this-&gt;fail('motivo')</code></td><td>Tenta de novo depois da espera.</td></tr><tr><td>Erro permanente (dado inválido, registro apagado)</td><td><code>$this-&gt;fail('motivo', true)</code></td><td><code>failed</code> na hora, sem gastar as outras tentativas.</td></tr><tr><td>Serviço externo pediu para esperar (HTTP 429)</td><td><code>$this-&gt;release(120, true)</code></td><td>Volta em 2 minutos, contando como tentativa.</td></tr><tr><td>Pausa de um job em fatias</td><td><code>$this-&gt;release()</code></td><td>Volta na hora, sem gastar tentativa.</td></tr><tr><td>Worker morreu (servidor reiniciou, processo morto)</td><td>Nada: é automático</td><td>Depois de <code>retry_after_seconds</code> sem sinal, volta para <code>retry</code>.</td></tr></tbody></table></div><div class="nota aviso"><p><strong>Escreva jobs que podem rodar mais de uma vez.</strong> Se o worker morrer depois de enviar o e-mail e antes de marcar o job como concluído, o job vai rodar de novo. Guarde o que já foi feito (uma coluna <code>enviado_em</code>, o ponto salvo em <code>progress()</code>) e confira antes de repetir.</p></div><h3 id="ultima-tentativa">Avisando na última tentativa</h3><div class="codigo"><pre><code data-lang="php">public function handle()
+{
+    try {
+        $this-&gt;chamarApi();
+    } catch (Exception $e) {
+        if ($this-&gt;isLastAttempt()) {
+            Notificacao::admin(&#x27;Job &#x27; . $this-&gt;getUuid() . &#x27; falhou de vez: &#x27; . $e-&gt;getMessage());
+        }
+
+        throw $e;     // o worker registra a falha
+    }
+}</code></pre></div><h2 id="tempo" data-titulo="Tempo de execução e locks">Tempo de execução e locks</h2><p>Dois tempos controlam um job. Ambos podem ser definidos por job no <code>push()</code>, ou como padrão com os <code>setDefault…()</code>.</p><div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody><tr><td><code>timeout_seconds</code></td><td>240</td><td>Tempo máximo de <strong>uma execução</strong>. O worker limita o PHP a esse tempo + 15s; <code>shouldStop()</code> e <code>remainingSeconds()</code> usam esse valor.</td></tr><tr><td><code>retry_after_seconds</code></td><td>300</td><td>Tempo <strong>sem sinal de vida</strong> para considerar o worker morto. Cada <code>progress()</code> ou <code>heartbeat()</code> renova o prazo.</td></tr></tbody></table></div><div class="nota aviso"><p><strong>Regra prática:</strong> mantenha <code>retry_after_seconds</code> maior que <code>timeout_seconds</code>, ou chame <code>progress()</code>/<code>heartbeat()</code> com frequência. Se um job ficar mais de <code>retry_after_seconds</code> sem sinal, outro worker o assume e ele passa a rodar duas vezes ao mesmo tempo. O primeiro worker percebe na próxima chamada a <code>progress()</code> ou <code>shouldStop()</code>, mas o trabalho já feito em paralelo não é desfeito.</p></div><div class="nota"><p>No Linux, o limite de tempo do PHP conta só o tempo de <strong>CPU</strong>. Esperas por banco, rede ou <code>sleep()</code> não contam. Um job que passa a maior parte do tempo esperando uma API não é interrompido pelo limite: é por isso que <code>shouldStop()</code> usa o relógio de verdade. Em laços longos, use <code>shouldStop()</code>.</p></div><h2 id="cancelamento" data-titulo="Cancelamento">Cancelamento</h2><div class="codigo"><pre><code data-lang="php">// Job ainda na fila: cancela na hora.
+QueueHelper::cancel($uuid, $userId);
+
+// Job em processamento: só com força. O worker não é interrompido, mas
+// progress()/heartbeat()/shouldStop() passam a indicar a perda do job e
+// complete() não tem mais efeito.
+QueueHelper::cancel($uuid, $userId, true);
+
+// Recolocar na fila um job cancelado ou falho
+QueueHelper::retry($uuid, $userId);</code></pre></div><h2 id="manutencao" data-titulo="Manutenção e monitoramento">Manutenção e monitoramento</h2><div class="codigo"><pre><code data-lang="php">// Script diário: apaga jobs finalizados há mais de 30 dias, 1000 por vez.
+do {
+    $apagados = QueueHelper::purge(&#x27;-30 days&#x27;);
+} while ($apagados === 1000);
+
+// Painel do administrador
+$s = QueueHelper::stats([&#x27;queue&#x27; =&gt; &#x27;emails&#x27;]);
+// [&#x27;pending&#x27; =&gt; 120, &#x27;processing&#x27; =&gt; 2, &#x27;retry&#x27; =&gt; 3, &#x27;completed&#x27; =&gt; 5400,
+//  &#x27;failed&#x27; =&gt; 7, &#x27;cancelled&#x27; =&gt; 0, &#x27;total&#x27; =&gt; 5532, &#x27;mais_antigo_pendente&#x27; =&gt; &#x27;2026-10-04 12:58:00&#x27;]</code></pre></div><p>Na linha de comando: <code>php queue-worker.php --stats</code> (ou <code>--stats --queue=emails</code>).</p><div class="tabela"><table><thead><tr><th>Sinal de problema</th><th>Provável causa</th></tr></thead><tbody><tr><td><code>pending</code> crescendo e <code>mais_antigo_pendente</code> antigo</td><td>Nenhum worker rodando para a fila, ou workers insuficientes.</td></tr><tr><td>Muitos <code>retry</code>/<code>failed</code></td><td>Erro no job ou serviço externo fora do ar. Veja a coluna <code>erro</code> com <code>list(['status' => 'failed'])</code>.</td></tr><tr><td>Erro "O worker parou de responder"</td><td>Processo morto, ou job sem <code>progress()</code> por mais de <code>retry_after_seconds</code>.</td></tr><tr><td>Erro "Erro fatal: Allowed memory size…"</td><td>O job carrega dados demais de uma vez: processe em lotes ou em fatias.</td></tr></tbody></table></div><h2 id="compatibilidade" data-titulo="Joomla 3, 4 e 5">Joomla 3, 4 e 5</h2><div class="tabela"><table><thead><tr><th></th><th>Joomla 3</th><th>Joomla 4</th><th>Joomla 5</th></tr></thead><tbody><tr><td>Banco e datas</td><td><code>JFactory</code></td><td><code>Factory</code> e container</td><td><code>Factory</code> e container</td></tr><tr><td>Log</td><td><code>JLog</code></td><td><code>Log</code></td><td><code>Log</code></td></tr><tr><td>Worker CLI</td><td><code>JApplicationCli</code></td><td>Aplicação de console</td><td>Aplicação de console</td></tr><tr><td>Nomes antigos (<code>JFactory</code>…) nos jobs</td><td>nativos</td><td>nativos</td><td>carregados pelo worker, mesmo sem o plugin de compatibilidade</td></tr></tbody></table></div><p>O <code>QueueHelper</code> detecta sozinho as classes disponíveis. O mesmo <code>queue-worker.php</code> serve para as três versões: ele identifica a versão pela pasta <code>libraries</code> e inicia o Joomla do jeito certo. Tudo foi testado em Joomla 3.10, 4.4 e 5.2, inclusive erro fatal, estouro de tempo, <code>exit()</code>, <code>SIGTERM</code> e 8 workers em paralelo sobre 300 jobs.</p><div class="nota"><p>Todas as datas da tabela ficam em <strong>UTC</strong>, como no restante do Joomla. Para exibir, converta com <code>JHtml::_('date', $job['criado_em'], 'd/m/Y H:i')</code>. Ao agendar com <code>disponivel_em</code>, informe em UTC, ou use <code>delay_seconds</code>.</p></div><h2 id="problemas" data-titulo="Problemas comuns">Problemas comuns</h2><div class="tabela"><table><thead><tr><th>Sintoma</th><th>Causa e solução</th></tr></thead><tbody><tr><td>Worker diz "Nenhum job registrado para a fila"</td><td>O <code>--bootstrap</code> não foi informado ou não registra jobs dessa fila.</td></tr><tr><td>Job fica em <code>pending</code> para sempre</td><td>Nenhum worker consome a fila do job. Confira a fila em <code>status()</code> e o <code>--queue</code> do worker.</td></tr><tr><td><code>push()</code> devolve <code>success = false</code></td><td>O motivo está em <code>$r['erro']</code> e em <code>QueueHelper::lastError()</code>: tipo com caracteres inválidos, payload com texto em codificação que não é UTF-8, payload maior que 10 MB, tabela inexistente.</td></tr><tr><td>"Raiz do Joomla não encontrada"</td><td>O <code>queue-worker.php</code> está fora da pasta do site. Use <code>--root=/caminho/do/site</code>.</td></tr><tr><td>O worker sai sem mensagem no Joomla 4/5</td><td>A pasta <code>installation/</code> ainda existe: o Joomla se recusa a iniciar. Remova-a.</td></tr><tr><td>Mudei o código do job e nada mudou</td><td>Workers permanentes mantêm o código antigo carregado. Reinicie-os.</td></tr><tr><td>Job rodou duas vezes</td><td>O worker morreu ou ficou sem sinal além de <code>retry_after_seconds</code>. Veja <a href="#tempo">tempo e locks</a> e torne o job repetível.</td></tr></tbody></table></div><h2 id="migracao" data-titulo="Mudanças em relação à versão anterior">Mudanças em relação à versão anterior</h2><div class="tabela"><table><thead><tr><th>Antes</th><th>Agora</th><th>O que fazer</th></tr></thead><tbody><tr><td>Chaves com <code>token</code>, <code>session</code>, <code>senha</code>… viravam <code>****</code> no payload gravado</td><td>Payload e resultado gravados como enviados; só o log mascara</td><td>Nada.</td></tr><tr><td><code>release()</code> gastava tentativa: um job em fatias falhava depois de 3 pausas</td><td>Pausas não contam</td><td>Nada. Para contar, use <code>count_attempt</code>.</td></tr><tr><td><code>push()</code> sempre usava a fila <code>default</code></td><td>Usa a fila registrada no <code>JobRegistry</code> para o tipo</td><td>Carregue o <code>jobs.php</code> antes do <code>push()</code>.</td></tr><tr><td><code>JobRegistry</code> com caminhos fixos do <code>com_generico</code></td><td>Começa vazio</td><td>Registre os jobs num arquivo (modelo em <code>fila/exemplo/jobs.php</code>).</td></tr><tr><td>Worker só para Joomla 3, exigia o <code>ChunkHelper.php</code></td><td>Joomla 3, 4 e 5; carrega só o necessário</td><td>Passe <code>--bootstrap</code>.</td></tr><tr><td>Worker processava 1 job por execução</td><td>Processa até a fila esvaziar ou o tempo acabar (240s por padrão)</td><td>Para o comportamento antigo, use <code>--max-jobs=1</code>.</td></tr><tr><td><code>next()</code> apagava o <code>erro</code> ao pegar o job de novo</td><td>O último erro fica visível até o job ser concluído</td><td>Nada.</td></tr></tbody></table></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="guia-mysql-postgresql.html"><small>← Anterior</small>MySQL e PostgreSQL</a><a class="proxima" href="receitas.html"><small>Próxima →</small>Receitas</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code> e <code>QueueHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>
