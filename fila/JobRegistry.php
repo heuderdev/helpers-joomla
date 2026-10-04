@@ -2,123 +2,119 @@
 
 defined('_JEXEC') or die;
 
+/*
+ * Liga cada tipo de job à classe que o processa e à fila em que ele roda.
+ *
+ *     JobRegistry::register('importar_csv', JPATH_COMPONENT . '/jobs/ImportarCsvJob.php', 'ImportarCsvJob', 'imports');
+ *     JobRegistry::register('enviar_email', null, 'EnviarEmailJob', 'emails');   // classe já carregada/autoload
+ *
+ * Registre os jobs num único arquivo (ex.: components/com_seu/jobs/jobs.php)
+ * e carregue esse arquivo tanto no componente (para o push saber a fila)
+ * quanto no worker (opção --bootstrap).
+ */
 class JobRegistry
 {
-    private static $jobs = array(
-        'importar_csv_cooperados' => array(
-            'file' => JPATH_SITE . '/components/com_generico/jobs/ImportarCsvCooperadosJob.php',
-            'class' => 'ImportarCsvCooperadosJob',
-            'queue' => 'imports'
-        ),
-        'exportar_relatorio' => array(
-            'file' => JPATH_SITE . '/components/com_generico/jobs/ExportarRelatorioJob.php',
-            'class' => 'ExportarRelatorioJob',
-            'queue' => 'exports'
-        ),
-        'enviar_email' => array(
-            'file' => JPATH_SITE . '/components/com_generico/jobs/EnviarEmailJob.php',
-            'class' => 'EnviarEmailJob',
-            'queue' => 'emails'
-        ),
-        'gerar_pdf' => array(
-            'file' => JPATH_SITE . '/components/com_generico/jobs/GerarPdfJob.php',
-            'class' => 'GerarPdfJob',
-            'queue' => 'reports'
-        ),
-        'processar_webhook' => array(
-            'file' => JPATH_SITE . '/components/com_generico/jobs/ProcessarWebhookJob.php',
-            'class' => 'ProcessarWebhookJob',
-            'queue' => 'webhooks'
-        ),
-        'limpar_arquivos_temporarios' => array(
-            'file' => JPATH_SITE . '/components/com_generico/jobs/LimparArquivosJob.php',
-            'class' => 'LimparArquivosJob',
-            'queue' => 'maintenance'
-        )
-    );
+    private static $jobs = [];
 
+    /*
+     * $file pode ser null quando a classe já estiver carregada ou tiver autoload.
+     */
     public static function register($type, $file, $class, $queue = 'default')
     {
         $type = trim((string) $type);
-        $file = trim((string) $file);
+        $file = $file === null ? '' : trim((string) $file);
         $class = trim((string) $class);
         $queue = trim((string) $queue);
 
-        if (
-            $type === '' ||
-            $file === '' ||
-            $class === '' ||
-            $queue === ''
-        ) {
-            throw new InvalidArgumentException(
-                'Configuração de job inválida.'
-            );
+        if (!preg_match('/^[a-zA-Z0-9_.-]{1,150}$/', $type)) {
+            throw new InvalidArgumentException('Tipo de job inválido: "' . $type . '". Use letras, números, "_", "." e "-".');
         }
 
-        self::$jobs[$type] = array(
+        if ($class === '' || !preg_match('/^[a-zA-Z_\\\\][a-zA-Z0-9_\\\\]*$/', $class)) {
+            throw new InvalidArgumentException('Classe inválida para o job "' . $type . '".');
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_.-]{1,100}$/', $queue)) {
+            throw new InvalidArgumentException('Fila inválida para o job "' . $type . '".');
+        }
+
+        self::$jobs[$type] = [
             'file' => $file,
             'class' => $class,
-            'queue' => $queue
-        );
+            'queue' => $queue,
+        ];
+    }
+
+    /*
+     * Registra vários de uma vez:
+     * ['tipo' => ['file' => ..., 'class' => ..., 'queue' => ...], ...]
+     */
+    public static function registerMany(array $jobs)
+    {
+        foreach ($jobs as $type => $config) {
+            self::register(
+                $type,
+                isset($config['file']) ? $config['file'] : null,
+                isset($config['class']) ? $config['class'] : '',
+                isset($config['queue']) ? $config['queue'] : 'default'
+            );
+        }
     }
 
     public static function has($type)
     {
-        return isset(self::$jobs[$type]);
+        return isset(self::$jobs[(string) $type]);
+    }
+
+    public static function forget($type)
+    {
+        unset(self::$jobs[(string) $type]);
+    }
+
+    public static function flush()
+    {
+        self::$jobs = [];
     }
 
     public static function getQueue($type)
     {
-        if (!self::has($type)) {
-            return null;
-        }
-
-        return self::$jobs[$type]['queue'];
+        return self::has($type) ? self::$jobs[$type]['queue'] : null;
     }
 
+    /*
+     * Cria a instância do job a partir da linha da fila.
+     */
     public static function resolve($job)
     {
-        if (
-            empty($job) ||
-            empty($job->tipo)
-        ) {
-            throw new InvalidArgumentException(
-                'Job inválido.'
-            );
+        if (empty($job) || empty($job->tipo)) {
+            throw new InvalidArgumentException('Job inválido.');
         }
 
         $type = trim((string) $job->tipo);
 
         if (!self::has($type)) {
-            throw new RuntimeException(
-                'Tipo de job não registrado: ' . $type
-            );
+            throw new RuntimeException('Tipo de job não registrado: ' . $type);
         }
 
         $config = self::$jobs[$type];
-
-        if (!is_file($config['file'])) {
-            throw new RuntimeException(
-                'Arquivo do job não encontrado: ' . $type
-            );
-        }
-
-        require_once $config['file'];
-
-        if (!class_exists($config['class'])) {
-            throw new RuntimeException(
-                'Classe do job não encontrada: ' . $config['class']
-            );
-        }
-
         $class = $config['class'];
+
+        if (!class_exists($class)) {
+            if ($config['file'] === '' || !is_file($config['file'])) {
+                throw new RuntimeException('Arquivo do job não encontrado para o tipo "' . $type . '": ' . $config['file']);
+            }
+
+            require_once $config['file'];
+        }
+
+        if (!class_exists($class)) {
+            throw new RuntimeException('Classe do job não encontrada: ' . $class);
+        }
 
         $instance = new $class($job);
 
         if (!$instance instanceof AbstractJob) {
-            throw new RuntimeException(
-                'O job precisa herdar AbstractJob: ' . $type
-            );
+            throw new RuntimeException('O job precisa herdar AbstractJob: ' . $class);
         }
 
         return $instance;
@@ -129,6 +125,9 @@ class JobRegistry
         return self::$jobs;
     }
 
+    /*
+     * Tipos registrados numa fila. '' ou 'all' devolve todos.
+     */
     public static function typesByQueue($queue)
     {
         $queue = trim((string) $queue);
@@ -137,7 +136,7 @@ class JobRegistry
             return array_keys(self::$jobs);
         }
 
-        $types = array();
+        $types = [];
 
         foreach (self::$jobs as $type => $config) {
             if ($config['queue'] === $queue) {
