@@ -34,8 +34,9 @@ Grave a auditoria **dentro da mesma transação** da alteração quando ela prec
 
 ```php
 require_once JPATH_COMPONENT . '/helpers/IncludeHelper.php';
-IncludeHelper::load(['OrmTables', 'ApiResponseHelper', 'CsvHelper']);   // ordem topológica, cada arquivo uma vez
+IncludeHelper::registerAutoloader();   // recomendado: cada helper é incluído (com as dependências) no primeiro uso
+IncludeHelper::load(['OrmTables', 'ApiResponseHelper', 'CsvHelper']);   // ou carga explícita: ordem topológica, cada arquivo uma vez
 IncludeHelper::loadAll();
 IncludeHelper::getDependencies('CsvHelper');
 ```
-Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper, ExportHelper, QueueHelper. **Não** conhece UploadMaster nem os arquivos de `fila/`: carregue-os com `require_once`.
+Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster. O autoloader também resolve `CsvHelperException` e `UploadMasterException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.

@@ -32,7 +32,8 @@ class IncludeHelper
         'CsvHelper'           => array('OrmTables', 'DbTransactionHelper', 'ValidationHelper', 'LogHelper'),
         'ChunkUploadHelper'   => array('LogHelper'),
         'ExportHelper'        => array('LogHelper'),
-        'QueueHelper'         => array('LogHelper')
+        'QueueHelper'         => array('LogHelper'),
+        'UploadMaster'        => array()
     );
 
     /**
@@ -43,6 +44,25 @@ class IncludeHelper
     private static $classMap = array(
         'ChunkUploadHelper' => 'ChunkHelper'
     );
+
+    /**
+     * Classes declaradas em um arquivo cujo nome difere do nome da classe
+     * (classe => arquivo), usadas pelo autoloader para achar o arquivo certo.
+     *
+     * @var array
+     */
+    private static $autoloadMap = array(
+        'ChunkHelper'           => 'ChunkUploadHelper',
+        'CsvHelperException'    => 'CsvHelper',
+        'UploadMasterException' => 'UploadMaster'
+    );
+
+    /**
+     * Indica se o autoloader já foi registrado no spl_autoload.
+     *
+     * @var bool
+     */
+    private static $autoloaderRegistered = false;
 
     /**
      * Lista de arquivos fisicamente incluídos nesta execução.
@@ -86,6 +106,39 @@ class IncludeHelper
     public static function loadAll()
     {
         return self::load(array_keys(self::$dependencies));
+    }
+
+    /**
+     * Registra um autoloader que inclui cada helper (com suas dependências)
+     * na primeira vez em que a classe é usada. Chamadas repetidas são ignoradas.
+     *
+     * @return void
+     */
+    public static function registerAutoloader()
+    {
+        if (self::$autoloaderRegistered) {
+            return;
+        }
+
+        spl_autoload_register(array(__CLASS__, 'autoload'));
+
+        self::$autoloaderRegistered = true;
+    }
+
+    /**
+     * Callback do spl_autoload. Ignora classes que não pertencem aos helpers,
+     * deixando-as para os demais autoloaders (Joomla, Composer etc.).
+     *
+     * @param string $class Nome da classe solicitada.
+     * @return void
+     */
+    public static function autoload($class)
+    {
+        $helper = isset(self::$autoloadMap[$class]) ? self::$autoloadMap[$class] : $class;
+
+        if (isset(self::$dependencies[$helper])) {
+            self::load($helper);
+        }
     }
 
     /**
@@ -159,8 +212,8 @@ class IncludeHelper
     {
         $className = isset(self::$classMap[$helper]) ? self::$classMap[$helper] : $helper;
 
-        // Se a classe já existe na memória do PHP, pulamos
-        if (class_exists($className)) {
+        // Se a classe já existe na memória do PHP, pulamos (sem disparar o autoload)
+        if (class_exists($className, false)) {
             return false;
         }
 
@@ -174,7 +227,7 @@ class IncludeHelper
 
         require_once $filePath;
 
-        if (!class_exists($className)) {
+        if (!class_exists($className, false)) {
             throw new RuntimeException(
                 'O arquivo ' . $helper . '.php foi incluído com sucesso, mas a classe ' . $className . ' não foi declarada.'
             );

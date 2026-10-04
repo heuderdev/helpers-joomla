@@ -1999,7 +1999,7 @@ class ChunkHelper
         if (class_exists('JFile')) {
             return JFile::makeSafe($name);
         }
-        $name = str_replace(array('/', '\', "\0"), '', $name);
+        $name = str_replace(array('/', '\\', "\0"), '', $name);
         return preg_replace('/[^a-zA-Z0-9_\.-]/', '', $name);
     }
 
