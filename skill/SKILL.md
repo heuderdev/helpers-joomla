@@ -1,5 +1,5 @@
 ---
-name: helpers-joomla
+name: joomla-helpers-perplexity
 description: Especialista nos helpers PHP do repositório github.com/heuderdev/helpers-joomla para componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL e PostgreSQL). Use sempre que o pedido envolver controller, model, consulta ao banco, ORM, transação, entrada de formulário, validação, resposta JSON, permissão, upload, arquivos, CSV, exportação, fila de jobs, log ou auditoria num componente Joomla.
 ---
 

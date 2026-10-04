@@ -23,7 +23,7 @@ A IA não abre `docs/*.html` (pesados) nem varre o repositório.
 
 Para gerar o zip:
 ```bash
-cd /developer/helpersJoomla && zip -r helpers-joomla-skill.zip skill -x 'skill/*.zip'
+cd <pasta-do-clone> && zip -r helpers-joomla-perplexity.zip skill
 ```
 
 ## Mantendo atualizada

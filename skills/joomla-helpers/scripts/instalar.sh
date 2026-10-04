@@ -5,7 +5,7 @@
 #   --forcar  sobrescreve arquivos que diferem da versão do repositório
 # Ex.: instalar.sh components/com_loja/helpers OrmTables InputHelper QueueHelper
 set -euo pipefail
-ORIGEM="$(bash "$(dirname "$0")/_repo.sh")"
+ORIGEM="$(bash "$(dirname "$0")/_repo.sh" --fonte)"
 DESTINO="${1:?uso: instalar.sh <destino> Helper... | --todos [--forcar]}"; shift
 
 declare -A DEP=(

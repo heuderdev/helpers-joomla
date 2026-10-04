@@ -29,18 +29,22 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 | `references/receitas.md` | pedido que combina vários helpers (exclusão auditada, CSV em fila, exportação, download privado, sincronizar bancos) |
 | `references/refatoracao.md` | **sempre** ao refatorar ou revisar código existente |
 
+Caminhos são relativos à pasta **desta skill** (onde está este SKILL.md), não ao projeto. Rode os scripts **a partir da pasta do projeto/worktree**.
+
 | Script | Faz |
 |---|---|
+| `scripts/onde.sh` | mapa do projeto atual: raiz do Joomla e versão, seus componentes, onde já há helpers e quais diferem da versão oficial. **Rode primeiro** num projeto novo |
 | `scripts/api.sh` | lista helpers · `api.sh OrmBase` assinaturas · `api.sh OrmBase paginate` doc + início · `--corpo` inteiro · `api.sh CsvHelper --busca upsert` |
 | `scripts/instalar.sh <comp>/helpers Helper...` | copia helpers + dependências para o componente (`--todos`, `--forcar`); não sobrescreve arquivo alterado |
 | `scripts/checar.sh <arquivo/pasta>` | `php -l`, PHP 7.0, SQL concatenado, falta de token e trechos que os helpers substituem |
 
-Os scripts acham os helpers em `$HELPERS_JOOMLA_DIR`, `/developer/helpersJoomla` ou clonam o GitHub em `~/.cache/helpers-joomla`.
+Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOMLA_DIR` → cópia dentro do projeto atual (para consultar a API) → repositório onde a skill está → clone automático em `~/.cache/helpers-joomla`.
+**Sem a pasta `scripts/`** (ferramenta que copiou só o SKILL.md): assinaturas com `grep -n "public .*function" <helpers>/<Helper>.php`; fichas em `https://raw.githubusercontent.com/heuderdev/helpers-joomla/main/skills/joomla-helpers/references/<ficha>.md`; sintaxe com `php -l`.
 
 ## Fluxos
 
-**Criar:** identifique a área → ficha (ou receita) → `instalar.sh` se o componente ainda não tem os helpers → escreva → `checar.sh` → entregue.
-**Refatorar:** `references/refatoracao.md` → `checar.sh` no original (os avisos são o mapa) → reescreva por task → `checar.sh` até zerar erros → diff + "mudou / igual / testar".
+**Criar:** `onde.sh` (onde fica o componente e os helpers) → identifique a área → ficha (ou receita) → `instalar.sh` se o componente ainda não tem os helpers → escreva → `checar.sh` → entregue.
+**Refatorar:** `onde.sh` → `references/refatoracao.md` → `checar.sh` no original (os avisos são o mapa) → reescreva por task → `checar.sh` até zerar erros → diff + "mudou / igual / testar".
 **Revisar:** `checar.sh` + leitura → achados por gravidade (segurança > bug > PHP 7.0 > troca por helper), cada um com arquivo:linha e a correção em código.
 
 ## Mapa pedido → helper

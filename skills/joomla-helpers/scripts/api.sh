@@ -16,6 +16,10 @@ NOME="$1"
 [ "$NOME" = ChunkHelper ] && NOME=ChunkUploadHelper
 ARQ="$DIR/$NOME.php"
 [ -f "$ARQ" ] || ARQ="$DIR/fila/$NOME.php"
+if [ ! -f "$ARQ" ]; then   # o projeto não tem este helper: consulta a versão oficial
+    DIR="$(bash "$(dirname "$0")/_repo.sh" --fonte)"
+    ARQ="$DIR/$NOME.php"; [ -f "$ARQ" ] || ARQ="$DIR/fila/$NOME.php"
+fi
 [ -f "$ARQ" ] || { echo "Helper não encontrado: $1 (rode api.sh sem argumentos)" >&2; exit 1; }
 
 if [ $# -eq 1 ]; then
