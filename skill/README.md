@@ -13,15 +13,13 @@ Ensina a IA a escrever código Joomla usando os helpers deste repositório, gast
 
 A IA não abre `docs/*.html` (pesados) nem varre o repositório.
 
-## Instalação no Perplexity
+## Instalação no Perplexity (Projetos)
 
-**Como Skill** (se a sua conta tem "Skills"): envie a pasta `skill/` (ou um zip dela) com o `SKILL.md` na raiz.
-
-**Como Space** (funciona em qualquer conta):
-1. Crie um Space, por exemplo "Joomla Helpers".
-2. Em **Instruções**, cole o conteúdo de `instrucoes-space.md`.
-3. Em **Arquivos**, envie: `SKILL.md`, `receitas.md` e os 5 arquivos de `referencias/`.
-4. Opcional: adicione o link `https://github.com/heuderdev/helpers-joomla` como fonte.
+1. Abra o projeto (ex.: **JoomlaSkill**).
+2. Clique em **Contexto → Editar** (ou **Adicionar contexto**) e, em **Instruções**, cole o conteúdo de `instrucoes-projeto.md`.
+3. Na aba **Arquivos**, envie os 7 arquivos: `SKILL.md`, `receitas.md` e os 5 de `referencias/` (`banco.md`, `entrada-saida.md`, `arquivos.md`, `fila.md`, `infra.md`).
+4. Opcional: em Contexto, adicione o link `https://github.com/heuderdev/helpers-joomla` como fonte.
+5. Comece as sessões dentro do projeto. Para gerar código, o modo padrão basta; o **Computer** só é útil se você quiser que ele leia o código-fonte no GitHub.
 
 Para gerar o zip:
 ```bash
