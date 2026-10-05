@@ -8,6 +8,10 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 |---|---|
 | `DateHelper` | Datas e fuso horário: grava em UTC, mostra no fuso do usuário, lê formulários e monta períodos de relatório. `OrmBase` e `QueueHelper` já o usam. |
 | `Vigia.js` (`js/`) | Formulário no navegador: mesmas regras e mensagens do `ValidationHelper`, erros 422 nos campos, máscaras brasileiras, axios com token CSRF, Alpine opcional. `ValidationHelper::clientConfig()` exporta as regras do PHP. |
+| `PermissionHelper::requireToken()` | Token CSRF do campo, do cabeçalho `X-CSRF-Token` ou do JSON, no Joomla 3, 4 e 5. |
+| `Lista.js` (`js/`) | Listagens com paginação, ordenação e filtros na URL, busca com espera e cancelamento, ações por linha e em lote. |
+| `FormatHelper` | Dinheiro (e centavos inteiros), números, CPF/CNPJ, CEP, telefone, slug, resumo, plural, nomes. |
+| Docs | Páginas do `LogHelper`, `PermissionHelper` e `ExportHelper`. |
 
 ## Execução noturna (iniciada em 2026-10-05 01:15, entrega 08:00)
 
@@ -29,9 +33,11 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 12. `WebhookHelper`
 - [x] 13. `SettingsHelper`
 - [x] 14. Outras pendências (âncoras quebradas da referência rápida, `ChunkUploadHelper` com `DateHelper`, `OrmBase` com `Throwable`).
-- [ ] 15. Revisão final: `php -l` + `checar.sh` em tudo, links dos docs, `git log` com um commit por item; atualizar a tabela "Feitos".
+- [x] 15. Revisão final: `php -l` + `checar.sh` em tudo, links dos docs, `git log` com um commit por item; atualizar a tabela "Feitos".
 
 ### Notas de retomada
+
+- **Concluído em 2026-10-05 ~04:10.** 15/15 itens, um commit por item, sem push. Revisão final: `php -l` e `checar.sh` em todos os PHP (0 erros), `instalar.sh --todos` testado, autoload e ordem do IncludeHelper conferidos, testes do Vigia.js e da Lista.js no jsdom, paridade Vigia × ValidationHelper (8/8), 0 links quebrados nos docs.
 
 - Ferramenta de docs: `/tmp/claude-1000/-developer-helpersJoomla/c10b9e3f-ad8d-495d-a7f4-258375c63021/scratchpad/docs_tool.py` (gera página a partir de `.src`, regrava nav/anterior-próxima/rodapé de todos os docs, `card()`, `ref()`, `root()`). Lista do menu em `nav.json` ao lado. Se o arquivo sumiu, a navegação é HTML estático: copie de uma página existente.
 - Item 2 também corrigiu: `PermissionHelper` chamava `LogHelper::write` (privado; log de negativas nunca gravava) e expunha o contexto no JSON; `ExportHelper` usava escape vazio no `fputcsv` (só existe no PHP 7.4+).
@@ -39,28 +45,15 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 
 ## Prioridade alta
 
-| Helper | O que resolve | Pontos principais |
-|---|---|---|
-| `HttpHelper` | Chamadas a APIs externas (ERP, pagamento, frete, WhatsApp). Hoje nenhum helper usa curl ou `JHttp`. | Timeout padrão (sem ele, uma API lenta trava o site); retry com espera crescente só em 5xx, 429 e erro de rede; JSON de ida e volta; Bearer/Basic; log da chamada com token mascarado pelo `LogHelper`; resposta `{status, ok, body, json, headers, tempo_ms}`. |
-| `LockHelper` | A mesma tarefa rodando duas vezes ao mesmo tempo (cron que se sobrepõe, clique duplo em "gerar boletos", importação concorrente). | `GET_LOCK` no MySQL, `pg_advisory_lock` no PostgreSQL e `flock` sem banco; `LockHelper::run('nome', $callback, $timeout)`. O `lockForUpdate()` trava linhas, não uma tarefa inteira. |
-| `CacheHelper` | Resultados caros recalculados a cada requisição (dashboards, totais, respostas de API externa, listas de selects). | `remember($chave, $segundos, $callback)`, `forget()`, invalidação por prefixo, sobre o cache do Joomla 3/4/5. |
-| `MailHelper` | E-mails transacionais. | Template com variáveis, HTML com texto alternativo, anexos, `replyTo`, cópia oculta, log de falha e `MailHelper::queue()` para enviar pela fila. |
+Nada pendente (tudo entregue na execução de 2026-10-05).
 
 ## Prioridade média
 
-| Helper | O que resolve | Pontos principais |
-|---|---|---|
-| `RateLimitHelper` | Abuso de login, formulário de contato, envio de SMS/código e endpoints públicos. | `hit('login:' . $ip, 5, 900)`; resposta 429 pelo `ApiResponseHelper`. |
-| `CryptoHelper` | Segredos guardados no banco (tokens de API, credenciais de integração) e webhooks assinados. | Criptografia com `sodium` e a chave do `configuration.php`; `hmac()` e `verificarAssinatura()` para webhooks; tokens aleatórios seguros. |
-| CSRF em `fetch` (método no `PermissionHelper`) | Nenhum helper confere o token do Joomla em requisições JSON. | `PermissionHelper::requireToken()`: aceita o token do formulário ou do header `X-CSRF-Token`, responde 403. |
+Nada pendente (tudo entregue na execução de 2026-10-05).
 
 ## Prioridade baixa
 
-| Helper | O que resolve |
-|---|---|
-| `FormatHelper` / `TextHelper` | Dinheiro em centavos ↔ `R$ 1.234,56`, máscaras de CPF/CNPJ/CEP/telefone, slug e transliteração, `limitar($texto, 100)`. |
-| `WebhookHelper` | Receber webhooks com verificação de assinatura, sem processar o mesmo evento duas vezes, repassando o processamento para a fila (Crypto + Queue + ApiResponse). |
-| `SettingsHelper` | Configurações do componente com padrão e tipo (`SettingsHelper::int('limite_upload', 10)`) em vez de `getParams()` espalhado. |
+Nada pendente (tudo entregue na execução de 2026-10-05).
 
 ## Outras pendências encontradas
 

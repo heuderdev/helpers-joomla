@@ -39,7 +39,7 @@ IncludeHelper::load(['OrmTables', 'ApiResponseHelper', 'CsvHelper']);   // ou ca
 IncludeHelper::loadAll();
 IncludeHelper::getDependencies('CsvHelper');
 ```
-Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, DateHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster. O autoloader também resolve `CsvHelperException` e `UploadMasterException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.
+Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, DateHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster, HttpHelper, LockHelper, CacheHelper, MailHelper, RateLimitHelper, CryptoHelper, FormatHelper, WebhookHelper, SettingsHelper. O autoloader também resolve `CsvHelperException`, `UploadMasterException`, `HttpClient`, `HttpHelperException` e `LockHelperException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.
 
 ## DateHelper (datas e fuso horário)
 

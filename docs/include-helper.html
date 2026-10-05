@@ -112,6 +112,56 @@ IncludeHelper::load('CsvHelper');
             <td><code>OrmTables</code>, <code>DbTransactionHelper</code>, <code>ValidationHelper</code>, <code>LogHelper</code></td>
             <td><code>LogHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>DbTransactionHelper</code> &rarr; <code>OrmBase</code> &rarr; <code>OrmTables</code> &rarr; <code>ValidationHelper</code> &rarr; <code>CsvHelper</code></td>
         </tr>
+        <tr>
+            <td><code>'ChunkUploadHelper'</code></td>
+            <td><code>LogHelper</code>, <code>DateHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>DateHelper</code> &rarr; <code>ChunkUploadHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'HttpHelper'</code></td>
+            <td><code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>HttpHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'LockHelper'</code></td>
+            <td><code>LogHelper</code>, <code>DbConnectionHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>LockHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'CacheHelper'</code></td>
+            <td><code>LogHelper</code>, <code>LockHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>LockHelper</code> &rarr; <code>CacheHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'MailHelper'</code></td>
+            <td><code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>MailHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'RateLimitHelper'</code></td>
+            <td><code>LogHelper</code>, <code>ApiResponseHelper</code>, <code>DbConnectionHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>ApiResponseHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>RateLimitHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'CryptoHelper'</code></td>
+            <td><code>LogHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>CryptoHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'FormatHelper'</code></td>
+            <td>Nenhuma</td>
+            <td><code>FormatHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'WebhookHelper'</code></td>
+            <td><code>LogHelper</code>, <code>ApiResponseHelper</code>, <code>CryptoHelper</code>, <code>DbConnectionHelper</code></td>
+            <td><code>LogHelper</code> &rarr; <code>ApiResponseHelper</code> &rarr; <code>CryptoHelper</code> &rarr; <code>DbConnectionHelper</code> &rarr; <code>WebhookHelper</code></td>
+        </tr>
+        <tr>
+            <td><code>'SettingsHelper'</code></td>
+            <td>Nenhuma</td>
+            <td><code>SettingsHelper</code></td>
+        </tr>
     </tbody>
 </table>
 </div>
