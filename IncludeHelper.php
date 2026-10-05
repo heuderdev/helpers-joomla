@@ -34,7 +34,8 @@ class IncludeHelper
         'ChunkUploadHelper'   => array('LogHelper'),
         'ExportHelper'        => array('LogHelper'),
         'QueueHelper'         => array('LogHelper', 'DateHelper'),
-        'UploadMaster'        => array()
+        'UploadMaster'        => array(),
+        'HttpHelper'          => array('LogHelper')
     );
 
     /**
@@ -55,7 +56,9 @@ class IncludeHelper
     private static $autoloadMap = array(
         'ChunkHelper'           => 'ChunkUploadHelper',
         'CsvHelperException'    => 'CsvHelper',
-        'UploadMasterException' => 'UploadMaster'
+        'UploadMasterException' => 'UploadMaster',
+        'HttpClient'            => 'HttpHelper',
+        'HttpHelperException'   => 'HttpHelper'
     );
 
     /**

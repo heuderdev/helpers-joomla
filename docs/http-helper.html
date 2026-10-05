@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HttpHelper · helpers-joomla</title>
+<meta name="description" content="HttpHelper: chamadas a APIs externas (ERP, pagamento, frete, WhatsApp) com timeout, nova tentativa segura, JSON, autenticação, log mascarado e proteção contra SSRF.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › HttpHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" class="ativo" aria-current="page" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>HttpHelper</h1><p class="lead">Chamadas a APIs externas (ERP, pagamento, frete, WhatsApp) sem travar o site: timeout sempre ligado, nova tentativa só quando é seguro repetir, JSON de ida e volta, autenticação, log com segredos mascarados e bloqueio de endereços internos.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/HttpHelper.php&#x27;;
+
+$r = HttpHelper::get(&#x27;https://viacep.com.br/ws/01310100/json/&#x27;);
+
+if (!$r[&#x27;ok&#x27;]) {
+    return ApiResponseHelper::error(HttpHelper::errorMessage($r));   // &quot;O serviço externo não respondeu a tempo...&quot;
+}
+
+$endereco = $r[&#x27;json&#x27;];   // array decodificado</code></pre></div>
+<p>Por que não <code>file_get_contents</code> ou cURL na mão:</p>
+<ul>
+<li><strong>Timeout padrão de 15 s</strong> (conexão: 5 s). Sem timeout, uma API lenta prende um processo do PHP por minutos; algumas dezenas de pedidos assim derrubam o site inteiro.</li>
+<li><strong>Nova tentativa só quando é seguro</strong>: em falha de rede, 429, 500, 502, 503 e 504, com espera crescente (300 ms, 600 ms…) e respeitando o <code>Retry-After</code>. <strong>POST e PATCH não se repetem</strong> por padrão: repetir "cobrar R$ 100" após um timeout pode cobrar duas vezes.</li>
+<li><strong>Nunca lança exceção</strong> (salvo <code>'throw' =&gt; true</code>): devolve sempre a mesma estrutura, inclusive em falha de rede.</li>
+<li><strong>Log em <code>api.*.php</code></strong> pelo <a href="log-helper.html">LogHelper</a>: método, host, status, tempo e tentativas, com <code>token</code>, <code>key</code>, <code>signature</code>… mascarados na URL. O cabeçalho <code>Authorization</code> nunca é registrado.</li>
+<li><strong>Só <code>http</code> e <code>https</code></strong>, inclusive em redirecionamentos (sem <code>file://</code>, <code>gopher://</code>), SSL verificado e proxy do Joomla (<em>Configuração global → Servidor</em>) respeitado.</li>
+</ul>
+<h2 id="resposta" data-titulo="Resposta">A resposta</h2>
+<div class="tabela"><table><thead><tr><th>Chave</th><th>Tipo</th><th>O que é</th></tr></thead><tbody>
+<tr><td><code>ok</code></td><td>bool</td><td>HTTP 2xx.</td></tr>
+<tr><td><code>status</code></td><td>int</td><td>Código HTTP; <code>0</code> quando nem houve resposta (rede, timeout, URL inválida, endereço bloqueado).</td></tr>
+<tr><td><code>json</code></td><td>array|null</td><td>Corpo decodificado (quando é JSON válido).</td></tr>
+<tr><td><code>body</code></td><td>string</td><td>Corpo cru.</td></tr>
+<tr><td><code>headers</code></td><td>array</td><td>Cabeçalhos da resposta, com nomes em minúsculas (<code>$r['headers']['x-total-count']</code>).</td></tr>
+<tr><td><code>error</code></td><td>string|null</td><td>Motivo em português quando não houve resposta HTTP.</td></tr>
+<tr><td><code>timeout</code> / <code>network_error</code></td><td>bool</td><td>Tipo da falha.</td></tr>
+<tr><td><code>time_ms</code> / <code>attempts</code></td><td>int</td><td>Tempo total (com as esperas) e número de tentativas.</td></tr>
+<tr><td><code>url</code></td><td>string</td><td>URL final (depois de redirecionamentos e com a query).</td></tr>
+</tbody></table></div>
+<p><code>HttpHelper::errorMessage($r)</code> traduz a falha em uma frase para quem usa o sistema (rede, timeout, SSL, 401/403, 429, 5xx). Os detalhes técnicos ficam no log.</p>
+<h2 id="metodos" data-titulo="Métodos">Métodos</h2>
+<div class="metodo"><h3 id="get"><code>get()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::get(string $url, array $query = array(), array $options = array()): array</div><p><code>$query</code> vira query string (listas viram <code>l[0]=1&amp;l[1]=2</code>; acentos codificados).</p></div>
+<div class="metodo"><h3 id="post"><code>post() / put() / patch() / delete()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::post(string $url, array|object|string|null $body = null, array $options = array()): array</div><p>Array ou objeto no <code>$body</code> vai como <strong>JSON</strong> (<code>Content-Type: application/json</code>, acentos sem escape); string vai como está. Para formulário use <code>'form'</code>, para upload <code>'multipart'</code>.</p>
+<div class="codigo"><pre><code data-lang="php">HttpHelper::post($url, array(&#x27;pedido&#x27; =&gt; 15, &#x27;itens&#x27; =&gt; $itens));                   // JSON
+HttpHelper::post($url, null, array(&#x27;form&#x27; =&gt; array(&#x27;grant_type&#x27; =&gt; &#x27;client_credentials&#x27;)));   // x-www-form-urlencoded
+HttpHelper::post($url, null, array(&#x27;multipart&#x27; =&gt; array(                            // upload
+    &#x27;descricao&#x27; =&gt; &#x27;Nota fiscal 123&#x27;,
+    &#x27;arquivo&#x27; =&gt; new CURLFile($caminho, &#x27;application/pdf&#x27;, &#x27;nf-123.pdf&#x27;),
+)));
+HttpHelper::post($url, $xml, array(&#x27;headers&#x27; =&gt; array(&#x27;Content-Type&#x27; =&gt; &#x27;application/xml&#x27;)));   // corpo cru</code></pre></div>
+</div>
+<div class="metodo"><h3 id="request"><code>request()</code> / <code>head()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::request(string $method, string $url, array $options = array()): array</div><p>Qualquer método, com as mesmas opções.</p></div>
+<div class="metodo"><h3 id="download"><code>download()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::download(string $url, string $destino, array $options = array()): array</div><p>Grava o corpo direto no arquivo, sem passar pela memória (arquivos de centenas de MB). Baixa em <code>destino.part</code> e só renomeia quando termina com 2xx: um download interrompido nunca deixa um arquivo pela metade no destino. Use um <code>timeout</code> maior.</p>
+<div class="codigo"><pre><code data-lang="php">$r = HttpHelper::download(&#x27;https://erp.exemplo.com/relatorios/123.zip&#x27;, JPATH_ROOT . &#x27;/tmp/relatorio-123.zip&#x27;, array(&#x27;timeout&#x27; =&gt; 300, &#x27;bearer&#x27; =&gt; $token));</code></pre></div>
+</div>
+<div class="metodo"><h3 id="client"><code>client()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::client(array $defaults): HttpClient</div><p>Um cliente com padrões fixos para uma API: URL base, autenticação, cabeçalhos, timeout. Os métodos do cliente (<code>get</code>, <code>post</code>, <code>put</code>, <code>patch</code>, <code>delete</code>, <code>request</code>, <code>download</code>) aceitam caminhos relativos e as mesmas opções; cabeçalhos e query se somam aos padrões. <code>withOptions(array)</code> devolve uma cópia com opções a mais.</p>
+<div class="codigo"><pre><code data-lang="php">class ErpApi
+{
+    private static $cliente;
+
+    public static function cliente()
+    {
+        if (!self::$cliente) {
+            $params = JComponentHelper::getParams(&#x27;com_loja&#x27;);
+
+            self::$cliente = HttpHelper::client(array(
+                &#x27;base_url&#x27; =&gt; &#x27;https://erp.exemplo.com/api/v2&#x27;,
+                &#x27;bearer&#x27; =&gt; $params-&gt;get(&#x27;erp_token&#x27;),
+                &#x27;timeout&#x27; =&gt; 10,
+                &#x27;headers&#x27; =&gt; array(&#x27;X-Empresa&#x27; =&gt; $params-&gt;get(&#x27;erp_empresa&#x27;)),
+                &#x27;log_category&#x27; =&gt; &#x27;erp&#x27;,
+            ));
+        }
+
+        return self::$cliente;
+    }
+}
+
+$r = ErpApi::cliente()-&gt;get(&#x27;/clientes&#x27;, array(&#x27;documento&#x27; =&gt; $cpf));
+$r = ErpApi::cliente()-&gt;post(&#x27;/pedidos&#x27;, $pedido, array(&#x27;headers&#x27; =&gt; array(&#x27;Idempotency-Key&#x27; =&gt; $pedido[&#x27;uuid&#x27;])));</code></pre></div>
+</div>
+<div class="metodo"><h3 id="isPublicUrl"><code>isPublicUrl()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::isPublicUrl(string $url): bool</div><p>Verdadeiro se o host resolve só para IPs públicos. Veja <a href="#ssrf">SSRF</a>.</p></div>
+<div class="metodo"><h3 id="setDefaults"><code>setDefaults()</code> / <code>getDefaults()</code><span class="tag estatico">estático</span></h3><div class="assinatura">HttpHelper::setDefaults(array $defaults): void</div><p>Troca os padrões de todas as chamadas (ex.: <code>array('timeout' =&gt; 8, 'user_agent' =&gt; 'MinhaLoja/2.0')</code>).</p></div>
+<h2 id="opcoes" data-titulo="Opções">Opções</h2>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>headers</code></td><td>—</td><td>Cabeçalhos (<code>array('X-Chave' =&gt; 'valor')</code>). <code>Accept: application/json</code> vai por padrão.</td></tr>
+<tr><td><code>query</code></td><td>—</td><td>Parâmetros da URL.</td></tr>
+<tr><td><code>json</code> / <code>form</code> / <code>multipart</code> / <code>body</code></td><td>—</td><td>Corpo: JSON, formulário, upload (com <code>CURLFile</code>; arrays aninhados viram <code>itens[0][sku]</code>) ou texto cru.</td></tr>
+<tr><td><code>bearer</code></td><td>—</td><td><code>Authorization: Bearer ...</code></td></tr>
+<tr><td><code>basic</code></td><td>—</td><td><code>array('usuario', 'senha')</code></td></tr>
+<tr><td><code>base_url</code></td><td>—</td><td>Prefixo de caminhos relativos.</td></tr>
+<tr><td><code>timeout</code> / <code>connect_timeout</code></td><td>15 / 5</td><td>Segundos (aceita frações: <code>2.5</code>). <code>timeout</code> conta a resposta inteira.</td></tr>
+<tr><td><code>retries</code></td><td>2</td><td>Tentativas extras (0 desliga).</td></tr>
+<tr><td><code>retry_on</code></td><td>429, 500, 502, 503, 504</td><td>Status que justificam nova tentativa (falha de rede sempre justifica).</td></tr>
+<tr><td><code>retry_delay</code> / <code>retry_max_delay</code></td><td>300 / 5000</td><td>Espera inicial e máxima em ms (dobra a cada tentativa, com variação aleatória).</td></tr>
+<tr><td><code>retry_after_max</code></td><td>30</td><td>Máximo de segundos que um <code>Retry-After</code> pode fazer esperar.</td></tr>
+<tr><td><code>retry_post</code></td><td><code>false</code></td><td>Permite repetir POST/PATCH. Só ligue se a API garantir idempotência (ex.: <code>Idempotency-Key</code>).</td></tr>
+<tr><td><code>follow_redirects</code></td><td>0</td><td>Quantos redirecionamentos seguir (0 = devolve o 301/302).</td></tr>
+<tr><td><code>verify</code> / <code>ca_bundle</code></td><td><code>true</code> / —</td><td>Verificação do certificado SSL; arquivo de CAs próprio. Nunca desligue em produção.</td></tr>
+<tr><td><code>block_private</code></td><td><code>false</code></td><td>Recusa hosts que resolvem para IP interno (SSRF).</td></tr>
+<tr><td><code>sink</code></td><td>—</td><td>Arquivo de destino (o que <code>download()</code> usa).</td></tr>
+<tr><td><code>user_agent</code></td><td><code>helpers-joomla HttpHelper</code></td><td>Algumas APIs exigem um identificador próprio.</td></tr>
+<tr><td><code>log</code> / <code>log_category</code> / <code>log_body</code></td><td><code>true</code> / <code>api</code> / <code>false</code></td><td>Log da chamada; <code>log_body</code> acrescenta o JSON enviado e a resposta (até 2000 caracteres, com chaves sensíveis mascaradas).</td></tr>
+<tr><td><code>throw</code></td><td><code>false</code></td><td>Lança <code>HttpHelperException</code> quando <code>ok</code> é falso (<code>getResponse()</code>, <code>getStatus()</code>).</td></tr>
+</tbody></table></div>
+<h2 id="retentativas" data-titulo="Novas tentativas">Novas tentativas: quando repetir é seguro</h2>
+<div class="tabela"><table><thead><tr><th>Situação</th><th>GET, HEAD, PUT, DELETE, OPTIONS</th><th>POST, PATCH</th></tr></thead><tbody>
+<tr><td>Falha de rede / timeout</td><td>repete</td><td>não repete (o servidor pode ter processado)</td></tr>
+<tr><td>429, 500, 502, 503, 504</td><td>repete (respeita <code>Retry-After</code>)</td><td>não repete</td></tr>
+<tr><td>4xx (400, 401, 404, 422…)</td><td>não repete (repetir não muda nada)</td><td>não repete</td></tr>
+</tbody></table></div>
+<p>Para POST que pode ser repetido, use a chave de idempotência da API (Stripe, Pagar.me, Asaas e Mercado Pago aceitam) e ligue <code>retry_post</code>:</p>
+<div class="codigo"><pre><code data-lang="php">$r = HttpHelper::post(&#x27;https://api.gateway.com/v1/cobrancas&#x27;, $cobranca, array(
+    &#x27;bearer&#x27; =&gt; $chave,
+    &#x27;headers&#x27; =&gt; array(&#x27;Idempotency-Key&#x27; =&gt; $pedido-&gt;uuid),   // mesmo pedido = mesma cobrança
+    &#x27;retry_post&#x27; =&gt; true,
+));</code></pre></div>
+<div class="nota aviso"><p>Novas tentativas somam tempo à requisição de quem está esperando (2 tentativas extras com timeout de 15 s = até 45 s). Em telas, use <code>timeout</code> baixo e <code>retries</code> 0 ou 1; para integrações que podem esperar, faça a chamada num <a href="queue-helper.html">job da fila</a>, que tem as próprias novas tentativas.</p></div>
+<h2 id="ssrf" data-titulo="SSRF">URLs que vêm de fora (SSRF)</h2>
+<p>Quando a URL vem de quem usa o sistema (webhook configurável, "importar imagem de uma URL", callback de integração), um atacante pode apontar para endereços internos: <code>http://169.254.169.254/</code> (credenciais da nuvem), <code>http://localhost:6379</code> (Redis), o painel do roteador. Use <code>block_private</code>:</p>
+<div class="codigo"><pre><code data-lang="php">$url = InputHelper::string(&#x27;webhook_url&#x27;);
+
+if (!HttpHelper::isPublicUrl($url)) {
+    return ApiResponseHelper::validationError(array(&#x27;webhook_url&#x27; =&gt; array(&#x27;Informe um endereço público (https://...).&#x27;)));
+}
+
+$r = HttpHelper::post($url, $evento, array(&#x27;block_private&#x27; =&gt; true, &#x27;timeout&#x27; =&gt; 5, &#x27;retries&#x27; =&gt; 0));</code></pre></div>
+<p>O host é resolvido e todos os IPs precisam ser públicos (bloqueia redes privadas, <code>127.0.0.0/8</code>, link-local, reservadas e os equivalentes IPv6). Mantenha <code>follow_redirects</code> em 0 nessas chamadas: um redirecionamento poderia levar a um endereço interno depois da checagem.</p>
+<h2 id="receitas" data-titulo="Receitas">Receitas</h2>
+<h3 id="receita-token">Token OAuth com cache</h3>
+<div class="codigo"><pre><code data-lang="php">public static function token()
+{
+    // CacheHelper::remember guarda o token até perto de expirar (veja CacheHelper)
+    return CacheHelper::remember(&#x27;erp.token&#x27;, 3300, function () {
+        $r = HttpHelper::post(&#x27;https://erp.exemplo.com/oauth/token&#x27;, null, array(
+            &#x27;form&#x27; =&gt; array(&#x27;grant_type&#x27; =&gt; &#x27;client_credentials&#x27;),
+            &#x27;basic&#x27; =&gt; array(ERP_CLIENT_ID, ERP_CLIENT_SECRET),
+            &#x27;throw&#x27; =&gt; true,
+        ));
+
+        return $r[&#x27;json&#x27;][&#x27;access_token&#x27;];
+    });
+}</code></pre></div>
+<h3 id="receita-paginacao">Ler todas as páginas de uma API</h3>
+<div class="codigo"><pre><code data-lang="php">$pagina = 1;
+
+do {
+    $r = ErpApi::cliente()-&gt;get(&#x27;/produtos&#x27;, array(&#x27;pagina&#x27; =&gt; $pagina, &#x27;por_pagina&#x27; =&gt; 100), array(&#x27;throw&#x27; =&gt; true));
+
+    foreach ($r[&#x27;json&#x27;][&#x27;dados&#x27;] as $produto) {
+        // sincroniza
+    }
+
+    $pagina++;
+} while ($pagina &lt;= (int) $r[&#x27;json&#x27;][&#x27;total_paginas&#x27;]);</code></pre></div>
+<h3 id="receita-tela">Na tela: falha da API vira mensagem, não erro 500</h3>
+<div class="codigo"><pre><code data-lang="php">public function calcularFrete()
+{
+    try {
+        $cep = InputHelper::string(&#x27;cep&#x27;);
+        $r = HttpHelper::get(&#x27;https://frete.exemplo.com/cotacao&#x27;, array(&#x27;cep&#x27; =&gt; $cep), array(&#x27;timeout&#x27; =&gt; 5, &#x27;retries&#x27; =&gt; 1));
+
+        if (!$r[&#x27;ok&#x27;]) {
+            return ApiResponseHelper::serviceUnavailable(&#x27;Não foi possível calcular o frete agora. &#x27; . HttpHelper::errorMessage($r));
+        }
+
+        return ApiResponseHelper::success(&#x27;Frete calculado.&#x27;, $r[&#x27;json&#x27;]);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<h2 id="requisitos" data-titulo="Requisitos">Requisitos</h2>
+<ul><li>Extensão <code>curl</code> do PHP (sem ela, a resposta vem com <code>error</code> explicando).</li><li>PHP 7.0+, Joomla 3, 4 e 5 (usa o proxy da configuração global quando ativo).</li><li><a href="log-helper.html">LogHelper</a> opcional: sem ele, nada é registrado.</li></ul>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="queue-helper.html">QueueHelper</a>: integrações em segundo plano.</li><li><a href="log-helper.html">LogHelper</a>: onde as chamadas ficam registradas.</li><li><a href="api-response-helper.html">ApiResponseHelper</a>: responder à tela quando a API externa falha.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="fila-worker.html"><small>← Anterior</small>Jobs e worker</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

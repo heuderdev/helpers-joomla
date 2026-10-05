@@ -17,7 +17,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 
 - [x] 1. Vigia.js: corrigir erro sem campo que trava o envio em silêncio (vai para a mensagem geral) e `min`/`max` em listas indexadas (objetos contam chaves); atualizar `docs/vigia-js.html` (remover os avisos de limitação) e testar no jsdom.
 - [x] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).
-- [ ] 3. `HttpHelper`
+- [x] 3. `HttpHelper`
 - [ ] 4. `LockHelper`
 - [ ] 5. `CacheHelper`
 - [ ] 6. `MailHelper`
@@ -66,3 +66,4 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - `docs/referencia-rapida.html` aponta para âncoras que não existem: `csv-helper.html#headers`, `chunk-upload-helper.html#info` e `chunk-upload-helper.html#formatBytes`.
 - `ChunkUploadHelper.php` (linha ~1943) usa `date('Y-m-d H:i:s')` como alternativa quando o `JFactory` não existe; pode passar a usar o `DateHelper`.
 - `OrmBase.php` captura `Exception` em `getTableColumns()` e `executar()`; o `checar.sh` recomenda `Throwable` (pega também `Error` do PHP 7).
+- Scripts da noite (mesma pasta do docs_tool.py): `register.py <Helper> "<deps>" "<classes extras>"` (IncludeHelper + instalar.sh), `skill_add.py <Helper> <ficha> <secao.md> "<pedido>" "<uso>"` (duas skills). Fichas novas: `integracao.md` (Http, Mail, Webhook).
