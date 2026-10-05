@@ -26,7 +26,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 9. `PermissionHelper::requireToken()` (token do formulário ou header `X-CSRF-Token`)
 - [x] 10. `js/lista.js` — par do Vigia para listagens (paginação/ordenação/filtros na URL, debounce, cancelamento, ações em lote) sobre `ApiResponseHelper::paginated()` e `InputHelper::pagination()/sorting()/filters()`.
 - [x] 11. `FormatHelper`
-- [ ] 12. `WebhookHelper`
+- [x] 12. `WebhookHelper`
 - [ ] 13. `SettingsHelper`
 - [ ] 14. Outras pendências (âncoras quebradas da referência rápida, `ChunkUploadHelper` com `DateHelper`, `OrmBase` com `Throwable`).
 - [ ] 15. Revisão final: `php -l` + `checar.sh` em tudo, links dos docs, `git log` com um commit por item; atualizar a tabela "Feitos".

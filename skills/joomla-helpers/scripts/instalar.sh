@@ -24,8 +24,9 @@ declare -A DEP=(
     [MailHelper]="LogHelper"
     [RateLimitHelper]="LogHelper ApiResponseHelper DbConnectionHelper"
     [CryptoHelper]="LogHelper"
+    [WebhookHelper]="LogHelper ApiResponseHelper CryptoHelper DbConnectionHelper"
 )
-TODOS="LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper RateLimitHelper CryptoHelper FormatHelper IncludeHelper"
+TODOS="LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper IncludeHelper"
 
 FORCAR=0; PEDIDOS=()
 for a in "$@"; do
@@ -54,6 +55,7 @@ for h in "${ORDEM[@]}"; do
     [ "$h" = AuditHelper ] && ARQUIVOS+=(tables/auditHelper.sql)
     [ "$h" = MailHelper ] && ARQUIVOS+=(fila/jobs/MailJob.php)
     [ "$h" = RateLimitHelper ] && ARQUIVOS+=(tables/rateLimitHelper.sql tables/rateLimitHelper.postgresql.sql)
+    [ "$h" = WebhookHelper ] && ARQUIVOS+=(tables/webhookHelper.sql tables/webhookHelper.postgresql.sql)
 done
 
 mkdir -p "$DESTINO"
