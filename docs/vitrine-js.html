@@ -254,6 +254,7 @@ vitrine.filter({ status: null });                      // remove o filtro</code>
 <li><strong><code>id</code>s do seu HTML</strong>: ao copiar um bloco de filtros, troque os <code>id</code> (<code>f-busca</code> → <code>f-busca-pedidos</code>) para os <code>&lt;label for&gt;</code> continuarem certos.</li>
 <li><strong>Não aninhe</strong> uma vitrine dentro do contêiner de outra.</li>
 </ul>
+<p>Exemplo funcionando: <code>js/exemplo-duas-vitrines.html</code> (painel com clientes em paginação jPaginate e pedidos com "carregar mais"; "Ver pedidos" filtra a de baixo com <code>Vitrine.of('#pedidos').filter({ cliente_id: id })</code>, e pagar um pedido atualiza a de cima com <code>clearCache()</code> + <code>reload()</code> no evento <code>vitrine:actionDone</code>).</p>
 <div class="codigo"><pre><code data-lang="html">&lt;div id=&quot;pedidos&quot; data-vitrine=&quot;...task=pedidos.listar&amp;format=json&quot; data-vitrine-remember=&quot;pedidos&quot;&gt; ... &lt;/div&gt;
 &lt;div id=&quot;clientes&quot; data-vitrine=&quot;...task=clientes.listar&amp;format=json&quot; data-vitrine-remember=&quot;clientes&quot;&gt; ... &lt;/div&gt;
 &lt;!-- URL: ?option=com_loja&amp;view=painel&amp;pedidos_page=3&amp;pedidos_f_status=pago&amp;clientes_page=2 --&gt;</code></pre></div>

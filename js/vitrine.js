@@ -255,6 +255,16 @@
         return own(FORMATS, name) ? str(FORMATS[name](value, item)) : str(value);
     }
 
+    function canonicalQuery(search) {
+        var pairs = [];
+
+        new window.URLSearchParams(search).forEach(function (value, key) {
+            pairs.push(key + '=' + value);
+        });
+
+        return pairs.sort().join('&');
+    }
+
     function own(object, key) {
         return Object.prototype.hasOwnProperty.call(object, key);
     }
@@ -461,9 +471,12 @@
             return Promise.resolve(null);
         }
 
-        if (!options.background) {
+        // Recargas (reload) e restaurações do histórico não criam entradas novas.
+        if (!options.background && !options.fromHistory && !this._restoring) {
             this._writeUrl();
         }
+
+        this._restoring = false;
 
         var cached = options.force ? null : this._cacheGet(params);
 
@@ -975,11 +988,13 @@
             }
         };
 
+        // Voltar/avançar do navegador: restaura o estado da URL sem gravar no histórico.
         this._onPopState = function () {
             self._readUrl();
             self._writeFiltersToForm();
             self._renderSortHeaders();
-            self.load();
+            self._restoring = true;
+            self.load({ fromHistory: true });
         };
 
         this.el.addEventListener('click', this._onClick);
@@ -1215,7 +1230,9 @@
         var search = query.toString();
         var url = window.location.pathname + (search ? '?' + search : '') + window.location.hash;
 
-        if (url !== window.location.pathname + window.location.search + window.location.hash) {
+        // Compara o conjunto de parâmetros, não o texto: com várias vitrines, cada uma
+        // reescreve os seus no fim da URL, e só a ordem mudar não é uma navegação nova.
+        if (canonicalQuery(search) !== canonicalQuery(window.location.search.replace(/^\?/, ''))) {
             window.history.pushState(null, '', url);
         }
     };
