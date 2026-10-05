@@ -1,4 +1,4 @@
-# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js
+# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Lista.js
 
 ## InputHelper (ler a requisição já no tipo certo)
 
@@ -99,3 +99,18 @@ $vigia = ValidationHelper::clientConfig($regras, $mensagens, $rotulos);
 - JS: `Vigia.form(el, {rules, messages, labels, onSuccess, onError})` → `validate()`, `submit()`, `showErrors(errors)`; `Vigia.validate(dados, regras)` (igual ao PHP); `Vigia.http.post(url, dados)` → `{success, message, data, errors, meta, httpStatus}`, 4xx/5xx rejeita `VigiaError` (`httpStatus`, `errors`, `isValidation`).
 - Eventos no form: `vigia:invalid`, `vigia:before` (cancelável), `vigia:success`, `vigia:error`, `vigia:complete`.
 - Alpine: `x-data="vigia({ rules: {...}, render: false }, { meuEstado: '' })"` → `error('campo')`, `hasError()`, `loading`, `message`; `x-mask:cpf`. Sem `@submit.prevent`.
+
+## Lista.js (telas de listagem)
+
+```html
+<div data-lista="<?php echo JRoute::_('index.php?option=com_x&task=itens.listar&format=json', false) ?>" data-lista-limit="20" data-lista-sort="id">
+  <form data-lista-filters><input type="search" name="busca"><select name="status">...</select></form>
+  <table><thead><tr><th><input type="checkbox" data-select-all></th><th data-sort="nome">Nome</th></tr></thead><tbody data-lista-items></tbody></table>
+  <template data-lista-template><tr><td><input type="checkbox" data-select></td><td data-field="nome"></td><td data-field="total" data-format="money"></td>
+    <td><button data-action="excluir" data-url="index.php?option=com_x&task=itens.excluir&id={id}&format=json" data-confirm="Excluir {nome}?">x</button></td></tr></template>
+  <p data-lista-empty hidden>Nada.</p><small data-lista-summary></small><nav data-lista-pagination></nav>
+  <div data-lista-batch hidden><button data-batch-action="excluir" data-url="...excluirLote...">Excluir :count</button></div>
+</div>
+```
+- Servidor: `InputHelper::pagination(20, 100)` + `sorting($listaBranca, 'id', 'ASC')` + `filters([...])` → `->paginate($p['limit'], $p['page'])` → `ApiResponseHelper::paginated($r)`. Lote recebe `ids[]` (`InputHelper::arrayOfInt('ids')`); confira dono de cada id.
+- Requer `js/vigia.js` antes (usa `Vigia.http`: token, cancelamento). Estado na URL (`page`, `sort`, `f_<filtro>`); busca com espera de 350 ms e cancelamento; tudo preenchido como texto (XSS-safe). API: `Lista.of(el).reload()/filter({...})/page(n)/sort(c)`; eventos `lista:loaded`, `lista:actionDone`.

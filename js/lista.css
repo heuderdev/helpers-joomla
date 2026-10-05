@@ -1,0 +1,50 @@
+/*!
+ * Lista.js 1.0.0: estilos mínimos (ordenação, carregamento, seleção).
+ * A paginação usa as classes do Bootstrap (.pagination, .page-item, .page-link).
+ */
+[data-sort] {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+[data-sort]::after {
+    content: "\2195";
+    opacity: .35;
+    margin-left: .35em;
+    font-size: .85em;
+}
+
+[data-sort].lista-sort-asc::after {
+    content: "\2191";
+    opacity: 1;
+}
+
+[data-sort].lista-sort-desc::after {
+    content: "\2193";
+    opacity: 1;
+}
+
+[data-sort]:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.lista-loading [data-lista-items] {
+    opacity: .5;
+    transition: opacity .15s;
+}
+
+.lista-selected {
+    background: rgba(13, 110, 253, .08);
+}
+
+[data-lista] [hidden] {
+    display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lista-loading [data-lista-items] {
+        transition: none;
+    }
+}

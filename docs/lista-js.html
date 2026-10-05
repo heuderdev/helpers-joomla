@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista.js · helpers-joomla</title>
+<meta name="description" content="Lista.js: telas de listagem no Joomla com paginação, ordenação e filtros na URL, busca com espera, cancelamento, ações por linha e em lote, sobre ApiResponseHelper::paginated().">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › JavaScript › Lista.js</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="lista-js.html" class="ativo" aria-current="page" data-busca="javascript lista listagem tabela paginação ordenação filtro busca lote seleção excluir url datagrid grid">Lista.js<span class="arquivo">js/lista.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Lista.js</h1><p class="lead">O par do Vigia.js para telas de listagem: paginação, ordenação e filtros guardados na URL (F5 e "voltar" funcionam), busca com espera e cancelamento da requisição anterior, ações por linha e em lote, estados de carregando, vazio e erro. Fala com <code>ApiResponseHelper::paginated()</code> e <code>InputHelper::pagination()/sorting()/filters()</code>.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><div class="titulo-codigo">tmpl/default.php</div><pre><code data-lang="html">&lt;div data-lista=&quot;&lt;?php echo JRoute::_(&#x27;index.php?option=com_loja&amp;task=pedidos.listar&amp;format=json&#x27;, false); ?&gt;&quot;
+     data-lista-limit=&quot;20&quot; data-lista-sort=&quot;created_at&quot; data-lista-direction=&quot;DESC&quot;&gt;
+
+    &lt;div data-lista-message hidden&gt;&lt;/div&gt;
+
+    &lt;form data-lista-filters class=&quot;row g-2 mb-3&quot;&gt;
+        &lt;div class=&quot;col&quot;&gt;&lt;input type=&quot;search&quot; name=&quot;busca&quot; class=&quot;form-control&quot; placeholder=&quot;Buscar cliente ou número…&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-auto&quot;&gt;
+            &lt;select name=&quot;status&quot; class=&quot;form-select&quot;&gt;
+                &lt;option value=&quot;&quot;&gt;Todos&lt;/option&gt;
+                &lt;option value=&quot;aberto&quot;&gt;Aberto&lt;/option&gt;
+                &lt;option value=&quot;pago&quot;&gt;Pago&lt;/option&gt;
+            &lt;/select&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-auto&quot;&gt;&lt;button type=&quot;button&quot; class=&quot;btn btn-link&quot; data-lista-reset&gt;Limpar filtros&lt;/button&gt;&lt;/div&gt;
+    &lt;/form&gt;
+
+    &lt;div data-lista-batch hidden class=&quot;mb-2&quot;&gt;
+        &lt;span data-lista-selected-count&gt;&lt;/span&gt; selecionado(s)
+        &lt;button type=&quot;button&quot; class=&quot;btn btn-sm btn-danger&quot; data-batch-action=&quot;excluir&quot;
+                data-url=&quot;&lt;?php echo JRoute::_(&#x27;index.php?option=com_loja&amp;task=pedidos.excluirLote&amp;format=json&#x27;, false); ?&gt;&quot;
+                data-confirm=&quot;Excluir :count pedidos?&quot;&gt;Excluir&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;table class=&quot;table&quot;&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;&lt;input type=&quot;checkbox&quot; data-select-all aria-label=&quot;Selecionar todos&quot;&gt;&lt;/th&gt;
+                &lt;th data-sort=&quot;id&quot;&gt;#&lt;/th&gt;
+                &lt;th data-sort=&quot;cliente&quot;&gt;Cliente&lt;/th&gt;
+                &lt;th data-sort=&quot;total&quot;&gt;Total&lt;/th&gt;
+                &lt;th data-sort=&quot;created_at&quot;&gt;Data&lt;/th&gt;
+                &lt;th&gt;&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody data-lista-items&gt;&lt;/tbody&gt;
+    &lt;/table&gt;
+
+    &lt;template data-lista-template&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;input type=&quot;checkbox&quot; data-select&gt;&lt;/td&gt;
+            &lt;td data-field=&quot;id&quot;&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;a data-href=&quot;index.php?option=com_loja&amp;view=pedido&amp;id={id}&quot; data-field=&quot;cliente&quot;&gt;&lt;/a&gt;&lt;/td&gt;
+            &lt;td data-field=&quot;total&quot; data-format=&quot;money&quot;&gt;&lt;/td&gt;
+            &lt;td data-field=&quot;created_at&quot; data-format=&quot;datetime&quot;&gt;&lt;/td&gt;
+            &lt;td&gt;
+                &lt;span class=&quot;badge bg-success&quot; data-if=&quot;pago&quot;&gt;Pago&lt;/span&gt;
+                &lt;button type=&quot;button&quot; class=&quot;btn btn-sm btn-outline-danger&quot; data-action=&quot;excluir&quot;
+                        data-url=&quot;index.php?option=com_loja&amp;task=pedidos.excluir&amp;id={id}&amp;format=json&quot;
+                        data-confirm=&quot;Excluir o pedido #{id}?&quot;&gt;Excluir&lt;/button&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/template&gt;
+
+    &lt;p data-lista-loading hidden&gt;Carregando…&lt;/p&gt;
+    &lt;p data-lista-empty hidden&gt;Nenhum pedido encontrado.&lt;/p&gt;
+    &lt;div data-lista-error hidden class=&quot;alert alert-danger&quot;&gt;&lt;span data-lista-error-message&gt;&lt;/span&gt; &lt;button type=&quot;button&quot; data-lista-retry&gt;Tentar de novo&lt;/button&gt;&lt;/div&gt;
+
+    &lt;div class=&quot;d-flex justify-content-between align-items-center&quot;&gt;
+        &lt;small data-lista-summary&gt;&lt;/small&gt;
+        &lt;nav data-lista-pagination&gt;&lt;/nav&gt;
+        &lt;select data-lista-limit-select class=&quot;form-select w-auto&quot;&gt;&lt;option&gt;20&lt;/option&gt;&lt;option&gt;50&lt;/option&gt;&lt;option&gt;100&lt;/option&gt;&lt;/select&gt;
+    &lt;/div&gt;
+
+    &lt;?php echo JHtml::_(&#x27;form.token&#x27;); ?&gt;
+&lt;/div&gt;</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">public function listar()
+{
+    try {
+        if (!PermissionHelper::require(&#x27;core.manage&#x27;)) {
+            return;
+        }
+
+        $paginacao = InputHelper::pagination(20, 100);                                     // page, limit
+        $ordem = InputHelper::sorting(array(&#x27;id&#x27;, &#x27;cliente&#x27;, &#x27;total&#x27;, &#x27;created_at&#x27;), &#x27;created_at&#x27;, &#x27;DESC&#x27;);   // sort, direction (lista branca)
+        $filtros = InputHelper::filters(array(&#x27;busca&#x27; =&gt; &#x27;string&#x27;, &#x27;status&#x27; =&gt; &#x27;cmd&#x27;));
+
+        $resultado = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+            -&gt;when(isset($filtros[&#x27;busca&#x27;]) ? $filtros[&#x27;busca&#x27;] : null, function ($q, $busca) {
+                $q-&gt;whereGroup(function ($g) use ($busca) {
+                    $g-&gt;whereLike(&#x27;cliente&#x27;, $busca)-&gt;orWhere(&#x27;id&#x27;, (int) $busca);
+                });
+            })
+            -&gt;when(isset($filtros[&#x27;status&#x27;]) ? $filtros[&#x27;status&#x27;] : null, function ($q, $status) {
+                $q-&gt;where(&#x27;status&#x27;, $status);
+            })
+            -&gt;orderBy($ordem[&#x27;field&#x27;], $ordem[&#x27;direction&#x27;])
+            -&gt;paginate($paginacao[&#x27;limit&#x27;], $paginacao[&#x27;page&#x27;]);
+
+        return ApiResponseHelper::paginated($resultado);   // data = itens; meta.paginacao = total, por_pagina, pagina_atual, total_paginas
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<p>Instalação: copie <code>js/lista.js</code> (e, opcional, <code>js/lista.css</code>) e carregue <strong>depois</strong> do axios e do Vigia.js. Como o Vigia, ativa sozinho todo <code>[data-lista]</code> ao carregar a página.</p>
+<div class="codigo"><pre><code data-lang="php">JHtml::_(&#x27;script&#x27;, &#x27;https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js&#x27;);
+JHtml::_(&#x27;script&#x27;, &#x27;com_loja/vigia.js&#x27;, array(&#x27;relative&#x27; =&gt; true, &#x27;version&#x27; =&gt; &#x27;auto&#x27;));
+JHtml::_(&#x27;script&#x27;, &#x27;com_loja/lista.js&#x27;, array(&#x27;relative&#x27; =&gt; true, &#x27;version&#x27; =&gt; &#x27;auto&#x27;));
+JHtml::_(&#x27;stylesheet&#x27;, &#x27;com_loja/lista.css&#x27;, array(&#x27;relative&#x27; =&gt; true, &#x27;version&#x27; =&gt; &#x27;auto&#x27;));</code></pre></div>
+<h2 id="contrato" data-titulo="Contrato com o servidor">Contrato com o servidor</h2>
+<div class="tabela"><table><thead><tr><th>A lista envia (GET)</th><th>Lido por</th></tr></thead><tbody>
+<tr><td><code>page</code>, <code>limit</code></td><td><code>InputHelper::pagination($padrao, $maximo)</code></td></tr>
+<tr><td><code>sort</code>, <code>direction</code> (ASC/DESC)</td><td><code>InputHelper::sorting($permitidos, $padrao, $direcao)</code>: <strong>sempre com lista branca</strong> (o nome da coluna vira SQL)</td></tr>
+<tr><td>cada campo do <code>[data-lista-filters]</code> (vazios não vão; <code>x[]</code> vira lista)</td><td><code>InputHelper::filters(array('campo' =&gt; 'filtro'))</code></td></tr>
+</tbody></table></div>
+<p>A resposta esperada é a do <code>ApiResponseHelper::paginated()</code>: <code>data</code> com a lista de itens e <code>meta.paginacao</code> com <code>total</code>, <code>por_pagina</code>, <code>pagina_atual</code> e <code>total_paginas</code>. Uma resposta sem <code>meta.paginacao</code> é tratada como página única.</p>
+<h2 id="template" data-titulo="Template da linha">Template da linha</h2>
+<p>O <code>&lt;template data-lista-template&gt;</code> é clonado para cada item (o primeiro elemento dele vira a linha). Tudo é preenchido como <strong>texto</strong>: um cliente chamado <code>&lt;img onerror=...&gt;</code> aparece como texto, nunca executa.</p>
+<div class="tabela"><table><thead><tr><th>Atributo</th><th>Efeito</th></tr></thead><tbody>
+<tr><td><code>data-field="cliente.nome"</code></td><td>texto do campo (caminhos com ponto)</td></tr>
+<tr><td><code>data-format="money"</code></td><td><code>money</code> (R$ 1.234,50), <code>number</code>, <code>integer</code>, <code>date</code>, <code>datetime</code>, <code>boolean</code> (Sim/Não), <code>cpf_cnpj</code>, <code>phone</code>, ou um seu (<code>Lista.formats.add</code>)</td></tr>
+<tr><td><code>data-href="...?id={id}"</code>, <code>data-src</code>, <code>data-title</code>, <code>data-value</code></td><td>atributo com <code>{campo}</code> (em URLs, codificado); <code>data-href="{link}"</code> sozinho usa a URL pronta</td></tr>
+<tr><td><code>data-attr-NOME="... {campo}"</code></td><td>qualquer atributo (<code>data-attr-aria-label</code>, <code>data-attr-data-id</code>); atributos <code>on*</code> são ignorados</td></tr>
+<tr><td><code>data-if="pago"</code> / <code>data-unless="pago"</code></td><td>mantém o elemento só se o campo for verdadeiro / falso (0, '0', '', null, false e lista vazia são falsos)</td></tr>
+<tr><td><code>data-class-NOME="campo"</code></td><td>adiciona a classe <code>NOME</code> se o campo for verdadeiro (<code>data-class-table-warning="atrasado"</code>)</td></tr>
+<tr><td><code>data-select</code></td><td>checkbox de seleção da linha (o valor é o id)</td></tr>
+<tr><td><code>data-action="nome"</code></td><td>botão de ação da linha (veja <a href="#acoes">Ações</a>)</td></tr>
+</tbody></table></div>
+<p>Links com <code>javascript:</code>, <code>data:</code> ou <code>vbscript:</code> vindos dos dados viram <code>#</code>.</p>
+<h3 id="render-proprio">Renderização própria</h3>
+<div class="codigo"><pre><code data-lang="js">Lista.create(&#x27;#produtos&#x27;, {
+    renderItem: function (item, index) {
+        const card = document.createElement(&#x27;div&#x27;);
+        card.className = &#x27;card&#x27;;
+        card.textContent = item.nome;          // sempre textContent, nunca innerHTML com dados
+        return card;
+    },
+    onItem: function (item, el) {             // ajuste depois do template (ex.: tooltip, gráfico pequeno)
+        if (item.estoque &lt; 5) el.classList.add(&#x27;table-warning&#x27;);
+    }
+});</code></pre></div>
+<h2 id="filtros" data-titulo="Filtros e busca">Filtros e busca</h2>
+<ul>
+<li>Campos de texto (<code>text</code>, <code>search</code>, <code>email</code>, <code>tel</code>, <code>textarea</code>) esperam a pessoa parar de digitar (350 ms; por campo: <code>data-debounce="600"</code>). Enter aplica na hora.</li>
+<li><code>select</code>, checkbox, rádio e datas aplicam ao mudar.</li>
+<li>Ao filtrar, volta para a página 1 e limpa a seleção.</li>
+<li>Uma busca nova <strong>cancela</strong> a anterior (<code>AbortController</code>): a resposta lenta de "C" nunca sobrescreve a de "Cli 7".</li>
+<li>Campos com máscara e <code>data-unmask</code> do Vigia vão sem máscara. <code>data-lista-reset</code> volta filtros, ordem e tamanho iniciais.</li>
+</ul>
+<div class="codigo"><pre><code data-lang="js">const lista = Lista.of(&#x27;#pedidos&#x27;);
+
+lista.filter({ status: &#x27;pago&#x27;, cliente_id: 15 });   // de fora do formulário (ex.: clique num gráfico)
+lista.filter({ status: null });                      // remove o filtro</code></pre></div>
+<h2 id="url" data-titulo="Estado na URL">Estado na URL</h2>
+<p>Página, tamanho, ordem e filtros vão para a URL (<code>?option=com_loja&amp;view=pedidos&amp;page=3&amp;sort=total&amp;direction=DESC&amp;f_status=pago</code>), só quando diferem do padrão. Recarregar, compartilhar o link e o botão "voltar" do navegador mantêm a tela. Os parâmetros que já estavam na URL (<code>option</code>, <code>view</code>, <code>Itemid</code>) ficam intactos.</p>
+<ul>
+<li>Duas listas na mesma página: <code>data-lista-prefix="itens"</code> numa delas (<code>itens_page</code>, <code>itens_f_busca</code>).</li>
+<li>Sem mexer na URL (lista dentro de um modal): <code>data-lista-history="false"</code>.</li>
+</ul>
+<h2 id="acoes" data-titulo="Ações">Ações por linha e em lote</h2>
+<p><code>data-action</code> num botão da linha e <code>data-batch-action</code> fora da tabela. Sem código, a ação faz um POST para <code>data-url</code> (com <code>{campo}</code> do item e o token CSRF), mostra a <code>mensagem</code> da resposta em <code>[data-lista-message]</code> (ou no <code>Joomla.renderMessages</code>) e recarrega a página atual. Em lote, envia <code>ids[]</code> com os selecionados.</p>
+<div class="tabela"><table><thead><tr><th>Atributo</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>data-url</code></td><td>—</td><td>Para onde enviar (obrigatório sem função própria).</td></tr>
+<tr><td><code>data-method</code></td><td><code>post</code></td><td><code>put</code>/<code>patch</code>/<code>delete</code> vão em JSON (leia com <code>InputHelper::request()</code>); <code>get</code> na query.</td></tr>
+<tr><td><code>data-confirm</code></td><td>—</td><td>Confirmação; <code>{campo}</code> na linha, <code>:count</code> no lote.</td></tr>
+<tr><td><code>data-reload="false"</code></td><td>recarrega</td><td>Não recarregar depois do sucesso.</td></tr>
+</tbody></table></div>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">public function excluirLote()
+{
+    try {
+        if (!PermissionHelper::requireToken() || !PermissionHelper::require(&#x27;core.delete&#x27;)) {
+            return;
+        }
+
+        $ids = InputHelper::arrayOfInt(&#x27;ids&#x27;);
+
+        if (!$ids) {
+            return ApiResponseHelper::badRequest(&#x27;Selecione ao menos um pedido.&#x27;);
+        }
+
+        $total = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;whereIn(&#x27;id&#x27;, $ids)-&gt;deleteWhere();
+
+        return ApiResponseHelper::deleted($total . &#x27; pedido(s) excluído(s).&#x27;);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<div class="nota aviso"><p>O servidor confere a permissão de <strong>cada</strong> id (não basta a tela só mostrar os registros do usuário): <code>whereIn('id', $ids)-&gt;where('user_id', $userId)</code>, ou <code>PermissionHelper::canAccessEntity()</code> por item.</p></div>
+<h3 id="acoes-js">Ações com código próprio</h3>
+<div class="codigo"><pre><code data-lang="js">Lista.create(&#x27;#pedidos&#x27;, {
+    actions: {
+        // linha: recebe o item; lote: recebe a lista de itens selecionados
+        detalhes: function (item, lista, botao) {
+            abrirModal(item.id);
+        },
+        exportar: function (itens, lista) {
+            window.location = &#x27;index.php?option=com_loja&amp;task=pedidos.exportar&amp;ids=&#x27; + lista.selectedIds().join(&#x27;,&#x27;);
+        }
+    }
+});</code></pre></div>
+<h2 id="api" data-titulo="API e eventos">API e eventos</h2>
+<div class="codigo"><pre><code data-lang="js">const lista = Lista.of(&#x27;#pedidos&#x27;);      // a instância criada pelo data-lista (ou Lista.create(el, opções))
+
+lista.reload();                          // Promise da resposta
+lista.page(3);
+lista.sort(&#x27;total&#x27;, &#x27;DESC&#x27;);             // sem direção: alterna
+lista.limit(50);
+lista.filter({ status: &#x27;pago&#x27; });
+lista.reset();
+lista.selected(); lista.selectedIds(); lista.clearSelection();
+lista.items; lista.meta; lista.state; lista.loading; lista.error;
+lista.action({ url: &#x27;...&#x27;, confirm: &#x27;Arquivar?&#x27; }, item);   // mesma ação dos botões
+lista.destroy();
+
+document.querySelector(&#x27;#pedidos&#x27;).addEventListener(&#x27;lista:loaded&#x27;, e =&gt; {
+    console.log(e.detail.items, e.detail.meta);   // ex.: atualizar um contador fora da lista
+});</code></pre></div>
+<div class="tabela"><table><thead><tr><th>Evento</th><th>Quando</th><th><code>detail</code></th></tr></thead><tbody>
+<tr><td><code>lista:before</code></td><td>antes de buscar (<code>preventDefault()</code> cancela)</td><td><code>params</code></td></tr>
+<tr><td><code>lista:loaded</code></td><td>página carregada e desenhada</td><td><code>items</code>, <code>meta</code>, <code>response</code></td></tr>
+<tr><td><code>lista:error</code></td><td>falha ao buscar (não dispara em cancelamento)</td><td><code>error</code> (VigiaError)</td></tr>
+<tr><td><code>lista:action</code> / <code>lista:actionDone</code> / <code>lista:actionError</code></td><td>ação (cancelável) / sucesso / falha</td><td><code>name</code>, <code>item</code>, <code>ids</code>, <code>response</code>/<code>error</code></td></tr>
+<tr><td><code>lista:selection</code></td><td>seleção mudou</td><td><code>count</code>, <code>ids</code></td></tr>
+<tr><td><code>lista:state</code></td><td>começou/terminou de carregar</td><td><code>loading</code></td></tr>
+</tbody></table></div>
+<p>As mesmas funções podem vir nas opções: <code>onBefore</code>, <code>onLoaded</code>, <code>onError</code>, <code>onAction</code>... Outras opções: <code>url</code>, <code>limit</code>, <code>sort</code>, <code>direction</code>, <code>filters</code> (iniciais), <code>params</code> (objeto ou função com parâmetros extras em toda busca), <code>idField</code> (padrão <code>id</code>), <code>prefix</code>, <code>history</code>, <code>autoLoad</code>.</p>
+<h2 id="config" data-titulo="Configuração global">Configuração global</h2>
+<div class="codigo"><pre><code data-lang="js">Lista.config({
+    limit: 20,
+    debounce: 350,
+    history: true,
+    pagesAround: 2,                    // páginas mostradas em volta da atual
+    params: { page: &#x27;page&#x27;, limit: &#x27;limit&#x27;, sort: &#x27;sort&#x27;, direction: &#x27;direction&#x27; },   // nomes na requisição
+    classes: { pagination: &#x27;pagination&#x27;, pageItem: &#x27;page-item&#x27;, pageLink: &#x27;page-link&#x27;, active: &#x27;active&#x27;, disabled: &#x27;disabled&#x27; },
+    messages: { summary: &#x27;Mostrando :from–:to de :total&#x27;, summaryEmpty: &#x27;Nenhum registro&#x27; }
+});
+
+Lista.formats.add(&#x27;status&#x27;, function (valor) {
+    return { aberto: &#x27;Em aberto&#x27;, pago: &#x27;Pago&#x27;, cancelado: &#x27;Cancelado&#x27; }[valor] || valor;
+});
+// &lt;td data-field=&quot;status&quot; data-format=&quot;status&quot;&gt;&lt;/td&gt;</code></pre></div>
+<p>Datas no formato do banco (<code>Y-m-d H:i:s</code>, gravadas em UTC pelo <a href="date-helper.html">DateHelper</a>) aparecem no fuso do navegador; datas só com dia (<code>Y-m-d</code>) não mudam de dia. No Joomla 3 (Bootstrap 2), troque as classes da paginação: <code>classes: { pagination: 'pagination-list', pageItem: '', pageLink: '' }</code> e envolva o <code>&lt;nav&gt;</code> numa <code>div.pagination</code>.</p>
+<h2 id="acessibilidade" data-titulo="Acessibilidade">Acessibilidade</h2>
+<ul><li>Cabeçalhos ordenáveis recebem <code>aria-sort</code>, foco pelo teclado e ativam com Enter/Espaço.</li><li>A lista recebe <code>aria-busy</code> enquanto carrega; a paginação usa <code>aria-current="page"</code> e rótulos nos botões de seta.</li><li>O checkbox "todos" fica indeterminado com seleção parcial; cada checkbox de linha ganha <code>aria-label</code>.</li></ul>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="vigia-js.html">Vigia.js</a>: formulários (a Lista usa o <code>Vigia.http</code>).</li><li><a href="input-helper.html">InputHelper</a>: <code>pagination()</code>, <code>sorting()</code>, <code>filters()</code>.</li><li><a href="api-response-helper.html">ApiResponseHelper</a>: <code>paginated()</code>.</li><li><a href="orm-base-leitura.html">OrmBase — leitura</a>: <code>paginate()</code>.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="vigia-js.html"><small>← Anterior</small>Vigia.js</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>Vigia.js</code> e <code>Lista.js</code>.</p>
+</main>
+</div>
+</body>
+</html>
