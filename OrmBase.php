@@ -244,7 +244,7 @@ class OrmBase
             $colunas = $this->db->getTableColumns($this->table, false);
 
             $this->tableColumns = array_keys($colunas);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new RuntimeException(
                 'Não foi possível obter as colunas da tabela ' .
                 $this->table . ': ' . $e->getMessage(),
@@ -401,7 +401,7 @@ class OrmBase
             return $operacao();
         } catch (LogicException $e) {
             throw $e;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new RuntimeException(
                 $mensagemErro . ' na tabela ' .
                 $this->table .

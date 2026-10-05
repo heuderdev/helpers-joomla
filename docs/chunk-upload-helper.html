@@ -55,7 +55,11 @@
 <p>Altera a quantidade padrão de linhas agrupadas por bloco enviada a cada ciclo do callback em `readLines()` (padrão: 1000 linhas).</p>
 </div>
 
-<h2 id="metodos-leitura" data-titulo="Leitura Segmentada">Leitura Segmentada de Arquivos</h2>
+<div class="metodo"><h3 id="info"><code>info()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ChunkHelper::info(string $path, string|null $baseDirectory = null): array</div><p>Dados do arquivo antes de processar: <code>file_name</code>, <code>relative_path</code>, <code>size</code>, <code>size_formatted</code>, <code>modified_at</code> e <code>fingerprint</code> (para saber se o arquivo mudou entre uma retomada e outra). Envelope <code>{ success, mensagem, data }</code>; não lança.</p><div class="codigo"><pre><code data-lang="php">$r = ChunkHelper::info(&#x27;importacoes/clientes.csv&#x27;);
+
+if ($r[&#x27;success&#x27;]) {
+    echo $r[&#x27;data&#x27;][&#x27;size_formatted&#x27;];   // &#x27;1.2 GB&#x27;
+}</code></pre></div></div><div class="metodo"><h3 id="formatBytes"><code>formatBytes()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ChunkHelper::formatBytes(int $bytes, int $precision = 2): string</div><p>Tamanho legível: <code>1536</code> → <code>1.5 KB</code>.</p><div class="codigo"><pre><code data-lang="php">echo ChunkHelper::formatBytes(1610612736);   // &#x27;1.5 GB&#x27;</code></pre></div></div><h2 id="metodos-leitura" data-titulo="Leitura Segmentada">Leitura Segmentada de Arquivos</h2>
 <p>Métodos de stream para leitura fluida de arquivos e controle de memória.</p>
 
 <div class="metodo">

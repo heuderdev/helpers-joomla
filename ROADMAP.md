@@ -28,7 +28,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 11. `FormatHelper`
 - [x] 12. `WebhookHelper`
 - [x] 13. `SettingsHelper`
-- [ ] 14. Outras pendências (âncoras quebradas da referência rápida, `ChunkUploadHelper` com `DateHelper`, `OrmBase` com `Throwable`).
+- [x] 14. Outras pendências (âncoras quebradas da referência rápida, `ChunkUploadHelper` com `DateHelper`, `OrmBase` com `Throwable`).
 - [ ] 15. Revisão final: `php -l` + `checar.sh` em tudo, links dos docs, `git log` com um commit por item; atualizar a tabela "Feitos".
 
 ### Notas de retomada
@@ -64,6 +64,6 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 
 ## Outras pendências encontradas
 
-- `docs/referencia-rapida.html` aponta para âncoras que não existem: `csv-helper.html#headers`, `chunk-upload-helper.html#info` e `chunk-upload-helper.html#formatBytes`.
-- `ChunkUploadHelper.php` (linha ~1943) usa `date('Y-m-d H:i:s')` como alternativa quando o `JFactory` não existe; pode passar a usar o `DateHelper`.
-- `OrmBase.php` captura `Exception` em `getTableColumns()` e `executar()`; o `checar.sh` recomenda `Throwable` (pega também `Error` do PHP 7).
+- ~~Âncoras quebradas da referência rápida~~ (resolvido em 2026-10-05: `headers()`, `info()` e `formatBytes()` documentados).
+- ~~`ChunkUploadHelper` com `date()`~~ (resolvido: usa `DateHelper::nowSql()`, senão UTC).
+- ~~`OrmBase` capturando `Exception`~~ (resolvido: `Throwable` em `getTableColumns()` e `executar()`).

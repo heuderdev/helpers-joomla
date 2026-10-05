@@ -171,7 +171,11 @@ $analise = CsvHelper::analyze('planilhas/vendas.csv');
 </ul>
 </div>
 
-<h2 id="processamento" data-titulo="Processamento em lote">Processamento em lote</h2>
+<div class="metodo"><h3 id="headers"><code>headers()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CsvHelper::headers(string $path, string|null $baseDirectory = null, array $options = array()): array</div><p>Lê só o cabeçalho (com a detecção de codificação e delimitador do <code>analyze()</code>), sem processar as linhas: útil para montar a tela de "qual coluna é qual" antes da importação. Envelope <code>{ success, mensagem, data }</code>; não lança.</p><div class="codigo"><pre><code data-lang="php">$r = CsvHelper::headers(&#x27;importacoes/clientes.csv&#x27;);
+
+if ($r[&#x27;success&#x27;]) {
+    print_r($r[&#x27;data&#x27;]);   // colunas, delimitador e codificação detectados
+}</code></pre></div></div><h2 id="processamento" data-titulo="Processamento em lote">Processamento em lote</h2>
 <p>Leitura sequencial sob demanda com delegação para callbacks, validação por linha e manipulação eficiente de memória.</p>
 
 <div class="metodo">

@@ -31,7 +31,7 @@ class IncludeHelper
         'FileHelper'          => array('LogHelper'),
         'AuditHelper'         => array('OrmTables', 'LogHelper'),
         'CsvHelper'           => array('OrmTables', 'DbTransactionHelper', 'ValidationHelper', 'LogHelper'),
-        'ChunkUploadHelper'   => array('LogHelper'),
+        'ChunkUploadHelper'   => array('LogHelper', 'DateHelper'),
         'ExportHelper'        => array('LogHelper'),
         'QueueHelper'         => array('LogHelper', 'DateHelper'),
         'UploadMaster'        => array(),

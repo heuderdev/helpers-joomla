@@ -1935,12 +1935,18 @@ class ChunkHelper
     }
 
 
+    // Sempre UTC, como o resto dos helpers (DateHelper).
     private static function agora()
     {
+        if (class_exists('DateHelper')) {
+            return DateHelper::nowSql();
+        }
+
         if (class_exists('JFactory')) {
             return JFactory::getDate()->toSql();
         }
-        return date('Y-m-d H:i:s');
+
+        return gmdate('Y-m-d H:i:s');
     }
 
     private static function folderExists($path)

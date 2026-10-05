@@ -18,6 +18,7 @@ declare -A DEP=(
     [PermissionHelper]="ApiResponseHelper LogHelper"
     [FileHelper]="LogHelper"
     [QueueHelper]="DateHelper"
+    [ChunkUploadHelper]="LogHelper DateHelper"
     [HttpHelper]="LogHelper"
     [LockHelper]="LogHelper DbConnectionHelper"
     [CacheHelper]="LogHelper LockHelper"
