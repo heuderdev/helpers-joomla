@@ -35,7 +35,8 @@ class IncludeHelper
         'ExportHelper'        => array('LogHelper'),
         'QueueHelper'         => array('LogHelper', 'DateHelper'),
         'UploadMaster'        => array(),
-        'HttpHelper'          => array('LogHelper')
+        'HttpHelper'          => array('LogHelper'),
+        'LockHelper'          => array('LogHelper', 'DbConnectionHelper')
     );
 
     /**
@@ -58,7 +59,8 @@ class IncludeHelper
         'CsvHelperException'    => 'CsvHelper',
         'UploadMasterException' => 'UploadMaster',
         'HttpClient'            => 'HttpHelper',
-        'HttpHelperException'   => 'HttpHelper'
+        'HttpHelperException'   => 'HttpHelper',
+        'LockHelperException'   => 'LockHelper'
     );
 
     /**

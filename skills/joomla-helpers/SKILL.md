@@ -1,6 +1,6 @@
 ---
 name: joomla-helpers
-description: Cria, refatora e revisa código de componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, Vigia.js, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper, HttpHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
+description: Cria, refatora e revisa código de componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, Vigia.js, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper, HttpHelper, LockHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
 ---
 
 # Joomla com os helpers
@@ -25,7 +25,7 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 | `references/entrada-saida.md` | InputHelper, regras do ValidationHelper, respostas, permissões, Vigia.js (formulário no navegador) |
 | `references/arquivos.md` | upload, download, arquivos, importar/exportar CSV, arquivos gigantes |
 | `references/fila.md` | tarefas demoradas, jobs, worker, cron |
-| `references/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper (datas e fuso) |
+| `references/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper (datas e fuso), LockHelper |
 | `references/integracao.md` | HttpHelper |
 | `references/receitas.md` | pedido que combina vários helpers (exclusão auditada, CSV em fila, exportação, download privado, sincronizar bancos) |
 | `references/refatoracao.md` | **sempre** ao refatorar ou revisar código existente |
@@ -66,6 +66,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 | Demorado | `QueueHelper::push()` + `extends AbstractJob` + `fila/cli/queue-worker.php` |
 | Log / auditoria | `LogHelper::error(...)` / `AuditHelper::updated(...)` |
 | Data / hora / fuso | gravar `DateHelper::nowSql()`; mostrar `toUser($v)`; formulário `fromUser($v)`; período `range('month')` / `between($de, $ate)` |
+| Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |
 
 ## Contratos que mais causam bug

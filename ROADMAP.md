@@ -18,7 +18,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 1. Vigia.js: corrigir erro sem campo que trava o envio em silêncio (vai para a mensagem geral) e `min`/`max` em listas indexadas (objetos contam chaves); atualizar `docs/vigia-js.html` (remover os avisos de limitação) e testar no jsdom.
 - [x] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).
 - [x] 3. `HttpHelper`
-- [ ] 4. `LockHelper`
+- [x] 4. `LockHelper`
 - [ ] 5. `CacheHelper`
 - [ ] 6. `MailHelper`
 - [ ] 7. `RateLimitHelper`
@@ -35,6 +35,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 
 - Ferramenta de docs: `/tmp/claude-1000/-developer-helpersJoomla/c10b9e3f-ad8d-495d-a7f4-258375c63021/scratchpad/docs_tool.py` (gera página a partir de `.src`, regrava nav/anterior-próxima/rodapé de todos os docs, `card()`, `ref()`, `root()`). Lista do menu em `nav.json` ao lado. Se o arquivo sumiu, a navegação é HTML estático: copie de uma página existente.
 - Item 2 também corrigiu: `PermissionHelper` chamava `LogHelper::write` (privado; log de negativas nunca gravava) e expunha o contexto no JSON; `ExportHelper` usava escape vazio no `fputcsv` (só existe no PHP 7.4+).
+- Scripts da noite (mesma pasta do docs_tool.py): `register.py <Helper> "<deps>" "<classes extras>"` (IncludeHelper + instalar.sh), `skill_add.py <Helper> <ficha> <secao.md> "<pedido>" "<uso>"` (duas skills). Fichas novas: `integracao.md` (Http, Mail, Webhook).
 
 ## Prioridade alta
 
@@ -66,4 +67,3 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - `docs/referencia-rapida.html` aponta para âncoras que não existem: `csv-helper.html#headers`, `chunk-upload-helper.html#info` e `chunk-upload-helper.html#formatBytes`.
 - `ChunkUploadHelper.php` (linha ~1943) usa `date('Y-m-d H:i:s')` como alternativa quando o `JFactory` não existe; pode passar a usar o `DateHelper`.
 - `OrmBase.php` captura `Exception` em `getTableColumns()` e `executar()`; o `checar.sh` recomenda `Throwable` (pega também `Error` do PHP 7).
-- Scripts da noite (mesma pasta do docs_tool.py): `register.py <Helper> "<deps>" "<classes extras>"` (IncludeHelper + instalar.sh), `skill_add.py <Helper> <ficha> <secao.md> "<pedido>" "<uso>"` (duas skills). Fichas novas: `integracao.md` (Http, Mail, Webhook).

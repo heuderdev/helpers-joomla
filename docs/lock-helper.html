@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LockHelper · helpers-joomla</title>
+<meta name="description" content="LockHelper: impede que a mesma tarefa rode duas vezes ao mesmo tempo (cron sobreposto, clique duplo, importação concorrente) com GET_LOCK, advisory lock ou flock.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › LockHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" class="ativo" aria-current="page" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>LockHelper</h1><p class="lead">Impede que a mesma tarefa rode duas vezes ao mesmo tempo: cron que se sobrepõe, clique duplo em "gerar boletos", duas importações da mesma planilha. Usa a trava do próprio banco (MySQL/MariaDB ou PostgreSQL) ou de arquivo, e nunca fica presa depois de um erro fatal.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/LockHelper.php&#x27;;
+
+$r = LockHelper::run(&#x27;gerar-boletos&#x27;, function () {
+    // só um processo por vez chega aqui
+    return BoletoService::gerarDoMes();
+});
+
+if (!$r[&#x27;acquired&#x27;]) {
+    return ApiResponseHelper::conflict(&#x27;A geração de boletos já está em andamento. Aguarde ela terminar.&#x27;);
+}
+
+return ApiResponseHelper::success(&#x27;Boletos gerados.&#x27;, $r[&#x27;result&#x27;]);</code></pre></div>
+<h3 id="por-que">Por que não basta um campo "processando" na tabela</h3>
+<ul>
+<li><strong>Corrida</strong>: dois processos leem "processando = 0" no mesmo milissegundo e os dois começam. A trava do banco é atômica.</li>
+<li><strong>Trava presa</strong>: se o processo morre (timeout, erro fatal, <code>kill</code>), o campo fica "processando = 1" para sempre. As travas do LockHelper são do processo/conexão: somem quando ele morre.</li>
+<li><strong><code>lockForUpdate()</code> não serve</strong>: trava linhas dentro de uma transação, não uma tarefa inteira que lê APIs, gera arquivos e faz várias transações.</li>
+</ul>
+<h2 id="metodos" data-titulo="Métodos">Métodos</h2>
+<div class="metodo"><h3 id="run"><code>run()</code><span class="tag estatico">estático</span></h3><div class="assinatura">LockHelper::run(string $name, callable $callback, float $wait = 0, array $options = array()): array</div><p>Pega a trava, executa o callback e solta a trava no fim, <strong>mesmo se o callback lançar exceção</strong> (a exceção continua subindo). Devolve <code>array('acquired' =&gt; bool, 'result' =&gt; retorno do callback)</code>. <code>$wait</code>: segundos esperando a trava ficar livre (0 = desiste na hora). Opções: <code>'throw' =&gt; true</code> lança <code>LockHelperException</code> quando não consegue; <code>'message'</code> troca o texto dela.</p></div>
+<div class="metodo"><h3 id="acquire"><code>acquire()</code> / <code>release()</code><span class="tag estatico">estático</span></h3><div class="assinatura">LockHelper::acquire(string $name, float $wait = 0): bool
+LockHelper::release(string $name): bool</div><p>Controle manual, para quando a trava atravessa vários passos. Sempre em <code>try/finally</code>. No mesmo processo é reentrante: pegar duas vezes exige soltar duas vezes.</p>
+<div class="codigo"><pre><code data-lang="php">if (!LockHelper::acquire(&#x27;importacao:&#x27; . $arquivoId, 10)) {
+    return ApiResponseHelper::conflict(&#x27;Este arquivo já está sendo importado.&#x27;);
+}
+
+try {
+    // vários passos
+} finally {
+    LockHelper::release(&#x27;importacao:&#x27; . $arquivoId);
+}</code></pre></div>
+</div>
+<div class="metodo"><h3 id="isLocked"><code>isLocked()</code><span class="tag estatico">estático</span></h3><div class="assinatura">LockHelper::isLocked(string $name): bool</div><p>Se alguém segura a trava agora. <strong>Só para informar a tela</strong> ("importação em andamento"): entre a consulta e a ação outro processo pode pegar a trava. Para decidir, use <code>acquire()</code>/<code>run()</code>.</p></div>
+<div class="metodo"><h3 id="held"><code>held()</code> / <code>releaseAll()</code><span class="tag estatico">estático</span></h3><div class="assinatura">LockHelper::held(): array
+LockHelper::releaseAll(): void</div><p>Travas deste processo; soltar todas (também é feito sozinho no fim do script).</p></div>
+<h2 id="nomes" data-titulo="Nomes de trava">Escolhendo o nome</h2>
+<p>O nome define <strong>o que não pode acontecer ao mesmo tempo</strong>:</p>
+<div class="tabela"><table><thead><tr><th>Nome</th><th>Efeito</th></tr></thead><tbody>
+<tr><td><code>'gerar-boletos'</code></td><td>uma geração por vez no site todo</td></tr>
+<tr><td><code>'pedido:' . $id</code></td><td>operações no mesmo pedido em fila; pedidos diferentes em paralelo</td></tr>
+<tr><td><code>'estoque:' . $produtoId</code></td><td>baixa de estoque concorrente do mesmo produto</td></tr>
+<tr><td><code>'sync-erp:' . $empresaId</code></td><td>uma sincronização por empresa</td></tr>
+</tbody></table></div>
+<p>O nome é transformado num hash junto com o banco e o prefixo das tabelas do site: dois sites Joomla no mesmo servidor MySQL não se travam mutuamente.</p>
+<h2 id="receitas" data-titulo="Receitas">Receitas</h2>
+<h3 id="receita-cron">Cron que não se sobrepõe</h3>
+<div class="codigo"><div class="titulo-codigo">cli/sincronizar-erp.php</div><pre><code data-lang="php">// Roda a cada 5 minutos; se a anterior ainda estiver rodando, esta sai sem fazer nada.
+$r = LockHelper::run(&#x27;cron:sincronizar-erp&#x27;, function () {
+    return ErpSync::executar();
+});
+
+if (!$r[&#x27;acquired&#x27;]) {
+    LogHelper::notice(&#x27;Sincronização anterior ainda em andamento; pulando.&#x27;, &#x27;erp&#x27;);
+    exit(0);
+}</code></pre></div>
+<h3 id="receita-clique-duplo">Clique duplo numa ação cara</h3>
+<div class="codigo"><pre><code data-lang="php">public function faturar()
+{
+    try {
+        if (!JSession::checkToken()) {
+            return ApiResponseHelper::forbidden(&#x27;Sua sessão expirou. Recarregue a página.&#x27;);
+        }
+
+        $id = InputHelper::int(&#x27;id&#x27;);
+
+        $r = LockHelper::run(&#x27;pedido:&#x27; . $id, function () use ($id) {
+            $pedido = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;findOrFail($id);
+
+            if ($pedido-&gt;status === &#x27;faturado&#x27;) {   // releia o estado dentro da trava
+                return array(&#x27;ja_faturado&#x27; =&gt; true);
+            }
+
+            return FaturamentoService::faturar($pedido);
+        });
+
+        if (!$r[&#x27;acquired&#x27;]) {
+            return ApiResponseHelper::conflict(&#x27;Este pedido já está sendo faturado.&#x27;);
+        }
+
+        return ApiResponseHelper::success(&#x27;Pedido faturado.&#x27;, $r[&#x27;result&#x27;]);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<div class="nota aviso"><p>A trava evita execuções <strong>simultâneas</strong>, não repetidas: depois que a primeira termina, a segunda pega a trava e roda. Por isso o exemplo relê o estado <strong>dentro</strong> da trava e não fatura de novo.</p></div>
+<h3 id="receita-fila">Dentro de um job da fila</h3>
+<p>O <a href="queue-helper.html">QueueHelper</a> já garante que um job não é processado por dois workers. Use o LockHelper para recursos <strong>compartilhados entre jobs diferentes</strong>, como "só um job de importação por cliente por vez": com <code>$wait</code> 0 e, se não conseguir, <code>$this-&gt;release(60)</code> devolve o job à fila para tentar daqui a um minuto.</p>
+<div class="codigo"><pre><code data-lang="php">public function handle()
+{
+    $r = LockHelper::run(&#x27;importacao:cliente:&#x27; . $this-&gt;getPayload(&#x27;cliente_id&#x27;), function () {
+        return ImportacaoService::processar($this-&gt;getPayload(&#x27;arquivo&#x27;));
+    });
+
+    if (!$r[&#x27;acquired&#x27;]) {
+        $this-&gt;release(60);   // tenta de novo em 1 minuto, sem gastar tentativa
+        return;
+    }
+
+    return $r[&#x27;result&#x27;];
+}</code></pre></div>
+<h2 id="drivers" data-titulo="Drivers">Drivers</h2>
+<div class="tabela"><table><thead><tr><th>Driver</th><th>Como funciona</th><th>Vale entre</th></tr></thead><tbody>
+<tr><td><code>mysql</code></td><td><code>GET_LOCK()</code> / <code>RELEASE_LOCK()</code> (MySQL 5.7+, MariaDB 10.0.2+)</td><td>todos os servidores que usam o mesmo banco</td></tr>
+<tr><td><code>pgsql</code></td><td><code>pg_try_advisory_lock()</code> (de sessão)</td><td>todos os servidores que usam o mesmo banco</td></tr>
+<tr><td><code>file</code></td><td><code>flock()</code> num arquivo em <code>tmp/locks</code></td><td>só processos do mesmo servidor</td></tr>
+</tbody></table></div>
+<p>O padrão (<code>auto</code>) usa o banco do Joomla e, se não houver banco, arquivo. Configuração:</p>
+<div class="codigo"><pre><code data-lang="php">LockHelper::setDriver(&#x27;file&#x27;);                        // &#x27;auto&#x27;, &#x27;mysql&#x27;, &#x27;pgsql&#x27; ou &#x27;file&#x27;
+LockHelper::setConnection(&#x27;erp&#x27;);                     // trava no banco de outra conexão do DbConnectionHelper
+LockHelper::setDirectory(JPATH_ROOT . &#x27;/tmp/locks&#x27;);  // pasta das travas em arquivo</code></pre></div>
+<div class="nota aviso"><p><strong>Limites conhecidos.</strong> As travas de banco pertencem à conexão: se ela cair no meio (<code>wait_timeout</code> do MySQL num script parado muito tempo), a trava some junto. Com PgBouncer em modo <em>transaction</em>, travas de sessão não funcionam: use o driver <code>file</code> (um servidor) ou conecte direto ao PostgreSQL. No MySQL anterior a 5.7, pegar uma segunda trava solta a primeira.</p></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="queue-helper.html">QueueHelper</a>: tarefas em segundo plano.</li><li><a href="db-transaction-helper.html">DbTransactionHelper</a>: "tudo ou nada" e <code>lockForUpdate()</code> para linhas.</li><li><a href="rate-limit-helper.html">RateLimitHelper</a>: limitar quantas vezes algo roda num período.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="http-helper.html"><small>← Anterior</small>HttpHelper</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -59,3 +59,16 @@ $periodo = DateHelper::between(InputHelper::date('de'), InputHelper::date('ate')
 - Constantes: `SQL`, `SQL_DATE`, `BR`, `BR_DATETIME`, `BR_FULL`, `ISO`. Fusos: `'UTC'`, `'user'`, nome IANA ou `DateTimeZone`.
 - Worker CLI (sem usuário): `DateHelper::setUserTimezone(DateHelper::timezoneForUser($uid))` e depois `setUserTimezone(null)`. Testes: `setTestNow('2026-10-05 02:30:00')` / `setTestNow(null)`.
 - `OrmBase` (timestamps, soft delete) e `QueueHelper` já gravam com o DateHelper.
+
+## LockHelper (uma execução por vez)
+
+```php
+$r = LockHelper::run('gerar-boletos', function () { return Servico::gerar(); });   // ['acquired' => bool, 'result' => ...]
+if (!$r['acquired']) return ApiResponseHelper::conflict('Já está em andamento.');
+LockHelper::run('pedido:' . $id, $fn, 10);                 // espera até 10 s pela trava
+LockHelper::run('x', $fn, 0, ['throw' => true]);           // LockHelperException se ocupada
+if (LockHelper::acquire('import:' . $id)) { try { ... } finally { LockHelper::release('import:' . $id); } }
+```
+- Drivers: `auto` (GET_LOCK no MySQL/MariaDB, `pg_try_advisory_lock` no PostgreSQL), `file` (flock, um servidor). Soltam sozinhas se o processo morrer; exceção no callback solta e relança.
+- Evita execução **simultânea**, não repetida: releia o estado dentro da trava. `isLocked()` só para exibir. Nome por recurso (`'pedido:' . $id`) para paralelizar o resto. Em job: sem trava → `$this->release(60)`.
+- PgBouncer em modo transaction não suporta trava de sessão (use `setDriver('file')`).

@@ -21,7 +21,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
-| Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper |
+| Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper |
 | Integrações | `referencias/integracao.md` | HttpHelper |
 | Exemplos completos | `receitas.md` | CRUD, importação CSV em fila, exportação, upload privado |
 
@@ -47,6 +47,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Log técnico | `LogHelper::info/error/exception(...)` |
 | Trilha de auditoria (quem mudou o quê) | `AuditHelper::created/updated/deleted(...)` |
 | Data/hora: gravar, mostrar, filtrar período | `DateHelper::nowSql()` · `toUser($v)` · `fromUser($v)` · `range('month')` · `between($de, $ate)` |
+| Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |
 | Carregar helpers com dependências | `IncludeHelper::load(['OrmTables', 'ApiResponseHelper'])` |
 
