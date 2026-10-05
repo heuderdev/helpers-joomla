@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FormatHelper · helpers-joomla</title>
+<meta name="description" content="FormatHelper: formatação brasileira de dinheiro (inclusive centavos), números, CPF/CNPJ, CEP, telefone, WhatsApp, slug, resumo de texto, bytes, plural e nomes.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › FormatHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="lista-js.html" data-busca="javascript lista listagem tabela paginação ordenação filtro busca lote seleção excluir url datagrid grid">Lista.js<span class="arquivo">js/lista.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>FormatHelper</h1><p class="lead">Formatação brasileira para telas, e-mails, PDFs e exportações: dinheiro (inclusive em centavos, sem erro de ponto flutuante), números, CPF/CNPJ, CEP, telefone, slug, resumo de texto, bytes, plural e nomes próprios.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/FormatHelper.php&#x27;;
+
+echo FormatHelper::money($pedido-&gt;total);              // R$ 1.234,50
+echo FormatHelper::cpfCnpj($cliente-&gt;documento);       // 123.456.789-09 ou 11.222.333/0001-81
+echo FormatHelper::phone($cliente-&gt;celular);           // (11) 98765-4321
+echo FormatHelper::limit($produto-&gt;descricao, 120);    // resumo sem cortar palavra, sem HTML
+echo FormatHelper::plural($total, &#x27;pedido&#x27;, &#x27;pedidos&#x27;, &#x27;Nenhum pedido&#x27;);</code></pre></div>
+<p>Nunca lança exceção: um valor que não dá para formatar volta como veio (texto) ou vazio (<code>null</code>, texto que não é número). Funciona sem a extensão <code>mbstring</code>. Na view, escape o resultado como qualquer texto (<code>htmlspecialchars</code>).</p>
+<h2 id="dinheiro" data-titulo="Dinheiro">Dinheiro e números</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Entrada</th><th>Saída</th></tr></thead><tbody>
+<tr><td><code>money($v, $simbolo = true, $casas = 2)</code></td><td><code>1234.5</code>, <code>'1234.5'</code>, <code>'1.234,50'</code>, <code>-10</code></td><td><code>R$ 1.234,50</code>, <code>-R$ 10,00</code> (sem símbolo: <code>1.234,50</code>)</td></tr>
+<tr><td><code>moneyFromCents($centavos)</code></td><td><code>123456</code></td><td><code>R$ 1.234,56</code></td></tr>
+<tr><td><code>toCents($v)</code></td><td><code>'R$ 1.234,56'</code>, <code>'19.9'</code>, <code>0.1 + 0.2</code></td><td><code>123456</code>, <code>1990</code>, <code>30</code> (<code>null</code> se não for número)</td></tr>
+<tr><td><code>toNumber($v)</code></td><td><code>'1.234,56'</code>, <code>'1,234.56'</code>, <code>'12,5%'</code></td><td><code>1234.56</code>, <code>1234.56</code>, <code>12.5</code></td></tr>
+<tr><td><code>number($v, $casas = 2)</code> / <code>integer($v)</code></td><td><code>1234.567</code></td><td><code>1.234,57</code> / <code>1.235</code></td></tr>
+<tr><td><code>percent($v, $casas = 1, $fracao = false)</code></td><td><code>12.5</code> (ou <code>0.125</code> com <code>$fracao</code>)</td><td><code>12,5%</code></td></tr>
+<tr><td><code>bytes($n)</code></td><td><code>1536</code></td><td><code>1,5 KB</code></td></tr>
+</tbody></table></div>
+<p>Com um único separador, ele é o decimal (<code>'10,5'</code> e <code>'10.5'</code> são 10,5), como no <code>ValidationHelper</code> e no Vigia.js.</p>
+<div class="nota dica"><p><strong class="rotulo">Centavos para somar e cobrar</strong> <code>0.1 + 0.2</code> é <code>0.30000000000000004</code> em ponto flutuante. Para somar itens, aplicar desconto ou enviar a um gateway (que trabalha em centavos), converta com <code>toCents()</code>, faça a conta com inteiros e formate com <code>moneyFromCents()</code>. No banco, use <code>DECIMAL(12,2)</code> ou inteiro em centavos, nunca <code>FLOAT</code>.</p></div>
+<div class="codigo"><pre><code data-lang="php">$totalCentavos = 0;
+
+foreach ($itens as $item) {
+    $totalCentavos += FormatHelper::toCents($item-&gt;preco) * (int) $item-&gt;quantidade;
+}
+
+$desconto = (int) round($totalCentavos * 0.10);   // 10%
+echo FormatHelper::moneyFromCents($totalCentavos - $desconto);</code></pre></div>
+<h2 id="documentos" data-titulo="Documentos e contatos">Documentos e contatos</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Saída</th></tr></thead><tbody>
+<tr><td><code>cpf($v)</code> / <code>cnpj($v)</code> / <code>cpfCnpj($v)</code></td><td><code>123.456.789-09</code> / <code>11.222.333/0001-81</code> / o que couber pelo tamanho</td></tr>
+<tr><td><code>cep($v)</code></td><td><code>01310-100</code></td></tr>
+<tr><td><code>phone($v)</code></td><td><code>(11) 98765-4321</code>, <code>(11) 3333-4444</code>, <code>0800 123 4567</code>; tira o <code>+55</code></td></tr>
+<tr><td><code>whatsapp($v)</code></td><td><code>5511987654321</code>, para <code>https://wa.me/5511987654321</code></td></tr>
+<tr><td><code>onlyDigits($v)</code></td><td>só os dígitos (para gravar no banco)</td></tr>
+</tbody></table></div>
+<p>Formatar não valida: um CPF com dígito errado sai formatado. Valide com o <a href="validation-helper.html">ValidationHelper</a> (<code>cpf</code>, <code>cnpj</code>) antes de gravar. Para esconder parte do documento, use <a href="crypto-helper.html#tokens"><code>CryptoHelper::mask()</code></a>.</p>
+<h2 id="texto" data-titulo="Texto">Texto</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Exemplo</th></tr></thead><tbody>
+<tr><td><code>slug($texto, $separador = '-', $max = 0)</code></td><td><code>'Pão de Açúcar — Promoção!'</code> → <code>pao-de-acucar-promocao</code></td></tr>
+<tr><td><code>removeAccents($texto)</code></td><td><code>'Ação'</code> → <code>Acao</code></td></tr>
+<tr><td><code>limit($texto, $max = 100, $fim = '…')</code></td><td>tira o HTML, junta espaços e corta sem quebrar palavra: <code>'Uma frase bem longa…'</code></td></tr>
+<tr><td><code>plural($n, $singular, $plural, $zero = null)</code></td><td><code>1 item</code>, <code>1.500 itens</code>, <code>Nenhum item</code></td></tr>
+<tr><td><code>name($texto)</code></td><td><code>'MARIA DA SILVA'</code> → <code>Maria da Silva</code></td></tr>
+<tr><td><code>initials($texto, $max = 2)</code></td><td><code>'Maria da Silva Souza'</code> → <code>MS</code> (avatar)</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Slug único para URL de produto
+$slug = FormatHelper::slug($dados[&#x27;nome&#x27;], &#x27;-&#x27;, 80);
+$base = $slug;
+$n = 2;
+
+while (OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;where(&#x27;alias&#x27;, $slug)-&gt;exists()) {
+    $slug = $base . &#x27;-&#x27; . $n++;
+}</code></pre></div>
+<h2 id="javascript" data-titulo="No navegador">No navegador</h2>
+<p>Os mesmos formatos existem no front: <code>Vigia.mask.format('11222333000181', 'cnpj')</code> e, nas listas, <code>data-format="money"</code>, <code>"cpf_cnpj"</code>, <code>"phone"</code> do <a href="lista-js.html#template">Lista.js</a>.</p>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="date-helper.html">DateHelper</a>: datas (<code>toUser()</code>, <code>longDate()</code>, <code>relative()</code>).</li><li><a href="input-helper.html">InputHelper</a>: ler valores digitados (<code>decimal()</code>, <code>cpf()</code>).</li><li><a href="mail-helper.html">MailHelper</a>: filtros <code>money</code> e <code>date</code> nos templates.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>Vigia.js</code> e <code>Lista.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

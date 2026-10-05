@@ -21,7 +21,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Lista.js |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
-| Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper |
+| Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper |
 | Integrações | `referencias/integracao.md` | HttpHelper, MailHelper |
 | Exemplos completos | `receitas.md` | CRUD, importação CSV em fila, exportação, upload privado |
 
@@ -47,6 +47,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Log técnico | `LogHelper::info/error/exception(...)` |
 | Trilha de auditoria (quem mudou o quê) | `AuditHelper::created/updated/deleted(...)` |
 | Data/hora: gravar, mostrar, filtrar período | `DateHelper::nowSql()` · `toUser($v)` · `fromUser($v)` · `range('month')` · `between($de, $ate)` |
+| Formatar dinheiro, CPF, telefone, slug | `FormatHelper::money($v)` · `toCents($v)` · `cpfCnpj($v)` · `slug($t)` |
 | Tela de listagem (paginação, filtros, lote) | `js/lista.js`: `<div data-lista="url">` + `ApiResponseHelper::paginated()` |
 | Guardar token de API / conferir webhook | `CryptoHelper::encrypt($v, "contexto")` / `verifySignature(...)` |
 | Limitar tentativas (login, SMS, contato) | `if (!RateLimitHelper::enforce("chave:" . $ip, 5, 3600)) return;` |

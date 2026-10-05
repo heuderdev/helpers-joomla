@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -107,3 +107,14 @@ CryptoHelper::token(); CryptoHelper::numericCode(6); CryptoHelper::hashToken($to
 ```
 - XChaCha20-Poly1305 (sodium) ou AES-256-CBC+HMAC; contexto amarra o valor à coluna. Chave: `setKey(base64 de 32 bytes)` fora da pasta pública (padrão: derivada do `secret` do Joomla; trocar o secret perde os dados). Rotação: `setPreviousKeys()` + `reencrypt()`.
 - Senha de usuário **não**: use `JUserHelper::hashPassword()`. Coluna cifrada não é buscável: guarde também `hashToken()` para busca. Token no banco só como `hashToken()`.
+
+## FormatHelper (formatação brasileira)
+
+```php
+FormatHelper::money(1234.5);                 // 'R$ 1.234,50' (aceita '1.234,50', '1234.5'); sem símbolo: money($v, false)
+FormatHelper::toCents('R$ 1.234,56');        // 123456 (conta em inteiros, sem float) · moneyFromCents(123456)
+FormatHelper::cpfCnpj($doc); cep($v); phone($v); whatsapp($v); onlyDigits($v);
+FormatHelper::slug('Pão de Açúcar');         // 'pao-de-acucar' · limit($html, 120) · plural($n, 'item', 'itens', 'Nenhum item')
+FormatHelper::number($v, 2); percent(12.5); bytes(1536); name('MARIA DA SILVA'); initials($nome);
+```
+- Não lança; valor inválido volta como veio (texto) ou ''. Formatar não valida (CPF errado sai formatado): valide com ValidationHelper. Na view, escape a saída.

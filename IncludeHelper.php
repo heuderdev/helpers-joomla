@@ -40,7 +40,8 @@ class IncludeHelper
         'CacheHelper'         => array('LogHelper', 'LockHelper'),
         'MailHelper'          => array('LogHelper'),
         'RateLimitHelper'     => array('LogHelper', 'ApiResponseHelper', 'DbConnectionHelper'),
-        'CryptoHelper'        => array('LogHelper')
+        'CryptoHelper'        => array('LogHelper'),
+        'FormatHelper'        => array()
     );
 
     /**
