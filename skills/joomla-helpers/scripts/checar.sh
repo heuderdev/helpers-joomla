@@ -62,8 +62,8 @@ for f in "${ARQS[@]}"; do
     # task de escrita sem checagem de token
     if grep -qE "extends +(JControllerLegacy|JControllerForm|JControllerAdmin|BaseController|FormController|AdminController)" "$f" \
         && grep -qE "public function (salvar|save|excluir|delete|remover|importar|apply|publish)\b" "$f" \
-        && ! grep -qE "checkToken|Session::checkToken" "$f"; then
-        aviso "$f" 0 "há tarefa de escrita sem JSession::checkToken()"
+        && ! grep -qE "checkToken|Session::checkToken|requireToken" "$f"; then
+        aviso "$f" 0 "há tarefa de escrita sem JSession::checkToken() ou PermissionHelper::requireToken()"
     fi
 done
 

@@ -14,6 +14,7 @@ Micro framework JavaScript para formulários de componentes Joomla, par do `Vali
 | `vigia.css` | Estilos mínimos. Opcional com Bootstrap (Joomla 4/5). |
 | `vitrine.js` | Telas de listagem: paginação, ordenação e filtros na URL, busca com espera, ações em lote. Requer o Vigia.js. Docs: `docs/vitrine-js.html`. |
 | `vitrine.css` | Estilos mínimos da Vitrine.js (setas de ordenação, carregando, seleção). |
+| `exemplo-vitrine.html` | Demonstração completa Vitrine.js + Vigia.js (cadastro de clientes) que roda sem Joomla. O PHP correspondente: `exemplos/ComoUsarVitrineEVigia.php`. |
 | `exemplo.html` | Demonstração que roda sem Joomla (servidor falso no formato do `ApiResponseHelper`). |
 
 ```html

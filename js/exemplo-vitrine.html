@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vitrine.js + Vigia.js · demonstração</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="vigia.css">
+<link rel="stylesheet" href="vitrine.css">
+<style>
+    body { background: #f6f8fb; }
+    .demo-nota { font-size: .875rem; color: #5f6b7a; }
+    pre.log { background: #0b1220; color: #d7e2f0; padding: .75rem 1rem; border-radius: .5rem; font-size: .78rem; max-height: 220px; overflow: auto; margin: 0; }
+</style>
+</head>
+<body>
+<div class="container-xl py-4">
+    <p class="demo-nota">Esta página roda sem Joomla: um servidor falso, com <strong>1.200 clientes</strong>, responde exatamente como o controller de <code>exemplos/ComoUsarVitrineEVigia.php</code> (<code>ApiResponseHelper::paginated()</code>, <code>fromValidation()</code>...). Veja no quadro do fim que cada página traz só 20 registros. Tente cadastrar com o e-mail <code>usado@exemplo.com</code>.</p>
+
+    <div id="clientes" class="card"><div class="card-body"
+         data-vitrine="index.php?option=com_loja&amp;task=clientes.listar&amp;format=json"
+         data-vitrine-limit="20" data-vitrine-sort="created_at" data-vitrine-direction="DESC"
+         data-vitrine-remember="clientes-demo">
+
+        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+            <h1 class="h3 m-0">Clientes</h1>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" data-vitrine-export href="index.php?option=com_loja&amp;task=clientes.exportar">Exportar CSV</a>
+                <button type="button" class="btn btn-primary" id="novo-cliente">Novo cliente</button>
+            </div>
+        </div>
+
+        <div data-vitrine-message hidden></div>
+
+        <form data-vitrine-filters class="row g-2 align-items-end mb-3">
+            <div class="col-md-4">
+                <label class="form-label" for="f-busca">Buscar</label>
+                <input type="search" id="f-busca" name="busca" class="form-control" placeholder="Nome, e-mail, CPF ou celular">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="f-uf">Estado</label>
+                <select id="f-uf" name="uf" class="form-select"><option value="">Todos</option></select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="f-de">Cadastro de</label>
+                <input type="date" id="f-de" name="de" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="f-ate">até</label>
+                <input type="date" id="f-ate" name="ate" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="status[]" value="ativo" id="f-ativo"><label class="form-check-label" for="f-ativo">Ativos</label></div>
+                <div class="form-check"><input class="form-check-input" type="checkbox" name="status[]" value="inativo" id="f-inativo"><label class="form-check-label" for="f-inativo">Inativos</label></div>
+            </div>
+            <div class="col-12"><button type="button" class="btn btn-link p-0" data-vitrine-reset>Limpar filtros</button></div>
+        </form>
+
+        <div data-vitrine-batch hidden class="alert alert-secondary d-flex align-items-center gap-3 py-2">
+            <span><strong data-vitrine-selected-count></strong> selecionado(s)</span>
+            <button type="button" class="btn btn-sm btn-danger" data-batch-action="excluir"
+                    data-url="index.php?option=com_loja&amp;task=clientes.excluir&amp;format=json"
+                    data-confirm="Excluir :count clientes? Esta ação não pode ser desfeita.">Excluir selecionados</button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:2rem"><input type="checkbox" class="form-check-input" data-select-all aria-label="Selecionar todos"></th>
+                        <th data-sort="id">#</th>
+                        <th data-sort="nome">Cliente</th>
+                        <th>Documento</th>
+                        <th data-sort="cidade">Cidade</th>
+                        <th data-sort="limite_credito" class="text-end">Limite</th>
+                        <th data-sort="status">Status</th>
+                        <th data-sort="created_at">Cadastro</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody data-vitrine-items></tbody>
+            </table>
+        </div>
+
+        <template data-vitrine-template>
+            <tr data-class-table-secondary="inativo">
+                <td><input type="checkbox" class="form-check-input" data-select></td>
+                <td data-field="id"></td>
+                <td>
+                    <strong data-field="nome"></strong><br>
+                    <small class="text-muted"><a data-href="mailto:{email}" data-field="email"></a> · <span data-field="celular" data-format="phone"></span></small>
+                </td>
+                <td class="text-nowrap" data-field="documento" data-format="cpf_cnpj"></td>
+                <td><span data-field="cidade"></span>/<span data-field="uf"></span></td>
+                <td class="text-end" data-field="limite_credito" data-format="money"></td>
+                <td>
+                    <span class="badge bg-success" data-if="ativo">Ativo</span>
+                    <span class="badge bg-secondary" data-if="inativo">Inativo</span>
+                </td>
+                <td class="text-nowrap" data-field="created_at" data-format="datetime"></td>
+                <td class="text-end text-nowrap">
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-action="editar">Editar</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-action="status"
+                            data-url="index.php?option=com_loja&task=clientes.alterarStatus&format=json&id={id}&status={proximo_status}"
+                            data-attr-aria-label="Mudar status de {nome}">
+                        <span data-if="ativo">Desativar</span><span data-if="inativo">Ativar</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-action="excluir"
+                            data-url="index.php?option=com_loja&task=clientes.excluir&format=json&id={id}" data-confirm="Excluir {nome}?">Excluir</button>
+                </td>
+            </tr>
+        </template>
+
+        <p data-vitrine-empty hidden class="text-center text-muted py-5">Nenhum cliente encontrado com esses filtros.</p>
+        <div data-vitrine-error hidden class="alert alert-danger"><span data-vitrine-error-message></span> <button type="button" class="btn btn-sm btn-link" data-vitrine-retry>Tentar de novo</button></div>
+
+        <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center">
+            <small class="text-muted" data-vitrine-summary></small>
+            <nav data-vitrine-pagination="jpaginate" data-vitrine-display="7"></nav>
+            <label class="d-flex align-items-center gap-2 small">Por página
+                <select class="form-select form-select-sm w-auto" data-vitrine-limit-select><option>20</option><option>50</option><option>100</option></select>
+            </label>
+        </div>
+
+        <!-- Num site Joomla: JHtml::_('form.token') -->
+        <input type="hidden" name="0123456789abcdef0123456789abcdef" value="1">
+    </div></div>
+
+    <h2 class="h6 mt-4">O que o servidor falso recebeu e devolveu</h2>
+    <pre class="log" id="log">(aguardando)</pre>
+</div>
+
+<!-- Modal de inclusão/edição -->
+<div class="modal fade" id="modal-cliente" tabindex="-1" aria-labelledby="modal-cliente-titulo" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <!-- data-vigia: o JSON que ValidationHelper::clientConfig(ClienteRegras::regras(), ...) gera no PHP -->
+        <form class="modal-content" id="form-cliente" method="post" action="index.php?option=com_loja&amp;task=clientes.salvar&amp;format=json"
+              data-vigia='{"rules":{"nome":["required","min_length:3","max_length:120"],"email":["required","email","max_length:190"],"tipo":["required","in:pf,pj"],"documento":["required","cpf_cnpj"],"celular":["required","phone"],"uf":["required","in:AC,AL,AP,AM,BA,CE,DF,ES,GO,MA,MT,MS,MG,PA,PB,PR,PE,PI,RJ,RN,RS,RO,RR,SC,SP,SE,TO"],"cidade":["required","max_length:100"],"limite_credito":["required","numeric","min:0","max:1000000"]},"messages":{"email.unique":"Já existe um cliente com este e-mail.","limite_credito.max":"O limite de crédito pode ser no máximo R$ 1.000.000,00."},"labels":{"documento":"CPF ou CNPJ","uf":"Estado","limite_credito":"Limite de crédito"}}'>
+            <div class="modal-header">
+                <h2 class="modal-title h5" id="modal-cliente-titulo">Novo cliente</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div data-vigia-message></div>
+                <input type="hidden" name="id" value="">
+
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="form-label" for="c-nome">Nome</label>
+                        <input id="c-nome" name="nome" class="form-control" autocomplete="name">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="c-tipo">Tipo</label>
+                        <select id="c-tipo" name="tipo" class="form-select">
+                            <option value="pf">Pessoa física</option>
+                            <option value="pj">Pessoa jurídica</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="c-email">E-mail</label>
+                        <input id="c-email" name="email" type="email" class="form-control" autocomplete="email"
+                               data-remote-url="index.php?option=com_loja&task=clientes.emailLivre&format=json">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="c-documento">CPF ou CNPJ</label>
+                        <input id="c-documento" name="documento" class="form-control" data-mask="cpf_cnpj" data-unmask>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" for="c-celular">Celular</label>
+                        <input id="c-celular" name="celular" class="form-control" data-mask="phone" data-unmask autocomplete="tel">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label" for="c-uf">UF</label>
+                        <select id="c-uf" name="uf" class="form-select"><option value="">—</option></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="c-cidade">Cidade</label>
+                        <input id="c-cidade" name="cidade" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="c-limite">Limite de crédito</label>
+                        <input id="c-limite" name="limite_credito" class="form-control" data-mask="money" data-unmask>
+                    </div>
+                </div>
+                <input type="hidden" name="0123456789abcdef0123456789abcdef" value="1">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary" data-loading-text="Salvando…">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="vigia.js"></script>
+<script src="vitrine.js"></script>
+<script>
+// =====================================================================
+// Servidor falso: responde como o controller do exemplo PHP.
+// Vem antes da tela: o primeiro pedido da lista já usa este servidor.
+// Num componente de verdade, apague este <script> inteiro.
+// =====================================================================
+var NOMES = ['Ana', 'Bruno', 'Carla', 'Diego', 'Elisa', 'Felipe', 'Gabriela', 'Heitor', 'Isabela', 'João', 'Larissa', 'Marcos', 'Natália', 'Otávio', 'Paula', 'Rafael', 'Sofia', 'Thiago', 'Valéria', 'William'];
+var SOBRENOMES = ['Silva', 'Souza', 'Oliveira', 'Santos', 'Pereira', 'Costa', 'Rodrigues', 'Almeida', 'Nascimento', 'Lima', 'Araújo', 'Fernandes', 'Carvalho', 'Gomes', 'Martins'];
+var CIDADES = [['São Paulo', 'SP'], ['Campinas', 'SP'], ['Rio de Janeiro', 'RJ'], ['Belo Horizonte', 'MG'], ['Curitiba', 'PR'], ['Porto Alegre', 'RS'], ['Salvador', 'BA'], ['Recife', 'PE'], ['Fortaleza', 'CE'], ['Goiânia', 'GO'], ['Florianópolis', 'SC'], ['Manaus', 'AM']];
+
+// Gerador previsível (mesmos dados a cada abertura).
+var semente = 42;
+function aleatorio(max) {
+    semente = (semente * 1103515245 + 12345) % 2147483648;
+    return semente % max;
+}
+
+function cpfValido() {
+    var d = [];
+    for (var i = 0; i < 9; i++) d.push(aleatorio(10));
+    [9, 10].forEach(function (pos) {
+        var soma = 0;
+        for (var j = 0; j < pos; j++) soma += d[j] * (pos + 1 - j);
+        d.push(((soma * 10) % 11) % 10);
+    });
+    return d.join('');
+}
+
+function sql(data) {
+    return data.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+var BANCO = [];
+var agora = Date.now();
+
+for (var i = 1; i <= 1200; i++) {
+    var nome = NOMES[aleatorio(NOMES.length)] + ' ' + SOBRENOMES[aleatorio(SOBRENOMES.length)] + ' ' + SOBRENOMES[aleatorio(SOBRENOMES.length)];
+    var local = CIDADES[aleatorio(CIDADES.length)];
+
+    BANCO.push({
+        id: i,
+        nome: nome,
+        email: nome.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ /g, '.') + i + '@exemplo.com',
+        tipo: 'pf',
+        documento: cpfValido(),
+        celular: '119' + String(10000000 + aleatorio(89999999)),
+        cidade: local[0],
+        uf: local[1],
+        limite_credito: (aleatorio(5000) * 10).toFixed(2),
+        status: aleatorio(10) < 8 ? 'ativo' : 'inativo',
+        created_at: sql(new Date(agora - (1200 - i) * 8 * 3600 * 1000 - aleatorio(3600) * 1000))
+    });
+}
+
+BANCO.push({ id: 1201, nome: 'Cliente Já Cadastrado', email: 'usado@exemplo.com', tipo: 'pf', documento: cpfValido(), celular: '11987654321', cidade: 'São Paulo', uf: 'SP', limite_credito: '1000.00', status: 'ativo', created_at: sql(new Date()) });
+
+function semAcento(t) {
+    return String(t).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function registrar(titulo, corpo) {
+    document.getElementById('log').textContent = titulo + '\n' + (typeof corpo === 'string' ? corpo : JSON.stringify(corpo, null, 2));
+}
+
+function responder(status, corpo, config) {
+    if (status < 300) {
+        return Promise.resolve({ data: corpo, status: status, statusText: 'OK', headers: {}, config: config });
+    }
+
+    var erro = new Error('HTTP ' + status);
+    erro.response = { data: corpo, status: status, headers: {}, config: config };
+    erro.config = config;
+    return Promise.reject(erro);
+}
+
+function ok(mensagem, data, extra) {
+    return Object.assign({ success: true, status: 'sucesso', mensagem: mensagem, data: data === undefined ? null : data, errors: {}, request_id: 'demo' }, extra || {});
+}
+
+function erro422(errors) {
+    var primeira = errors[Object.keys(errors)[0]][0];
+    return { success: false, status: 'erro', mensagem: primeira, data: null, errors: errors, request_id: 'demo' };
+}
+
+// GET clientes.listar: filtra, ordena e devolve SÓ a página pedida.
+function listar(p) {
+    var linhas = BANCO.slice();
+    var busca = semAcento(p.busca || '').trim();
+    var digitos = String(p.busca || '').replace(/\D/g, '');
+    var status = p.status ? [].concat(p.status) : [];
+
+    if (busca) {
+        linhas = linhas.filter(function (c) {
+            return semAcento(c.nome).indexOf(busca) !== -1 || c.email.indexOf(busca) !== -1
+                || (digitos.length >= 3 && (c.documento.indexOf(digitos) !== -1 || c.celular.indexOf(digitos) !== -1));
+        });
+    }
+
+    if (status.length) linhas = linhas.filter(function (c) { return status.indexOf(c.status) !== -1; });
+    if (p.uf) linhas = linhas.filter(function (c) { return c.uf === p.uf; });
+    if (p.de && p.ate) linhas = linhas.filter(function (c) { var d = c.created_at.slice(0, 10); return d >= p.de && d <= p.ate; });
+
+    var campo = ['id', 'nome', 'email', 'cidade', 'limite_credito', 'status', 'created_at'].indexOf(p.sort) !== -1 ? p.sort : 'created_at';
+    var direcao = p.direction === 'ASC' ? 1 : -1;
+
+    linhas.sort(function (a, b) {
+        var x = campo === 'limite_credito' || campo === 'id' ? Number(a[campo]) : semAcento(a[campo]);
+        var y = campo === 'limite_credito' || campo === 'id' ? Number(b[campo]) : semAcento(b[campo]);
+        return (x > y ? 1 : x < y ? -1 : b.id - a.id) * direcao;
+    });
+
+    var limite = Math.min(100, Math.max(1, Number(p.limit) || 20));
+    var totalPaginas = Math.max(1, Math.ceil(linhas.length / limite));
+    var pagina = Math.max(1, Number(p.page) || 1);
+    var itens = linhas.slice((pagina - 1) * limite, pagina * limite).map(function (c) { return Object.assign({}, c); });
+
+    registrar('GET clientes.listar ' + JSON.stringify(p),
+        'Devolveu ' + itens.length + ' de ' + linhas.length + ' registros filtrados (' + BANCO.length + ' no banco). LIMIT ' + limite + ' OFFSET ' + (pagina - 1) * limite);
+
+    return ok('Registros carregados.', itens, { meta: { paginacao: { total: linhas.length, por_pagina: limite, pagina_atual: pagina, total_paginas: totalPaginas } } });
+}
+
+Vigia.http.instance().defaults.adapter = function (config) {
+    var url = new URL(config.url, location.href);
+    var q = url.searchParams;
+    var task = q.get('task');
+    var dados = config.data instanceof FormData ? config.data : new FormData();
+    var espera = task === 'clientes.listar' ? 350 : 500;
+
+    return new Promise(function (r) { setTimeout(r, espera); }).then(function () {
+        if (task === 'clientes.listar') {
+            return responder(200, listar(config.params || {}), config);
+        }
+
+        if (task === 'clientes.emailLivre') {
+            var email = String(dados.get('value') || '').toLowerCase();
+            var id = Number(q.get('id'));
+            var usado = BANCO.some(function (c) { return c.email === email && c.id !== id; });
+
+            registrar('POST clientes.emailLivre (regra remote)', { value: email, id: id, usado: usado });
+            return usado
+                ? responder(422, erro422({ email: ['Já existe um cliente com este e-mail.'] }), config)
+                : responder(200, ok('Disponível.'), config);
+        }
+
+        if (task === 'clientes.salvar') {
+            var recebido = {};
+            dados.forEach(function (v, k) { recebido[k] = v; });
+            registrar('POST clientes.salvar (multipart, sem máscaras)', recebido);
+
+            var idSalvar = Number(recebido.id) || 0;
+            var emailNovo = String(recebido.email).toLowerCase();
+
+            // Regra que só o servidor confere (unique): 422 aparece no campo.
+            if (BANCO.some(function (c) { return c.email === emailNovo && c.id !== idSalvar; })) {
+                return responder(422, erro422({ email: ['Já existe um cliente com este e-mail.'] }), config);
+            }
+
+            var campos = { nome: recebido.nome, email: emailNovo, tipo: recebido.tipo, documento: recebido.documento, celular: recebido.celular, uf: recebido.uf, cidade: recebido.cidade, limite_credito: Number(recebido.limite_credito).toFixed(2) };
+
+            if (idSalvar) {
+                Object.assign(BANCO.find(function (c) { return c.id === idSalvar; }), campos);
+                return responder(200, ok('Cliente atualizado.', { id: idSalvar }, { status: 'sucesso' }), config);
+            }
+
+            var novo = Object.assign({ id: BANCO.length + 1, status: 'ativo', created_at: sql(new Date()) }, campos);
+            BANCO.push(novo);
+            return responder(201, ok('Cliente cadastrado.', { id: novo.id }), config);
+        }
+
+        if (task === 'clientes.alterarStatus') {
+            var cliente = BANCO.find(function (c) { return c.id === Number(q.get('id')); });
+            cliente.status = q.get('status');
+            registrar('POST clientes.alterarStatus', { id: cliente.id, status: cliente.status });
+            return responder(200, ok(cliente.status === 'ativo' ? 'Cliente ativado.' : 'Cliente desativado.'), config);
+        }
+
+        if (task === 'clientes.excluir') {
+            var ids = dados.getAll('ids[]').map(Number);
+            if (!ids.length && q.get('id')) ids = [Number(q.get('id'))];
+            BANCO = BANCO.filter(function (c) { return ids.indexOf(c.id) === -1; });
+            registrar('POST clientes.excluir', { ids: ids });
+            return responder(200, ok(ids.length + (ids.length === 1 ? ' cliente excluído.' : ' clientes excluídos.')), config);
+        }
+
+        return responder(404, { success: false, status: 'erro', mensagem: 'Task não encontrada.', data: null, errors: {} }, config);
+    });
+};
+</script>
+<script>
+// =====================================================================
+// A tela: o mesmo JavaScript de exemplos/ComoUsarVitrineEVigia.php
+// =====================================================================
+var UFS = 'AC,AL,AP,AM,BA,CE,DF,ES,GO,MA,MT,MS,MG,PA,PB,PR,PE,PI,RJ,RN,RS,RO,RR,SC,SP,SE,TO'.split(',');
+
+['f-uf', 'c-uf'].forEach(function (id) {
+    var select = document.getElementById(id);
+
+    UFS.forEach(function (uf) {
+        select.add(new Option(uf, uf));
+    });
+});
+
+(function () {
+    var modalEl = document.getElementById('modal-cliente');
+    var modal = new bootstrap.Modal(modalEl);
+    var form = document.getElementById('form-cliente');
+    var titulo = document.getElementById('modal-cliente-titulo');
+    var vigia = Vigia.form(form);
+
+    // Coloca um valor no campo e reaplica a máscara (o Vigia formata no evento input).
+    function preencher(nome, valor) {
+        var campo = form.elements[nome];
+        campo.value = valor === null || valor === undefined ? '' : String(valor);
+        campo.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function abrir(cliente) {
+        form.reset();
+        vigia.clearErrors();
+        titulo.textContent = cliente ? 'Editar ' + cliente.nome : 'Novo cliente';
+        preencher('id', cliente ? cliente.id : '');
+
+        // Regra remote com o id: na edição, o e-mail do próprio cliente não conta como repetido.
+        var email = form.elements.email;
+        email.setAttribute('data-rules', 'remote:' + email.getAttribute('data-remote-url') + '&id=' + (cliente ? cliente.id : 0));
+
+        if (cliente) {
+            ['nome', 'email', 'tipo', 'documento', 'celular', 'uf', 'cidade'].forEach(function (nome) {
+                preencher(nome, cliente[nome]);
+            });
+            // Do banco vem "1500.00": a máscara de dinheiro lê o ponto decimal.
+            preencher('limite_credito', Number(cliente.limite_credito).toFixed(2));
+        }
+
+        modal.show();
+    }
+
+    var clientes = Vitrine.create('#clientes > .card-body', {
+        // Campos calculados antes de desenhar a linha (data-if, data-class e {proximo_status} na URL).
+        transform: function (cliente) {
+            cliente.ativo = cliente.status === 'ativo';
+            cliente.inativo = !cliente.ativo;
+            cliente.proximo_status = cliente.ativo ? 'inativo' : 'ativo';
+
+            return cliente;
+        },
+        actions: {
+            editar: function (cliente) {
+                abrir(cliente);
+            }
+        }
+    });
+
+    document.getElementById('novo-cliente').addEventListener('click', function () {
+        abrir(null);
+    });
+
+    // Salvou: fecha o modal e recarrega a lista (o cache de páginas é ignorado).
+    form.addEventListener('vigia:success', function () {
+        modal.hide();
+        clientes.reload();
+    });
+
+    // Só na demonstração: em vez de baixar o CSV, mostra a URL com os filtros.
+    var exportar = clientes.exportUrl.bind(clientes);
+
+    clientes.exportUrl = function (base) {
+        var url = exportar(base);
+        registrar('GET ' + url, 'No site, esta URL baixa o CSV (ExportHelper::download) com exatamente estes filtros e esta ordem.');
+        return url;
+    };
+})();
+</script>
+</body>
+</html>

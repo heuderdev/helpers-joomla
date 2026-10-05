@@ -284,7 +284,7 @@
         var data = el.dataset || {};
 
         this.url = this.options.url || data.vitrine || el.getAttribute('data-vitrine') || '';
-        this.prefix = this.options.prefix !== undefined ? this.options.prefix : (data.vitrinePrefix || '');
+        this.prefix = this.options.prefix !== undefined ? this.options.prefix : (data.vitrinePrefix !== undefined ? data.vitrinePrefix : this._autoPrefix());
         this.idField = this.options.idField || data.vitrineId || 'id';
         this.useHistory = this.options.history !== undefined ? this.options.history : (data.vitrineHistory !== undefined ? data.vitrineHistory !== 'false' : config.history);
 
@@ -347,6 +347,39 @@
 
         this._startRefresh();
     }
+
+    /*
+     * Mais de uma vitrine na página e nenhum prefixo: cada uma guardaria
+     * page/sort/filtros na URL com os mesmos nomes e uma apagaria o estado
+     * da outra. Usa o id do contêiner (pedidos_page) ou, sem id, a posição
+     * na página (vitrine2_page), avisando no console.
+     */
+    VitrineInstance.prototype._autoPrefix = function () {
+        var all = Array.from(document.querySelectorAll('[data-vitrine]'));
+
+        if (all.indexOf(this.el) === -1) {
+            all.push(this.el);
+        }
+
+        if (all.length < 2) {
+            return '';
+        }
+
+        var id = str(this.el.id).replace(/[^A-Za-z0-9_-]/g, '');
+
+        if (id) {
+            return id;
+        }
+
+        var position = all.indexOf(this.el) + 1;
+
+        if (window.console && window.console.warn) {
+            window.console.warn('[Vitrine] Há ' + all.length + ' vitrines na página e esta não tem id nem data-vitrine-prefix: usando o prefixo "vitrine' + position
+                + '" na URL. Dê um id ao contêiner para o link continuar certo se a ordem das tabelas mudar.');
+        }
+
+        return 'vitrine' + position;
+    };
 
     VitrineInstance.prototype.on = function (name, callback) {
         (this._listeners[name] = this._listeners[name] || []).push(callback);
@@ -478,6 +511,11 @@
         var paginacao = response.meta && response.meta.paginacao ? response.meta.paginacao : null;
         var items = Array.isArray(response.data) ? response.data : [];
         var append = !!options.append;
+
+        // transform(item): campos calculados antes de desenhar (data-if, {campo} nas URLs...).
+        if (typeof this.options.transform === 'function') {
+            items = items.map(this.options.transform, this);
+        }
         var start = append ? this.items.length : 0;
 
         this.response = response;

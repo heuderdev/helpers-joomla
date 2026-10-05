@@ -115,6 +115,7 @@
         return ApiResponseHelper::exception($e);
     }
 }</code></pre></div>
+<div class="nota dica"><p><strong class="rotulo">Exemplo completo</strong> Cadastro de clientes com Vitrine.js e Vigia.js (lista, filtros, modal de inclusão e edição, ativar/desativar, exclusão em lote, exportação): <code>exemplos/ComoUsarVitrineEVigia.php</code> (controller, regras, view e SQL) e <code>js/exemplo-vitrine.html</code>, que roda no navegador sem Joomla, com um servidor falso de 1.200 clientes.</p></div>
 <p>Instalação: copie <code>js/vitrine.js</code> (e, opcional, <code>js/vitrine.css</code>) e carregue <strong>depois</strong> do axios e do Vigia.js. Como o Vigia, ativa sozinho todo <code>[data-vitrine]</code> ao carregar a página.</p>
 <div class="codigo"><pre><code data-lang="php">JHtml::_(&#x27;script&#x27;, &#x27;https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js&#x27;);
 JHtml::_(&#x27;script&#x27;, &#x27;com_loja/vigia.js&#x27;, array(&#x27;relative&#x27; =&gt; true, &#x27;version&#x27; =&gt; &#x27;auto&#x27;));
@@ -242,9 +243,20 @@ vitrine.filter({ status: null });                      // remove o filtro</code>
 <h2 id="url" data-titulo="Estado na URL">Estado na URL</h2>
 <p>Página, tamanho, ordem e filtros vão para a URL (<code>?option=com_loja&amp;view=pedidos&amp;page=3&amp;sort=total&amp;direction=DESC&amp;f_status=pago</code>), só quando diferem do padrão. Recarregar, compartilhar o link e o botão "voltar" do navegador mantêm a tela. Os parâmetros que já estavam na URL (<code>option</code>, <code>view</code>, <code>Itemid</code>) ficam intactos.</p>
 <ul>
-<li>Duas listas na mesma página: <code>data-vitrine-prefix="itens"</code> numa delas (<code>itens_page</code>, <code>itens_f_busca</code>).</li>
+<li><strong>Mais de uma vitrine na página</strong>: cada uma ganha um prefixo na URL automaticamente, o <code>id</code> do contêiner (<code>&lt;div id="pedidos" data-vitrine&gt;</code> → <code>pedidos_page</code>, <code>pedidos_f_status</code>). Sem <code>id</code>, usa a posição na página (<code>vitrine2_page</code>) e avisa no console: dê um <code>id</code> para o link continuar certo se a ordem das tabelas mudar. Para escolher o nome: <code>data-vitrine-prefix="itens"</code>. Sem isso, as duas tabelas gravariam <code>page</code> e os filtros com os mesmos nomes e uma apagaria o estado da outra.</li>
 <li>Sem mexer na URL (lista dentro de um modal): <code>data-vitrine-history="false"</code>.</li>
 </ul>
+<h3 id="duas-vitrines">Duas ou mais vitrines na mesma página</h3>
+<p>Cada vitrine só procura as próprias partes dentro do seu contêiner: linhas, filtros, paginação, seleção, lote, mensagens, cache e requisições ficam separados. Os cuidados são:</p>
+<ul>
+<li><strong>Prefixo na URL</strong>: automático pelo <code>id</code> (veja acima). Para uma tabela que não precisa guardar estado na URL (dentro de um modal ou aba), use <code>data-vitrine-history="false"</code>.</li>
+<li><strong>Preferências</strong>: um nome por tabela em <code>data-vitrine-remember</code>; o mesmo nome faria uma herdar o tamanho e a ordem da outra.</li>
+<li><strong><code>id</code>s do seu HTML</strong>: ao copiar um bloco de filtros, troque os <code>id</code> (<code>f-busca</code> → <code>f-busca-pedidos</code>) para os <code>&lt;label for&gt;</code> continuarem certos.</li>
+<li><strong>Não aninhe</strong> uma vitrine dentro do contêiner de outra.</li>
+</ul>
+<div class="codigo"><pre><code data-lang="html">&lt;div id=&quot;pedidos&quot; data-vitrine=&quot;...task=pedidos.listar&amp;format=json&quot; data-vitrine-remember=&quot;pedidos&quot;&gt; ... &lt;/div&gt;
+&lt;div id=&quot;clientes&quot; data-vitrine=&quot;...task=clientes.listar&amp;format=json&quot; data-vitrine-remember=&quot;clientes&quot;&gt; ... &lt;/div&gt;
+&lt;!-- URL: ?option=com_loja&amp;view=painel&amp;pedidos_page=3&amp;pedidos_f_status=pago&amp;clientes_page=2 --&gt;</code></pre></div>
 <h2 id="acoes" data-titulo="Ações">Ações por linha e em lote</h2>
 <p><code>data-action</code> num botão da linha e <code>data-batch-action</code> fora da tabela. Sem código, a ação faz um POST para <code>data-url</code> (com <code>{campo}</code> do item e o token CSRF), mostra a <code>mensagem</code> da resposta em <code>[data-vitrine-message]</code> (ou no <code>Joomla.renderMessages</code>) e recarrega a página atual. Em lote, envia <code>ids[]</code> com os selecionados.</p>
 <div class="tabela"><table><thead><tr><th>Atributo</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
@@ -311,6 +323,14 @@ document.querySelector(&#x27;#pedidos&#x27;).addEventListener(&#x27;vitrine:load
 <tr><td><code>vitrine:selection</code></td><td>seleção mudou</td><td><code>count</code>, <code>ids</code></td></tr>
 <tr><td><code>vitrine:state</code></td><td>começou/terminou de carregar</td><td><code>loading</code></td></tr>
 </tbody></table></div>
+<p><strong><code>transform(item)</code></strong>: ajusta cada item que chega do servidor <strong>antes</strong> de desenhar a linha, para criar campos usados no template (<code>data-if</code>, <code>data-class-*</code>, <code>{campo}</code> nas URLs):</p>
+<div class="codigo"><pre><code data-lang="js">Vitrine.create(&#x27;#clientes&#x27;, {
+    transform: function (cliente) {
+        cliente.ativo = cliente.status === &#x27;ativo&#x27;;                  // &lt;span data-if=&quot;ativo&quot;&gt;
+        cliente.proximo_status = cliente.ativo ? &#x27;inativo&#x27; : &#x27;ativo&#x27;;  // data-url=&quot;...&amp;status={proximo_status}&quot;
+        return cliente;
+    }
+});</code></pre></div>
 <p>As mesmas funções podem vir nas opções: <code>onBefore</code>, <code>onLoaded</code>, <code>onError</code>, <code>onAction</code>... Outras opções: <code>url</code>, <code>limit</code>, <code>sort</code>, <code>direction</code>, <code>filters</code> (iniciais), <code>params</code> (objeto ou função com parâmetros extras em toda busca), <code>idField</code> (padrão <code>id</code>), <code>prefix</code>, <code>history</code>, <code>autoLoad</code>.</p>
 <h2 id="config" data-titulo="Configuração global">Configuração global</h2>
 <div class="codigo"><pre><code data-lang="js">Vitrine.config({
