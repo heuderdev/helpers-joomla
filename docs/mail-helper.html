@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MailHelper · helpers-joomla</title>
+<meta name="description" content="MailHelper: e-mails transacionais no Joomla com templates e variáveis escapadas, texto alternativo automático, anexos, cópias, modo de teste e envio pela fila.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › MailHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" class="ativo" aria-current="page" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>MailHelper</h1><p class="lead">E-mails transacionais pelo mailer do Joomla: templates em arquivo com variáveis escapadas, layout comum, texto alternativo gerado do HTML, anexos, cópia e cópia oculta, modo de teste e envio pela fila para a página não esperar o servidor de e-mail.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/MailHelper.php&#x27;;
+
+$r = MailHelper::send(array(
+    &#x27;to&#x27; =&gt; array($cliente-&gt;email =&gt; $cliente-&gt;nome),
+    &#x27;subject&#x27; =&gt; &#x27;Pedido #{{ pedido.numero }} confirmado&#x27;,
+    &#x27;template&#x27; =&gt; &#x27;pedido-confirmado&#x27;,                 // components/com_loja/emails/pedido-confirmado.html
+    &#x27;data&#x27; =&gt; array(&#x27;cliente&#x27; =&gt; $cliente, &#x27;pedido&#x27; =&gt; $pedido),
+));
+
+if (!$r[&#x27;success&#x27;]) {
+    // $r[&#x27;mensagem&#x27;] e $r[&#x27;errors&#x27;][&#x27;_system&#x27;][0] (motivo seguro para mostrar); detalhes no log &quot;mail&quot;
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">components/com_loja/emails/pedido-confirmado.html</div><pre><code data-lang="html">&lt;h1&gt;Olá, {{ cliente.nome }}!&lt;/h1&gt;
+&lt;p&gt;Seu pedido &lt;strong&gt;#{{ pedido.numero }}&lt;/strong&gt; de {{ pedido.total | money }} foi confirmado em {{ pedido.created_at | date }}.&lt;/p&gt;
+&lt;p&gt;Observações: {{ pedido.observacao | nl2br }}&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;{{ link }}&quot;&gt;Acompanhar pedido&lt;/a&gt;&lt;/p&gt;</code></pre></div>
+<ul>
+<li><strong>Usa a configuração global</strong> do Joomla (PHP mail, Sendmail ou SMTP, remetente padrão) nas versões 3, 4 e 5.</li>
+<li><strong>Variáveis escapadas</strong>: um nome de cliente <code>&lt;script&gt;</code> chega como texto. Os valores inseridos nunca são reprocessados: um <code>{{ token }}</code> digitado pelo cliente não revela outra variável.</li>
+<li><strong>Texto alternativo automático</strong> a partir do HTML (parágrafos, listas, links como "texto (url)"): melhora a entrega e a leitura em clientes só-texto.</li>
+<li><strong>Cabeçalhos protegidos</strong>: quebras de linha no assunto, nomes e cabeçalhos são removidas (sem injeção de <code>Bcc:</code>); e-mails inválidos são recusados antes de chegar ao servidor.</li>
+<li><strong>Não lança exceção</strong>: devolve o envelope <code>{ success, status, mensagem, data, errors }</code>, como o UploadMaster e o CsvHelper.</li>
+</ul>
+<h2 id="mensagem" data-titulo="Chaves da mensagem">Chaves da mensagem</h2>
+<div class="tabela"><table><thead><tr><th>Chave</th><th>Formato</th><th>Observação</th></tr></thead><tbody>
+<tr><td><code>to</code>, <code>cc</code>, <code>bcc</code></td><td><code>'a@x.com'</code>, <code>'a@x.com, b@x.com'</code>, <code>array('a@x.com', 'b@x.com')</code>, <code>array('a@x.com' =&gt; 'Ana')</code></td><td><code>to</code> obrigatório. Para avisar vários clientes, envie um e-mail por pessoa (não exponha a lista em <code>to</code>/<code>cc</code>).</td></tr>
+<tr><td><code>subject</code></td><td>texto com <code>{{ variáveis }}</code></td><td>obrigatório; uma linha.</td></tr>
+<tr><td><code>template</code></td><td>nome do arquivo sem extensão</td><td><code>&lt;pasta&gt;/&lt;nome&gt;.html</code> e, se existir, <code>&lt;nome&gt;.txt</code> como texto alternativo. Subpastas: <code>'pedidos/confirmado'</code>.</td></tr>
+<tr><td><code>html</code> / <code>text</code></td><td>texto com variáveis</td><td>no lugar do template.</td></tr>
+<tr><td><code>data</code></td><td>array (valores podem ser arrays ou objetos)</td><td>variáveis dos templates e do assunto.</td></tr>
+<tr><td><code>layout</code></td><td>nome de template ou <code>false</code></td><td>sobrepõe o <code>setLayout()</code>.</td></tr>
+<tr><td><code>from</code></td><td><code>'a@x.com'</code> ou <code>array('a@x.com', 'Nome')</code></td><td>padrão: <code>setDefaultFrom()</code> ou <code>mailfrom</code>/<code>fromname</code> do Joomla. Use um domínio autorizado no SPF/DKIM do servidor.</td></tr>
+<tr><td><code>reply_to</code></td><td>como <code>to</code></td><td>para respostas irem a outro endereço (atendimento).</td></tr>
+<tr><td><code>attachments</code></td><td><code>array('/caminho/nf.pdf')</code> ou <code>array(array('path' =&gt; ..., 'name' =&gt; 'Nota fiscal.pdf'))</code></td><td>arquivos precisam existir; com a fila, precisam existir também quando o worker rodar.</td></tr>
+<tr><td><code>headers</code></td><td><code>array('X-Pedido' =&gt; '15')</code></td><td>cabeçalhos extras.</td></tr>
+</tbody></table></div>
+<h2 id="templates" data-titulo="Templates">Templates</h2>
+<div class="tabela"><table><thead><tr><th>Sintaxe</th><th>Resultado</th></tr></thead><tbody>
+<tr><td><code>{{ cliente.nome }}</code></td><td>valor escapado para HTML; caminhos com ponto em arrays e objetos; ausente vira vazio</td></tr>
+<tr><td><code>{{ pedido.total | money }}</code></td><td><code>R$ 1.234,50</code></td></tr>
+<tr><td><code>{{ x | number }}</code></td><td><code>1.234,50</code></td></tr>
+<tr><td><code>{{ pedido.created_at | date }}</code> / <code>| datetime</code></td><td><code>05/10/2026</code> / <code>05/10/2026 14:30</code> (no fuso do usuário, com o <a href="date-helper.html">DateHelper</a>)</td></tr>
+<tr><td><code>{{ nome | upper }}</code> / <code>| lower</code></td><td>maiúsculas / minúsculas</td></tr>
+<tr><td><code>{{ obs | nl2br }}</code></td><td>texto escapado com as quebras de linha em <code>&lt;br&gt;</code></td></tr>
+<tr><td><code>{!! tabela_itens !!}</code></td><td><strong>sem escapar</strong>: só para HTML que o seu código montou (nunca para texto do usuário)</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Uma vez, no início do componente
+MailHelper::setTemplateDirectory(JPATH_COMPONENT_SITE . &#x27;/emails&#x27;);   // padrão: JPATH_COMPONENT/emails
+MailHelper::setLayout(&#x27;layout&#x27;);                                     // emails/layout.html envolve todos os HTML
+MailHelper::setDefaultFrom(&#x27;naoresponda@loja.com.br&#x27;, &#x27;Loja Exemplo&#x27;);
+MailHelper::setDefaultReplyTo(&#x27;atendimento@loja.com.br&#x27;, &#x27;Atendimento&#x27;);</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">components/com_loja/emails/layout.html</div><pre><code data-lang="html">&lt;!doctype html&gt;
+&lt;html lang=&quot;pt-BR&quot;&gt;
+&lt;body style=&quot;margin:0;background:#f4f4f5;font-family:Arial,sans-serif&quot;&gt;
+    &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;
+        &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:24px&quot;&gt;
+            &lt;table role=&quot;presentation&quot; width=&quot;600&quot; style=&quot;background:#ffffff;border-radius:8px;padding:32px&quot;&gt;
+                &lt;tr&gt;&lt;td&gt;&lt;img src=&quot;https://loja.com.br/images/logo.png&quot; alt=&quot;Loja Exemplo&quot; width=&quot;140&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td style=&quot;font-size:16px;line-height:1.5;color:#18181b&quot;&gt;{!! conteudo !!}&lt;/td&gt;&lt;/tr&gt;
+                &lt;tr&gt;&lt;td style=&quot;font-size:12px;color:#71717a;padding-top:24px&quot;&gt;Você recebeu este e-mail porque tem uma conta na Loja Exemplo.&lt;/td&gt;&lt;/tr&gt;
+            &lt;/table&gt;
+        &lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+<p>No layout, <code>{!! conteudo !!}</code> recebe o HTML do template e <code>{{ assunto }}</code> o assunto. Clientes de e-mail ignoram CSS externo e boa parte do <code>&lt;style&gt;</code>: use tabelas e estilos inline, imagens com URL absoluta e largura de até 600 px.</p>
+<div class="metodo"><h3 id="render"><code>render()</code> / <code>build()</code> / <code>htmlToText()</code><span class="tag estatico">estático</span></h3><div class="assinatura">MailHelper::render(string $template, array $data, bool $html = true): string
+MailHelper::build(array $mail): array
+MailHelper::htmlToText(string $html): string</div><p><code>build()</code> monta o e-mail sem enviar (lança <code>InvalidArgumentException</code> se algo estiver errado): útil para uma tela de pré-visualização no administrador.</p></div>
+<h2 id="fila" data-titulo="Envio pela fila">Envio pela fila</h2>
+<p>O SMTP pode levar segundos (ou cair). Em telas, coloque o envio na <a href="queue-helper.html">fila</a>: a página responde na hora e o worker envia, com novas tentativas se o servidor de e-mail falhar.</p>
+<div class="codigo"><pre><code data-lang="php">$r = MailHelper::queue(array(
+    &#x27;to&#x27; =&gt; $cliente-&gt;email,
+    &#x27;subject&#x27; =&gt; &#x27;Bem-vindo, {{ nome }}!&#x27;,
+    &#x27;template&#x27; =&gt; &#x27;boas-vindas&#x27;,
+    &#x27;data&#x27; =&gt; array(&#x27;nome&#x27; =&gt; $cliente-&gt;nome),
+), array(&#x27;max_tentativas&#x27; =&gt; 5));   // opções do QueueHelper::push()
+
+// $r é o resultado do QueueHelper::push()</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">components/com_loja/jobs/jobs.php (bootstrap do worker)</div><pre><code data-lang="php">require_once JPATH_ROOT . &#x27;/components/com_loja/helpers/MailHelper.php&#x27;;
+
+MailHelper::registerJob();   // tipo &#x27;helpers_mail&#x27;, fila &#x27;emails&#x27; (padrão do worker: todas as filas)</code></pre></div>
+<ul>
+<li>O conteúdo é montado <strong>na hora do <code>queue()</code></strong>: erros de template aparecem para quem chamou, e o worker não precisa da pasta de templates nem do usuário logado (datas já saem no fuso de quem disparou).</li>
+<li>Anexos são guardados como caminho: não apague o arquivo antes do envio. Para arquivos temporários, apague num job posterior ou deixe uma limpeza periódica.</li>
+<li>O job é <code>fila/jobs/MailJob.php</code> (o <code>instalar.sh</code> copia junto com o MailHelper). Falha de envio lança exceção e o worker tenta de novo.</li>
+</ul>
+<h2 id="testes" data-titulo="Modo de teste">Modo de teste e desenvolvimento</h2>
+<div class="codigo"><pre><code data-lang="php">MailHelper::fake();                          // nada é enviado
+
+$r = PedidoService::confirmar($pedido);      // código que envia e-mail
+
+$enviados = MailHelper::sent();              // array das mensagens montadas (to, subject, html, text...)
+assert($enviados[0][&#x27;to&#x27;] === array(&#x27;ana@x.com&#x27; =&gt; &#x27;Ana&#x27;));</code></pre></div>
+<p>Em desenvolvimento, configure o SMTP do Joomla para um capturador (Mailpit, MailHog, Mailtrap) em vez de mandar para clientes reais.</p>
+<h2 id="entrega" data-titulo="Entrega">Para os e-mails chegarem (e não caírem no spam)</h2>
+<ul>
+<li>Remetente do <strong>próprio domínio</strong>, autorizado no SPF e assinado com DKIM; publique DMARC. <code>@gmail.com</code> como remetente de um servidor que não é do Google vai para o spam ou é recusado.</li>
+<li>Use SMTP autenticado (provedor transacional: Amazon SES, SendGrid, Mailgun, Brevo) em vez da função <code>mail()</code> do servidor.</li>
+<li>Sempre HTML <strong>e</strong> texto (o MailHelper gera o texto); evite e-mails só com imagem.</li>
+<li>Envios em massa (newsletter) não são e-mail transacional: use uma ferramenta própria, com descadastro.</li>
+</ul>
+<h2 id="configuracao" data-titulo="Configuração">Configuração</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setTemplateDirectory($pasta)</code> / <code>getTemplateDirectory()</code></td><td>Pasta dos templates.</td></tr>
+<tr><td><code>setLayout($nome)</code></td><td>Layout de todos os HTML (<code>null</code> desliga).</td></tr>
+<tr><td><code>setDefaultFrom($email, $nome)</code> / <code>setDefaultReplyTo(...)</code></td><td>Remetente e resposta padrão.</td></tr>
+<tr><td><code>fake()</code> / <code>sent()</code></td><td>Modo de teste.</td></tr>
+<tr><td><code>registerJob($fila = 'emails')</code> / <code>setQueueType($tipo)</code></td><td>Job da fila.</td></tr>
+</tbody></table></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="queue-helper.html">QueueHelper</a> e <a href="guia-fila.html">guia da fila</a>.</li><li><a href="log-helper.html">LogHelper</a>: falhas de envio em <code>mail.error.php</code>.</li><li><a href="rate-limit-helper.html">RateLimitHelper</a>: limite de envios de "esqueci minha senha".</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="cache-helper.html"><small>← Anterior</small>CacheHelper</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

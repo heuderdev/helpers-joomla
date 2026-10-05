@@ -22,7 +22,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
 | Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper |
-| Integrações | `referencias/integracao.md` | HttpHelper |
+| Integrações | `referencias/integracao.md` | HttpHelper, MailHelper |
 | Exemplos completos | `receitas.md` | CRUD, importação CSV em fila, exportação, upload privado |
 
 ## Mapa rápido: pedido → helper
@@ -47,6 +47,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Log técnico | `LogHelper::info/error/exception(...)` |
 | Trilha de auditoria (quem mudou o quê) | `AuditHelper::created/updated/deleted(...)` |
 | Data/hora: gravar, mostrar, filtrar período | `DateHelper::nowSql()` · `toUser($v)` · `fromUser($v)` · `range('month')` · `between($de, $ate)` |
+| Enviar e-mail (confirmação, senha) | `MailHelper::send(["to"=>..., "template"=>..., "data"=>...])` ou `queue(...)` |
 | Guardar resultado caro (dashboard, API) | `CacheHelper::remember("assunto:det", 300, $fn)` + `flushPrefix("assunto")` |
 | Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |

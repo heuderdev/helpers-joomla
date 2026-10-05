@@ -37,7 +37,8 @@ class IncludeHelper
         'UploadMaster'        => array(),
         'HttpHelper'          => array('LogHelper'),
         'LockHelper'          => array('LogHelper', 'DbConnectionHelper'),
-        'CacheHelper'         => array('LogHelper', 'LockHelper')
+        'CacheHelper'         => array('LogHelper', 'LockHelper'),
+        'MailHelper'          => array('LogHelper')
     );
 
     /**

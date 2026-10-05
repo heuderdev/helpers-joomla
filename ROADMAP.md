@@ -20,7 +20,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 3. `HttpHelper`
 - [x] 4. `LockHelper`
 - [x] 5. `CacheHelper`
-- [ ] 6. `MailHelper`
+- [x] 6. `MailHelper`
 - [ ] 7. `RateLimitHelper`
 - [ ] 8. `CryptoHelper`
 - [ ] 9. `PermissionHelper::requireToken()` (token do formulário ou header `X-CSRF-Token`)
