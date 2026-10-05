@@ -18,7 +18,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Área | Ficha | Helpers |
 |---|---|---|
 | Banco | `referencias/banco.md` | DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables |
-| Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Lista.js |
+| Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Vitrine.js |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
 | Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper |
@@ -50,7 +50,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Ler opção do componente | `SettingsHelper::int("chave", $padrao)` · `secret("token")` |
 | Receber webhook (pagamento, ERP) | `WebhookHelper::handle(["provider"=>..., "secret"=>..., "signature_header"=>..., "job"=>...])` |
 | Formatar dinheiro, CPF, telefone, slug | `FormatHelper::money($v)` · `toCents($v)` · `cpfCnpj($v)` · `slug($t)` |
-| Tela de listagem (paginação, filtros, lote) | `js/lista.js`: `<div data-lista="url">` + `ApiResponseHelper::paginated()` |
+| Tela de listagem (paginação, filtros, lote) | `js/vitrine.js`: `<div data-vitrine="url">` + `ApiResponseHelper::paginated()` |
 | Guardar token de API / conferir webhook | `CryptoHelper::encrypt($v, "contexto")` / `verifySignature(...)` |
 | Limitar tentativas (login, SMS, contato) | `if (!RateLimitHelper::enforce("chave:" . $ip, 5, 3600)) return;` |
 | Enviar e-mail (confirmação, senha) | `MailHelper::send(["to"=>..., "template"=>..., "data"=>...])` ou `queue(...)` |

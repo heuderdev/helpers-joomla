@@ -12,8 +12,8 @@ Micro framework JavaScript para formulários de componentes Joomla, par do `Vali
 |---|---|
 | `vigia.js` | A biblioteca (um arquivo, sem build). Requer o axios carregado antes. |
 | `vigia.css` | Estilos mínimos. Opcional com Bootstrap (Joomla 4/5). |
-| `lista.js` | Telas de listagem: paginação, ordenação e filtros na URL, busca com espera, ações em lote. Requer o Vigia.js. Docs: `docs/lista-js.html`. |
-| `lista.css` | Estilos mínimos da Lista.js (setas de ordenação, carregando, seleção). |
+| `vitrine.js` | Telas de listagem: paginação, ordenação e filtros na URL, busca com espera, ações em lote. Requer o Vigia.js. Docs: `docs/vitrine-js.html`. |
+| `vitrine.css` | Estilos mínimos da Vitrine.js (setas de ordenação, carregando, seleção). |
 | `exemplo.html` | Demonstração que roda sem Joomla (servidor falso no formato do `ApiResponseHelper`). |
 
 ```html

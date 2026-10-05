@@ -1,0 +1,270 @@
+/*!
+ * Vitrine.js 1.0.0: estilos mínimos (ordenação, carregamento, seleção).
+ * A paginação usa as classes do Bootstrap (.pagination, .page-item, .page-link).
+ */
+[data-sort] {
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+[data-sort]::after {
+    content: "\2195";
+    opacity: .35;
+    margin-left: .35em;
+    font-size: .85em;
+}
+
+[data-sort].vitrine-sort-asc::after {
+    content: "\2191";
+    opacity: 1;
+}
+
+[data-sort].vitrine-sort-desc::after {
+    content: "\2193";
+    opacity: 1;
+}
+
+[data-sort]:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+.vitrine-loading [data-vitrine-items] {
+    opacity: .5;
+    transition: opacity .15s;
+}
+
+.vitrine-selected {
+    background: rgba(13, 110, 253, .08);
+}
+
+[data-vitrine] [hidden] {
+    display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vitrine-loading [data-vitrine-items] {
+        transition: none;
+    }
+}
+
+/* ------------------------------------------------------------------
+ * Paginação estilo jQuery Paginate (data-vitrine-pagination="jpaginate")
+ * [Primeira] [‹] 4 5 (6) 7 8 [›] [Última]   Página 6 de 1.000
+ * Personalize pelas variáveis.
+ * ------------------------------------------------------------------ */
+.vitrine-jp {
+    --vitrine-jp-cor: #1f6feb;
+    --vitrine-jp-texto: #1f2937;
+    --vitrine-jp-fundo: #ffffff;
+    --vitrine-jp-borda: #d0d7de;
+    --vitrine-jp-hover: #eef4ff;
+    --vitrine-jp-atual-texto: #ffffff;
+    --vitrine-jp-raio: 6px;
+    --vitrine-jp-tamanho: 2.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .375rem;
+    font-size: .9375rem;
+}
+
+.vitrine-jp button {
+    min-width: var(--vitrine-jp-tamanho);
+    height: var(--vitrine-jp-tamanho);
+    padding: 0 .625rem;
+    border: 1px solid var(--vitrine-jp-borda);
+    border-radius: var(--vitrine-jp-raio);
+    background: var(--vitrine-jp-fundo);
+    color: var(--vitrine-jp-texto);
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .15s, border-color .15s, color .15s;
+}
+
+.vitrine-jp button:hover:not(:disabled) {
+    background: var(--vitrine-jp-hover);
+    border-color: var(--vitrine-jp-cor);
+    color: var(--vitrine-jp-cor);
+}
+
+.vitrine-jp button:focus-visible {
+    outline: 2px solid var(--vitrine-jp-cor);
+    outline-offset: 2px;
+}
+
+.vitrine-jp button:disabled {
+    cursor: default;
+    opacity: .45;
+}
+
+.vitrine-jp-arrow {
+    font-size: 1.25rem;
+    touch-action: none;   /* segurar no celular não rola a página */
+    user-select: none;
+}
+
+.vitrine-jp-strip {
+    overflow: hidden;
+}
+
+.vitrine-jp-pages {
+    display: flex;
+    gap: .25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.vitrine-jp-pages button {
+    font-variant-numeric: tabular-nums;   /* números não "pulam" ao deslizar */
+}
+
+.vitrine-jp-current button,
+.vitrine-jp-current button:disabled {
+    background: var(--vitrine-jp-cor);
+    border-color: var(--vitrine-jp-cor);
+    color: var(--vitrine-jp-atual-texto);
+    font-weight: 600;
+    opacity: 1;
+}
+
+.vitrine-jp-status {
+    margin-left: .5rem;
+    color: #57606a;
+    font-size: .875rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 575px) {
+    .vitrine-jp-edge,
+    .vitrine-jp-status {
+        display: none;   /* no celular: só setas e números */
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .vitrine-jp {
+        --vitrine-jp-texto: #e6edf3;
+        --vitrine-jp-fundo: #161b22;
+        --vitrine-jp-borda: #30363d;
+        --vitrine-jp-hover: #1c2a3f;
+        --vitrine-jp-cor: #4493f8;
+    }
+
+    .vitrine-jp-status {
+        color: #8d96a0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vitrine-jp button {
+        transition: none;
+    }
+}
+
+/* "Ir para a página" (estilo jpaginate) */
+.vitrine-jp-goto {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0 0 0 .5rem;
+}
+
+.vitrine-jp-goto-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    margin: 0;
+    color: #57606a;
+    font-size: .875rem;
+    white-space: nowrap;
+}
+
+.vitrine-jp-goto input {
+    width: 5.5rem;
+    height: var(--vitrine-jp-tamanho, 2.25rem);
+    padding: 0 .5rem;
+    border: 1px solid var(--vitrine-jp-borda, #d0d7de);
+    border-radius: var(--vitrine-jp-raio, 6px);
+    background: var(--vitrine-jp-fundo, #fff);
+    color: var(--vitrine-jp-texto, #1f2937);
+    font: inherit;
+}
+
+/* "Carregar mais" e rolagem infinita */
+.vitrine-more {
+    display: block;
+    margin: 1rem auto;
+    padding: .625rem 1.25rem;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    background: #fff;
+    color: #1f2937;
+    font: inherit;
+    cursor: pointer;
+}
+
+.vitrine-more:hover {
+    border-color: #1f6feb;
+    color: #1f6feb;
+}
+
+.vitrine-loading .vitrine-more {
+    opacity: .6;
+    pointer-events: none;
+}
+
+.vitrine-more-done {
+    margin: 1rem 0;
+    color: #57606a;
+    font-size: .875rem;
+    text-align: center;
+}
+
+/* Linhas fantasma (skeleton) da primeira carga */
+.vitrine-skeleton [data-field]::before {
+    content: "";
+    display: inline-block;
+    width: 70%;
+    max-width: 12rem;
+    height: .8em;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #eceef1 25%, #f6f7f9 50%, #eceef1 75%);
+    background-size: 200% 100%;
+    animation: vitrine-brilho 1.2s ease-in-out infinite;
+    vertical-align: middle;
+}
+
+.vitrine-skeleton button,
+.vitrine-skeleton input,
+.vitrine-skeleton a,
+.vitrine-skeleton img {
+    visibility: hidden;
+}
+
+@keyframes vitrine-brilho {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vitrine-skeleton [data-field]::before {
+        animation: none;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .vitrine-skeleton [data-field]::before {
+        background: linear-gradient(90deg, #22272e 25%, #2d333b 50%, #22272e 75%);
+        background-size: 200% 100%;
+    }
+
+    .vitrine-more {
+        background: #161b22;
+        border-color: #30363d;
+        color: #e6edf3;
+    }
+}

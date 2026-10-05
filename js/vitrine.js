@@ -1,5 +1,5 @@
 /*!
- * Lista.js 1.0.0
+ * Vitrine.js 1.0.0
  * Telas de listagem para componentes Joomla: paginação, ordenação e
  * filtros na URL, busca com espera, cancelamento da requisição anterior,
  * ações por linha e em lote. Par do Vigia.js, sobre
@@ -12,7 +12,7 @@
     if (typeof module === 'object' && module.exports) {
         module.exports = factory(root);
     } else {
-        root.Lista = factory(root);
+        root.Vitrine = factory(root);
     }
 }(typeof window !== 'undefined' ? window : this, function (window) {
     'use strict';
@@ -29,7 +29,12 @@
         // 'numbers' (padrão: « ‹ 1 … 4 5 6 … 20 › ») ou 'jpaginate' (faixa de páginas que desliza, como o jQuery Paginate).
         paginationStyle: 'numbers',
         // Estilo 'jpaginate': quantas páginas a faixa mostra e a velocidade ao segurar a seta (ms).
-        jpaginate: { display: 7, holdDelay: 350, holdSpeed: 90 },
+        jpaginate: { display: 7, holdDelay: 350, holdSpeed: 90, goto: true },
+        // Páginas já vistas ficam em memória por N segundos (0 desliga); a próxima é buscada antes do clique.
+        cache: 60,
+        prefetch: true,
+        // Linhas "fantasma" enquanto a primeira página carrega (0 desliga).
+        skeleton: 5,
         autoInit: true,
         params: { page: 'page', limit: 'limit', sort: 'sort', direction: 'direction' },
         classes: {
@@ -38,10 +43,10 @@
             pageLink: 'page-link',
             active: 'active',
             disabled: 'disabled',
-            loading: 'lista-loading',
-            sortAsc: 'lista-sort-asc',
-            sortDesc: 'lista-sort-desc',
-            selected: 'lista-selected'
+            loading: 'vitrine-loading',
+            sortAsc: 'vitrine-sort-asc',
+            sortDesc: 'vitrine-sort-desc',
+            selected: 'vitrine-selected'
         },
         messages: {
             error: 'Não foi possível carregar a lista.',
@@ -54,7 +59,11 @@
             last: 'Última',
             slidePrevious: 'Mostrar páginas anteriores',
             slideNext: 'Mostrar próximas páginas',
-            pageOf: 'Página :page de :total'
+            pageOf: 'Página :page de :total',
+            goTo: 'Ir para a página',
+            go: 'Ir',
+            loadMore: 'Carregar mais (:remaining restantes)',
+            allLoaded: 'Todos os :total registros carregados'
         }
     };
 
@@ -152,7 +161,7 @@
 
     function vigia() {
         if (!window.Vigia || !window.Vigia.http) {
-            throw new Error('Lista.js precisa do Vigia.js (e do axios) carregados antes.');
+            throw new Error('Vitrine.js precisa do Vigia.js (e do axios) carregados antes.');
         }
 
         return window.Vigia;
@@ -251,10 +260,10 @@
     }
 
     // ------------------------------------------------------------------
-    // Lista
+    // Vitrine
     // ------------------------------------------------------------------
 
-    function ListaInstance(el, options) {
+    function VitrineInstance(el, options) {
         this.el = el;
         this.options = extend({}, options || {});
         this.items = [];
@@ -267,44 +276,63 @@
         this._sequence = 0;
         this._timer = null;
         this._listeners = {};
+        this._cache = {};
+        this._prefetchController = null;
+        this._refreshTimer = null;
+        this._observer = null;
 
         var data = el.dataset || {};
 
-        this.url = this.options.url || data.lista || el.getAttribute('data-lista') || '';
-        this.prefix = this.options.prefix !== undefined ? this.options.prefix : (data.listaPrefix || '');
-        this.idField = this.options.idField || data.listaId || 'id';
-        this.useHistory = this.options.history !== undefined ? this.options.history : (data.listaHistory !== undefined ? data.listaHistory !== 'false' : config.history);
+        this.url = this.options.url || data.vitrine || el.getAttribute('data-vitrine') || '';
+        this.prefix = this.options.prefix !== undefined ? this.options.prefix : (data.vitrinePrefix || '');
+        this.idField = this.options.idField || data.vitrineId || 'id';
+        this.useHistory = this.options.history !== undefined ? this.options.history : (data.vitrineHistory !== undefined ? data.vitrineHistory !== 'false' : config.history);
 
         this.state = {
             page: 1,
-            limit: parseInt(this.options.limit || data.listaLimit || config.limit, 10),
-            sort: this.options.sort || data.listaSort || '',
-            direction: (this.options.direction || data.listaDirection || 'ASC').toUpperCase(),
+            limit: parseInt(this.options.limit || data.vitrineLimit || config.limit, 10),
+            sort: this.options.sort || data.vitrineSort || '',
+            direction: (this.options.direction || data.vitrineDirection || 'ASC').toUpperCase(),
             filters: extend({}, this.options.filters || {})
         };
 
         this._defaults = JSON.parse(JSON.stringify(this.state));
 
         this.parts = {
-            items: el.querySelector('[data-lista-items]'),
-            template: el.querySelector('template[data-lista-template]'),
-            filters: el.querySelector('[data-lista-filters]'),
-            pagination: el.querySelector('[data-lista-pagination]'),
-            empty: el.querySelector('[data-lista-empty]'),
-            error: el.querySelector('[data-lista-error]'),
-            loadingBox: el.querySelector('[data-lista-loading]'),
-            summary: el.querySelector('[data-lista-summary]'),
-            limitSelect: el.querySelector('[data-lista-limit-select]'),
+            items: el.querySelector('[data-vitrine-items]'),
+            template: el.querySelector('template[data-vitrine-template]'),
+            filters: el.querySelector('[data-vitrine-filters]'),
+            pagination: el.querySelector('[data-vitrine-pagination]'),
+            empty: el.querySelector('[data-vitrine-empty]'),
+            error: el.querySelector('[data-vitrine-error]'),
+            loadingBox: el.querySelector('[data-vitrine-loading]'),
+            summary: el.querySelector('[data-vitrine-summary]'),
+            limitSelect: el.querySelector('[data-vitrine-limit-select]'),
             selectAll: el.querySelector('[data-select-all]'),
-            batch: el.querySelector('[data-lista-batch]'),
-            selectedCount: el.querySelector('[data-lista-selected-count]')
+            batch: el.querySelector('[data-vitrine-batch]'),
+            selectedCount: el.querySelector('[data-vitrine-selected-count]')
         };
 
         if (!this.parts.items) {
-            throw new Error('Lista.js: falta o elemento [data-lista-items] (o <tbody> ou a lista onde os itens entram).');
+            throw new Error('Vitrine.js: falta o elemento [data-vitrine-items] (o <tbody> ou a lista onde os itens entram).');
         }
 
+        var number = function (option, attribute, fallback) {
+            if (option !== undefined) {
+                return Number(option);
+            }
+
+            return attribute !== undefined && attribute !== '' ? Number(attribute) : fallback;
+        };
+
+        this.cacheSeconds = number(this.options.cache, data.vitrineCache, config.cache);
+        this.prefetchEnabled = this.options.prefetch !== undefined ? !!this.options.prefetch : (data.vitrinePrefetch !== undefined ? data.vitrinePrefetch !== 'false' : config.prefetch);
+        this.refreshSeconds = number(this.options.refresh, data.vitrineRefresh, 0);
+        this.skeletonRows = number(this.options.skeleton, data.vitrineSkeleton, config.skeleton);
+        this.rememberKey = this.options.remember || data.vitrineRemember || '';
+
         this._readUrl();
+        this._restorePreferences();
         this._writeFiltersToForm();
         this._bind();
         this._renderSortHeaders();
@@ -316,15 +344,17 @@
         if (this.options.autoLoad !== false) {
             this.load();
         }
+
+        this._startRefresh();
     }
 
-    ListaInstance.prototype.on = function (name, callback) {
+    VitrineInstance.prototype.on = function (name, callback) {
         (this._listeners[name] = this._listeners[name] || []).push(callback);
 
         return this;
     };
 
-    ListaInstance.prototype._trigger = function (name, detail, cancelable) {
+    VitrineInstance.prototype._trigger = function (name, detail, cancelable) {
         var callbackName = 'on' + name.charAt(0).toUpperCase() + name.slice(1);
         var result;
 
@@ -336,13 +366,13 @@
             callback.call(this, detail, this);
         }, this);
 
-        var allowed = emit(this.el, 'lista:' + name, extend({ lista: this }, detail), cancelable);
+        var allowed = emit(this.el, 'vitrine:' + name, extend({ vitrine: this }, detail), cancelable);
 
         return result !== false && allowed;
     };
 
     // Parâmetros da requisição: page, limit, sort, direction + filtros.
-    ListaInstance.prototype.params = function () {
+    VitrineInstance.prototype.params = function () {
         var p = config.params;
         var params = {};
 
@@ -369,12 +399,25 @@
      * Busca a página atual. Uma requisição em andamento é cancelada:
      * a última busca digitada sempre vence.
      */
-    ListaInstance.prototype.load = function () {
+    /*
+     * Busca a página atual. Uma requisição em andamento é cancelada:
+     * a última busca digitada sempre vence. Opções: force (ignora o
+     * cache), append (soma itens: "carregar mais"), background
+     * (atualização automática: sem indicador de carregamento).
+     */
+    VitrineInstance.prototype.load = function (options) {
         var self = this;
         var sequence = ++this._sequence;
 
+        options = options || {};
+
         if (this._controller) {
             this._controller.abort();
+        }
+
+        if (this._prefetchController) {
+            this._prefetchController.abort();
+            this._prefetchController = null;
         }
 
         this._controller = typeof window.AbortController !== 'undefined' ? new window.AbortController() : null;
@@ -385,33 +428,29 @@
             return Promise.resolve(null);
         }
 
-        this._setLoading(true);
-        this._writeUrl();
+        if (!options.background) {
+            this._writeUrl();
+        }
+
+        var cached = options.force ? null : this._cacheGet(params);
+
+        if (cached) {
+            return Promise.resolve(this._apply(cached, options, true));
+        }
+
+        if (!options.background) {
+            this._setLoading(true);
+            this._renderSkeleton(options.append);
+        }
 
         return vigia().http.get(this.url, params, this._controller ? { signal: this._controller.signal } : {}).then(function (response) {
             if (sequence !== self._sequence) {
                 return null;
             }
 
-            var paginacao = response.meta && response.meta.paginacao ? response.meta.paginacao : null;
+            self._cacheSet(params, response);
 
-            self.response = response;
-            self.items = Array.isArray(response.data) ? response.data : [];
-            self.meta = paginacao || { total: self.items.length, por_pagina: self.state.limit, pagina_atual: 1, total_paginas: 1 };
-            self.error = null;
-
-            // Página além do fim (ex.: excluiu o último item da última página): volta uma.
-            if (!self.items.length && self.meta.total > 0 && self.state.page > 1 && self.state.page > self.meta.total_paginas) {
-                self.state.page = Math.max(1, self.meta.total_paginas);
-
-                return self.load();
-            }
-
-            self._render();
-            self._setLoading(false);
-            self._trigger('loaded', { items: self.items, meta: self.meta, response: response });
-
-            return response;
+            return self._apply(response, options, false);
         }, function (error) {
             if (error && error.isCancel) {
                 return null;
@@ -423,25 +462,151 @@
 
             self.error = error;
             self._setLoading(false);
-            self._renderError(error);
+
+            if (!options.background) {
+                self._renderError(error);
+            }
+
             self._trigger('error', { error: error });
 
             return null;
         });
     };
 
-    ListaInstance.prototype.reload = function () {
-        return this.load();
+    // Aplica uma resposta (do servidor ou do cache) e desenha.
+    VitrineInstance.prototype._apply = function (response, options, fromCache) {
+        var paginacao = response.meta && response.meta.paginacao ? response.meta.paginacao : null;
+        var items = Array.isArray(response.data) ? response.data : [];
+        var append = !!options.append;
+        var start = append ? this.items.length : 0;
+
+        this.response = response;
+        this.items = append ? this.items.concat(items) : items;
+        this.meta = paginacao || { total: this.items.length, por_pagina: this.state.limit, pagina_atual: 1, total_paginas: 1 };
+        this.error = null;
+
+        // Página além do fim (ex.: excluiu o último item da última página): volta uma.
+        if (!append && !items.length && this.meta.total > 0 && this.state.page > 1 && this.state.page > this.meta.total_paginas) {
+            this.state.page = Math.max(1, this.meta.total_paginas);
+
+            return this.load({ force: true });
+        }
+
+        this._render(append ? start : null);
+        this._setLoading(false);
+        this._trigger('loaded', { items: this.items, meta: this.meta, response: response, fromCache: fromCache, appended: append ? items : null });
+        this._prefetchNext();
+
+        return response;
     };
 
-    ListaInstance.prototype.page = function (page) {
+    // ------------------------------------------------------------------
+    // Cache de páginas e pré-carregamento
+    // ------------------------------------------------------------------
+
+    VitrineInstance.prototype._cacheKey = function (params) {
+        var sorted = {};
+
+        Object.keys(params).sort().forEach(function (key) {
+            sorted[key] = params[key];
+        });
+
+        return JSON.stringify(sorted);
+    };
+
+    VitrineInstance.prototype._cacheGet = function (params) {
+        if (!(this.cacheSeconds > 0)) {
+            return null;
+        }
+
+        var entry = this._cache[this._cacheKey(params)];
+
+        return entry && Date.now() - entry.time < this.cacheSeconds * 1000 ? entry.response : null;
+    };
+
+    VitrineInstance.prototype._cacheSet = function (params, response) {
+        if (!(this.cacheSeconds > 0)) {
+            return;
+        }
+
+        var keys = Object.keys(this._cache);
+
+        // No máximo 30 páginas em memória: sai a mais antiga.
+        if (keys.length >= 30) {
+            var oldest = keys.sort(function (a, b) { return this._cache[a].time - this._cache[b].time; }.bind(this))[0];
+            delete this._cache[oldest];
+        }
+
+        this._cache[this._cacheKey(params)] = { time: Date.now(), response: response };
+    };
+
+    // Esquece as páginas guardadas (depois de excluir, editar...).
+    VitrineInstance.prototype.clearCache = function () {
+        this._cache = {};
+    };
+
+    // Busca a próxima página em segundo plano: o clique em "próxima" é instantâneo.
+    VitrineInstance.prototype._prefetchNext = function () {
+        var self = this;
+        var current = this.meta.pagina_atual || this.state.page;
+
+        if (!this.prefetchEnabled || !(this.cacheSeconds > 0) || current >= (this.meta.total_paginas || 0)) {
+            return;
+        }
+
+        var params = this.params();
+
+        params[config.params.page] = current + 1;
+
+        if (this._cacheGet(params)) {
+            return;
+        }
+
+        this._prefetchController = typeof window.AbortController !== 'undefined' ? new window.AbortController() : null;
+
+        vigia().http.get(this.url, params, this._prefetchController ? { signal: this._prefetchController.signal } : {}).then(function (response) {
+            self._cacheSet(params, response);
+        }, function () {
+            // Falha no pré-carregamento não importa: o clique busca de novo.
+        });
+    };
+
+    // Recarrega do servidor (ignora o cache). Nos modos "carregar mais", volta ao início.
+    VitrineInstance.prototype.reload = function () {
+        if (this._isAppendMode()) {
+            this.state.page = 1;
+        }
+
+        return this.load({ force: true });
+    };
+
+    // Modos "carregar mais" e rolagem infinita: busca a próxima página e soma.
+    VitrineInstance.prototype.loadMore = function () {
+        var current = this.meta.pagina_atual || this.state.page;
+
+        if (this.loading || current >= (this.meta.total_paginas || 0)) {
+            return Promise.resolve(null);
+        }
+
+        this.state.page = current + 1;
+
+        return this.load({ append: true });
+    };
+
+    VitrineInstance.prototype._isAppendMode = function () {
+        var style = this._paginationStyle();
+
+        return style === 'more' || style === 'infinite';
+    };
+
+    VitrineInstance.prototype.page = function (page) {
         this.state.page = Math.max(1, parseInt(page, 10) || 1);
 
         return this.load();
     };
 
     // Ordena por um campo; sem direção, alterna (ASC -> DESC) no mesmo campo.
-    ListaInstance.prototype.sort = function (field, direction) {
+    VitrineInstance.prototype.sort = function (field, direction) {
         if (!direction) {
             direction = this.state.sort === field && this.state.direction === 'ASC' ? 'DESC' : 'ASC';
         }
@@ -450,19 +615,21 @@
         this.state.direction = String(direction).toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
         this.state.page = 1;
         this._renderSortHeaders();
+        this._savePreferences();
 
         return this.load();
     };
 
-    ListaInstance.prototype.limit = function (limit) {
+    VitrineInstance.prototype.limit = function (limit) {
         this.state.limit = Math.max(1, parseInt(limit, 10) || config.limit);
         this.state.page = 1;
+        this._savePreferences();
 
         return this.load();
     };
 
     // Junta filtros ({ status: 'pago' }); null/'' remove. Volta para a página 1.
-    ListaInstance.prototype.filter = function (filters) {
+    VitrineInstance.prototype.filter = function (filters) {
         Object.keys(filters || {}).forEach(function (key) {
             var value = filters[key];
 
@@ -480,7 +647,7 @@
     };
 
     // Volta aos filtros, ordem e tamanho iniciais.
-    ListaInstance.prototype.reset = function () {
+    VitrineInstance.prototype.reset = function () {
         this.state = JSON.parse(JSON.stringify(this._defaults));
 
         if (this.parts.filters && typeof this.parts.filters.reset === 'function') {
@@ -494,7 +661,7 @@
         return this.load();
     };
 
-    ListaInstance.prototype.selected = function () {
+    VitrineInstance.prototype.selected = function () {
         var self = this;
 
         return Object.keys(this.selection).map(function (key) {
@@ -502,7 +669,7 @@
         });
     };
 
-    ListaInstance.prototype.selectedIds = function () {
+    VitrineInstance.prototype.selectedIds = function () {
         var self = this;
 
         return this.selected().map(function (item) {
@@ -510,7 +677,7 @@
         });
     };
 
-    ListaInstance.prototype.clearSelection = function () {
+    VitrineInstance.prototype.clearSelection = function () {
         this.selection = {};
         this._renderSelection();
     };
@@ -519,7 +686,7 @@
      * Executa uma ação no servidor (excluir, mudar status). item: um item
      * (ação de linha) ou null (lote: manda os ids selecionados em ids[]).
      */
-    ListaInstance.prototype.action = function (options, item) {
+    VitrineInstance.prototype.action = function (options, item) {
         var self = this;
         var ids = item ? [getPath(item, this.idField)] : this.selectedIds();
         var url = item ? fillUrl(options.url, item) : options.url;
@@ -527,7 +694,7 @@
         var confirmText = item ? fillText(options.confirm, item) : str(options.confirm).split(':count').join(String(ids.length));
 
         if (!url) {
-            return Promise.reject(new Error('Lista.js: ação sem data-url.'));
+            return Promise.reject(new Error('Vitrine.js: ação sem data-url.'));
         }
 
         if (!item && !ids.length) {
@@ -558,6 +725,7 @@
 
         return request.then(function (response) {
             self._notify(response.message, 'success');
+            self.clearCache();
             self._trigger('actionDone', extend({ response: response }, detail));
 
             if (!item) {
@@ -565,7 +733,7 @@
             }
 
             if (options.reload !== false) {
-                return self.load().then(function () {
+                return self.reload().then(function () {
                     return response;
                 });
             }
@@ -579,7 +747,7 @@
         });
     };
 
-    ListaInstance.prototype.destroy = function () {
+    VitrineInstance.prototype.destroy = function () {
         if (this._controller) {
             this._controller.abort();
         }
@@ -589,25 +757,35 @@
         this.el.removeEventListener('change', this._onChange);
         this.el.removeEventListener('submit', this._onSubmit);
         window.removeEventListener('popstate', this._onPopState);
-        delete this.el.__lista;
+        window.clearInterval(this._refreshTimer);
+
+        if (this._observer) {
+            this._observer.disconnect();
+        }
+
+        if (this._prefetchController) {
+            this._prefetchController.abort();
+        }
+
+        delete this.el.__vitrine;
     };
 
     // ------------------------------------------------------------------
     // Eventos do DOM
     // ------------------------------------------------------------------
 
-    ListaInstance.prototype._bind = function () {
+    VitrineInstance.prototype._bind = function () {
         var self = this;
 
         this._onClick = function (event) {
             var target = event.target;
-            var link = target.closest('[data-lista-page]');
+            var link = target.closest('[data-vitrine-page]');
 
             if (link && self.el.contains(link)) {
                 event.preventDefault();
 
                 if (!link.closest('.' + config.classes.disabled.split(' ')[0])) {
-                    self.page(link.getAttribute('data-lista-page'));
+                    self.page(link.getAttribute('data-vitrine-page'));
                 }
 
                 return;
@@ -628,8 +806,8 @@
                 event.preventDefault();
 
                 var isBatch = actionEl.hasAttribute('data-batch-action');
-                var row = actionEl.closest('[data-lista-index]');
-                var item = !isBatch && row ? self.items[parseInt(row.getAttribute('data-lista-index'), 10)] : null;
+                var row = actionEl.closest('[data-vitrine-index]');
+                var item = !isBatch && row ? self.items[parseInt(row.getAttribute('data-vitrine-index'), 10)] : null;
                 var name = actionEl.getAttribute(isBatch ? 'data-batch-action' : 'data-action');
                 var handler = self.options.actions && self.options.actions[name];
 
@@ -650,14 +828,30 @@
                 return;
             }
 
-            if (target.closest('[data-lista-retry]')) {
+            var exportLink = target.closest('[data-vitrine-export]');
+
+            if (exportLink && self.el.contains(exportLink)) {
+                event.preventDefault();
+                self.exportUrl(exportLink.getAttribute('href') || exportLink.getAttribute('data-vitrine-export'), exportLink.getAttribute('target'));
+
+                return;
+            }
+
+            if (target.closest('[data-vitrine-more]')) {
+                event.preventDefault();
+                self.loadMore();
+
+                return;
+            }
+
+            if (target.closest('[data-vitrine-retry]')) {
                 event.preventDefault();
                 self.load();
 
                 return;
             }
 
-            if (target.closest('[data-lista-reset]')) {
+            if (target.closest('[data-vitrine-reset]')) {
                 event.preventDefault();
                 self.reset();
             }
@@ -691,8 +885,8 @@
             }
 
             if (field.hasAttribute('data-select')) {
-                var row = field.closest('[data-lista-index]');
-                var item = row ? self.items[parseInt(row.getAttribute('data-lista-index'), 10)] : null;
+                var row = field.closest('[data-vitrine-index]');
+                var item = row ? self.items[parseInt(row.getAttribute('data-vitrine-index'), 10)] : null;
 
                 if (item) {
                     var id = String(getPath(item, self.idField));
@@ -723,6 +917,19 @@
 
         // Enter no campo de busca: aplica já (sem recarregar a página).
         this._onSubmit = function (event) {
+            if (event.target.classList && event.target.classList.contains('vitrine-jp-goto')) {
+                event.preventDefault();
+
+                var input = event.target.querySelector('input');
+                var total = self.meta.total_paginas || 1;
+                var page = Math.max(1, Math.min(total, parseInt(input.value, 10) || 1));
+
+                input.value = '';
+                self.page(page);
+
+                return;
+            }
+
             if (self.parts.filters && event.target === self.parts.filters) {
                 event.preventDefault();
                 window.clearTimeout(self._timer);
@@ -748,7 +955,7 @@
     };
 
     // Lê o formulário de filtros (mesmas regras de nomes do Vigia: x[] vira lista).
-    ListaInstance.prototype._formFilters = function () {
+    VitrineInstance.prototype._formFilters = function () {
         var filters = {};
         var form = this.parts.filters;
 
@@ -790,7 +997,7 @@
         return filters;
     };
 
-    ListaInstance.prototype._applyFormFilters = function () {
+    VitrineInstance.prototype._applyFormFilters = function () {
         var formFilters = this._formFilters();
         var changes = {};
 
@@ -812,11 +1019,11 @@
         this.filter(changes);
     };
 
-    ListaInstance.prototype._formHasField = function (key) {
+    VitrineInstance.prototype._formHasField = function (key) {
         return !!(this.parts.filters && this.parts.filters.querySelector('[name="' + key + '"], [name="' + key + '[]"]'));
     };
 
-    ListaInstance.prototype._cleanFilters = function (filters) {
+    VitrineInstance.prototype._cleanFilters = function (filters) {
         var clean = {};
 
         Object.keys(filters).sort().forEach(function (key) {
@@ -830,7 +1037,7 @@
         return clean;
     };
 
-    ListaInstance.prototype._writeFiltersToForm = function () {
+    VitrineInstance.prototype._writeFiltersToForm = function () {
         var form = this.parts.filters;
         var filters = this.state.filters;
 
@@ -873,11 +1080,11 @@
     // URL (F5 e "voltar")
     // ------------------------------------------------------------------
 
-    ListaInstance.prototype._key = function (name) {
+    VitrineInstance.prototype._key = function (name) {
         return this.prefix ? this.prefix + '_' + name : name;
     };
 
-    ListaInstance.prototype._readUrl = function () {
+    VitrineInstance.prototype._readUrl = function () {
         if (!this.useHistory || !window.URLSearchParams) {
             return;
         }
@@ -889,8 +1096,10 @@
         var limit = parseInt(query.get(this._key(p.limit)), 10);
 
         this.state = JSON.parse(JSON.stringify(this._defaults || this.state));
+        this._urlHas = { limit: limit > 0, sort: !!query.get(this._key(p.sort)) };
 
-        if (page > 0) {
+        // Nos modos "carregar mais", sempre começa da página 1.
+        if (page > 0 && !this._isAppendMode()) {
             this.state.page = page;
         }
 
@@ -924,7 +1133,7 @@
     };
 
     // Só os valores diferentes do padrão vão para a URL; o resto da query (option, view...) é mantido.
-    ListaInstance.prototype._writeUrl = function () {
+    VitrineInstance.prototype._writeUrl = function () {
         if (!this.useHistory || !window.history || !window.history.replaceState || !window.URLSearchParams) {
             return;
         }
@@ -940,7 +1149,7 @@
             }
         });
 
-        if (this.state.page > 1) {
+        if (this.state.page > 1 && !this._isAppendMode()) {
             query.set(this._key(p.page), this.state.page);
         }
 
@@ -977,7 +1186,7 @@
     // Renderização
     // ------------------------------------------------------------------
 
-    ListaInstance.prototype._setLoading = function (loading) {
+    VitrineInstance.prototype._setLoading = function (loading) {
         this.loading = loading;
 
         if (loading) {
@@ -995,20 +1204,26 @@
         this._trigger('state', { loading: loading });
     };
 
-    ListaInstance.prototype._render = function () {
+    // appendFrom: índice do primeiro item novo (modo "carregar mais"); null redesenha tudo.
+    VitrineInstance.prototype._render = function (appendFrom) {
         var self = this;
         var container = this.parts.items;
         var fragment = document.createDocumentFragment();
+        var from = typeof appendFrom === 'number' ? appendFrom : 0;
 
-        this.items.forEach(function (item, index) {
-            var node = self._renderItem(item, index);
+        this.items.slice(from).forEach(function (item, offset) {
+            var node = self._renderItem(item, from + offset);
 
             if (node) {
                 fragment.appendChild(node);
             }
         });
 
-        container.textContent = '';
+        if (typeof appendFrom !== 'number') {
+            container.textContent = '';
+        }
+
+        this._removeSkeleton();
         container.appendChild(fragment);
 
         if (this.parts.error) {
@@ -1025,7 +1240,7 @@
     };
 
     /*
-     * Preenche o <template data-lista-template> com o item:
+     * Preenche o <template data-vitrine-template> com o item:
      *   data-field="cliente.nome"            texto (sempre escapado)
      *   data-format="money|date|datetime..." formato do texto
      *   data-href / data-src / data-title / data-value  com {campo}
@@ -1034,7 +1249,7 @@
      *   data-class-NOME="campo"              classe se o campo for verdadeiro
      * Ou options.renderItem(item, index) devolvendo um elemento.
      */
-    ListaInstance.prototype._renderItem = function (item, index) {
+    VitrineInstance.prototype._renderItem = function (item, index) {
         var node;
 
         if (typeof this.options.renderItem === 'function') {
@@ -1049,10 +1264,10 @@
 
             fillNode(node, item);
         } else {
-            throw new Error('Lista.js: defina <template data-lista-template> ou a opção renderItem.');
+            throw new Error('Vitrine.js: defina <template data-vitrine-template> ou a opção renderItem.');
         }
 
-        node.setAttribute('data-lista-index', String(index));
+        node.setAttribute('data-vitrine-index', String(index));
 
         var id = String(getPath(item, this.idField));
         var checkbox = node.querySelector('[data-select]');
@@ -1128,14 +1343,14 @@
         return /^\s*(javascript|data|vbscript):/i.test(url) ? '#' : url;
     }
 
-    ListaInstance.prototype._paginationStyle = function () {
+    VitrineInstance.prototype._paginationStyle = function () {
         var nav = this.parts.pagination;
-        var attribute = nav ? nav.getAttribute('data-lista-pagination') : '';
+        var attribute = nav ? nav.getAttribute('data-vitrine-pagination') : '';
 
         return this.options.pagination || attribute || config.paginationStyle;
     };
 
-    ListaInstance.prototype._renderPagination = function () {
+    VitrineInstance.prototype._renderPagination = function () {
         var nav = this.parts.pagination;
 
         if (!nav) {
@@ -1144,6 +1359,12 @@
 
         if (this._paginationStyle() === 'jpaginate') {
             this._renderJPaginate();
+
+            return;
+        }
+
+        if (this._isAppendMode()) {
+            this._renderLoadMore();
 
             return;
         }
@@ -1191,7 +1412,7 @@
                 addClasses(li, classes.disabled);
             } else {
                 link.href = '#';
-                link.setAttribute('data-lista-page', String(page));
+                link.setAttribute('data-vitrine-page', String(page));
             }
 
             li.appendChild(link);
@@ -1237,7 +1458,7 @@
      * contínuo); clicar num número busca aquela página no servidor.
      * Depois de cada carga, a faixa centraliza a página atual.
      */
-    ListaInstance.prototype._renderJPaginate = function () {
+    VitrineInstance.prototype._renderJPaginate = function () {
         var self = this;
         var nav = this.parts.pagination;
         var current = this.meta.pagina_atual || this.state.page;
@@ -1261,18 +1482,18 @@
         this._jpStart = Math.max(1, Math.min(current - Math.floor(display / 2), total - display + 1));
 
         var box = document.createElement('div');
-        box.className = 'lista-jp';
+        box.className = 'vitrine-jp';
 
         var edge = function (label, page, disabled, cls) {
             var button = document.createElement('button');
 
             button.type = 'button';
-            button.className = 'lista-jp-edge ' + cls;
+            button.className = 'vitrine-jp-edge ' + cls;
             button.textContent = label;
             button.disabled = disabled;
 
             if (!disabled) {
-                button.setAttribute('data-lista-page', String(page));
+                button.setAttribute('data-vitrine-page', String(page));
             }
 
             return button;
@@ -1282,7 +1503,7 @@
             var button = document.createElement('button');
 
             button.type = 'button';
-            button.className = 'lista-jp-arrow ' + (direction < 0 ? 'lista-jp-arrow-prev' : 'lista-jp-arrow-next');
+            button.className = 'vitrine-jp-arrow ' + (direction < 0 ? 'vitrine-jp-arrow-prev' : 'vitrine-jp-arrow-next');
             button.textContent = direction < 0 ? '‹' : '›';
             button.setAttribute('aria-label', direction < 0 ? config.messages.slidePrevious : config.messages.slideNext);
             self._bindJpArrow(button, direction);
@@ -1293,38 +1514,60 @@
         this._jpPrev = arrow(-1);
         this._jpNext = arrow(1);
         this._jpList = document.createElement('ol');
-        this._jpList.className = 'lista-jp-pages';
+        this._jpList.className = 'vitrine-jp-pages';
 
         var strip = document.createElement('div');
-        strip.className = 'lista-jp-strip';
+        strip.className = 'vitrine-jp-strip';
         strip.appendChild(this._jpList);
 
-        box.appendChild(edge(config.messages.first, 1, current <= 1, 'lista-jp-first'));
+        box.appendChild(edge(config.messages.first, 1, current <= 1, 'vitrine-jp-first'));
         box.appendChild(this._jpPrev);
         box.appendChild(strip);
         box.appendChild(this._jpNext);
-        box.appendChild(edge(config.messages.last, total, current >= total, 'lista-jp-last'));
+        box.appendChild(edge(config.messages.last, total, current >= total, 'vitrine-jp-last'));
 
         var status = document.createElement('span');
-        status.className = 'lista-jp-status';
+        status.className = 'vitrine-jp-status';
         status.setAttribute('aria-live', 'polite');
         status.textContent = message('pageOf', { page: current.toLocaleString('pt-BR'), total: total.toLocaleString('pt-BR') });
         box.appendChild(status);
+
+        if (config.jpaginate.goto && total > this._jpDisplay()) {
+            var goto = document.createElement('form');
+            var label = document.createElement('label');
+            var input = document.createElement('input');
+            var go = document.createElement('button');
+
+            goto.className = 'vitrine-jp-goto';
+            label.className = 'vitrine-jp-goto-label';
+            label.textContent = config.messages.goTo + ' ';
+            input.type = 'number';
+            input.min = '1';
+            input.max = String(total);
+            input.inputMode = 'numeric';
+            input.placeholder = String(current);
+            label.appendChild(input);
+            go.type = 'submit';
+            go.textContent = config.messages.go;
+            goto.appendChild(label);
+            goto.appendChild(go);
+            box.appendChild(goto);
+        }
 
         nav.appendChild(box);
         this._renderJpPages();
     };
 
-    ListaInstance.prototype._jpDisplay = function () {
+    VitrineInstance.prototype._jpDisplay = function () {
         var nav = this.parts.pagination;
-        var fromAttribute = nav ? parseInt(nav.getAttribute('data-lista-display'), 10) : NaN;
+        var fromAttribute = nav ? parseInt(nav.getAttribute('data-vitrine-display'), 10) : NaN;
         var display = this.options.display || (fromAttribute > 0 ? fromAttribute : config.jpaginate.display);
 
         return Math.max(3, parseInt(display, 10) || 7);
     };
 
     // Redesenha só os números (deslizar não refaz a navegação inteira nem busca nada).
-    ListaInstance.prototype._renderJpPages = function () {
+    VitrineInstance.prototype._renderJpPages = function () {
         var list = this._jpList;
         var current = this.meta.pagina_atual || this.state.page;
         var total = this.meta.total_paginas || 0;
@@ -1338,15 +1581,15 @@
             var button = document.createElement('button');
 
             button.type = 'button';
-            button.className = 'lista-jp-page';
+            button.className = 'vitrine-jp-page';
             button.textContent = page.toLocaleString('pt-BR');
 
             if (page === current) {
-                li.className = 'lista-jp-current';
+                li.className = 'vitrine-jp-current';
                 button.setAttribute('aria-current', 'page');
                 button.disabled = true;
             } else {
-                button.setAttribute('data-lista-page', String(page));
+                button.setAttribute('data-vitrine-page', String(page));
                 button.setAttribute('aria-label', message('pageOf', { page: page, total: total }));
             }
 
@@ -1358,7 +1601,7 @@
         this._jpNext.disabled = start + display - 1 >= total;
     };
 
-    ListaInstance.prototype._jpShift = function (direction) {
+    VitrineInstance.prototype._jpShift = function (direction) {
         var total = this.meta.total_paginas || 0;
         var display = Math.min(this._jpDisplay(), total);
         var next = Math.max(1, Math.min(this._jpStart + direction, total - display + 1));
@@ -1374,7 +1617,7 @@
     };
 
     // Clique desliza 1 página; segurar (mouse, toque ou Enter/Espaço) desliza contínuo.
-    ListaInstance.prototype._bindJpArrow = function (button, direction) {
+    VitrineInstance.prototype._bindJpArrow = function (button, direction) {
         var self = this;
         var delay = null;
         var repeat = null;
@@ -1418,7 +1661,198 @@
         });
     };
 
-    ListaInstance.prototype._renderSummary = function () {
+    /*
+     * "Carregar mais" (botão) e rolagem infinita (carrega ao chegar perto
+     * do fim). Cada página é uma requisição; os itens se somam na tela.
+     */
+    VitrineInstance.prototype._renderLoadMore = function () {
+        var self = this;
+        var nav = this.parts.pagination;
+        var total = this.meta.total || 0;
+        var remaining = Math.max(0, total - this.items.length);
+        var hasMore = (this.meta.pagina_atual || 1) < (this.meta.total_paginas || 0);
+
+        nav.textContent = '';
+        nav.hidden = total === 0;
+
+        if (this._observer) {
+            this._observer.disconnect();
+            this._observer = null;
+        }
+
+        if (!hasMore) {
+            var done = document.createElement('p');
+
+            done.className = 'vitrine-more-done';
+            done.textContent = message('allLoaded', { total: total.toLocaleString('pt-BR') });
+            nav.appendChild(done);
+
+            return;
+        }
+
+        var button = document.createElement('button');
+
+        button.type = 'button';
+        button.className = 'vitrine-more';
+        button.setAttribute('data-vitrine-more', '');
+        button.textContent = message('loadMore', { remaining: remaining.toLocaleString('pt-BR') });
+        nav.appendChild(button);
+
+        // Rolagem infinita: o botão continua lá (teclado, leitores de tela e navegadores antigos).
+        if (this._paginationStyle() === 'infinite' && typeof window.IntersectionObserver !== 'undefined') {
+            this._observer = new window.IntersectionObserver(function (entries) {
+                if (entries.some(function (entry) { return entry.isIntersecting; })) {
+                    self.loadMore();
+                }
+            }, { rootMargin: '300px' });
+
+            this._observer.observe(button);
+        }
+    };
+
+    // Linhas fantasma enquanto a primeira página carrega (sem "pular" o layout).
+    VitrineInstance.prototype._renderSkeleton = function (append) {
+        var container = this.parts.items;
+
+        if (append || !(this.skeletonRows > 0) || !this.parts.template || container.querySelector('[data-vitrine-index]')) {
+            return;
+        }
+
+        container.textContent = '';
+
+        for (var i = 0; i < this.skeletonRows; i++) {
+            var row = this.parts.template.content.cloneNode(true).firstElementChild;
+
+            if (!row) {
+                return;
+            }
+
+            fillNode(row, {});
+            row.classList.add('vitrine-skeleton');
+            row.setAttribute('aria-hidden', 'true');
+            row.setAttribute('data-vitrine-skeleton', '');
+
+            Array.from(row.querySelectorAll('[data-field]')).forEach(function (field) {
+                field.textContent = '';
+            });
+
+            container.appendChild(row);
+        }
+    };
+
+    VitrineInstance.prototype._removeSkeleton = function () {
+        Array.from(this.parts.items.querySelectorAll('[data-vitrine-skeleton]')).forEach(function (row) {
+            row.parentNode.removeChild(row);
+        });
+    };
+
+    // Atualização automática (painéis): só com a aba visível e sem interromper a pessoa.
+    VitrineInstance.prototype._startRefresh = function () {
+        var self = this;
+
+        if (!(this.refreshSeconds > 0)) {
+            return;
+        }
+
+        this._refreshTimer = window.setInterval(function () {
+            var hidden = document.visibilityState === 'hidden';
+
+            if (hidden || self.loading || self._isAppendMode() || Object.keys(self.selection).length) {
+                return;
+            }
+
+            self.load({ force: true, background: true });
+        }, Math.max(5, this.refreshSeconds) * 1000);
+    };
+
+    /*
+     * Leva os filtros e a ordem atuais para uma URL de exportação
+     * (ExportHelper::download no controller, lendo com InputHelper::filters/sorting).
+     */
+    VitrineInstance.prototype.exportUrl = function (base, target) {
+        var p = config.params;
+        var params = this.params();
+        var query = new window.URLSearchParams();
+
+        Object.keys(params).forEach(function (key) {
+            if (key === p.page || key === p.limit) {
+                return;
+            }
+
+            var value = params[key];
+
+            if (Array.isArray(value)) {
+                value.forEach(function (v) {
+                    query.append(key + '[]', v);
+                });
+            } else {
+                query.append(key, value);
+            }
+        });
+
+        var url = str(base) + (str(base).indexOf('?') === -1 ? '?' : '&') + query.toString();
+
+        if (target === undefined) {
+            return url;
+        }
+
+        if (target === '_blank') {
+            window.open(url, '_blank', 'noopener');
+        } else {
+            window.location.href = url;
+        }
+
+        return url;
+    };
+
+    // Lembra tamanho da página e ordem (localStorage), se data-vitrine-remember="nome".
+    VitrineInstance.prototype._savePreferences = function () {
+        if (!this.rememberKey) {
+            return;
+        }
+
+        try {
+            window.localStorage.setItem('vitrine:' + this.rememberKey, JSON.stringify({
+                limit: this.state.limit,
+                sort: this.state.sort,
+                direction: this.state.direction
+            }));
+        } catch (error) {
+            // Navegação privada ou armazenamento cheio: segue sem lembrar.
+        }
+    };
+
+    VitrineInstance.prototype._restorePreferences = function () {
+        if (!this.rememberKey) {
+            return;
+        }
+
+        var saved = null;
+
+        try {
+            saved = JSON.parse(window.localStorage.getItem('vitrine:' + this.rememberKey) || 'null');
+        } catch (error) {
+            saved = null;
+        }
+
+        if (!saved) {
+            return;
+        }
+
+        var has = this._urlHas || {};
+
+        // A URL (link compartilhado) vale mais que a preferência guardada.
+        if (!has.limit && saved.limit > 0) {
+            this.state.limit = parseInt(saved.limit, 10);
+        }
+
+        if (!has.sort && saved.sort) {
+            this.state.sort = String(saved.sort);
+            this.state.direction = saved.direction === 'DESC' ? 'DESC' : 'ASC';
+        }
+    };
+
+    VitrineInstance.prototype._renderSummary = function () {
         if (!this.parts.summary) {
             return;
         }
@@ -1432,7 +1866,7 @@
 
         var perPage = this.meta.por_pagina || this.state.limit;
         var current = this.meta.pagina_atual || this.state.page;
-        var from = (current - 1) * perPage + 1;
+        var from = this._isAppendMode() ? 1 : (current - 1) * perPage + 1;
 
         this.parts.summary.textContent = message('summary', {
             from: from.toLocaleString('pt-BR'),
@@ -1441,7 +1875,7 @@
         });
     };
 
-    ListaInstance.prototype._renderSortHeaders = function () {
+    VitrineInstance.prototype._renderSortHeaders = function () {
         var state = this.state;
         var classes = config.classes;
 
@@ -1471,7 +1905,7 @@
         });
     };
 
-    ListaInstance.prototype._toggleAll = function (checked) {
+    VitrineInstance.prototype._toggleAll = function (checked) {
         var self = this;
 
         this.items.forEach(function (item) {
@@ -1487,7 +1921,7 @@
         this._renderSelection();
     };
 
-    ListaInstance.prototype._renderSelection = function () {
+    VitrineInstance.prototype._renderSelection = function () {
         var self = this;
         var count = Object.keys(this.selection).length;
         var pageIds = this.items.map(function (item) { return String(getPath(item, self.idField)); });
@@ -1496,7 +1930,7 @@
         Array.from(this.parts.items.querySelectorAll('[data-select]')).forEach(function (box) {
             box.checked = own(self.selection, box.value);
 
-            var row = box.closest('[data-lista-index]');
+            var row = box.closest('[data-vitrine-index]');
 
             if (row) {
                 row.classList.toggle(config.classes.selected, box.checked);
@@ -1519,11 +1953,11 @@
         this._trigger('selection', { count: count, ids: this.selectedIds() });
     };
 
-    ListaInstance.prototype._renderError = function (error) {
+    VitrineInstance.prototype._renderError = function (error) {
         var text = (error && error.message) || config.messages.error;
 
         if (this.parts.error) {
-            var target = this.parts.error.querySelector('[data-lista-error-message]') || this.parts.error;
+            var target = this.parts.error.querySelector('[data-vitrine-error-message]') || this.parts.error;
 
             target.textContent = text;
             this.parts.error.hidden = false;
@@ -1536,13 +1970,13 @@
         }
     };
 
-    // Mensagem geral: [data-vigia-message] da lista, ou Joomla.renderMessages.
-    ListaInstance.prototype._notify = function (text, type) {
+    // Mensagem geral: [data-vitrine-message] da vitrine, ou Joomla.renderMessages.
+    VitrineInstance.prototype._notify = function (text, type) {
         if (!text) {
             return;
         }
 
-        var box = this.el.querySelector('[data-lista-message]');
+        var box = this.el.querySelector('[data-vitrine-message]');
 
         if (box) {
             box.textContent = text;
@@ -1566,41 +2000,41 @@
     // API pública
     // ------------------------------------------------------------------
 
-    function listaFor(el, options) {
+    function vitrineFor(el, options) {
         if (typeof el === 'string') {
             el = document.querySelector(el);
         }
 
         if (!el) {
-            throw new Error('Lista.js: elemento não encontrado.');
+            throw new Error('Vitrine.js: elemento não encontrado.');
         }
 
-        if (!el.__lista) {
-            el.__lista = new ListaInstance(el, options);
+        if (!el.__vitrine) {
+            el.__vitrine = new VitrineInstance(el, options);
         } else if (options) {
-            extend(el.__lista.options, options);
+            extend(el.__vitrine.options, options);
         }
 
-        return el.__lista;
+        return el.__vitrine;
     }
 
     function init(root) {
         root = root || document;
 
-        var found = root.querySelectorAll ? Array.from(root.querySelectorAll('[data-lista]')) : [];
+        var found = root.querySelectorAll ? Array.from(root.querySelectorAll('[data-vitrine]')) : [];
 
-        if (root.matches && root.matches('[data-lista]')) {
+        if (root.matches && root.matches('[data-vitrine]')) {
             found.unshift(root);
         }
 
         found.forEach(function (el) {
-            if (!el.__lista) {
-                listaFor(el);
+            if (!el.__vitrine) {
+                vitrineFor(el);
             }
         });
     }
 
-    var Lista = {
+    var Vitrine = {
         version: VERSION,
         config: function (options) {
             if (options) {
@@ -1610,8 +2044,8 @@
             return config;
         },
         init: init,
-        create: listaFor,
-        of: listaFor,
+        create: vitrineFor,
+        of: vitrineFor,
         formats: {
             add: function (name, fn) {
                 FORMATS[name] = fn;
@@ -1635,5 +2069,5 @@
         }
     }
 
-    return Lista;
+    return Vitrine;
 }));

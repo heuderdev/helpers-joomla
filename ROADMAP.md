@@ -9,7 +9,7 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 | `DateHelper` | Datas e fuso horário: grava em UTC, mostra no fuso do usuário, lê formulários e monta períodos de relatório. `OrmBase` e `QueueHelper` já o usam. |
 | `Vigia.js` (`js/`) | Formulário no navegador: mesmas regras e mensagens do `ValidationHelper`, erros 422 nos campos, máscaras brasileiras, axios com token CSRF, Alpine opcional. `ValidationHelper::clientConfig()` exporta as regras do PHP. |
 | `PermissionHelper::requireToken()` | Token CSRF do campo, do cabeçalho `X-CSRF-Token` ou do JSON, no Joomla 3, 4 e 5. |
-| `Lista.js` (`js/`) | Listagens com paginação, ordenação e filtros na URL, busca com espera e cancelamento, ações por linha e em lote. |
+| `Vitrine.js` (`js/`) | Listagens com paginação, ordenação e filtros na URL, busca com espera e cancelamento, ações por linha e em lote. |
 | `FormatHelper` | Dinheiro (e centavos inteiros), números, CPF/CNPJ, CEP, telefone, slug, resumo, plural, nomes. |
 | Docs | Páginas do `LogHelper`, `PermissionHelper` e `ExportHelper`. |
 
@@ -28,7 +28,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 7. `RateLimitHelper`
 - [x] 8. `CryptoHelper`
 - [x] 9. `PermissionHelper::requireToken()` (token do formulário ou header `X-CSRF-Token`)
-- [x] 10. `js/lista.js` — par do Vigia para listagens (paginação/ordenação/filtros na URL, debounce, cancelamento, ações em lote) sobre `ApiResponseHelper::paginated()` e `InputHelper::pagination()/sorting()/filters()`.
+- [x] 10. `js/vitrine.js` — par do Vigia para listagens (paginação/ordenação/filtros na URL, debounce, cancelamento, ações em lote) sobre `ApiResponseHelper::paginated()` e `InputHelper::pagination()/sorting()/filters()`.
 - [x] 11. `FormatHelper`
 - [x] 12. `WebhookHelper`
 - [x] 13. `SettingsHelper`
@@ -37,7 +37,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 
 ### Notas de retomada
 
-- **Concluído em 2026-10-05 ~04:10.** 15/15 itens, um commit por item, sem push. Revisão final: `php -l` e `checar.sh` em todos os PHP (0 erros), `instalar.sh --todos` testado, autoload e ordem do IncludeHelper conferidos, testes do Vigia.js e da Lista.js no jsdom, paridade Vigia × ValidationHelper (8/8), 0 links quebrados nos docs.
+- **Concluído em 2026-10-05 ~04:10.** 15/15 itens, um commit por item, sem push. Revisão final: `php -l` e `checar.sh` em todos os PHP (0 erros), `instalar.sh --todos` testado, autoload e ordem do IncludeHelper conferidos, testes do Vigia.js e da Vitrine.js no jsdom, paridade Vigia × ValidationHelper (8/8), 0 links quebrados nos docs.
 
 - Ferramenta de docs: `/tmp/claude-1000/-developer-helpersJoomla/c10b9e3f-ad8d-495d-a7f4-258375c63021/scratchpad/docs_tool.py` (gera página a partir de `.src`, regrava nav/anterior-próxima/rodapé de todos os docs, `card()`, `ref()`, `root()`). Lista do menu em `nav.json` ao lado. Se o arquivo sumiu, a navegação é HTML estático: copie de uma página existente.
 - Item 2 também corrigiu: `PermissionHelper` chamava `LogHelper::write` (privado; log de negativas nunca gravava) e expunha o contexto no JSON; `ExportHelper` usava escape vazio no `fputcsv` (só existe no PHP 7.4+).

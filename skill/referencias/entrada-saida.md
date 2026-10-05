@@ -1,4 +1,4 @@
-# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Lista.js
+# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Vitrine.js
 
 ## InputHelper (ler a requisição já no tipo certo)
 
@@ -100,18 +100,19 @@ $vigia = ValidationHelper::clientConfig($regras, $mensagens, $rotulos);
 - Eventos no form: `vigia:invalid`, `vigia:before` (cancelável), `vigia:success`, `vigia:error`, `vigia:complete`.
 - Alpine: `x-data="vigia({ rules: {...}, render: false }, { meuEstado: '' })"` → `error('campo')`, `hasError()`, `loading`, `message`; `x-mask:cpf`. Sem `@submit.prevent`.
 
-## Lista.js (telas de listagem)
+## Vitrine.js (telas de listagem)
 
 ```html
-<div data-lista="<?php echo JRoute::_('index.php?option=com_x&task=itens.listar&format=json', false) ?>" data-lista-limit="20" data-lista-sort="id">
-  <form data-lista-filters><input type="search" name="busca"><select name="status">...</select></form>
-  <table><thead><tr><th><input type="checkbox" data-select-all></th><th data-sort="nome">Nome</th></tr></thead><tbody data-lista-items></tbody></table>
-  <template data-lista-template><tr><td><input type="checkbox" data-select></td><td data-field="nome"></td><td data-field="total" data-format="money"></td>
+<div data-vitrine="<?php echo JRoute::_('index.php?option=com_x&task=itens.listar&format=json', false) ?>" data-vitrine-limit="20" data-vitrine-sort="id">
+  <form data-vitrine-filters><input type="search" name="busca"><select name="status">...</select></form>
+  <table><thead><tr><th><input type="checkbox" data-select-all></th><th data-sort="nome">Nome</th></tr></thead><tbody data-vitrine-items></tbody></table>
+  <template data-vitrine-template><tr><td><input type="checkbox" data-select></td><td data-field="nome"></td><td data-field="total" data-format="money"></td>
     <td><button data-action="excluir" data-url="index.php?option=com_x&task=itens.excluir&id={id}&format=json" data-confirm="Excluir {nome}?">x</button></td></tr></template>
-  <p data-lista-empty hidden>Nada.</p><small data-lista-summary></small><nav data-lista-pagination></nav>
-  <div data-lista-batch hidden><button data-batch-action="excluir" data-url="...excluirLote...">Excluir :count</button></div>
+  <p data-vitrine-empty hidden>Nada.</p><small data-vitrine-summary></small><nav data-vitrine-pagination></nav>
+  <div data-vitrine-batch hidden><button data-batch-action="excluir" data-url="...excluirLote...">Excluir :count</button></div>
 </div>
 ```
 - Servidor: `InputHelper::pagination(20, 100)` + `sorting($listaBranca, 'id', 'ASC')` + `filters([...])` → `->paginate($p['limit'], $p['page'])` → `ApiResponseHelper::paginated($r)`. Lote recebe `ids[]` (`InputHelper::arrayOfInt('ids')`); confira dono de cada id.
-- Paginação estilo jQuery Paginate: `<nav data-lista-pagination="jpaginate" data-lista-display="7">` (faixa que desliza sem requisição, Primeira/Última; cada número = 1 requisição de `limit` linhas).
-- Requer `js/vigia.js` antes (usa `Vigia.http`: token, cancelamento). Estado na URL (`page`, `sort`, `f_<filtro>`); busca com espera de 350 ms e cancelamento; tudo preenchido como texto (XSS-safe). API: `Lista.of(el).reload()/filter({...})/page(n)/sort(c)`; eventos `lista:loaded`, `lista:actionDone`.
+- Paginação estilo jQuery Paginate: `<nav data-vitrine-pagination="jpaginate" data-vitrine-display="7">` (faixa que desliza sem requisição, Primeira/Última; cada número = 1 requisição de `limit` linhas).
+- Recursos: páginas em memória + pré-carregamento da próxima (padrão, `data-vitrine-cache="60"`), `data-vitrine-pagination="more|infinite"` (carregar mais / rolagem infinita), "ir para a página" no jpaginate, `<a data-vitrine-export href="...exportar">` (leva filtros e ordem), `data-vitrine-refresh="30"`, linhas fantasma, `data-vitrine-remember="nome"` (limite e ordem no navegador). Depois de editar fora da vitrine: `Vitrine.of(el).clearCache()`.
+- Requer `js/vigia.js` antes (usa `Vigia.http`: token, cancelamento). Estado na URL (`page`, `sort`, `f_<filtro>`); busca com espera de 350 ms e cancelamento; tudo preenchido como texto (XSS-safe). API: `Vitrine.of(el).reload()/filter({...})/page(n)/sort(c)`; eventos `vitrine:loaded`, `vitrine:actionDone`.
