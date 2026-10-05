@@ -40,6 +40,10 @@ class PedidoModel extends OrmBase
     const STATUS_PAGO = &#x27;pago&#x27;;
     const STATUS_CANCELADO = &#x27;cancelado&#x27;;
 
+    // Banco onde a tabela fica. Omita (ou null) para usar o do Joomla;
+    // &#x27;loja&#x27; precisa estar registrada no DbConnectionHelper (veja &quot;Usando outro banco&quot;).
+    protected $connection = &#x27;loja&#x27;;
+
     protected $table = &#x27;#__loja_pedidos&#x27;;
 
     protected $softDeletes = true;
@@ -81,7 +85,206 @@ class PedidoModel extends OrmBase
     {
         return $this-&gt;latest();
     }
-}</code></pre></div><h2 id="propriedades" data-titulo="Propriedades que você pode declarar">Propriedades que você pode declarar</h2><div class="tabela"><table><thead><tr><th>Propriedade</th><th>Padrão</th><th>Equivale à opção</th></tr></thead><tbody><tr><td><code>protected $table</code></td><td>— (obrigatória)</td><td>parâmetro <code>$table</code></td></tr><tr><td><code>protected $primaryKey</code></td><td><code>'id'</code></td><td><code>primaryKey</code></td></tr><tr><td><code>protected $timestamps</code></td><td><code>true</code></td><td><code>timestamps</code></td></tr><tr><td><code>protected $createdAtColumn</code></td><td><code>'created_at'</code></td><td><code>createdAtColumn</code></td></tr><tr><td><code>protected $updatedAtColumn</code></td><td><code>'updated_at'</code></td><td><code>updatedAtColumn</code></td></tr><tr><td><code>protected $softDeletes</code></td><td><code>false</code></td><td><code>softDeletes</code></td></tr><tr><td><code>protected $deletedAtColumn</code></td><td><code>'deleted_at'</code></td><td><code>deletedAtColumn</code></td></tr><tr><td><code>protected $casts</code></td><td><code>[]</code></td><td><code>casts</code></td></tr><tr><td><code>protected $fillable</code></td><td><code>[]</code></td><td><code>fillable</code></td></tr><tr><td><code>protected $guarded</code></td><td><code>[]</code></td><td><code>guarded</code></td></tr><tr><td><code>protected $connection</code></td><td><code>null</code></td><td><code>connection</code></td></tr></tbody></table></div><p>O significado de cada uma está em <a href="orm-base-configuracao.html#opcoes">OrmBase — configuração</a>.</p><h2 id="query" data-titulo="Usando: query()">Usando: query()</h2><div class="metodo"><h3 id="query-metodo"><code>query()</code><span class="tag estatico">estático</span></h3><div class="assinatura">Model::query(array $opcoes = []): static</div><p>Ponto de entrada do model. Cada chamada devolve uma <strong>instância nova</strong>, sem filtros de consultas anteriores. As <code>$opcoes</code> sobrescrevem as propriedades da classe só nessa instância.</p><div class="codigo"><pre><code data-lang="php">// Uso normal
+}</code></pre></div><h2 id="todas-as-configuracoes" data-titulo="Model com todas as configurações">Model com todas as configurações</h2><p>Um model que usa <strong>tudo</strong> o que dá para customizar: outro banco (registrado pelo próprio model), chave primária e colunas de data com outros nomes, exclusão lógica, todos os tipos de <code>casts</code>, <code>fillable</code> e <code>guarded</code>, um ponto de extensão para gravação, scopes e uma regra de negócio com transação. Na prática, declare só o que difere do padrão.</p><div class="codigo"><div class="titulo-codigo">models/NotaFiscalModel.php</div><pre><code data-lang="php">&lt;?php
+
+defined(&#x27;_JEXEC&#x27;) or die;
+
+require_once JPATH_COMPONENT . &#x27;/helpers/IncludeHelper.php&#x27;;
+IncludeHelper::load(&#x27;OrmBase&#x27;);   // traz DbConnectionHelper e DbTransactionHelper
+
+class NotaFiscalModel extends OrmBase
+{
+    // ---- Constantes do domínio ----
+
+    const CONEXAO = &#x27;erp&#x27;;
+
+    const STATUS_RASCUNHO = &#x27;rascunho&#x27;;
+    const STATUS_EMITIDA = &#x27;emitida&#x27;;
+    const STATUS_CANCELADA = &#x27;cancelada&#x27;;
+
+    // ---- Conexão ----
+
+    // null = banco do Joomla. Um nome = conexão registrada no DbConnectionHelper
+    // (aqui o próprio construtor registra). Pode ser trocada por consulta com
+    // query([&#x27;connection&#x27; =&gt; ...]).
+    protected $connection = self::CONEXAO;
+
+    // ---- Tabela e chave ----
+
+    // Obrigatória. O #__ vira o &#x27;prefix&#x27; da conexão (no ERP: erp_notas_fiscais).
+    // Só o nome, sem alias.
+    protected $table = &#x27;#__notas_fiscais&#x27;;
+
+    // Padrão &#x27;id&#x27;. Deve ser numérica e autoincremento: find(), update(),
+    // delete() etc. convertem o valor com (int).
+    protected $primaryKey = &#x27;nota_id&#x27;;
+
+    // ---- Timestamps ----
+
+    // Padrão true: create() preenche as duas colunas e update() a de
+    // atualização. Com true, as colunas precisam existir na tabela.
+    protected $timestamps = true;
+    protected $createdAtColumn = &#x27;criado_em&#x27;;      // padrão &#x27;created_at&#x27;; usado também por latest()/oldest()
+    protected $updatedAtColumn = &#x27;atualizado_em&#x27;;  // padrão &#x27;updated_at&#x27;
+
+    // ---- Exclusão lógica ----
+
+    // Padrão false. Com true, delete() grava a data em vez de apagar, as
+    // consultas ignoram os excluídos, e restore()/forceDelete() ficam úteis.
+    protected $softDeletes = true;
+    protected $deletedAtColumn = &#x27;excluido_em&#x27;;    // padrão &#x27;deleted_at&#x27;
+
+    // ---- Conversão de tipos (leitura e gravação) ----
+
+    protected $casts = [
+        &#x27;cliente_id&#x27;    =&gt; &#x27;int&#x27;,       // ou &#x27;integer&#x27;
+        &#x27;valor_total&#x27;   =&gt; &#x27;float&#x27;,     // ou &#x27;double&#x27;
+        &#x27;enviada_sefaz&#x27; =&gt; &#x27;bool&#x27;,      // ou &#x27;boolean&#x27;; grava 1/0, lê &#x27;t&#x27;/&#x27;f&#x27; do PostgreSQL
+        &#x27;numero&#x27;        =&gt; &#x27;string&#x27;,
+        &#x27;itens&#x27;         =&gt; &#x27;json&#x27;,      // ou &#x27;array&#x27;; array -&gt; JSON ao gravar, JSON -&gt; array ao ler
+        &#x27;emitida_em&#x27;    =&gt; &#x27;datetime&#x27;,  // ou &#x27;date&#x27;; devolvido como string
+    ];
+
+    // ---- Colunas que create()/update() aceitam ----
+
+    // Colunas que não existem na tabela são sempre descartadas, sem erro.
+    // $fillable vazio = qualquer coluna existente. Preenchido = só essas.
+    protected $fillable = [
+        &#x27;cliente_id&#x27;,
+        &#x27;numero&#x27;,
+        &#x27;status&#x27;,
+        &#x27;valor_total&#x27;,
+        &#x27;enviada_sefaz&#x27;,
+        &#x27;itens&#x27;,
+        &#x27;emitida_em&#x27;,
+        &#x27;observacoes&#x27;,
+    ];
+
+    // Aplicado depois do $fillable: estas nunca são gravadas a partir de
+    // $dados. Na prática use um dos dois; aqui ficam os campos de auditoria,
+    // preenchidos só por prepararDadosParaGravar() abaixo.
+    protected $guarded = [
+        &#x27;nota_id&#x27;,
+        &#x27;criado_por&#x27;,
+        &#x27;atualizado_por&#x27;,
+    ];
+
+    // ---- Registro da conexão ----
+
+    public function __construct($table = null, array $opcoes = [])
+    {
+        if (!DbConnectionHelper::has(self::CONEXAO)) {
+            // Credenciais fora do código: aqui, dos parâmetros do componente.
+            $params = JComponentHelper::getParams(&#x27;com_loja&#x27;);
+
+            DbConnectionHelper::register(self::CONEXAO, [
+                &#x27;driver&#x27;   =&gt; &#x27;pgsql&#x27;,      // mysql, mysqli, mariadb, pdomysql, pgsql, postgresql
+                &#x27;host&#x27;     =&gt; $params-&gt;get(&#x27;erp_host&#x27;, &#x27;localhost&#x27;),
+                &#x27;port&#x27;     =&gt; (int) $params-&gt;get(&#x27;erp_port&#x27;, 5432),
+                &#x27;user&#x27;     =&gt; $params-&gt;get(&#x27;erp_user&#x27;),
+                &#x27;password&#x27; =&gt; $params-&gt;get(&#x27;erp_password&#x27;),
+                &#x27;database&#x27; =&gt; $params-&gt;get(&#x27;erp_database&#x27;, &#x27;erp&#x27;),
+                &#x27;prefix&#x27;   =&gt; &#x27;erp_&#x27;,
+            ]);
+        }
+
+        // Obrigatório: é aqui que as propriedades e as $opcoes são aplicadas.
+        parent::__construct($table, $opcoes);
+    }
+
+    // ---- Ponto de extensão: preencher colunas em toda gravação ----
+
+    // Roda em create(), createMany(), update() e updateWhere(), depois dos
+    // filtros de colunas e dos timestamps.
+    protected function prepararDadosParaGravar(array $dados, $criando)
+    {
+        $dados = parent::prepararDadosParaGravar($dados, $criando);
+
+        $usuarioId = (int) JFactory::getUser()-&gt;id;
+
+        if ($criando) {
+            $dados[&#x27;criado_por&#x27;] = $usuarioId;
+        }
+
+        $dados[&#x27;atualizado_por&#x27;] = $usuarioId;
+
+        return $dados;
+    }
+
+    // ---- Scopes: filtros com nome (public, devolvem $this) ----
+
+    public function doCliente($clienteId)
+    {
+        return $this-&gt;where(&#x27;cliente_id&#x27;, (int) $clienteId);
+    }
+
+    public function emitidas()
+    {
+        return $this-&gt;where(&#x27;status&#x27;, self::STATUS_EMITIDA);
+    }
+
+    public function noPeriodo($inicio, $fim)
+    {
+        return $this-&gt;whereBetween(&#x27;emitida_em&#x27;, $inicio, $fim);
+    }
+
+    public function busca($termo)
+    {
+        // Filtro opcional: termo vazio não filtra. whereLike já envolve em %.
+        return $this-&gt;when($termo, function ($q, $termo) {
+            $q-&gt;whereGroup(function ($g) use ($termo) {
+                $g-&gt;whereLike(&#x27;numero&#x27;, $termo)
+                  -&gt;orWhereLike(&#x27;observacoes&#x27;, $termo);
+            });
+        });
+    }
+
+    // ---- Regras de negócio ----
+
+    public function emitir($notaId)
+    {
+        // A transação roda na conexão do model (o ERP).
+        return $this-&gt;transaction(function (NotaFiscalModel $notas) use ($notaId) {
+            // where()-&gt;first() mantém o lock; find() limparia o lockForUpdate().
+            $nota = $notas-&gt;lockForUpdate()-&gt;where(&#x27;nota_id&#x27;, (int) $notaId)-&gt;first();
+
+            if ($nota === null || $nota-&gt;status !== self::STATUS_RASCUNHO) {
+                throw new RuntimeException(&#x27;Só notas em rascunho podem ser emitidas.&#x27;);
+            }
+
+            return $notas-&gt;update($notaId, [
+                &#x27;status&#x27;     =&gt; self::STATUS_EMITIDA,
+                &#x27;emitida_em&#x27; =&gt; date(&#x27;Y-m-d H:i:s&#x27;),
+            ]);
+        });
+    }
+}</code></pre></div><p>Usando o model:</p><div class="codigo"><pre><code data-lang="php">// Uso normal: banco ERP, sem excluídas, com todos os casts
+$notas = NotaFiscalModel::query()
+    -&gt;doCliente(7)
+    -&gt;emitidas()
+    -&gt;busca($termo)
+    -&gt;latest()                 // ORDER BY criado_em DESC
+    -&gt;paginate(20, $pagina);
+
+$nota = NotaFiscalModel::query()-&gt;create([
+    &#x27;cliente_id&#x27; =&gt; 7,
+    &#x27;numero&#x27;     =&gt; &#x27;000123&#x27;,
+    &#x27;status&#x27;     =&gt; NotaFiscalModel::STATUS_RASCUNHO,
+    &#x27;itens&#x27;      =&gt; [[&#x27;sku&#x27; =&gt; &#x27;A1&#x27;, &#x27;qtd&#x27; =&gt; 2]],  // gravado como JSON
+    &#x27;criado_por&#x27; =&gt; 999,                             // ignorado: está em $guarded
+]);
+
+NotaFiscalModel::query()-&gt;emitir($nota-&gt;nota_id);
+
+// Qualquer propriedade (menos $table) pode ser sobrescrita só nesta instância
+$lixeira = NotaFiscalModel::query([&#x27;softDeletes&#x27; =&gt; false])
+    -&gt;whereNotNull(&#x27;excluido_em&#x27;)
+    -&gt;get();
+
+$espelho = NotaFiscalModel::query([&#x27;connection&#x27; =&gt; &#x27;erp_replica&#x27;])-&gt;emitidas()-&gt;count();
+
+// Mesma configuração, outra tabela de mesmo formato
+$antigas = NotaFiscalModel::tabela(&#x27;#__notas_fiscais_2023&#x27;)-&gt;emitidas()-&gt;get();</code></pre></div><div class="nota aviso"><p><strong>Sobrescrevendo métodos <code>protected</code>.</strong> <code>prepararDadosParaGravar()</code> é um bom ponto de extensão porque passa por todas as gravações. Ao sobrescrever qualquer método do <code>OrmBase</code>, mantenha a assinatura e chame o <code>parent::</code>. Sem isso, você perde os filtros de colunas, os timestamps e a conversão dos <code>casts</code>.</p></div><h2 id="propriedades" data-titulo="Propriedades que você pode declarar">Propriedades que você pode declarar</h2><div class="tabela"><table><thead><tr><th>Propriedade</th><th>Padrão</th><th>Equivale à opção</th></tr></thead><tbody><tr><td><code>protected $table</code></td><td>— (obrigatória)</td><td>parâmetro <code>$table</code></td></tr><tr><td><code>protected $primaryKey</code></td><td><code>'id'</code></td><td><code>primaryKey</code></td></tr><tr><td><code>protected $timestamps</code></td><td><code>true</code></td><td><code>timestamps</code></td></tr><tr><td><code>protected $createdAtColumn</code></td><td><code>'created_at'</code></td><td><code>createdAtColumn</code></td></tr><tr><td><code>protected $updatedAtColumn</code></td><td><code>'updated_at'</code></td><td><code>updatedAtColumn</code></td></tr><tr><td><code>protected $softDeletes</code></td><td><code>false</code></td><td><code>softDeletes</code></td></tr><tr><td><code>protected $deletedAtColumn</code></td><td><code>'deleted_at'</code></td><td><code>deletedAtColumn</code></td></tr><tr><td><code>protected $casts</code></td><td><code>[]</code></td><td><code>casts</code></td></tr><tr><td><code>protected $fillable</code></td><td><code>[]</code></td><td><code>fillable</code></td></tr><tr><td><code>protected $guarded</code></td><td><code>[]</code></td><td><code>guarded</code></td></tr><tr><td><code>protected $connection</code></td><td><code>null</code></td><td><code>connection</code></td></tr></tbody></table></div><p>O significado de cada uma está em <a href="orm-base-configuracao.html#opcoes">OrmBase — configuração</a>.</p><h2 id="query" data-titulo="Usando: query()">Usando: query()</h2><div class="metodo"><h3 id="query-metodo"><code>query()</code><span class="tag estatico">estático</span></h3><div class="assinatura">Model::query(array $opcoes = []): static</div><p>Ponto de entrada do model. Cada chamada devolve uma <strong>instância nova</strong>, sem filtros de consultas anteriores. As <code>$opcoes</code> sobrescrevem as propriedades da classe só nessa instância.</p><div class="codigo"><pre><code data-lang="php">// Uso normal
 $pedidos = PedidoModel::query()-&gt;pagos()-&gt;doCliente(7)-&gt;recentes()-&gt;get();
 
 // Sobrescrevendo uma opção só nesta consulta: incluir excluídos
