@@ -198,6 +198,12 @@
   "busca": "criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório"
  },
  {
+  "href": "format-helper.html",
+  "label": "FormatHelper",
+  "arquivo": "FormatHelper.php",
+  "busca": "formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem"
+ },
+ {
   "grupo": "JavaScript"
  },
  {
