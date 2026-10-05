@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigia.js · helpers-joomla</title>
+<meta name="description" content="Vigia.js: validação no navegador com as regras do ValidationHelper, erros do servidor nos campos, máscaras brasileiras e requisições com axios para Joomla.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › JavaScript › Vigia.js</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" class="ativo" aria-current="page" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>Vigia.js</h1><p class="lead">Validação no navegador, máscaras e requisições com axios para componentes Joomla, falando a mesma língua do <code>ValidationHelper</code> e do <code>ApiResponseHelper</code>.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O <strong>Vigia.js</strong> é um micro framework JavaScript (um arquivo, sem build) que cuida do formulário de ponta a ponta:</p><ul><li><strong>Valida no navegador</strong> com as <strong>mesmas regras e mensagens</strong> do <a href="validation-helper.html"><code>ValidationHelper</code></a>: <code>required|cpf|max_length:150</code> funciona igual nos dois lados.</li><li><strong>Mostra os erros do servidor no campo certo</strong>: a resposta 422 do <code>ApiResponseHelper::fromValidation()</code> aparece embaixo de cada campo, inclusive <code>itens.1.quantidade</code> → <code>itens[1][quantidade]</code>.</li><li><strong>Máscaras brasileiras</strong>: CPF, CNPJ, CPF/CNPJ, telefone, CEP, data, hora, dinheiro, placa, cartão, PIS e padrões próprios.</li><li><strong>Requisições com axios</strong>: token CSRF do Joomla automático, resposta normalizada e erros padronizados.</li><li><strong>Alpine.js opcional</strong>: <code>x-data="vigia"</code> com erros reativos e <code>x-mask</code>.</li></ul>
+<div class="fluxo"><div class="etapa"><strong>Regras no PHP</strong><span>ValidationHelper::clientConfig()</span></div><div class="seta">↓</div><div class="etapa"><strong>Navegador</strong><span>Vigia.js valida enquanto a pessoa digita</span></div><div class="seta">↓</div><div class="etapa"><strong>Servidor</strong><span>ValidationHelper valida de novo (inclusive unique/exists)</span></div><div class="seta">↓</div><div class="etapa"><strong>Resposta 422</strong><span>ApiResponseHelper::fromValidation() → Vigia mostra no campo</span></div></div>
+<div class="nota aviso"><p>A validação no navegador é <strong>conforto</strong>, não segurança: qualquer um pode desligar o JavaScript ou chamar a URL direto. O controller <strong>sempre</strong> valida com o <code>ValidationHelper</code>.</p></div>
+<h2 id="instalacao" data-titulo="Instalação">Instalação</h2>
+<p>Copie <code>js/vigia.js</code> e <code>js/vigia.css</code> do repositório para a pasta de mídia do componente (ex.: <code>media/com_loja/js/</code>) e carregue o axios antes do Vigia. O CSS é opcional com Bootstrap (Joomla 4/5 e a maioria dos templates).</p>
+<div class="codigo"><div class="titulo-codigo">HTML</div><pre><code data-lang="html">&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/media/com_loja/js/vigia.js&quot;&gt;&lt;/script&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;/media/com_loja/js/vigia.css&quot;&gt;
+
+&lt;!-- Opcional, depois do Vigia --&gt;
+&lt;script defer src=&quot;https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js&quot;&gt;&lt;/script&gt;</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Joomla</div><pre><code data-lang="php">// Na view do Joomla (3, 4 e 5)
+JHtml::_(&#x27;script&#x27;, &#x27;https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js&#x27;);
+JHtml::_(&#x27;script&#x27;, &#x27;com_loja/vigia.js&#x27;, array(&#x27;relative&#x27; =&gt; true, &#x27;version&#x27; =&gt; &#x27;auto&#x27;));
+JHtml::_(&#x27;stylesheet&#x27;, &#x27;com_loja/vigia.css&#x27;, array(&#x27;relative&#x27; =&gt; true, &#x27;version&#x27; =&gt; &#x27;auto&#x27;));</code></pre></div>
+<p>Não há <code>init()</code> para chamar: ao carregar a página, o Vigia ativa todo <code>&lt;form data-vigia&gt;</code> e todo campo com <code>data-mask</code>, inclusive os adicionados depois (linhas de itens criadas por JavaScript).</p>
+<div class="nota dica"><p>Para ver tudo funcionando sem Joomla, abra <code>js/exemplo.html</code> do repositório no navegador: um servidor falso responde como o <code>ApiResponseHelper</code>. O exemplo completo de controller e view está em <code>exemplos/ComoUsarVigia.php</code>.</p></div>
+<h2 id="primeiro-formulario" data-titulo="Primeiro formulário">Primeiro formulário</h2>
+<div class="codigo"><div class="titulo-codigo">tmpl/default.php</div><pre><code data-lang="html">&lt;form data-vigia action=&quot;index.php?option=com_loja&amp;task=cliente.salvar&amp;format=json&quot; method=&quot;post&quot;&gt;
+    &lt;div data-vigia-message&gt;&lt;/div&gt;
+
+    &lt;label for=&quot;nome&quot;&gt;Nome completo&lt;/label&gt;
+    &lt;input id=&quot;nome&quot; name=&quot;nome&quot; class=&quot;form-control&quot; data-rules=&quot;required|min_length:3&quot;&gt;
+
+    &lt;label for=&quot;email&quot;&gt;E-mail&lt;/label&gt;
+    &lt;input id=&quot;email&quot; name=&quot;email&quot; type=&quot;email&quot; class=&quot;form-control&quot; required&gt;
+
+    &lt;label for=&quot;cpf&quot;&gt;CPF&lt;/label&gt;
+    &lt;input id=&quot;cpf&quot; name=&quot;cpf&quot; class=&quot;form-control&quot; data-mask=&quot;cpf&quot; data-rules=&quot;required|cpf&quot;&gt;
+
+    &lt;?php echo JHtml::_(&#x27;form.token&#x27;); ?&gt;
+    &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot; data-loading-text=&quot;Salvando…&quot;&gt;Salvar&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">public function salvar()
+{
+    try {
+        if (!JSession::checkToken()) {
+            return ApiResponseHelper::forbidden(&#x27;Sua sessão expirou. Recarregue a página.&#x27;);
+        }
+
+        $dados = InputHelper::post(array(&#x27;nome&#x27; =&gt; &#x27;string&#x27;, &#x27;email&#x27; =&gt; &#x27;string&#x27;, &#x27;cpf&#x27; =&gt; &#x27;string&#x27;));
+
+        $validacao = ValidationHelper::validate($dados, array(
+            &#x27;nome&#x27; =&gt; &#x27;required|min_length:3&#x27;,
+            &#x27;email&#x27; =&gt; &#x27;required|email&#x27;,
+            &#x27;cpf&#x27; =&gt; &#x27;required|cpf&#x27;,
+        ));
+
+        if (!$validacao[&#x27;valid&#x27;]) {
+            return ApiResponseHelper::fromValidation($validacao);   // 422: o Vigia mostra nos campos
+        }
+
+        // ... grava
+
+        return ApiResponseHelper::created(&#x27;Cliente cadastrado com sucesso.&#x27;, array(&#x27;id&#x27; =&gt; $id));
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<p>O que acontece:</p><ol><li>Ao sair de um campo, ele é validado; depois do primeiro erro, a mensagem se atualiza a cada tecla.</li><li>No envio, tudo é validado. Com erro, nada é enviado e o foco vai para o primeiro campo inválido.</li><li>Sem erro, o formulário é enviado pelo axios (multipart, com o token), o botão fica desabilitado com "Salvando…".</li><li>Resposta 422: cada mensagem aparece embaixo do seu campo. Resposta de sucesso: a mensagem aparece em <code>[data-vigia-message]</code>.</li></ol>
+<h2 id="regras" data-titulo="Regras">Regras</h2>
+<p>Declare em <code>data-rules</code> com a mesma sintaxe do <code>ValidationHelper</code>: regras separadas por <code>|</code>, parâmetros depois de <code>:</code>, separados por vírgula; <code>regex</code> sempre por último. Com o campo vazio, só as regras de presença (<code>required</code>, <code>required_if</code>, <code>required_with</code>, <code>accepted</code>) rodam: um campo opcional vazio não é "e-mail inválido".</p>
+<div class="tabela"><table><thead><tr><th>Regra</th><th>Parâmetros</th><th>Valida</th><th>No PHP</th></tr></thead><tbody><tr><td><code>required</code></td><td>—</td><td>Preenchido (texto sem só espaços, lista não vazia, arquivo escolhido).</td><td>sim</td></tr><tr><td><code>required_if</code></td><td>campo,valor1,valor2…</td><td>Obrigatório quando outro campo tiver um dos valores.</td><td>sim</td></tr><tr><td><code>required_with</code></td><td>campo1,campo2…</td><td>Obrigatório quando algum dos outros estiver preenchido.</td><td>sim</td></tr><tr><td><code>accepted</code></td><td>—</td><td>Marcado: 1, true, on, yes, sim (checkbox de termos).</td><td>sim</td></tr><tr><td><code>nullable</code></td><td>—</td><td>Só documenta que pode ficar vazio.</td><td>sim</td></tr><tr><td><code>string</code> / <code>array</code> / <code>json</code></td><td>—</td><td>Tipo do valor.</td><td>sim</td></tr><tr><td><code>integer</code> / <code>int</code></td><td>—</td><td>Inteiro (<code>-3</code>, <code>42</code>).</td><td>sim</td></tr><tr><td><code>numeric</code></td><td>—</td><td>Como o <code>is_numeric()</code> do PHP.</td><td>sim</td></tr><tr><td><code>decimal</code></td><td>—</td><td>Número digitado por pessoas: <code>1.234,56</code>, <code>R$ 99,90</code>, <code>10.5</code>.</td><td>sim</td></tr><tr><td><code>boolean</code> / <code>bool</code></td><td>—</td><td>0, 1, true, false, on, off, sim, não…</td><td>sim</td></tr><tr><td><code>min</code> / <code>max</code></td><td><code>n</code></td><td>Número: valor; texto: tamanho; lista: quantidade de itens.</td><td>sim</td></tr><tr><td><code>between</code></td><td><code>min,max</code></td><td>Entre dois limites (mesma medida de min/max).</td><td>sim</td></tr><tr><td><code>min_length</code> / <code>max_length</code> / <code>length</code></td><td><code>n</code></td><td>Tamanho em caracteres (acentos e emojis contam 1).</td><td>sim</td></tr><tr><td><code>in</code> / <code>not_in</code></td><td><code>a,b,c</code></td><td>Valor permitido / proibido.</td><td>sim</td></tr><tr><td><code>same</code> / <code>different</code></td><td><code>campo</code></td><td>Igual / diferente de outro campo.</td><td>sim</td></tr><tr><td><code>email</code></td><td>—</td><td>E-mail válido.</td><td>sim</td></tr><tr><td><code>url</code></td><td>http,https… (opcional)</td><td>URL com esquema permitido. Sem parâmetro, só http/https (bloqueia <code>javascript:</code>).</td><td>sim</td></tr><tr><td><code>cpf</code> / <code>cnpj</code> / <code>cpf_cnpj</code></td><td>—</td><td>Dígitos verificadores, com ou sem máscara.</td><td>sim</td></tr><tr><td><code>phone</code> / <code>telefone</code></td><td>—</td><td>10 a 13 dígitos.</td><td>sim</td></tr><tr><td><code>cep</code></td><td>—</td><td>8 dígitos.</td><td>sim</td></tr><tr><td><code>date</code></td><td>formato (padrão Y-m-d)</td><td>Data estrita: 31/02 é inválida.</td><td>sim</td></tr><tr><td><code>date_br</code></td><td>—</td><td><code>dd/mm/aaaa</code>.</td><td>sim</td></tr><tr><td><code>datetime</code></td><td>formato (padrão Y-m-d H:i:s)</td><td>Data e hora.</td><td>sim</td></tr><tr><td><code>time</code></td><td>formato (padrão H:i ou H:i:s)</td><td>Horário.</td><td>sim</td></tr><tr><td><code>after</code> / <code>after_or_equal</code> / <code>before</code> / <code>before_or_equal</code></td><td><code>campo ou data</code></td><td>Compara com outro campo ou com <code>today</code>, <code>now</code>, <code>tomorrow</code>, <code>yesterday</code>, <code>2026-01-01</code>, <code>01/01/2026</code>.</td><td>sim</td></tr><tr><td><code>alpha</code> / <code>alpha_num</code> / <code>alpha_dash</code></td><td>—</td><td>Só letras (e espaços); letras e números; e também <code>-</code> e <code>_</code>.</td><td>sim</td></tr><tr><td><code>uuid</code> / <code>ip</code></td><td>—</td><td>UUID; IPv4 ou IPv6.</td><td>sim</td></tr><tr><td><code>regex</code></td><td><code>/padrão/flags</code></td><td>Expressão regular no formato do PHP (sempre a última regra).</td><td>sim</td></tr><tr><td><code>file</code></td><td>—</td><td>Arquivo escolhido.</td><td>sim</td></tr><tr><td><code>file_size</code></td><td><code>500K, 2M, 1G</code></td><td>Tamanho máximo de cada arquivo.</td><td>sim</td></tr><tr><td><code>file_extension</code></td><td><code>jpg,png,pdf</code></td><td>Extensões permitidas.</td><td>sim</td></tr><tr><td><code>file_mime</code></td><td><code>image/jpeg,application/pdf</code></td><td>Tipo informado pelo navegador (o servidor confere o conteúdo real).</td><td>sim</td></tr><tr><td><code>image</code></td><td>—</td><td>Imagem (exceto SVG).</td><td>sim</td></tr><tr><td><code>image_dimensions</code></td><td><code>largura,altura</code></td><td>Dimensões máximas (lidas no navegador).</td><td>sim</td></tr><tr><td><code>unique</code> / <code>exists</code> / <code>callback</code></td><td>—</td><td>Só o servidor confere: no navegador passam. Use <code>remote</code> para checar antes.</td><td>sim</td></tr><tr><td><code>remote</code></td><td><code>url</code></td><td>Pergunta ao servidor (POST com <code>field</code> e <code>value</code>); sucesso = válido; 422 = inválido, com a mensagem da resposta.</td><td>—</td></tr><tr><td><code>confirmed</code></td><td>campo (padrão: <em>campo</em>_confirmation)</td><td>Confirmação igual (senha / senha_confirmation).</td><td>—</td></tr><tr><td><code>password</code></td><td>tamanho mínimo (padrão 8)</td><td>Senha forte: maiúscula, minúscula, número e símbolo.</td><td>—</td></tr><tr><td><code>digits</code> / <code>digits_between</code></td><td><code>n / min,max</code></td><td>Só dígitos, com tamanho exato / entre limites.</td><td>—</td></tr><tr><td><code>starts_with</code> / <code>ends_with</code></td><td><code>a,b</code></td><td>Começa / termina com algum dos valores.</td><td>—</td></tr><tr><td><code>credit_card</code></td><td>—</td><td>Cartão (algoritmo de Luhn, 13 a 19 dígitos).</td><td>—</td></tr><tr><td><code>placa</code></td><td>—</td><td>Placa antiga (ABC-1234) ou Mercosul (ABC1D23).</td><td>—</td></tr><tr><td><code>pis</code></td><td>—</td><td>PIS/PASEP/NIS.</td><td>—</td></tr><tr><td><code>cnh</code></td><td>—</td><td>CNH (dígitos verificadores).</td><td>—</td></tr></tbody></table></div>
+<p>As regras com "—" na última coluna existem só no navegador: o <code>ValidationHelper</code> as ignora (regra desconhecida passa). Se a regra importa para a segurança, valide também no servidor com uma closure.</p>
+<h3 id="regras-atributos">Atributos do HTML</h3>
+<p>Os atributos nativos viram regras sozinhos (e o formulário recebe <code>novalidate</code>, para o navegador não mostrar os balões dele):</p>
+<div class="tabela"><table><thead><tr><th>Atributo</th><th>Regra</th></tr></thead><tbody><tr><td><code>required</code></td><td><code>required</code></td></tr><tr><td><code>type=&quot;email&quot;</code></td><td><code>email</code></td></tr><tr><td><code>type=&quot;url&quot;</code></td><td><code>url</code></td></tr><tr><td><code>type=&quot;number&quot;</code> com <code>min</code>/<code>max</code></td><td><code>numeric</code>, <code>min</code>, <code>max</code></td></tr><tr><td><code>type=&quot;date&quot;</code></td><td><code>date</code> (Y-m-d)</td></tr><tr><td><code>type=&quot;time&quot;</code></td><td><code>time</code></td></tr><tr><td><code>type=&quot;datetime-local&quot;</code></td><td><code>datetime:Y-m-d\TH:i</code></td></tr><tr><td><code>minlength</code> / <code>maxlength</code></td><td><code>min_length</code> / <code>max_length</code></td></tr><tr><td><code>pattern</code></td><td><code>regex</code> com o padrão inteiro</td></tr></tbody></table></div>
+<h3 id="regras-js">Regras no JavaScript</h3>
+<div class="codigo"><pre><code data-lang="js">Vigia.form(&#x27;#pedido&#x27;, {
+    rules: {
+        &#x27;cliente_id&#x27;: &#x27;required|integer&#x27;,
+        &#x27;itens.*.produto&#x27;: &#x27;required|min_length:2&#x27;,          // cada item: itens[0][produto], itens[1][produto]...
+        &#x27;itens.*.quantidade&#x27;: [&#x27;required&#x27;, &#x27;integer&#x27;, &#x27;min:1&#x27;],
+        &#x27;status&#x27;: { in: [&#x27;aberto&#x27;, &#x27;pago&#x27;] },
+        &#x27;cupom&#x27;: [function (valor, dados, campo) {
+            return valor === &#x27;&#x27; || /^[A-Z0-9]{6}$/.test(valor) || &#x27;O cupom :field deve ter 6 letras ou números.&#x27;;
+        }]
+    }
+});</code></pre></div>
+<p>As regras do JavaScript, as do <code>data-vigia</code> (PHP) e as dos atributos são somadas. Uma função recebe <code>(valor, dados, campo)</code> e devolve <code>true</code>, <code>false</code> (mensagem padrão), uma mensagem própria ou uma <code>Promise</code> de um desses.</p>
+<h2 id="regras-php" data-titulo="Regras declaradas uma vez, no PHP">Regras declaradas uma vez, no PHP</h2>
+<p><code>ValidationHelper::clientConfig()</code> transforma as regras, mensagens e rótulos do PHP no formato do Vigia. O controller e a view usam a mesma fonte, e uma mudança de regra vale nos dois lados.</p>
+<div class="codigo"><pre><code data-lang="php">class ClienteRegras
+{
+    public static function regras()
+    {
+        return array(
+            &#x27;nome&#x27; =&gt; &#x27;required|min_length:3|max_length:80&#x27;,
+            &#x27;email&#x27; =&gt; array(&#x27;required&#x27;, &#x27;email&#x27;, &#x27;unique&#x27; =&gt; function ($valor) { /* consulta */ }),
+            &#x27;documento&#x27; =&gt; &#x27;required|cpf_cnpj&#x27;,
+            &#x27;itens.*.quantidade&#x27; =&gt; &#x27;required|integer|min:1&#x27;,
+        );
+    }
+}
+
+// controller
+$validacao = ValidationHelper::validate($dados, ClienteRegras::regras(), $mensagens, $rotulos);
+
+// view
+$vigia = ValidationHelper::clientConfig(ClienteRegras::regras(), $mensagens, $rotulos);</code></pre></div>
+<div class="codigo"><pre><code data-lang="html">&lt;form data-vigia=&#x27;&lt;?php echo htmlspecialchars(json_encode($vigia), ENT_QUOTES, &#x27;UTF-8&#x27;); ?&gt;&#x27;
+      action=&quot;&lt;?php echo JRoute::_(&#x27;index.php?option=com_loja&amp;task=cliente.salvar&amp;format=json&#x27;); ?&gt;&quot; method=&quot;post&quot;&gt;</code></pre></div>
+<p>Ficam de fora as regras com closure e as que só o servidor confere (<code>unique</code>, <code>exists</code>, <code>callback</code>); o servidor continua validando tudo no envio. O resultado tem a forma <code>{"rules": {...}, "messages": {...}, "labels": {...}}</code>; também dá para passar cada parte em <code>data-vigia-rules</code>, <code>data-vigia-messages</code> e <code>data-vigia-labels</code>.</p>
+<div class="nota aviso"><p>Use aspas simples no atributo e <code>htmlspecialchars(..., ENT_QUOTES)</code>: o JSON tem aspas duplas e pode ter <code>&lt;</code>, <code>&amp;</code> e apóstrofos nas mensagens.</p></div>
+<h2 id="mensagens" data-titulo="Mensagens e rótulos">Mensagens e rótulos</h2>
+<p>As mensagens são as mesmas do <code>ValidationHelper</code> (<code>O campo :field é obrigatório.</code>), com <code>:field</code>, <code>:value</code>, <code>:min</code>, <code>:max</code>, <code>:other</code> e <code>:date</code>. O nome no lugar de <code>:field</code> vem, nesta ordem:</p><ol><li>dos rótulos do PHP/JS (<code>labels</code>, inclusive <code>itens.*.quantidade</code>);</li><li>do atributo <code>data-label</code> do campo;</li><li>do texto do <code>&lt;label for&gt;</code> (sem a estrela <code>*</code> do Joomla) ou do <code>&lt;label&gt;</code> em volta;</li><li>do nome do campo, como no PHP: <code>data_nascimento</code> → "Data nascimento".</li></ol><p>Campos de lista ganham o número do item: <code>itens.1.quantidade</code> → "Quantidade (item 2)".</p>
+<div class="codigo"><pre><code data-lang="html">&lt;!-- Mensagem própria de uma regra, direto no campo --&gt;
+&lt;input name=&quot;termos&quot; type=&quot;checkbox&quot; data-rules=&quot;accepted&quot; data-msg-accepted=&quot;Você precisa aceitar os termos.&quot;&gt;</code></pre></div>
+<div class="codigo"><pre><code data-lang="js">Vigia.form(&#x27;#cadastro&#x27;, {
+    messages: {
+        &#x27;email.required&#x27;: &#x27;Informe seu e-mail.&#x27;,          // campo + regra
+        &#x27;itens.*.quantidade.min&#x27;: &#x27;Quantidade mínima: :value.&#x27;,
+        &#x27;required&#x27;: &#x27;Preencha :field.&#x27;                     // regra, para o formulário todo
+    },
+    labels: { &#x27;documento&#x27;: &#x27;CPF ou CNPJ&#x27; }
+});
+
+// Para o site todo
+Vigia.config({ messages: { required: &#x27;Preencha o campo :field.&#x27; } });</code></pre></div>
+<h2 id="erros-servidor" data-titulo="Erros do servidor">Erros do servidor</h2>
+<p>O Vigia entende o envelope do <a href="api-response-helper.html"><code>ApiResponseHelper</code></a>:</p>
+<div class="codigo"><div class="titulo-codigo">HTTP 422 de ApiResponseHelper::fromValidation()</div><pre><code data-lang="js">{
+    &quot;success&quot;: false,
+    &quot;status&quot;: &quot;erro&quot;,
+    &quot;mensagem&quot;: &quot;O valor informado no campo E-mail já está em uso.&quot;,
+    &quot;data&quot;: null,
+    &quot;errors&quot;: {
+        &quot;email&quot;: [&quot;O valor informado no campo E-mail já está em uso.&quot;],
+        &quot;itens.1.quantidade&quot;: [&quot;O campo Quantidade (item 2) deve ser menor ou igual a 5.&quot;],
+        &quot;_general&quot;: [&quot;Estoque insuficiente.&quot;]
+    },
+    &quot;request_id&quot;: &quot;9f2c...&quot;
+}</code></pre></div>
+<p>Cada chave de <code>errors</code> é procurada no formulário assim:</p>
+<div class="tabela"><table><thead><tr><th>Chave do erro</th><th>Campo na tela</th></tr></thead><tbody><tr><td><code>email</code></td><td><code>name=&quot;email&quot;</code></td></tr><tr><td><code>itens.1.quantidade</code></td><td><code>name=&quot;itens[1][quantidade]&quot;</code></td></tr><tr><td><code>tags.0</code></td><td>o 1º <code>name=&quot;tags[]&quot;</code></td></tr><tr><td><code>tipo</code> (rádio/checkbox)</td><td>todos os <code>name=&quot;tipo&quot;</code>, mensagem depois do último</td></tr><tr><td>qualquer</td><td><code>data-error-for=&quot;chave&quot;</code> (lugar escolhido por você)</td></tr><tr><td>sem campo, <code>_general</code>, <code>_system</code></td><td>mensagem geral</td></tr></tbody></table></div>
+<p>O campo recebe <code>is-invalid</code> (Bootstrap 4/5), <code>invalid</code> (Joomla 3) e <code>vigia-invalid</code>, além de <code>aria-invalid="true"</code> e <code>aria-describedby</code> apontando para a mensagem. A mensagem é criada logo depois do campo (ou depois do <code>.input-group</code>), com <code>invalid-feedback vigia-feedback</code>. Quando a pessoa corrige o campo, o erro do servidor some.</p>
+<div class="codigo"><pre><code data-lang="html">&lt;!-- Mensagem num lugar específico --&gt;
+&lt;input name=&quot;cidade&quot;&gt;
+&lt;small data-error-for=&quot;cidade&quot; class=&quot;text-danger&quot;&gt;&lt;/small&gt;</code></pre></div>
+<h3 id="mensagem-geral">Mensagem geral</h3>
+<p>Mensagens de sucesso e erros sem campo aparecem, nesta ordem, em:</p><ol><li><code>[data-vigia-message]</code> dentro do formulário (com <code>alert alert-success</code>, <code>alert alert-danger alert-error</code>…);</li><li><code>Joomla.renderMessages()</code>, se existir na página (a área de mensagens padrão do Joomla);</li><li>uma caixa criada no topo do formulário.</li></ol><p>Com erros nos campos, a mensagem geral não repete o que já está nos campos.</p>
+<h2 id="mascaras" data-titulo="Máscaras">Máscaras</h2>
+<div class="codigo"><pre><code data-lang="html">&lt;input name=&quot;cpf&quot; data-mask=&quot;cpf&quot;&gt;
+&lt;input name=&quot;valor&quot; data-mask=&quot;money&quot; data-unmask&gt;       &lt;!-- envia 1234.56 em vez de R$ 1.234,56 --&gt;
+&lt;input name=&quot;codigo&quot; data-mask=&quot;aaa-9999&quot;&gt;                &lt;!-- padrão próprio --&gt;
+&lt;input name=&quot;peso&quot; data-mask=&quot;decimal&quot; data-mask-decimals=&quot;3&quot; data-mask-suffix=&quot; kg&quot;&gt;</code></pre></div>
+<div class="tabela"><table><thead><tr><th>data-mask</th><th>Resultado</th></tr></thead><tbody><tr><td><code>cpf</code></td><td>123.456.789-09</td></tr><tr><td><code>cnpj</code></td><td>12.345.678/0001-95</td></tr><tr><td><code>cpf_cnpj</code></td><td>muda de CPF para CNPJ ao passar de 11 dígitos</td></tr><tr><td><code>phone</code> / <code>telefone</code></td><td>(11) 3333-4444 ou (11) 98765-4321, sozinho</td></tr><tr><td><code>celular</code> / <code>fixo</code></td><td>(11) 98765-4321 / (11) 3333-4444</td></tr><tr><td><code>cep</code></td><td>01310-100</td></tr><tr><td><code>date</code> / <code>data</code></td><td>05/10/2026</td></tr><tr><td><code>time</code> / <code>hora</code></td><td>14:30</td></tr><tr><td><code>time_seconds</code></td><td>14:30:15</td></tr><tr><td><code>datetime</code></td><td>05/10/2026 14:30</td></tr><tr><td><code>money</code> / <code>moeda</code></td><td>R$ 1.234,56 (digitando da direita para a esquerda)</td></tr><tr><td><code>decimal</code></td><td>1.234,56</td></tr><tr><td><code>integer</code> / <code>inteiro</code></td><td>1.234.567</td></tr><tr><td><code>percent</code></td><td>12,50%</td></tr><tr><td><code>placa</code></td><td>ABC-1D23 (maiúsculas)</td></tr><tr><td><code>credit_card</code> / <code>cartao</code></td><td>4111 1111 1111 1111</td></tr><tr><td><code>validade_cartao</code></td><td>12/29</td></tr><tr><td><code>pis</code></td><td>120.54681.05-0</td></tr><tr><td><code>cnh</code></td><td>11 dígitos</td></tr><tr><td><code>uuid</code></td><td>8-4-4-4-12</td></tr><tr><td><code>uppercase</code> / <code>lowercase</code> / <code>digits</code></td><td>só transforma o texto</td></tr></tbody></table></div>
+<p><strong>Padrão próprio</strong>: <code>9</code> = dígito, <code>a</code> = letra, <code>*</code> = letra ou dígito; o resto é literal (<code>(99) 9999-9999</code>, <code>aaa-9999</code>). Máscaras numéricas aceitam <code>data-mask-decimals</code>, <code>data-mask-prefix</code>, <code>data-mask-suffix</code>, <code>data-mask-thousands</code> e <code>data-mask-negative</code>. O campo recebe <code>inputmode</code> numérico/decimal (teclado certo no celular), e o cursor fica no lugar ao editar no meio.</p>
+<p><strong><code>data-unmask</code></strong> envia o valor sem máscara: dígitos (<code>12345678909</code>), número com ponto (<code>1234.56</code>, que o <code>InputHelper::decimal()</code> entende) e data <code>dd/mm/aaaa</code> → <code>aaaa-mm-dd</code> (o formato do <code>InputHelper::date()</code>). Sem ele, o valor vai como está na tela: as regras <code>cpf</code>, <code>decimal</code> e <code>date_br</code> do PHP aceitam o valor mascarado.</p>
+<div class="codigo"><pre><code data-lang="js">Vigia.mask(document.querySelector(&#x27;#cpf&#x27;), &#x27;cpf&#x27;);                  // aplica em um campo
+Vigia.mask.format(&#x27;11222333000181&#x27;, &#x27;cnpj&#x27;);                        // &#x27;11.222.333/0001-81&#x27;
+Vigia.mask.unmask(&#x27;R$ 1.234,56&#x27;, &#x27;money&#x27;);                          // &#x27;1234.56&#x27;
+Vigia.mask.add(&#x27;processo&#x27;, &#x27;9999999-99.9999.9.99.9999&#x27;);            // máscara nova com nome</code></pre></div>
+<h2 id="http" data-titulo="Requisições: Vigia.http">Requisições: Vigia.http</h2>
+<p>Um axios já configurado para o Joomla: manda <code>X-Requested-With</code> (o <code>ApiResponseHelper</code> responde JSON), o token CSRF no corpo (Joomla 3) e no cabeçalho <code>X-CSRF-Token</code> (Joomla 4/5), e converte objetos em <code>multipart/form-data</code> com nomes que o PHP entende (<code>itens[0][sku]</code>).</p>
+<div class="codigo"><pre><code data-lang="js">// Sucesso (2xx): resposta normalizada
+const r = await Vigia.http.post(&#x27;index.php?option=com_loja&amp;task=pedido.salvar&amp;format=json&#x27;, {
+    cliente_id: 7,
+    itens: [{ sku: &#x27;A1&#x27;, qtd: 2 }],
+    anexo: arquivo            // File: vai como upload
+});
+
+r.success;     // true
+r.message;     // &#x27;Pedido criado.&#x27; (o campo mensagem do ApiResponseHelper)
+r.data;        // { id: 15 }
+r.meta;        // { paginacao: {...} } em ApiResponseHelper::paginated()
+r.httpStatus;  // 201
+r.requestId;   // para procurar no log do servidor
+
+// Erro (4xx/5xx, rede, timeout): rejeita com VigiaError
+try {
+    await Vigia.http.delete(&#x27;index.php?option=com_loja&amp;task=pedido.excluir&amp;id=15&amp;format=json&#x27;);
+} catch (e) {
+    e.message;       // mensagem do servidor ou uma padrão em português
+    e.httpStatus;    // 403, 404, 422, 500... (0 sem conexão)
+    e.errors;        // { campo: [mensagens] }
+    e.isValidation;  // 422
+    e.isNetwork; e.isTimeout; e.isCancel;
+}
+
+Vigia.http.get(url, { pagina: 2 });                  // query string
+Vigia.http.post(url, dados, { json: true });         // corpo JSON (o InputHelper lê; JSession::checkToken do Joomla 3 não)
+Vigia.http.post(url, dados, { onUploadProgress: e =&gt; console.log(e.loaded / e.total) });
+Vigia.http.instance();                               // a instância do axios (interceptors, defaults)</code></pre></div>
+<div class="tabela"><table><thead><tr><th>Situação</th><th>Mensagem padrão</th></tr></thead><tbody><tr><td>Sem conexão</td><td>Não foi possível conectar ao servidor. Verifique sua conexão.</td></tr><tr><td>Timeout (30 s)</td><td>O servidor demorou para responder. Tente novamente.</td></tr><tr><td>401</td><td>Sua sessão expirou. Entre novamente.</td></tr><tr><td>403</td><td>Você não possui permissão para esta operação.</td></tr><tr><td>404</td><td>Registro não encontrado.</td></tr><tr><td>413</td><td>O envio é maior do que o servidor aceita.</td></tr><tr><td>429</td><td>Muitas tentativas. Aguarde alguns instantes e tente novamente.</td></tr><tr><td>500</td><td>Ocorreu um erro interno ao processar a solicitação.</td></tr><tr><td>200 sem JSON (ex.: <code>jexit</code>)</td><td>O servidor enviou uma resposta inesperada.</td></tr></tbody></table></div>
+<p>Quando a resposta é do <code>ApiResponseHelper</code>, vale a <code>mensagem</code> dela. Para trocar as padrões: <code>Vigia.config({ httpMessages: { 401: '...' } })</code>.</p>
+<div class="nota aviso"><p>No controller, responda o token inválido com <code>ApiResponseHelper::forbidden(...)</code>, não com <code>jexit()</code>: o <code>jexit</code> devolve texto com HTTP 200, e o Vigia só consegue dizer "resposta inesperada".</p></div>
+<h2 id="opcoes" data-titulo="Opções do formulário">Opções do formulário</h2>
+<p>Cada opção pode vir num atributo do <code>&lt;form&gt;</code> ou no JavaScript (<code>Vigia.form(form, opções)</code>, que tem prioridade).</p>
+<div class="tabela"><table><thead><tr><th>Atributo</th><th>Opção JS</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody><tr><td><code>data-vigia</code></td><td>—</td><td>—</td><td>Ativa o Vigia. O valor pode ser o JSON do <code>clientConfig()</code>.</td></tr><tr><td><code>action</code> / <code>data-vigia-url</code></td><td><code>url</code></td><td>URL atual</td><td>Para onde enviar.</td></tr><tr><td><code>method</code></td><td><code>method</code></td><td><code>post</code></td><td>Método. <code>get</code> envia como query string.</td></tr><tr><td><code>data-vigia-validate-on</code></td><td><code>validateOn</code></td><td><code>&#x27;blur&#x27;</code></td><td><code>&#x27;blur&#x27;</code> (ao sair do campo e, depois do erro, a cada tecla), <code>&#x27;input&#x27;</code> (a cada tecla), <code>&#x27;submit&#x27;</code>.</td></tr><tr><td><code>data-vigia-submit=&quot;native&quot;</code></td><td><code>submit: &#x27;native&#x27;</code></td><td><code>&#x27;ajax&#x27;</code></td><td>Valida e deixa o navegador enviar (formulário clássico com recarga).</td></tr><tr><td><code>data-vigia-confirm=&quot;Texto&quot;</code></td><td><code>confirm</code></td><td>—</td><td>Pede confirmação antes de enviar.</td></tr><tr><td><code>data-vigia-reset</code></td><td><code>reset</code></td><td><code>false</code></td><td>Limpa o formulário depois do sucesso.</td></tr><tr><td><code>data-vigia-redirect=&quot;url&quot;</code></td><td><code>redirect</code></td><td>—</td><td>Navega depois do sucesso. Também usa <code>data.redirect</code> da resposta.</td></tr><tr><td><code>data-vigia-success-message=&quot;false&quot;</code></td><td><code>successMessage</code></td><td><code>true</code></td><td>Esconde a mensagem de sucesso.</td></tr><tr><td><code>data-vigia-notify</code></td><td><code>notify</code></td><td><code>&#x27;auto&#x27;</code></td><td><code>&#x27;auto&#x27;</code>, <code>&#x27;joomla&#x27;</code> (sempre Joomla.renderMessages) ou <code>&#x27;none&#x27;</code>.</td></tr><tr><td><code>data-vigia-focus=&quot;false&quot;</code></td><td><code>focusInvalid</code></td><td><code>true</code></td><td>Foca o primeiro campo inválido.</td></tr><tr><td><code>data-vigia-errors=&#x27;{...}&#x27;</code></td><td>—</td><td>—</td><td>Erros para mostrar ao carregar (depois de um envio nativo).</td></tr><tr><td>—</td><td><code>rules</code>, <code>messages</code>, <code>labels</code></td><td>—</td><td>Regras, mensagens e rótulos.</td></tr><tr><td>—</td><td><code>render</code></td><td><code>true</code></td><td><code>false</code> não mexe no DOM (você mostra os erros, ex.: com Alpine).</td></tr><tr><td>—</td><td><code>request</code></td><td>—</td><td>Opções extras do axios no envio (headers, timeout…).</td></tr><tr><td>—</td><td><code>onSubmit</code>, <code>onBefore</code>, <code>onSuccess</code>, <code>onError</code>, <code>onInvalid</code>, <code>onComplete</code>, <code>onState</code></td><td>—</td><td>Callbacks. <code>onBefore</code> devolvendo <code>false</code> cancela o envio.</td></tr></tbody></table></div>
+<p>No botão: <code>data-loading-text="Salvando…"</code> troca o texto durante o envio. Uma barra <code>[data-vigia-progress]</code> (<code>&lt;progress&gt;</code> ou <code>&lt;div&gt;</code> com largura) mostra o progresso do upload.</p>
+<h3 id="eventos">Eventos</h3>
+<div class="codigo"><pre><code data-lang="js">const form = document.querySelector(&#x27;#cadastro&#x27;);
+
+form.addEventListener(&#x27;vigia:invalid&#x27;, e =&gt; console.log(e.detail.errors));        // validação no navegador falhou
+form.addEventListener(&#x27;vigia:before&#x27;, e =&gt; { /* e.preventDefault() cancela */ });  // vai enviar
+form.addEventListener(&#x27;vigia:success&#x27;, e =&gt; console.log(e.detail.data));          // resposta de sucesso
+form.addEventListener(&#x27;vigia:error&#x27;, e =&gt; console.log(e.detail.error));           // VigiaError
+form.addEventListener(&#x27;vigia:complete&#x27;, e =&gt; {});                                  // sempre, no fim</code></pre></div>
+<h3 id="metodos">Métodos da instância</h3>
+<div class="codigo"><pre><code data-lang="js">const vigia = Vigia.form(&#x27;#cadastro&#x27;, { /* opções */ });   // a mesma instância do data-vigia
+
+await vigia.validate();          // { valid, errors, first_error } e mostra os erros
+await vigia.validateField(&#x27;email&#x27;);
+await vigia.submit();            // valida e envia; resolve com a resposta (nunca rejeita)
+vigia.showErrors({ email: [&#x27;Já cadastrado.&#x27;] });   // erros vindos de outra chamada
+vigia.setErrors(erros);          // limpa e mostra
+vigia.clearErrors();
+vigia.getData();                 // { nome: &#x27;...&#x27;, itens: { 0: { qtd: &#x27;2&#x27; } } }
+vigia.toFormData();
+vigia.errors; vigia.loading; vigia.progress;
+vigia.reset();
+vigia.destroy();</code></pre></div>
+<h3 id="validar-sem-form">Validar dados sem formulário</h3>
+<div class="codigo"><pre><code data-lang="js">const r = await Vigia.validate(
+    { email: &#x27;x&#x27;, itens: [{ qtd: &#x27;0&#x27; }] },
+    { email: &#x27;required|email&#x27;, &#x27;itens.*.qtd&#x27;: &#x27;integer|min:1&#x27; },
+    { &#x27;email.email&#x27;: &#x27;E-mail inválido.&#x27; },     // mensagens (opcional)
+    { email: &#x27;E-mail&#x27; }                         // rótulos (opcional)
+);
+// { valid: false, errors: { email: [&#x27;E-mail inválido.&#x27;], &#x27;itens.0.qtd&#x27;: [&#x27;O campo Qtd (item 1) deve ser maior ou igual a 1.&#x27;] }, first_error: &#x27;E-mail inválido.&#x27; }</code></pre></div>
+<h2 id="alpine" data-titulo="Alpine.js">Alpine.js</h2>
+<p>Com o Alpine na página (carregado depois do Vigia), o componente <code>vigia</code> e a diretiva <code>x-mask</code> ficam disponíveis. Os erros, o carregamento e a mensagem viram estado reativo.</p>
+<div class="codigo"><pre><code data-lang="html">&lt;form x-data=&quot;vigia({ rules: { email: &#x27;required|email&#x27;, cpf: &#x27;required|cpf&#x27; }, render: false }, { assinatura: null })&quot;
+      @vigia:success=&quot;assinatura = $event.detail.data&quot;
+      action=&quot;index.php?option=com_loja&amp;task=newsletter.assinar&amp;format=json&quot; method=&quot;post&quot;&gt;
+
+    &lt;input name=&quot;email&quot; class=&quot;form-control&quot; :class=&quot;{ &#x27;is-invalid&#x27;: hasError(&#x27;email&#x27;) }&quot;&gt;
+    &lt;div class=&quot;invalid-feedback&quot; x-text=&quot;error(&#x27;email&#x27;)&quot;&gt;&lt;/div&gt;
+
+    &lt;input name=&quot;cpf&quot; class=&quot;form-control&quot; x-mask:cpf :class=&quot;{ &#x27;is-invalid&#x27;: hasError(&#x27;cpf&#x27;) }&quot;&gt;
+    &lt;div class=&quot;invalid-feedback&quot; x-text=&quot;error(&#x27;cpf&#x27;)&quot;&gt;&lt;/div&gt;
+
+    &lt;button :disabled=&quot;loading&quot; x-text=&quot;loading ? &#x27;Enviando…&#x27; : &#x27;Assinar&#x27;&quot;&gt;&lt;/button&gt;
+    &lt;p x-show=&quot;message&quot; x-text=&quot;message&quot;&gt;&lt;/p&gt;
+    &lt;progress x-show=&quot;loading&quot; :value=&quot;progress&quot; max=&quot;100&quot;&gt;&lt;/progress&gt;
+
+    &lt;?php echo JHtml::_(&#x27;form.token&#x27;); ?&gt;
+&lt;/form&gt;</code></pre></div>
+<div class="tabela"><table><thead><tr><th>No componente</th><th>O que é</th></tr></thead><tbody><tr><td><code>errors</code></td><td>{ campo: [mensagens] }</td></tr><tr><td><code>error(&#x27;campo&#x27;)</code></td><td>primeira mensagem do campo (ou '')</td></tr><tr><td><code>hasError(&#x27;campo&#x27;)</code></td><td>true/false</td></tr><tr><td><code>loading</code>, <code>progress</code></td><td>enviando; % do upload</td></tr><tr><td><code>message</code>, <code>messageType</code></td><td>mensagem geral e tipo (success, error, warning, info)</td></tr><tr><td><code>response</code></td><td>última resposta normalizada</td></tr><tr><td><code>submit()</code>, <code>validate()</code>, <code>reset()</code>, <code>setErrors()</code></td><td>ações</td></tr><tr><td>2º argumento de <code>vigia(opções, estado)</code></td><td>seu estado e métodos (campos do <code>x-model</code>, flags da tela)</td></tr></tbody></table></div>
+<p><code>x-mask="'cpf'"</code> (expressão) ou <code>x-mask:cpf</code> (modificador) aplicam máscara e funcionam com <code>x-model</code>: o modelo recebe o valor já mascarado. Não use <code>@submit.prevent</code> no formulário: o Vigia já cuida do envio.</p>
+<h2 id="joomla-classico" data-titulo="Formulários clássicos do Joomla">Formulários clássicos do Joomla</h2>
+<p>Para formulários que recarregam a página (task <code>save</code> com redirect), use <code>data-vigia-submit="native"</code>: o Vigia valida e, se estiver tudo certo, deixa o navegador enviar.</p>
+<div class="codigo"><pre><code data-lang="html">&lt;form data-vigia data-vigia-submit=&quot;native&quot; action=&quot;&lt;?php echo JRoute::_(&#x27;index.php?option=com_loja&#x27;); ?&gt;&quot; method=&quot;post&quot;
+      data-vigia-errors=&#x27;&lt;?php echo htmlspecialchars(json_encode($this-&gt;erros ?: new stdClass), ENT_QUOTES, &#x27;UTF-8&#x27;); ?&gt;&#x27;&gt;</code></pre></div>
+<p><code>data-vigia-errors</code> mostra, ao carregar, os erros que o controller guardou (por exemplo, na sessão) antes do redirect. Na barra de ferramentas do administrador, que envia com <code>Joomla.submitbutton</code>, valide antes:</p>
+<div class="codigo"><pre><code data-lang="js">Joomla.submitbutton = function (task) {
+    const form = document.getElementById(&#x27;adminForm&#x27;);
+
+    if (task === &#x27;item.cancel&#x27;) {
+        return Joomla.submitform(task, form);
+    }
+
+    Vigia.form(form).validate().then(function (r) {
+        if (r.valid) {
+            Joomla.submitform(task, form);
+        }
+    });
+};</code></pre></div>
+<h2 id="config" data-titulo="Configuração global">Configuração global</h2>
+<div class="codigo"><pre><code data-lang="js">Vigia.config({
+    token: &#x27;&#x27;,                    // vazio: descobre sozinho (Joomla.getOptions(&#x27;csrf.token&#x27;), campo do form.token, &lt;meta name=&quot;csrf-token&quot;&gt;)
+    timeout: 30000,
+    validateOn: &#x27;blur&#x27;,
+    firstErrorOnly: true,         // false mostra todas as mensagens do campo
+    notify: &#x27;auto&#x27;,
+    autoInit: true,               // false: chame Vigia.init() você mesmo
+    classes: {
+        invalid: &#x27;is-invalid invalid vigia-invalid&#x27;,
+        valid: &#x27;&#x27;,                // ex.: &#x27;is-valid&#x27;
+        feedback: &#x27;invalid-feedback vigia-feedback&#x27;,
+        loading: &#x27;vigia-loading&#x27;,
+        alert: { success: &#x27;alert alert-success&#x27;, error: &#x27;alert alert-danger alert-error&#x27;, warning: &#x27;alert alert-warning&#x27;, info: &#x27;alert alert-info&#x27; }
+    },
+    messages: {},                 // troca mensagens padrão
+    httpMessages: {}              // troca mensagens de erro HTTP
+});</code></pre></div>
+<h3 id="regras-proprias">Regras e máscaras próprias</h3>
+<div class="codigo"><pre><code data-lang="js">// Regra síncrona
+Vigia.rules.add(&#x27;par&#x27;, function (valor) {
+    return parseInt(valor, 10) % 2 === 0;
+}, &#x27;O campo :field deve ser um número par.&#x27;);
+
+// Regra assíncrona (Promise)
+Vigia.rules.add(&#x27;cep_existe&#x27;, function (valor) {
+    return fetch(&#x27;https://viacep.com.br/ws/&#x27; + valor.replace(/\D/g, &#x27;&#x27;) + &#x27;/json/&#x27;)
+        .then(r =&gt; r.json())
+        .then(d =&gt; !d.erro || &#x27;CEP não encontrado.&#x27;);
+});
+
+// Uso: data-rules=&quot;required|cep|cep_existe&quot;</code></pre></div>
+<h2 id="erros-comuns" data-titulo="Erros comuns">Erros comuns</h2>
+<div class="tabela"><table><thead><tr><th>Sintoma</th><th>Causa e solução</th></tr></thead><tbody><tr><td><code>Vigia.js precisa do axios</code></td><td>O axios não foi carregado antes do Vigia (ou não carregou). Inclua o script do axios antes.</td></tr><tr><td>"O servidor enviou uma resposta inesperada."</td><td>O controller respondeu HTML ou texto (ex.: <code>jexit()</code>, aviso do PHP antes do JSON). Responda sempre com o <code>ApiResponseHelper</code> e confira se a URL leva <code>format=json</code> quando o componente exige.</td></tr><tr><td>403 em todo envio</td><td>Token: falta <code>JHtml::_('form.token')</code> no formulário (Joomla 3) ou a sessão expirou. Com <code>json: true</code>, o <code>JSession::checkToken()</code> do Joomla 3 não lê o corpo JSON: use o envio padrão (multipart).</td></tr><tr><td>O erro do servidor não aparece no campo</td><td>A chave em <code>errors</code> não corresponde ao <code>name</code> do campo. Confira a tabela de <a href="#erros-servidor">correspondência</a> ou use <code>data-error-for</code>.</td></tr><tr><td>A regra funciona no navegador e não no servidor</td><td>É uma regra só do navegador (remote, confirmed, password, placa…). Valide também no PHP.</td></tr><tr><td>Rótulo diferente entre navegador e servidor</td><td>O navegador usa o <code>&lt;label&gt;</code>; o servidor, os rótulos do <code>ValidationHelper</code>. Passe os rótulos pelo <code>clientConfig()</code> para ficarem iguais.</td></tr><tr><td>Envio duplicado</td><td>Não junte <code>@submit.prevent</code> do Alpine ou outro <code>onsubmit</code> com o Vigia: ele já trata o envio e ignora cliques durante o carregamento.</td></tr></tbody></table></div>
+<h2 id="compatibilidade" data-titulo="Compatibilidade">Compatibilidade</h2>
+<ul><li><strong>Joomla</strong> 3.4.5+, 4 e 5. Token pelo campo do <code>form.token</code> (3) e pelo cabeçalho <code>X-CSRF-Token</code> e <code>Joomla.getOptions('csrf.token')</code> (4/5); mensagens pelo <code>Joomla.renderMessages</code> quando não há área no formulário.</li><li><strong>Navegadores</strong> com suporte ao axios 1.x (Chrome, Edge, Firefox e Safari atuais). Sem Internet Explorer.</li><li><strong>axios</strong> 1.x (obrigatório para enviar); <strong>Alpine.js</strong> 3.x (opcional).</li><li>Testado: as mesmas 84 combinações de dados e regras dão os mesmos erros e mensagens no Vigia e no <code>ValidationHelper</code>.</li></ul>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="validation-helper.html">ValidationHelper</a>: as regras no servidor.</li><li><a href="api-response-helper.html">ApiResponseHelper</a>: o formato das respostas.</li><li><a href="input-helper.html">InputHelper</a>: lendo o que o formulário envia.</li><li><a href="upload-master.html">UploadMaster</a>: recebendo os arquivos enviados.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="fila-worker.html"><small>← Anterior</small>Jobs e worker</a><a class="proxima" href="guia-multiplos-bancos.html"><small>Próxima →</small>Múltiplos bancos</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

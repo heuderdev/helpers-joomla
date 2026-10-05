@@ -1,0 +1,121 @@
+/*!
+ * Vigia.js 1.0.0: estilos mínimos.
+ * Com Bootstrap (Joomla 4/5 e a maioria dos templates) este arquivo é
+ * opcional: o Vigia usa .is-invalid, .invalid-feedback e .alert.
+ * Personalize pelas variáveis abaixo.
+ */
+:root {
+    --vigia-erro: #b42318;
+    --vigia-erro-fundo: #fef3f2;
+    --vigia-erro-borda: #fda29b;
+    --vigia-sucesso: #067647;
+    --vigia-sucesso-fundo: #ecfdf3;
+    --vigia-sucesso-borda: #75e0a7;
+    --vigia-aviso: #93370d;
+    --vigia-aviso-fundo: #fffaeb;
+    --vigia-aviso-borda: #fec84b;
+    --vigia-info: #175cd3;
+    --vigia-info-fundo: #eff8ff;
+    --vigia-info-borda: #84caff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --vigia-erro: #fda29b;
+        --vigia-erro-fundo: #55160c;
+        --vigia-erro-borda: #912018;
+        --vigia-sucesso: #75e0a7;
+        --vigia-sucesso-fundo: #053321;
+        --vigia-sucesso-borda: #085d3a;
+        --vigia-aviso: #fec84b;
+        --vigia-aviso-fundo: #4e1d09;
+        --vigia-aviso-borda: #93370d;
+        --vigia-info: #84caff;
+        --vigia-info-fundo: #102a56;
+        --vigia-info-borda: #1849a9;
+    }
+}
+
+/* Campo inválido */
+.vigia-invalid {
+    border-color: var(--vigia-erro) !important;
+}
+
+.vigia-invalid:focus {
+    outline: 2px solid var(--vigia-erro-borda);
+    outline-offset: 1px;
+}
+
+/* Mensagem do campo */
+.vigia-feedback {
+    display: block;
+    margin-top: .25rem;
+    font-size: .875em;
+    line-height: 1.4;
+    color: var(--vigia-erro);
+}
+
+/* Mensagem geral (quando não há Bootstrap) */
+.vigia-alert {
+    margin: 0 0 1rem;
+    padding: .75rem 1rem;
+    border: 1px solid;
+    border-radius: .375rem;
+}
+
+.vigia-alert.alert-danger,
+.vigia-alert.alert-error {
+    color: var(--vigia-erro);
+    background: var(--vigia-erro-fundo);
+    border-color: var(--vigia-erro-borda);
+}
+
+.vigia-alert.alert-success {
+    color: var(--vigia-sucesso);
+    background: var(--vigia-sucesso-fundo);
+    border-color: var(--vigia-sucesso-borda);
+}
+
+.vigia-alert.alert-warning {
+    color: var(--vigia-aviso);
+    background: var(--vigia-aviso-fundo);
+    border-color: var(--vigia-aviso-borda);
+}
+
+.vigia-alert.alert-info {
+    color: var(--vigia-info);
+    background: var(--vigia-info-fundo);
+    border-color: var(--vigia-info-borda);
+}
+
+/* Botão enviando */
+button.vigia-loading,
+input.vigia-loading {
+    position: relative;
+    cursor: progress;
+}
+
+button.vigia-loading::after {
+    content: "";
+    display: inline-block;
+    width: .9em;
+    height: .9em;
+    margin-left: .5em;
+    vertical-align: -.1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: vigia-girar .7s linear infinite;
+}
+
+@keyframes vigia-girar {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    button.vigia-loading::after {
+        animation-duration: 2s;
+    }
+}

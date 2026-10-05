@@ -18,7 +18,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Área | Ficha | Helpers |
 |---|---|---|
 | Banco | `referencias/banco.md` | DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables |
-| Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper |
+| Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
 | Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper |
@@ -31,6 +31,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Ler campo do formulário/URL | `InputHelper::string/int/uint/decimal/bool/email/cpf/date…('campo', $padrao, 'post')` |
 | Validar dados | `ValidationHelper::validate($dados, $regras)` → `['valid', 'errors', 'first_error']` |
 | Responder JSON/HTML | `return ApiResponseHelper::success/created/error/notFound/fromValidation/paginated/exception(...)` |
+| Validar no navegador, máscaras, erros 422 no campo | `js/vigia.js` + `<form data-vigia='<?php echo htmlspecialchars(json_encode(ValidationHelper::clientConfig($regras)), ENT_QUOTES) ?>'>` |
 | Consultar/gravar tabela sem criar classe | `OrmTables::table('#__x', $opcoes)->where()->get()` |
 | Model reutilizável | `class XModel extends OrmBase { protected $table = '#__x'; }` |
 | "Tudo ou nada" | `DbTransactionHelper::run(function () {...})` ou `$orm->transaction(...)` |

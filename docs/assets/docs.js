@@ -141,6 +141,36 @@
         return saida + escapar(codigo.slice(ultimo));
     }
 
+    // HTML: comentários, tags, atributos e valores (o PHP embutido vira texto).
+    function destacarHtml(codigo) {
+        var padrao = /(<!--[\s\S]*?-->|<\/?[A-Za-z][A-Za-z0-9-]*|\/?>|\s[A-Za-z_:@][A-Za-z0-9_:.@-]*(?==)|"[^"]*"|'[^']*')/g;
+        var saida = '';
+        var ultimo = 0;
+        var m;
+
+        while ((m = padrao.exec(codigo)) !== null) {
+            var token = m[0];
+            saida += escapar(codigo.slice(ultimo, m.index));
+            ultimo = m.index + token.length;
+
+            var classe = null;
+
+            if (token.indexOf('<!--') === 0) {
+                classe = 'tk-c';
+            } else if (token.charAt(0) === '<' || token === '>' || token === '/>') {
+                classe = 'tk-k';
+            } else if (token.charAt(0) === '"' || token.charAt(0) === '\'') {
+                classe = 'tk-s';
+            } else {
+                classe = 'tk-t';
+            }
+
+            saida += '<span class="' + classe + '">' + escapar(token) + '</span>';
+        }
+
+        return saida + escapar(codigo.slice(ultimo));
+    }
+
     function prepararBlocos() {
         var blocos = document.querySelectorAll('pre > code');
 
@@ -148,8 +178,10 @@
             var original = bloco.textContent;
             var linguagem = bloco.getAttribute('data-lang') || 'php';
 
-            if (linguagem === 'php') {
+            if (linguagem === 'php' || linguagem === 'js') {
                 bloco.innerHTML = destacarPhp(original);
+            } else if (linguagem === 'html') {
+                bloco.innerHTML = destacarHtml(original);
             } else if (linguagem === 'sql') {
                 bloco.innerHTML = destacarSql(original);
             }

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigia.js · demonstração</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="vigia.css">
+<style>
+    body { background: #f6f8fb; }
+    .container { max-width: 860px; }
+    .demo-nota { font-size: .875rem; color: #5f6b7a; }
+    pre.resposta { background: #0b1220; color: #d7e2f0; padding: 1rem; border-radius: .5rem; font-size: .8rem; max-height: 260px; overflow: auto; }
+</style>
+</head>
+<body>
+<div class="container py-4">
+    <h1 class="h3">Vigia.js</h1>
+    <p class="demo-nota">Esta página roda sem Joomla: um servidor falso responde exatamente como o <code>ApiResponseHelper</code>. Tente o e-mail <code>usado@exemplo.com</code> para ver um erro vindo do servidor, ou deixe campos vazios para ver a validação no navegador.</p>
+
+    <!-- 1. HTML puro: data-vigia, data-rules e data-mask -->
+    <div class="card mb-4"><div class="card-body">
+    <h2 class="h5">1. Cadastro (só atributos HTML)</h2>
+    <form data-vigia action="index.php?option=com_loja&amp;task=cliente.salvar&amp;format=json" method="post" data-vigia-reset>
+        <input type="hidden" name="0123456789abcdef0123456789abcdef" value="1">
+        <div data-vigia-message></div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label for="nome" class="form-label">Nome completo <span class="star">*</span></label>
+                <input id="nome" name="nome" class="form-control" data-rules="required|min_length:3|max_length:80">
+            </div>
+            <div class="col-md-6">
+                <label for="email" class="form-label">E-mail</label>
+                <input id="email" name="email" type="email" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+                <label for="tipo" class="form-label">Tipo de pessoa</label>
+                <select id="tipo" name="tipo" class="form-select" data-rules="required|in:pf,pj">
+                    <option value="">Selecione…</option>
+                    <option value="pf">Física</option>
+                    <option value="pj">Jurídica</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="documento" class="form-label">CPF ou CNPJ</label>
+                <input id="documento" name="documento" class="form-control" data-mask="cpf_cnpj" data-rules="required|cpf_cnpj">
+            </div>
+            <div class="col-md-4">
+                <label for="nascimento" class="form-label">Nascimento</label>
+                <input id="nascimento" name="nascimento" class="form-control" data-mask="date" placeholder="dd/mm/aaaa"
+                       data-rules="required_if:tipo,pf|date_br|before:today">
+            </div>
+            <div class="col-md-4">
+                <label for="celular" class="form-label">Celular</label>
+                <input id="celular" name="celular" class="form-control" data-mask="phone" data-rules="required|phone">
+            </div>
+            <div class="col-md-4">
+                <label for="cep" class="form-label">CEP</label>
+                <input id="cep" name="cep" class="form-control" data-mask="cep" data-rules="cep">
+            </div>
+            <div class="col-md-4">
+                <label for="limite" class="form-label">Limite de crédito</label>
+                <input id="limite" name="limite" class="form-control" data-mask="money" data-unmask data-rules="decimal|max:50000">
+            </div>
+            <div class="col-md-6">
+                <label for="senha" class="form-label">Senha</label>
+                <input id="senha" name="senha" type="password" class="form-control" data-rules="required|password:8" autocomplete="new-password">
+            </div>
+            <div class="col-md-6">
+                <label for="senha_confirmation" class="form-label">Confirme a senha</label>
+                <input id="senha_confirmation" name="senha_confirmation" type="password" class="form-control" data-rules="required|same:senha" autocomplete="new-password">
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input id="termos" name="termos" type="checkbox" class="form-check-input" data-rules="accepted"
+                           data-label="Termos" data-msg-accepted="Você precisa aceitar os termos de uso.">
+                    <label for="termos" class="form-check-label">Li e aceito os termos de uso</label>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3" data-loading-text="Salvando…">Salvar</button>
+    </form>
+    </div></div>
+
+    <!-- 2. Itens dinâmicos: regras com * e erros 'itens.1.quantidade' -->
+    <div class="card mb-4"><div class="card-body">
+    <h2 class="h5">2. Pedido com itens (regras com <code>*</code>)</h2>
+    <form id="pedido" action="index.php?option=com_loja&amp;task=pedido.salvar&amp;format=json" method="post">
+        <div data-vigia-message></div>
+        <div id="itens"></div>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="adicionar">+ Item</button>
+        <button type="submit" class="btn btn-primary btn-sm">Fechar pedido</button>
+        <p class="demo-nota mt-2">O servidor falso recusa quantidade acima de 5 no segundo item, como faria o <code>ValidationHelper</code>.</p>
+    </form>
+    </div></div>
+
+    <!-- 3. Alpine.js -->
+    <div class="card mb-4"><div class="card-body">
+    <h2 class="h5">3. Com Alpine.js</h2>
+    <form x-data="vigia({ rules: { email: 'required|email', cpf: 'required|cpf' }, render: false }, { enviado: null })"
+          @vigia:success="enviado = $event.detail.data"
+          action="index.php?option=com_loja&amp;task=newsletter.assinar&amp;format=json" method="post">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="a-email">E-mail</label>
+                <input id="a-email" name="email" class="form-control" :class="{ 'is-invalid': hasError('email') }">
+                <div class="invalid-feedback" x-text="error('email')"></div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="a-cpf">CPF</label>
+                <input id="a-cpf" name="cpf" class="form-control" x-mask:cpf :class="{ 'is-invalid': hasError('cpf') }">
+                <div class="invalid-feedback" x-text="error('cpf')"></div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success mt-3" :disabled="loading" x-text="loading ? 'Enviando…' : 'Assinar'"></button>
+        <p class="mt-2 mb-0" x-show="message" x-text="message" :class="messageType === 'error' ? 'text-danger' : 'text-success'"></p>
+    </form>
+    </div></div>
+
+    <h2 class="h6">Última requisição recebida pelo servidor falso</h2>
+    <pre class="resposta" id="log">(nenhuma ainda)</pre>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+<script src="vigia.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<script>
+// Linhas de itens criadas pelo JavaScript: o Vigia lê as regras e as
+// máscaras de campos adicionados depois, sem precisar de init().
+var contador = 0;
+
+function novoItem() {
+    var i = contador++;
+    var linha = document.createElement('div');
+    linha.className = 'row g-2 mb-2';
+    linha.innerHTML =
+        '<div class="col-7"><input class="form-control" name="itens[' + i + '][produto]" placeholder="Produto" data-label="Produto"></div>' +
+        '<div class="col-3"><input class="form-control" name="itens[' + i + '][quantidade]" placeholder="Qtd." data-mask="integer" data-label="Quantidade"></div>' +
+        '<div class="col-2"><button type="button" class="btn btn-link text-danger">remover</button></div>';
+    linha.querySelector('button').onclick = function () { linha.remove(); };
+    document.getElementById('itens').appendChild(linha);
+}
+
+novoItem();
+novoItem();
+document.getElementById('adicionar').onclick = novoItem;
+
+Vigia.form('#pedido', {
+    rules: {
+        'itens.*.produto': 'required|min_length:2',
+        'itens.*.quantidade': 'required|integer|min:1'
+    },
+    onSuccess: function (detail) {
+        console.log('Pedido criado', detail.data);
+    }
+});
+
+// ---------------------------------------------------------------------
+// Servidor falso: responde como ApiResponseHelper::success/fromValidation.
+// Num componente de verdade, apague este bloco.
+// ---------------------------------------------------------------------
+function resposta(status, corpo, config) {
+    document.getElementById('log').textContent = 'HTTP ' + status + '\n' + JSON.stringify(corpo, null, 2);
+
+    if (status < 300) {
+        return Promise.resolve({ data: corpo, status: status, statusText: 'OK', headers: {}, config: config });
+    }
+
+    var erro = new Error('HTTP ' + status);
+    erro.response = { data: corpo, status: status, headers: {}, config: config };
+    erro.config = config;
+    return Promise.reject(erro);
+}
+
+Vigia.http.instance().defaults.adapter = function (config) {
+    var dados = config.data instanceof FormData ? config.data : new FormData();
+
+    return new Promise(function (ok) { setTimeout(ok, 700); }).then(function () {
+        if (/cliente\.salvar/.test(config.url) && dados.get('email') === 'usado@exemplo.com') {
+            return resposta(422, {
+                success: false, status: 'erro', mensagem: 'O valor informado no campo E-mail já está em uso.', data: null,
+                errors: { email: ['O valor informado no campo E-mail já está em uso.'] }, request_id: 'demo'
+            }, config);
+        }
+
+        if (/pedido\.salvar/.test(config.url) && Number(dados.get('itens[1][quantidade]')) > 5) {
+            return resposta(422, {
+                success: false, status: 'erro', mensagem: 'O campo Quantidade (item 2) deve ser menor ou igual a 5.', data: null,
+                errors: { 'itens.1.quantidade': ['O campo Quantidade (item 2) deve ser menor ou igual a 5.'] }, request_id: 'demo'
+            }, config);
+        }
+
+        var recebido = {};
+        dados.forEach(function (v, k) { recebido[k] = v; });
+
+        return resposta(200, {
+            success: true, status: 'sucesso', mensagem: 'Dados salvos com sucesso.',
+            data: { id: Math.floor(Math.random() * 1000), recebido: recebido }, errors: {}, request_id: 'demo'
+        }, config);
+    });
+};
+</script>
+</body>
+</html>

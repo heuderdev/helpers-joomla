@@ -1,4 +1,4 @@
-# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper
+# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js
 
 ## InputHelper (ler a requisição já no tipo certo)
 
@@ -70,3 +70,30 @@ if (!PermissionHelper::require('core.edit', 'com_loja', 'Sem permissão.', JRout
 }
 ```
 `setUseApiResponse(true)` faz as negações responderem pelo ApiResponseHelper.
+
+## Vigia.js (js/vigia.js: formulário no navegador)
+
+Valida no navegador com as **mesmas regras e mensagens** do ValidationHelper, mostra os erros 422 do `ApiResponseHelper::fromValidation()` embaixo de cada campo (`itens.1.qtd` → `name="itens[1][qtd]"`; sem campo/`_general` → mensagem geral), aplica máscaras e envia por axios com o token CSRF. Requer axios antes; Alpine opcional. Copie `js/vigia.js` (+ `vigia.css`, opcional com Bootstrap) para `media/com_x/js/`.
+
+```php
+// view: regras escritas uma vez, no PHP (closures, unique, exists, callback ficam de fora)
+$vigia = ValidationHelper::clientConfig($regras, $mensagens, $rotulos);
+```
+```html
+<form data-vigia='<?php echo htmlspecialchars(json_encode($vigia), ENT_QUOTES, 'UTF-8'); ?>'
+      action="<?php echo JRoute::_('index.php?option=com_x&task=item.salvar&format=json'); ?>" method="post">
+    <div data-vigia-message></div>
+    <input name="cpf" data-mask="cpf" data-rules="required|cpf">          <!-- data-rules soma às do PHP -->
+    <input name="valor" data-mask="money" data-unmask>                     <!-- envia 1234.56 -->
+    <input name="itens[0][qtd]" data-mask="integer">
+    <?php echo JHtml::_('form.token'); ?>
+    <button data-loading-text="Salvando…">Salvar</button>
+</form>
+```
+- Controller: `JSession::checkToken()` falhou → `ApiResponseHelper::forbidden(...)` (nunca `jexit`: vira "resposta inesperada"); inválido → `return ApiResponseHelper::fromValidation($validacao);`; sucesso → `created/success($msg, ['id' => ..., 'redirect' => opcional])`.
+- Máscaras: `cpf cnpj cpf_cnpj phone celular cep date time datetime money decimal integer percent placa credit_card pis cnh uppercase digits` ou padrão (`9` dígito, `a` letra, `*` ambos).
+- Regras só do navegador (o PHP ignora): `remote:url` (POST field/value; 422 = inválido), `confirmed`, `password:8`, `digits`, `starts_with`, `credit_card`, `placa`, `pis`, `cnh`.
+- Atributos: `data-label`, `data-msg-<regra>`, `data-error-for="campo"`, `data-vigia-submit="native"` (valida e recarrega), `data-vigia-reset`, `data-vigia-redirect`, `data-vigia-confirm`, `data-vigia-errors='{...}'` (erros ao carregar).
+- JS: `Vigia.form(el, {rules, messages, labels, onSuccess, onError})` → `validate()`, `submit()`, `showErrors(errors)`; `Vigia.validate(dados, regras)` (igual ao PHP); `Vigia.http.post(url, dados)` → `{success, message, data, errors, meta, httpStatus}`, 4xx/5xx rejeita `VigiaError` (`httpStatus`, `errors`, `isValidation`).
+- Eventos no form: `vigia:invalid`, `vigia:before` (cancelável), `vigia:success`, `vigia:error`, `vigia:complete`.
+- Alpine: `x-data="vigia({ rules: {...}, render: false }, { meuEstado: '' })"` → `error('campo')`, `hasError()`, `loading`, `message`; `x-mask:cpf`. Sem `@submit.prevent`.

@@ -7,6 +7,7 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 | Helper | O que resolve |
 |---|---|
 | `DateHelper` | Datas e fuso horário: grava em UTC, mostra no fuso do usuário, lê formulários e monta períodos de relatório. `OrmBase` e `QueueHelper` já o usam. |
+| `Vigia.js` (`js/`) | Formulário no navegador: mesmas regras e mensagens do `ValidationHelper`, erros 422 nos campos, máscaras brasileiras, axios com token CSRF, Alpine opcional. `ValidationHelper::clientConfig()` exporta as regras do PHP. |
 
 ## Prioridade alta
 

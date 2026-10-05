@@ -1407,6 +1407,64 @@ class ValidationHelper
         }
     }
 
+    /*
+     * Regras, mensagens e rótulos prontos para o Vigia.js (js/vigia.js),
+     * para declarar as regras uma vez só, no PHP:
+     *
+     *     <form data-vigia='<?php echo htmlspecialchars(json_encode(
+     *         ValidationHelper::clientConfig($regras, $mensagens, $rotulos)
+     *     ), ENT_QUOTES, 'UTF-8'); ?>'>
+     *
+     * Ficam de fora as regras com closure/callable e as que só o servidor
+     * confere (unique, exists, callback). O servidor continua validando
+     * tudo no envio: a validação no navegador é conforto, não segurança.
+     */
+    public static function clientConfig(array $rules, array $messages = array(), array $labels = array())
+    {
+        $serverOnly = array('', 'nullable', 'unique', 'exists', 'callback');
+        $clientRules = array();
+
+        foreach ($rules as $field => $fieldRules) {
+            $list = array();
+
+            foreach (self::parseRules($fieldRules) as $rule) {
+                if ($rule['callable'] !== null || in_array($rule['name'], $serverOnly, true)) {
+                    continue;
+                }
+
+                $parameters = array();
+
+                foreach ($rule['parameters'] as $parameter) {
+                    if (!is_scalar($parameter)) {
+                        continue 2;
+                    }
+
+                    $parameters[] = (string) $parameter;
+                }
+
+                $list[] = empty($parameters)
+                    ? $rule['name']
+                    : $rule['name'] . ':' . implode(',', $parameters);
+            }
+
+            if (!empty($list)) {
+                $clientRules[(string) $field] = $list;
+            }
+        }
+
+        $onlyStrings = function (array $values) {
+            return array_filter($values, function ($value) {
+                return is_string($value) && trim($value) !== '';
+            });
+        };
+
+        return array(
+            'rules' => (object) $clientRules,
+            'messages' => (object) $onlyStrings(array_merge(self::$customMessages, $messages)),
+            'labels' => (object) $onlyStrings(array_merge(self::$labels, $labels))
+        );
+    }
+
     public static function firstError(array $errors)
     {
         foreach ($errors as $fieldErrors) {
