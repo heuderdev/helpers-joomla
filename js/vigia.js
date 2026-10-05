@@ -703,6 +703,11 @@
             return value.length;
         }
 
+        // Lista indexada (itens[0][...]) chega como objeto: conta os itens, como o count() do PHP.
+        if (isObject(value)) {
+            return Object.keys(value).length;
+        }
+
         var number = toNumber(value);
 
         return number !== null ? number : strlen(value);
@@ -1362,7 +1367,9 @@
 
         if (options.only) {
             fields = fields.filter(function (field) {
-                return options.only.indexOf(field) !== -1;
+                return options.only.some(function (key) {
+                    return field === key || field.indexOf(key + '.') === 0;
+                });
             });
         }
 
@@ -2587,7 +2594,13 @@
         return validate(data, this.rules(), null, null, this._validationOptions()).then(function (result) {
             result = self._inDomOrder(result);
             self.clearErrors({ keepMessage: true });
-            self.showErrors(result.errors, { focus: false, general: false });
+
+            // Erros sem campo na tela vão para a mensagem geral: nunca bloqueiam em silêncio.
+            var unmapped = self.showErrors(result.errors, { focus: false, general: false });
+
+            if (unmapped.length) {
+                self.notify(unmapped.join(' '), 'error');
+            }
 
             return result;
         });
@@ -2635,14 +2648,27 @@
             }
 
             var errors = extend({}, self.errors);
+            var related = function (field) {
+                return field === key || field.indexOf(key + '.') === 0;
+            };
+            var touched = Object.keys(errors).filter(related);
 
-            delete errors[key];
+            Object.keys(result.errors).forEach(function (field) {
+                if (touched.indexOf(field) === -1) {
+                    touched.push(field);
+                }
+            });
 
-            if (result.errors[key]) {
-                errors[key] = result.errors[key];
-            }
+            touched.forEach(function (field) {
+                delete errors[field];
 
-            self._renderField(key, result.errors[key] || []);
+                if (result.errors[field]) {
+                    errors[field] = result.errors[field];
+                }
+
+                self._renderField(field, result.errors[field] || []);
+            });
+
             self._setState({ errors: errors });
 
             return result;
@@ -2708,12 +2734,27 @@
         return feedback;
     };
 
-    VigiaForm.prototype._renderField = function (key, messages) {
-        if (this.option('render', null, true) === false) {
-            return !!(this._index()[key] || []).length;
+    /*
+     * Campos de uma chave de erro. Item de lista sem campo próprio
+     * ('categorias.1', 'fotos.0') usa o campo da lista ('categorias[]').
+     */
+    VigiaForm.prototype._elementsFor = function (key) {
+        var index = this._index();
+        var current = key;
+
+        while (!index[current] && /\.\d+$/.test(current)) {
+            current = current.replace(/\.\d+$/, '');
         }
 
-        var elements = this._index()[key] || [];
+        return index[current] || [];
+    };
+
+    VigiaForm.prototype._renderField = function (key, messages) {
+        if (this.option('render', null, true) === false) {
+            return this._elementsFor(key).length > 0;
+        }
+
+        var elements = this._elementsFor(key);
         var feedback = this._feedbackFor(key, elements, messages.length > 0);
         var invalid = messages.length > 0;
 
@@ -2810,11 +2851,11 @@
             return;
         }
 
+        var self = this;
         var keys = Object.keys(this.errors);
-        var index = this._index();
         var first = this.elements().filter(function (el) {
             return keys.some(function (key) {
-                return (index[key] || []).indexOf(el) !== -1;
+                return self._elementsFor(key).indexOf(el) !== -1;
             });
         })[0];
 
@@ -3055,11 +3096,12 @@
         };
 
         if (method === 'get') {
-            var params = {};
+            // URLSearchParams mantém todos os valores de listas (c[]=1&c[]=2).
+            var params = new window.URLSearchParams();
 
             body.forEach(function (value, key) {
                 if (!isFile(value)) {
-                    params[key] = value;
+                    params.append(key, value);
                 }
             });
 
@@ -3068,9 +3110,22 @@
             request.data = body;
         }
 
+        var extra = extend({}, this.options.request);
+        var ownProgress = request.onUploadProgress;
+
+        // onUploadProgress próprio roda junto com o do Vigia (barra e estado progress).
+        if (typeof extra.onUploadProgress === 'function') {
+            var userProgress = extra.onUploadProgress;
+
+            extra.onUploadProgress = function (event) {
+                ownProgress(event);
+                userProgress(event);
+            };
+        }
+
         this._setLoading(true, submitter);
 
-        return http.request(extend(request, this.options.request)).then(function (response) {
+        return http.request(extend(request, extra)).then(function (response) {
             if (!response.json) {
                 throw VigiaError(httpMessage('unexpected'), { httpStatus: response.httpStatus, errors: {}, response: response });
             }

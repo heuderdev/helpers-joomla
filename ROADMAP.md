@@ -9,6 +9,32 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 | `DateHelper` | Datas e fuso horário: grava em UTC, mostra no fuso do usuário, lê formulários e monta períodos de relatório. `OrmBase` e `QueueHelper` já o usam. |
 | `Vigia.js` (`js/`) | Formulário no navegador: mesmas regras e mensagens do `ValidationHelper`, erros 422 nos campos, máscaras brasileiras, axios com token CSRF, Alpine opcional. `ValidationHelper::clientConfig()` exporta as regras do PHP. |
 
+## Execução noturna (iniciada em 2026-10-05 01:15, entrega 08:00)
+
+Fila de trabalho em ordem. Quem retomar (sessão nova ou depois do limite de uso): pegue o **primeiro item não marcado**, leia "Notas de retomada" e continue. Ao terminar um item: marque `[x]`, faça um commit local só daquele item (`[main]: feat/docs/fix: ...`) e siga para o próximo. Não fazer `git push` (o Eduardo/Heuder revisa de manhã).
+
+Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$dependencies` (e `$autoloadMap`); `skills/joomla-helpers/scripts/instalar.sh` (`DEP` e `TODOS`); `docs/<helper>.html`; link no nav e no rodapé de **todos** os `docs/*.html`; anterior/próxima dos vizinhos; card em `docs/index.html`; seção em `docs/referencia-rapida.html`; `index.html` da raiz; ficha nas duas skills (`skills/joomla-helpers/` e `skill/`). Código PHP 7.0+ e passar em `skills/joomla-helpers/scripts/checar.sh`; `php -l` em tudo.
+
+- [x] 1. Vigia.js: corrigir erro sem campo que trava o envio em silêncio (vai para a mensagem geral) e `min`/`max` em listas indexadas (objetos contam chaves); atualizar `docs/vigia-js.html` (remover os avisos de limitação) e testar no jsdom.
+- [ ] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).
+- [ ] 3. `HttpHelper`
+- [ ] 4. `LockHelper`
+- [ ] 5. `CacheHelper`
+- [ ] 6. `MailHelper`
+- [ ] 7. `RateLimitHelper`
+- [ ] 8. `CryptoHelper`
+- [ ] 9. `PermissionHelper::requireToken()` (token do formulário ou header `X-CSRF-Token`)
+- [ ] 10. `js/lista.js` — par do Vigia para listagens (paginação/ordenação/filtros na URL, debounce, cancelamento, ações em lote) sobre `ApiResponseHelper::paginated()` e `InputHelper::pagination()/sorting()/filters()`.
+- [ ] 11. `FormatHelper`
+- [ ] 12. `WebhookHelper`
+- [ ] 13. `SettingsHelper`
+- [ ] 14. Outras pendências (âncoras quebradas da referência rápida, `ChunkUploadHelper` com `DateHelper`, `OrmBase` com `Throwable`).
+- [ ] 15. Revisão final: `php -l` + `checar.sh` em tudo, links dos docs, `git log` com um commit por item; atualizar a tabela "Feitos".
+
+### Notas de retomada
+
+- (vazio)
+
 ## Prioridade alta
 
 | Helper | O que resolve | Pontos principais |
