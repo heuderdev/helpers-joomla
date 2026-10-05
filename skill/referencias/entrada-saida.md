@@ -113,4 +113,5 @@ $vigia = ValidationHelper::clientConfig($regras, $mensagens, $rotulos);
 </div>
 ```
 - Servidor: `InputHelper::pagination(20, 100)` + `sorting($listaBranca, 'id', 'ASC')` + `filters([...])` → `->paginate($p['limit'], $p['page'])` → `ApiResponseHelper::paginated($r)`. Lote recebe `ids[]` (`InputHelper::arrayOfInt('ids')`); confira dono de cada id.
+- Paginação estilo jQuery Paginate: `<nav data-lista-pagination="jpaginate" data-lista-display="7">` (faixa que desliza sem requisição, Primeira/Última; cada número = 1 requisição de `limit` linhas).
 - Requer `js/vigia.js` antes (usa `Vigia.http`: token, cancelamento). Estado na URL (`page`, `sort`, `f_<filtro>`); busca com espera de 350 ms e cancelamento; tudo preenchido como texto (XSS-safe). API: `Lista.of(el).reload()/filter({...})/page(n)/sort(c)`; eventos `lista:loaded`, `lista:actionDone`.

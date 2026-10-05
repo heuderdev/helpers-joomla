@@ -26,6 +26,10 @@
         // Atualiza a URL do navegador (F5 e "voltar" mantêm página e filtros).
         history: true,
         pagesAround: 2,
+        // 'numbers' (padrão: « ‹ 1 … 4 5 6 … 20 › ») ou 'jpaginate' (faixa de páginas que desliza, como o jQuery Paginate).
+        paginationStyle: 'numbers',
+        // Estilo 'jpaginate': quantas páginas a faixa mostra e a velocidade ao segurar a seta (ms).
+        jpaginate: { display: 7, holdDelay: 350, holdSpeed: 90 },
         autoInit: true,
         params: { page: 'page', limit: 'limit', sort: 'sort', direction: 'direction' },
         classes: {
@@ -47,7 +51,10 @@
             previous: 'Anterior',
             next: 'Próxima',
             first: 'Primeira',
-            last: 'Última'
+            last: 'Última',
+            slidePrevious: 'Mostrar páginas anteriores',
+            slideNext: 'Mostrar próximas páginas',
+            pageOf: 'Página :page de :total'
         }
     };
 
@@ -1121,10 +1128,23 @@
         return /^\s*(javascript|data|vbscript):/i.test(url) ? '#' : url;
     }
 
+    ListaInstance.prototype._paginationStyle = function () {
+        var nav = this.parts.pagination;
+        var attribute = nav ? nav.getAttribute('data-lista-pagination') : '';
+
+        return this.options.pagination || attribute || config.paginationStyle;
+    };
+
     ListaInstance.prototype._renderPagination = function () {
         var nav = this.parts.pagination;
 
         if (!nav) {
+            return;
+        }
+
+        if (this._paginationStyle() === 'jpaginate') {
+            this._renderJPaginate();
+
             return;
         }
 
@@ -1209,6 +1229,193 @@
         add('»', total, { disabled: current >= total, ariaLabel: config.messages.last });
 
         nav.appendChild(list);
+    };
+
+    /*
+     * Estilo jQuery Paginate: [Primeira] [‹] 4 5 [6] 7 8 [›] [Última].
+     * As setas só deslizam a faixa (sem requisição; segurar desliza
+     * contínuo); clicar num número busca aquela página no servidor.
+     * Depois de cada carga, a faixa centraliza a página atual.
+     */
+    ListaInstance.prototype._renderJPaginate = function () {
+        var self = this;
+        var nav = this.parts.pagination;
+        var current = this.meta.pagina_atual || this.state.page;
+        var total = this.meta.total_paginas || 0;
+        var display = this._jpDisplay();
+
+        nav.textContent = '';
+
+        if (total <= 1) {
+            nav.hidden = true;
+            return;
+        }
+
+        nav.hidden = false;
+
+        if (!nav.getAttribute('aria-label')) {
+            nav.setAttribute('aria-label', 'Paginação');
+        }
+
+        // Centraliza a página atual na faixa.
+        this._jpStart = Math.max(1, Math.min(current - Math.floor(display / 2), total - display + 1));
+
+        var box = document.createElement('div');
+        box.className = 'lista-jp';
+
+        var edge = function (label, page, disabled, cls) {
+            var button = document.createElement('button');
+
+            button.type = 'button';
+            button.className = 'lista-jp-edge ' + cls;
+            button.textContent = label;
+            button.disabled = disabled;
+
+            if (!disabled) {
+                button.setAttribute('data-lista-page', String(page));
+            }
+
+            return button;
+        };
+
+        var arrow = function (direction) {
+            var button = document.createElement('button');
+
+            button.type = 'button';
+            button.className = 'lista-jp-arrow ' + (direction < 0 ? 'lista-jp-arrow-prev' : 'lista-jp-arrow-next');
+            button.textContent = direction < 0 ? '‹' : '›';
+            button.setAttribute('aria-label', direction < 0 ? config.messages.slidePrevious : config.messages.slideNext);
+            self._bindJpArrow(button, direction);
+
+            return button;
+        };
+
+        this._jpPrev = arrow(-1);
+        this._jpNext = arrow(1);
+        this._jpList = document.createElement('ol');
+        this._jpList.className = 'lista-jp-pages';
+
+        var strip = document.createElement('div');
+        strip.className = 'lista-jp-strip';
+        strip.appendChild(this._jpList);
+
+        box.appendChild(edge(config.messages.first, 1, current <= 1, 'lista-jp-first'));
+        box.appendChild(this._jpPrev);
+        box.appendChild(strip);
+        box.appendChild(this._jpNext);
+        box.appendChild(edge(config.messages.last, total, current >= total, 'lista-jp-last'));
+
+        var status = document.createElement('span');
+        status.className = 'lista-jp-status';
+        status.setAttribute('aria-live', 'polite');
+        status.textContent = message('pageOf', { page: current.toLocaleString('pt-BR'), total: total.toLocaleString('pt-BR') });
+        box.appendChild(status);
+
+        nav.appendChild(box);
+        this._renderJpPages();
+    };
+
+    ListaInstance.prototype._jpDisplay = function () {
+        var nav = this.parts.pagination;
+        var fromAttribute = nav ? parseInt(nav.getAttribute('data-lista-display'), 10) : NaN;
+        var display = this.options.display || (fromAttribute > 0 ? fromAttribute : config.jpaginate.display);
+
+        return Math.max(3, parseInt(display, 10) || 7);
+    };
+
+    // Redesenha só os números (deslizar não refaz a navegação inteira nem busca nada).
+    ListaInstance.prototype._renderJpPages = function () {
+        var list = this._jpList;
+        var current = this.meta.pagina_atual || this.state.page;
+        var total = this.meta.total_paginas || 0;
+        var display = Math.min(this._jpDisplay(), total);
+        var start = this._jpStart;
+
+        list.textContent = '';
+
+        for (var page = start; page < start + display; page++) {
+            var li = document.createElement('li');
+            var button = document.createElement('button');
+
+            button.type = 'button';
+            button.className = 'lista-jp-page';
+            button.textContent = page.toLocaleString('pt-BR');
+
+            if (page === current) {
+                li.className = 'lista-jp-current';
+                button.setAttribute('aria-current', 'page');
+                button.disabled = true;
+            } else {
+                button.setAttribute('data-lista-page', String(page));
+                button.setAttribute('aria-label', message('pageOf', { page: page, total: total }));
+            }
+
+            li.appendChild(button);
+            list.appendChild(li);
+        }
+
+        this._jpPrev.disabled = start <= 1;
+        this._jpNext.disabled = start + display - 1 >= total;
+    };
+
+    ListaInstance.prototype._jpShift = function (direction) {
+        var total = this.meta.total_paginas || 0;
+        var display = Math.min(this._jpDisplay(), total);
+        var next = Math.max(1, Math.min(this._jpStart + direction, total - display + 1));
+
+        if (next === this._jpStart) {
+            return false;
+        }
+
+        this._jpStart = next;
+        this._renderJpPages();
+
+        return true;
+    };
+
+    // Clique desliza 1 página; segurar (mouse, toque ou Enter/Espaço) desliza contínuo.
+    ListaInstance.prototype._bindJpArrow = function (button, direction) {
+        var self = this;
+        var delay = null;
+        var repeat = null;
+        var held = false;
+
+        var stop = function () {
+            window.clearTimeout(delay);
+            window.clearInterval(repeat);
+            delay = repeat = null;
+        };
+
+        var start = function (event) {
+            if (button.disabled || (event.button !== undefined && event.button !== 0)) {
+                return;
+            }
+
+            held = false;
+            stop();
+            delay = window.setTimeout(function () {
+                held = true;
+                repeat = window.setInterval(function () {
+                    if (!self._jpShift(direction)) {
+                        stop();
+                    }
+                }, config.jpaginate.holdSpeed);
+            }, config.jpaginate.holdDelay);
+        };
+
+        button.addEventListener('pointerdown', start);
+        ['pointerup', 'pointerleave', 'pointercancel', 'blur'].forEach(function (name) {
+            button.addEventListener(name, stop);
+        });
+
+        button.addEventListener('click', function () {
+            // Depois de segurar, o click final não desliza mais uma.
+            if (!held) {
+                self._jpShift(direction);
+            }
+
+            held = false;
+        });
     };
 
     ListaInstance.prototype._renderSummary = function () {

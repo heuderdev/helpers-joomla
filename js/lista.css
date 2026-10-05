@@ -48,3 +48,119 @@
         transition: none;
     }
 }
+
+/* ------------------------------------------------------------------
+ * Paginação estilo jQuery Paginate (data-lista-pagination="jpaginate")
+ * [Primeira] [‹] 4 5 (6) 7 8 [›] [Última]   Página 6 de 1.000
+ * Personalize pelas variáveis.
+ * ------------------------------------------------------------------ */
+.lista-jp {
+    --lista-jp-cor: #1f6feb;
+    --lista-jp-texto: #1f2937;
+    --lista-jp-fundo: #ffffff;
+    --lista-jp-borda: #d0d7de;
+    --lista-jp-hover: #eef4ff;
+    --lista-jp-atual-texto: #ffffff;
+    --lista-jp-raio: 6px;
+    --lista-jp-tamanho: 2.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .375rem;
+    font-size: .9375rem;
+}
+
+.lista-jp button {
+    min-width: var(--lista-jp-tamanho);
+    height: var(--lista-jp-tamanho);
+    padding: 0 .625rem;
+    border: 1px solid var(--lista-jp-borda);
+    border-radius: var(--lista-jp-raio);
+    background: var(--lista-jp-fundo);
+    color: var(--lista-jp-texto);
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .15s, border-color .15s, color .15s;
+}
+
+.lista-jp button:hover:not(:disabled) {
+    background: var(--lista-jp-hover);
+    border-color: var(--lista-jp-cor);
+    color: var(--lista-jp-cor);
+}
+
+.lista-jp button:focus-visible {
+    outline: 2px solid var(--lista-jp-cor);
+    outline-offset: 2px;
+}
+
+.lista-jp button:disabled {
+    cursor: default;
+    opacity: .45;
+}
+
+.lista-jp-arrow {
+    font-size: 1.25rem;
+    touch-action: none;   /* segurar no celular não rola a página */
+    user-select: none;
+}
+
+.lista-jp-strip {
+    overflow: hidden;
+}
+
+.lista-jp-pages {
+    display: flex;
+    gap: .25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.lista-jp-pages button {
+    font-variant-numeric: tabular-nums;   /* números não "pulam" ao deslizar */
+}
+
+.lista-jp-current button,
+.lista-jp-current button:disabled {
+    background: var(--lista-jp-cor);
+    border-color: var(--lista-jp-cor);
+    color: var(--lista-jp-atual-texto);
+    font-weight: 600;
+    opacity: 1;
+}
+
+.lista-jp-status {
+    margin-left: .5rem;
+    color: #57606a;
+    font-size: .875rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 575px) {
+    .lista-jp-edge,
+    .lista-jp-status {
+        display: none;   /* no celular: só setas e números */
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .lista-jp {
+        --lista-jp-texto: #e6edf3;
+        --lista-jp-fundo: #161b22;
+        --lista-jp-borda: #30363d;
+        --lista-jp-hover: #1c2a3f;
+        --lista-jp-cor: #4493f8;
+    }
+
+    .lista-jp-status {
+        color: #8d96a0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .lista-jp button {
+        transition: none;
+    }
+}

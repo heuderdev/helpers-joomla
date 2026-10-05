@@ -127,6 +127,25 @@ JHtml::_(&#x27;stylesheet&#x27;, &#x27;com_loja/lista.css&#x27;, array(&#x27;rel
 <tr><td>cada campo do <code>[data-lista-filters]</code> (vazios não vão; <code>x[]</code> vira lista)</td><td><code>InputHelper::filters(array('campo' =&gt; 'filtro'))</code></td></tr>
 </tbody></table></div>
 <p>A resposta esperada é a do <code>ApiResponseHelper::paginated()</code>: <code>data</code> com a lista de itens e <code>meta.paginacao</code> com <code>total</code>, <code>por_pagina</code>, <code>pagina_atual</code> e <code>total_paginas</code>. Uma resposta sem <code>meta.paginacao</code> é tratada como página única.</p>
+<h2 id="paginacao" data-titulo="Paginação">Paginação no servidor</h2>
+<p>Cada página é <strong>uma requisição</strong> ao servidor com <code>page</code> e <code>limit</code>; o controller busca só aquelas linhas (<code>LIMIT 20 OFFSET 260</code> no <code>paginate()</code>) e devolve o total para a navegação. Com 10.000 registros e 20 por página, o navegador recebe 20 linhas por vez, nunca as 10.000. A troca de página cancela a requisição anterior que ainda não respondeu.</p>
+<h3 id="jpaginate">Estilo jQuery Paginate</h3>
+<p>Uma faixa com um número fixo de páginas, setas que <strong>deslizam a faixa sem carregar nada</strong> (clique desliza uma página; segurar desliza contínuo, no mouse e no toque), botões Primeira/Última e "Página X de Y". Clicar num número busca aquela página no servidor; depois de carregar, a faixa centraliza a página atual.</p>
+<div class="codigo"><pre><code data-lang="html">&lt;!-- No lugar do &lt;nav data-lista-pagination&gt; --&gt;
+&lt;nav data-lista-pagination=&quot;jpaginate&quot; data-lista-display=&quot;7&quot;&gt;&lt;/nav&gt;</code></pre></div>
+<div class="tabela"><table><thead><tr><th>Configuração</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>data-lista-pagination="jpaginate"</code> / opção <code>pagination: 'jpaginate'</code></td><td><code>numbers</code></td><td>Escolhe o estilo nesta lista. Para todas: <code>Lista.config({ paginationStyle: 'jpaginate' })</code>.</td></tr>
+<tr><td><code>data-lista-display="7"</code> / opção <code>display</code></td><td>7</td><td>Quantas páginas a faixa mostra (mínimo 3).</td></tr>
+<tr><td><code>Lista.config({ jpaginate: { holdDelay: 350, holdSpeed: 90 } })</code></td><td>350 / 90 ms</td><td>Quanto segurar para começar a deslizar e a velocidade.</td></tr>
+<tr><td><code>messages.first</code>, <code>last</code>, <code>pageOf</code>, <code>slidePrevious</code>, <code>slideNext</code></td><td>Primeira, Última, Página :page de :total…</td><td>Textos e rótulos de acessibilidade.</td></tr>
+</tbody></table></div>
+<p>Aparência em <code>js/lista.css</code>, com variáveis para a sua marca (e modo escuro automático):</p>
+<div class="codigo"><pre><code data-lang="css">.lista-jp {
+    --lista-jp-cor: #0b6e4f;        /* página atual e destaque */
+    --lista-jp-raio: 999px;         /* botões redondos */
+    --lista-jp-tamanho: 2.5rem;
+}</code></pre></div>
+<div class="nota dica"><p><strong class="rotulo">Tabelas grandes de verdade</strong> 10 mil linhas é pouco para o banco. Acima de centenas de milhares, mantenha <code>ORDER BY</code> por coluna com índice (<code>id</code>, <code>created_at</code>), filtre por período e evite <code>sort</code> por colunas sem índice: o <code>OFFSET</code> das últimas páginas fica caro. Limite o tamanho máximo da página em <code>InputHelper::pagination(20, 100)</code>.</p></div>
 <h2 id="template" data-titulo="Template da linha">Template da linha</h2>
 <p>O <code>&lt;template data-lista-template&gt;</code> é clonado para cada item (o primeiro elemento dele vira a linha). Tudo é preenchido como <strong>texto</strong>: um cliente chamado <code>&lt;img onerror=...&gt;</code> aparece como texto, nunca executa.</p>
 <div class="tabela"><table><thead><tr><th>Atributo</th><th>Efeito</th></tr></thead><tbody>
