@@ -12,7 +12,7 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 1. **API real, nunca inventada.** Na dúvida, `scripts/api.sh <Helper> [metodo]` (~20 linhas). Nunca leia um helper inteiro (6 a 120 KB).
 2. **Carregue só a ficha da área.** Este arquivo + 1 ficha resolvem quase tudo.
 3. **PHP 7.0 e Joomla 3/4/5.** Sem `?tipo`, `void`, tipos de retorno, `fn`, `match`, `??=`, `?->`, propriedades tipadas, `[$a] =`, `catch (A | B)`. `JFactory`/`JText`/`JSession` funcionam nas três versões.
-4. **Segurança não é opcional:** `JSession::checkToken()` em toda escrita; permissão antes da ação; nada de SQL com variável concatenada; `catch (Throwable $e)` → `ApiResponseHelper::exception($e)`; recurso de usuário confere o dono.
+4. **Segurança não é opcional:** token em toda escrita (`PermissionHelper::requireToken()`, que também aceita `X-CSRF-Token`; ou `JSession::checkToken()`); permissão antes da ação; nada de SQL com variável concatenada; `catch (Throwable $e)` → `ApiResponseHelper::exception($e)`; recurso de usuário confere o dono.
 5. **Validar antes de entregar:** `scripts/checar.sh <arquivos>` sem ERROS.
 6. **Refatorar = mesmo comportamento.** Mantenha tasks, rotas, assinaturas públicas e formato de resposta, salvo pedido explícito.
 7. **Resposta enxuta:** código/diff primeiro; depois no máximo 5 linhas (o que mudou, o que testar). Sem repetir a API nem explicar o óbvio. Ambíguo → assuma o caso comum e diga em 1 linha.

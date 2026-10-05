@@ -645,6 +645,66 @@ class PermissionHelper
         }
     }
 
+    /*
+     * Confere o token CSRF do Joomla em qualquer formato que o navegador
+     * mande: campo do JHtml::_('form.token') (Joomla 3, 4 e 5), cabeçalho
+     * X-CSRF-Token (Vigia.js, fetch, axios) e corpo JSON {"<token>": 1}.
+     * O JSession::checkToken() do Joomla 3 só conhece o campo.
+     */
+    public static function hasValidToken($method = 'post')
+    {
+        try {
+            $token = (string) JSession::getFormToken();
+
+            if ($token === '') {
+                return false;
+            }
+
+            $header = isset($_SERVER['HTTP_X_CSRF_TOKEN']) ? trim((string) $_SERVER['HTTP_X_CSRF_TOKEN']) : '';
+
+            if ($header !== '' && hash_equals($token, $header)) {
+                return true;
+            }
+
+            $input = self::app()->input;
+            $source = strtolower((string) $method) === 'get' ? $input->get : ($method === 'request' ? $input : $input->post);
+
+            if ((string) $source->get($token, '', 'alnum') === '1') {
+                return true;
+            }
+
+            $contentType = isset($_SERVER['CONTENT_TYPE']) ? strtolower((string) $_SERVER['CONTENT_TYPE']) : '';
+
+            if (strpos($contentType, 'json') !== false) {
+                $body = json_decode((string) file_get_contents('php://input'), true);
+
+                if (is_array($body) && isset($body[$token]) && (string) $body[$token] === '1') {
+                    return true;
+                }
+            }
+        } catch (Throwable $error) {
+            self::log('Falha ao conferir o token CSRF.', array('erro' => $error->getMessage()), 'error');
+        }
+
+        return false;
+    }
+
+    /*
+     * Exige o token: se faltar ou estiver errado, registra, responde 403
+     * e devolve false. Uso: if (!PermissionHelper::requireToken()) { return; }
+     */
+    public static function requireToken($message = 'Sua sessão expirou. Recarregue a página e tente novamente.', $method = 'post', $redirect = null)
+    {
+        if (self::hasValidToken($method)) {
+            return true;
+        }
+
+        self::registerDenied('csrf.token', null, $message, array());
+        self::respondDenied(403, $message, $redirect, array());
+
+        return false;
+    }
+
     public static function requireLogin($message = 'Usuário não autenticado.', $redirect = null, array $context = array())
     {
         $user = self::user();

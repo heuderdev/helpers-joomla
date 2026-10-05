@@ -59,6 +59,8 @@ Opções (último parâmetro): `http_status`, `redirect` (`false` desliga), `jso
 
 ## PermissionHelper (ACL do Joomla)
 
+Token CSRF em toda escrita: `if (!PermissionHelper::requireToken()) { return; }` aceita o campo do `form.token`, o cabeçalho `X-CSRF-Token` (Vigia.js, fetch) e JSON `{"<token>": 1}` no Joomla 3, 4 e 5 (o `JSession::checkToken()` do 3 só lê o campo); responde 403 e registra. Consulta sem responder: `hasValidToken()`.
+
 Consultas (bool): `can('core.edit', 'com_x')`, `canComponent('core.create')` (usa `setDefaultComponent('com_x')`), `canEntity('core.edit', 'pedido', $id)`, `canAny([...])`, `canAll([...])`, `isAdmin()`, `isManager()`, `isLoggedIn()`, `isGuest()`, `hasGroup($id)`, `hasAnyGroup([...])`, `canView($nivelDeAcesso)`, `userId()`, `groups()`, `viewLevels()`, `isUserIn([ids])`, `evaluate(function ($user) {...})`. Regra própria por entidade: `registerEntityResolver('pedido', function ($id, $user, $contexto) { return ...; })` (`$contexto['action']` traz a ação) + `canAccessEntity('pedido', $id)`.
 
 Exigências (`require*`): `requireLogin()`, `require($acao, $asset)`, `requireComponent`, `requireEntity`, `requireAccessEntity`, `requireAny`, `requireAll`, `requireGroup`, `requireAnyGroup`, `requireUserIn`, `requireCallback`.
