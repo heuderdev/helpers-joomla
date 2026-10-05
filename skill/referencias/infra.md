@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -39,4 +39,23 @@ IncludeHelper::load(['OrmTables', 'ApiResponseHelper', 'CsvHelper']);   // ou ca
 IncludeHelper::loadAll();
 IncludeHelper::getDependencies('CsvHelper');
 ```
-Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster. O autoloader também resolve `CsvHelperException` e `UploadMasterException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.
+Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, DateHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster. O autoloader também resolve `CsvHelperException` e `UploadMasterException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.
+
+## DateHelper (datas e fuso horário)
+
+Banco em **UTC**, tela no **fuso do usuário** (perfil → configuração global → UTC). Nunca grave com `date('Y-m-d H:i:s')` (fuso do servidor).
+
+```php
+$dados['pago_em'] = DateHelper::nowSql();                 // gravar agora (UTC)
+echo DateHelper::toUser($pedido->created_at);             // '04/10/2026 23:30' (fuso do usuário); vazio → ''
+$entrega = DateHelper::fromUser('25/12/2026 14:30');      // digitado (fuso dele) → UTC; vazio → null; inválido lança
+$quando = DateHelper::toSql('tomorrow 08:00', 'user');    // relativo no fuso do usuário → UTC (ex.: disponivel_em da fila)
+$mes = DateHelper::range('month');                        // ['start', 'end'] UTC inclusivos → whereBetween('created_at', $mes['start'], $mes['end'])
+$periodo = DateHelper::between(InputHelper::date('de'), InputHelper::date('ate'));   // filtro "de/até"
+```
+- Entradas: `Y-m-d H:i:s`, `Y-m-d`, `d/m/Y [H:i]`, `Y-m-d\TH:i` (datetime-local), ISO 8601 com fuso, timestamp, `DateTime`, relativos (`'+30 minutes'`, `'today'`). Data impossível (31/02) lança `InvalidArgumentException`; `null`/`''`/`0000-00-00` contam como vazio.
+- Outros: `now()` (DateTimeImmutable UTC), `today()`, `format($v, $fmt, $tz)`, `longDate($v, $hora, $diaSemana)` ("4 de outubro de 2026"), `parse()`, `timestamp()`, `isValid()`, `isEmpty()`, `isPast/isFuture`, `diffInSeconds`, `diffInDays` (dias de calendário), `relative()` ("há 5 minutos"), `lastDays($n)`.
+- `range($periodo, $ref)`: `day|week|month|year`; `$ref` só data = dia do calendário, com hora = instante UTC do banco, relativo = no fuso.
+- Constantes: `SQL`, `SQL_DATE`, `BR`, `BR_DATETIME`, `BR_FULL`, `ISO`. Fusos: `'UTC'`, `'user'`, nome IANA ou `DateTimeZone`.
+- Worker CLI (sem usuário): `DateHelper::setUserTimezone(DateHelper::timezoneForUser($uid))` e depois `setUserTimezone(null)`. Testes: `setTestNow('2026-10-05 02:30:00')` / `setTestNow(null)`.
+- `OrmBase` (timestamps, soft delete) e `QueueHelper` já gravam com o DateHelper.

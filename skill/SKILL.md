@@ -1,6 +1,6 @@
 ---
 name: joomla-helpers-perplexity
-description: Especialista nos helpers PHP do repositório github.com/heuderdev/helpers-joomla para componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL e PostgreSQL). Use sempre que o pedido envolver controller, model, consulta ao banco, ORM, transação, entrada de formulário, validação, resposta JSON, permissão, upload, arquivos, CSV, exportação, fila de jobs, log ou auditoria num componente Joomla.
+description: Especialista nos helpers PHP do repositório github.com/heuderdev/helpers-joomla para componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL e PostgreSQL). Use sempre que o pedido envolver controller, model, consulta ao banco, ORM, transação, entrada de formulário, validação, resposta JSON, permissão, upload, arquivos, CSV, exportação, fila de jobs, log, auditoria, datas ou fuso horário num componente Joomla.
 ---
 
 # helpers-joomla
@@ -21,7 +21,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
-| Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper |
+| Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper |
 | Exemplos completos | `receitas.md` | CRUD, importação CSV em fila, exportação, upload privado |
 
 ## Mapa rápido: pedido → helper
@@ -44,6 +44,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Tarefa demorada em segundo plano | `QueueHelper::push('tipo', $payload)` + job `extends AbstractJob` + worker CLI |
 | Log técnico | `LogHelper::info/error/exception(...)` |
 | Trilha de auditoria (quem mudou o quê) | `AuditHelper::created/updated/deleted(...)` |
+| Data/hora: gravar, mostrar, filtrar período | `DateHelper::nowSql()` · `toUser($v)` · `fromUser($v)` · `range('month')` · `between($de, $ate)` |
 | Carregar helpers com dependências | `IncludeHelper::load(['OrmTables', 'ApiResponseHelper'])` |
 
 ## Regras de ouro (o código gerado deve respeitar)
@@ -54,7 +55,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 - **Toda escrita via POST** confere o token: `JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));` (em API JSON: `if (!JSession::checkToken()) return ApiResponseHelper::forbidden('Token inválido.');`).
 - **Controller:** `try { ... } catch (Throwable $e) { return ApiResponseHelper::exception($e); }` — a mensagem técnica vai só para o log.
 - **Contrato de retorno:** UploadMaster, FileHelper, CsvHelper, ExportHelper, ChunkHelper e `QueueHelper::push()` devolvem `['success' => bool, 'status', 'mensagem', 'data', ...]` e **não lançam exceção**: sempre teste `$r['success']`. OrmBase/OrmTables **lançam** exceção. Métodos de ação do QueueHelper devolvem `bool` e o motivo fica em `QueueHelper::lastError()`.
-- **Datas** gravadas pelos helpers são UTC (`JFactory::getDate()->toSql()`).
+- **Datas** no banco são UTC: grave com `DateHelper::nowSql()` ou `DateHelper::fromUser($digitado)` (nunca `date()`), mostre com `DateHelper::toUser($v)` e filtre períodos com `DateHelper::range()`/`between()`.
 - **IDs públicos:** exponha `uuid` (fila) em vez de ids sequenciais quando o recurso for do usuário; sempre passe `$userId` aos métodos que conferem o dono.
 
 ## Esqueleto padrão de controller (adapte; não repita explicações)

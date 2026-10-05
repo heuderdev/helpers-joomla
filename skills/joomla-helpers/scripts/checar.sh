@@ -39,6 +39,7 @@ HELPERS=(
     'transactionStart\(\)§use DbTransactionHelper::run (savepoints, rollback e retry de deadlock)'
     'LogHelper::write§LogHelper::write é privado: use LogHelper::info/error/exception'
     'set_time_limit\(0\)§tarefa longa: considere a fila (QueueHelper)'
+    "date\\(\\s*['\"]Y-m-d H:i(:s)?['\"]\\s*\\)§date() usa o fuso do servidor: para gravar no banco use DateHelper::nowSql() (UTC); para mostrar, DateHelper::toUser()"
     'catch\s*\(\s*Exception\b§capture Throwable (pega também Error do PHP 7)'
 )
 

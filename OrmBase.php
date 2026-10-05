@@ -10,6 +10,10 @@ if (!class_exists('DbTransactionHelper')) {
     require_once __DIR__ . '/DbTransactionHelper.php';
 }
 
+if (!class_exists('DateHelper')) {
+    require_once __DIR__ . '/DateHelper.php';
+}
+
 class OrmBase
 {
     protected $db;
@@ -1330,7 +1334,8 @@ class OrmBase
         $dados = $this->filtrarColunasValidas($dados);
 
         if ($this->timestamps) {
-            $agora = date('Y-m-d H:i:s');
+            // UTC, como o restante do Joomla (date() usaria o fuso do servidor).
+            $agora = DateHelper::nowSql();
 
             if ($criando) {
                 $dados[$this->createdAtColumn] = $agora;
@@ -1600,7 +1605,7 @@ class OrmBase
 
         return $this->aplicarSet(
             $this->novaQueryUpdate(),
-            [$this->deletedAtColumn => date('Y-m-d H:i:s')]
+            [$this->deletedAtColumn => DateHelper::nowSql()]
         );
     }
 

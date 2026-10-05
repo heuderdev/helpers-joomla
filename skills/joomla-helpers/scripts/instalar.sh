@@ -10,15 +10,16 @@ DESTINO="${1:?uso: instalar.sh <destino> Helper... | --todos [--forcar]}"; shift
 
 declare -A DEP=(
     [OrmTables]="OrmBase"
-    [OrmBase]="DbConnectionHelper DbTransactionHelper"
+    [OrmBase]="DbConnectionHelper DbTransactionHelper DateHelper"
     [DbTransactionHelper]="DbConnectionHelper LogHelper"
     [AuditHelper]="OrmTables LogHelper"
     [CsvHelper]="OrmTables DbTransactionHelper ValidationHelper LogHelper"
     [ApiResponseHelper]="LogHelper"
     [PermissionHelper]="ApiResponseHelper LogHelper"
     [FileHelper]="LogHelper"
+    [QueueHelper]="DateHelper"
 )
-TODOS="LogHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper IncludeHelper"
+TODOS="LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper IncludeHelper"
 
 FORCAR=0; PEDIDOS=()
 for a in "$@"; do

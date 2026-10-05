@@ -37,6 +37,10 @@ defined('_JEXEC') or die;
  * Métodos de ação devolvem true/false (ou null) e nunca lançam exceção:
  * o motivo da última falha fica em QueueHelper::lastError().
  */
+
+if (!class_exists('DateHelper')) {
+    require_once __DIR__ . '/DateHelper.php';
+}
 class QueueHelper
 {
     const STATUS_PENDING = 'pending';
@@ -1313,17 +1317,19 @@ class QueueHelper
 
     private static function now()
     {
-        return call_user_func([self::factoryClass(), 'getDate'])->toSql();
+        return DateHelper::nowSql();
     }
 
     private static function dateFromNow($seconds)
     {
-        return call_user_func([self::factoryClass(), 'getDate'], 'now +' . (int) $seconds . ' seconds')->toSql();
+        return DateHelper::now()
+            ->modify('+' . (int) $seconds . ' seconds')
+            ->format(DateHelper::SQL);
     }
 
     private static function toUnix($sqlDate)
     {
-        return (int) call_user_func([self::factoryClass(), 'getDate'], (string) $sqlDate)->toUnix();
+        return DateHelper::timestamp((string) $sqlDate);
     }
 
     /*
@@ -1576,37 +1582,15 @@ class QueueHelper
      */
     private static function normalizeDate($date, $default = null, $relativo = false)
     {
-        if ($date === null || (is_string($date) && trim($date) === '')) {
+        if (DateHelper::isEmpty($date)) {
             return $default !== null ? $default : self::now();
         }
 
-        if ($date instanceof DateTime || $date instanceof DateTimeInterface) {
-            $copy = new DateTime('@' . $date->getTimestamp());
-
-            return $copy->format('Y-m-d H:i:s');
+        try {
+            return DateHelper::parse($date, 'UTC', $relativo)->format(DateHelper::SQL);
+        } catch (InvalidArgumentException $e) {
+            throw new InvalidArgumentException('Data inválida. Use o formato Y-m-d H:i:s (UTC).');
         }
-
-        if (is_int($date) || (is_string($date) && ctype_digit($date) && strlen($date) >= 9)) {
-            return gmdate('Y-m-d H:i:s', (int) $date);
-        }
-
-        $date = trim((string) $date);
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
-            $date .= ' 00:00:00';
-        }
-
-        $dateTime = DateTime::createFromFormat('Y-m-d H:i:s', $date, new DateTimeZone('UTC'));
-
-        if ($dateTime && $dateTime->format('Y-m-d H:i:s') === $date) {
-            return $date;
-        }
-
-        if ($relativo && preg_match('/^[+-]?\s*\d+\s+[a-z]+(\s+ago)?$/i', $date)) {
-            return call_user_func([self::factoryClass(), 'getDate'], $date)->toSql();
-        }
-
-        throw new InvalidArgumentException('Data inválida. Use o formato Y-m-d H:i:s (UTC).');
     }
 
     private static function generateUuid()

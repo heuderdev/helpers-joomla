@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DateHelper · helpers-joomla</title>
+<meta name="description" content="Datas e fuso horário nos componentes Joomla: gravar em UTC, mostrar no fuso do usuário, ler formulários e montar períodos de relatório.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › DateHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" class="ativo" aria-current="page" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>DateHelper</h1><p class="lead">Datas e fuso horário: grave em UTC, mostre no fuso do usuário e monte períodos de relatório sem errar as horas.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O Joomla segue uma regra simples: <strong>o banco guarda UTC</strong> e <strong>a tela mostra no fuso do usuário</strong> (o campo "Fuso horário" do perfil ou, se vazio, o da configuração global). O <code>DateHelper</code> concentra as conversões entre os dois lados, para que nenhum trecho do código precise lembrar dessa regra.</p>
+<div class="codigo"><pre><code data-lang="php">// Gravar: sempre UTC
+$dados[&#x27;pago_em&#x27;] = DateHelper::nowSql();                 // &#x27;2026-10-05 02:30:00&#x27;
+
+// Mostrar: no fuso do usuário
+echo DateHelper::toUser($pedido-&gt;created_at);             // &#x27;04/10/2026 23:30&#x27;
+
+// O que o usuário digitou (no fuso dele) -&gt; UTC para gravar
+$entrega = DateHelper::fromUser(&#x27;25/12/2026 14:30&#x27;);      // &#x27;2026-12-25 17:30:00&#x27;
+
+// Período de relatório: &quot;este mês&quot; do usuário, em UTC, pronto para o where
+$mes = DateHelper::range(&#x27;month&#x27;);
+$total = PedidoModel::query()-&gt;whereBetween(&#x27;created_at&#x27;, $mes[&#x27;start&#x27;], $mes[&#x27;end&#x27;])-&gt;sum(&#x27;total&#x27;);</code></pre></div>
+<p>Os exemplos desta página consideram um usuário em São Paulo (UTC−3) e o "agora" em <code>2026-10-05 02:30:00</code> UTC, que é <code>04/10/2026 23:30</code> para ele.</p>
+<h2 id="por-que" data-titulo="Por que não usar date()">Por que não usar date()</h2>
+<p><code>date('Y-m-d H:i:s')</code> usa o fuso configurado no PHP do servidor (<code>date.timezone</code>), que pode ser diferente entre o site e o cron, entre o servidor de testes e o de produção, e quase nunca é o fuso do usuário. O resultado são os bugs clássicos:</p>
+<ul><li>registros gravados com 3 horas de diferença de outros (ex.: o <code>created_at</code> do pedido e o log de auditoria da mesma operação);</li><li>o relatório "de hoje" que perde as vendas das 21h às 23h59, porque o filtro <code>BETWEEN '2026-10-04 00:00:00' AND '2026-10-04 23:59:59'</code> foi montado sem converter para UTC;</li><li>um job agendado "para amanhã às 8h" que roda às 5h ou às 11h.</li></ul>
+<div class="nota aviso"><p>Os helpers deste repositório gravam datas em UTC. O <code>OrmBase</code> (timestamps e soft delete) e o <code>QueueHelper</code> usam o <code>DateHelper</code>. O <code>scripts/checar.sh</code> da skill avisa quando encontra <code>date('Y-m-d H:i:s')</code> no seu código.</p></div>
+<h2 id="carregar" data-titulo="Carregar">Carregar</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/DateHelper.php&#x27;;
+
+// ou, com o IncludeHelper
+IncludeHelper::load(&#x27;DateHelper&#x27;);
+IncludeHelper::registerAutoloader();   // ou carregamento automático no primeiro uso</code></pre></div>
+<p>Não depende de nenhum outro helper. <code>OrmBase</code> e <code>QueueHelper</code> o carregam sozinhos.</p>
+<h2 id="entradas" data-titulo="Datas aceitas">Datas aceitas</h2>
+<p>Todo método que recebe uma data aceita qualquer um destes formatos:</p>
+<div class="tabela"><table><thead><tr><th>Entrada</th><th>Exemplo</th><th>Observação</th></tr></thead><tbody><tr><td>Formato do banco</td><td><code>&#x27;2026-10-05 02:30:00&#x27;</code></td><td>também sem segundos: <code>&#x27;2026-10-05 02:30&#x27;</code></td></tr><tr><td>Só a data</td><td><code>&#x27;2026-10-05&#x27;</code></td><td>hora 00:00:00</td></tr><tr><td>Input <code>datetime-local</code></td><td><code>&#x27;2026-10-05T14:30&#x27;</code></td><td>com ou sem segundos</td></tr><tr><td>Brasileiro</td><td><code>&#x27;05/10/2026&#x27;</code>, <code>&#x27;05/10/2026 14:30&#x27;</code></td><td>sempre dia/mês/ano; nunca lido como mês/dia</td></tr><tr><td>ISO 8601 com fuso</td><td><code>&#x27;2026-10-05T02:30:00Z&#x27;</code>, <code>&#x27;2026-10-04T23:30:00-03:00&#x27;</code></td><td>o fuso do texto vale; o parâmetro <code>$timezone</code> é ignorado</td></tr><tr><td>Timestamp Unix</td><td><code>1791167400</code> ou <code>&#x27;1791167400&#x27;</code></td><td>texto só com dígitos a partir de 9 caracteres</td></tr><tr><td>Objeto</td><td><code>DateTime</code>, <code>DateTimeImmutable</code></td><td>o instante é preservado</td></tr><tr><td>Relativo</td><td><code>&#x27;now&#x27;</code>, <code>&#x27;today&#x27;</code>, <code>&#x27;+30 minutes&#x27;</code>, <code>&#x27;-7 days&#x27;</code>, <code>&#x27;first day of next month&#x27;</code></td><td>calculado a partir de agora, no fuso informado; recusado por <code>fromUser()</code> e <code>between()</code></td></tr></tbody></table></div>
+<p><strong>Datas impossíveis são recusadas</strong>, nunca "ajustadas": <code>31/02/2026</code> lança <code>InvalidArgumentException</code> em vez de virar <code>03/03/2026</code>, como faria o PHP.</p>
+<p><strong>Vazio</strong> é <code>null</code>, <code>''</code>, <code>'0000-00-00'</code> ou <code>'0000-00-00 00:00:00'</code> (a "data nula" do Joomla 3 no MySQL). Os métodos de conversão devolvem <code>null</code> ou <code>''</code> para vazio, em vez de lançar, para que colunas opcionais não precisem de <code>if</code>.</p>
+<h2 id="fusos" data-titulo="Fusos horários">Fusos horários</h2>
+<p>Os parâmetros <code>$timezone</code> aceitam:</p>
+<div class="tabela"><table><thead><tr><th>Valor</th><th>Significado</th></tr></thead><tbody><tr><td><code>&#x27;UTC&#x27;</code></td><td>UTC, o fuso do banco.</td></tr><tr><td><code>&#x27;user&#x27;</code></td><td>O fuso do usuário atual (veja a ordem abaixo).</td></tr><tr><td>nome IANA, ex.: <code>&#x27;America/Sao_Paulo&#x27;</code></td><td>Esse fuso. Nome inválido lança <code>InvalidArgumentException</code>.</td></tr><tr><td><code>DateTimeZone</code></td><td>Esse objeto.</td></tr></tbody></table></div>
+<p>O fuso do usuário (<code>'user'</code>) é escolhido nesta ordem:</p><ol><li>o fixado com <a href="#setUserTimezone"><code>setUserTimezone()</code></a>, se houver;</li><li>o do perfil do usuário logado (parâmetro <code>timezone</code>);</li><li>o da configuração global do Joomla (<code>offset</code>, em Sistema → Configuração → Servidor);</li><li>UTC.</li></ol><p>Um fuso inválido num nível passa para o seguinte. Funciona no Joomla 3 (<code>JFactory::getUser()</code>) e no 4/5 (<code>getApplication()-&gt;getIdentity()</code>). Sem Joomla carregado, o resultado é UTC.</p>
+<div class="nota dica"><p>Horário de verão é tratado sozinho: as conversões usam a tabela de fusos do PHP, então datas antigas de São Paulo (que tinha horário de verão até 2019) convertem com a diferença correta da época.</p></div>
+<h2 id="constantes" data-titulo="Constantes">Constantes</h2>
+<div class="tabela"><table><thead><tr><th>Constante</th><th>Formato</th><th>Exemplo</th></tr></thead><tbody><tr><td><code>DateHelper::SQL</code></td><td><code>Y-m-d H:i:s</code></td><td><code>2026-10-05 02:30:00</code></td></tr><tr><td><code>DateHelper::SQL_DATE</code></td><td><code>Y-m-d</code></td><td><code>2026-10-05</code></td></tr><tr><td><code>DateHelper::BR</code></td><td><code>d/m/Y</code></td><td><code>04/10/2026</code></td></tr><tr><td><code>DateHelper::BR_DATETIME</code></td><td><code>d/m/Y H:i</code></td><td><code>04/10/2026 23:30</code></td></tr><tr><td><code>DateHelper::BR_FULL</code></td><td><code>d/m/Y H:i:s</code></td><td><code>04/10/2026 23:30:00</code></td></tr><tr><td><code>DateHelper::ISO</code></td><td><code>Y-m-d\TH:i:sP</code></td><td><code>2026-10-04T23:30:00-03:00</code></td></tr></tbody></table></div>
+<p>Qualquer formato do <a href="https://www.php.net/manual/pt_BR/datetime.format.php" rel="noopener">date() do PHP</a> também serve, por exemplo <code>'Y-m-d\TH:i'</code> para preencher um <code>&lt;input type="datetime-local"&gt;</code>.</p>
+<h2 id="agora" data-titulo="Métodos: agora">Métodos: agora</h2>
+<div class="metodo"><h3 id="now"><code>now()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::now(): DateTimeImmutable</div><p>Momento atual em UTC, como objeto imutável. Use quando precisar de cálculos com a API do PHP.</p><p class="retorno"><strong>Retorna:</strong> <code>DateTimeImmutable</code> em UTC.</p><div class="codigo"><pre><code data-lang="php">$prazo = DateHelper::now()-&gt;modify(&#x27;+15 days&#x27;)-&gt;format(DateHelper::SQL);</code></pre></div></div>
+<div class="metodo"><h3 id="nowSql"><code>nowSql()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::nowSql(): string</div><p>Momento atual em UTC no formato do banco. <strong>É o que você usa para gravar.</strong></p><p class="retorno"><strong>Retorna:</strong> <code>'Y-m-d H:i:s'</code> em UTC.</p><div class="codigo"><pre><code data-lang="php">PedidoModel::query()-&gt;update($id, [
+    &#x27;status&#x27; =&gt; &#x27;pago&#x27;,
+    &#x27;pago_em&#x27; =&gt; DateHelper::nowSql(),
+]);</code></pre></div></div>
+<div class="metodo"><h3 id="today"><code>today()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::today(string|DateTimeZone $timezone = &#x27;user&#x27;): string</div><p>Data de hoje (<code>'Y-m-d'</code>) no fuso informado. Às 23:30 de São Paulo, o "hoje" do usuário ainda é dia 4, mesmo que em UTC já seja dia 5.</p><div class="codigo"><pre><code data-lang="php">DateHelper::today();        // &#x27;2026-10-04&#x27; (usuário)
+DateHelper::today(&#x27;UTC&#x27;);   // &#x27;2026-10-05&#x27;</code></pre></div></div>
+<div class="metodo"><h3 id="setTestNow"><code>setTestNow()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::setTestNow(mixed $value = null): void</div><p>Congela o relógio do helper em <code>$value</code> (interpretado como UTC). Todos os métodos passam a considerar esse "agora", inclusive o <code>OrmBase</code> e o <code>QueueHelper</code>. <code>null</code> volta ao relógio real.</p><div class="codigo"><pre><code data-lang="php">// Teste: o job agendado para &quot;amanhã&quot; ainda não deve sair hoje
+DateHelper::setTestNow(&#x27;2026-10-05 02:30:00&#x27;);
+// ...
+DateHelper::setTestNow(null);</code></pre></div><div class="nota aviso"><p>Use só em testes e scripts. Esquecer o relógio congelado em produção faz todas as datas gravadas ficarem iguais.</p></div></div>
+<h2 id="converter" data-titulo="Métodos: converter e formatar">Métodos: converter e formatar</h2>
+<div class="metodo"><h3 id="toSql"><code>toSql()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::toSql(mixed $value = &#x27;now&#x27;, string|DateTimeZone $timezone = &#x27;UTC&#x27;): string|null</div><p>Converte uma data para o formato do banco, em UTC. <code>$timezone</code> é o fuso em que <code>$value</code> foi escrito.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$value</code></td><td>mixed</td><td>Qualquer <a href="#entradas">entrada aceita</a>, inclusive relativa.</td></tr><tr><td><code>$timezone</code></td><td>string|DateTimeZone</td><td>Fuso do texto. Padrão UTC.</td></tr></tbody></table></div><p class="retorno"><strong>Retorna:</strong> <code>'Y-m-d H:i:s'</code> em UTC, ou <code>null</code> se <code>$value</code> for vazio.</p><div class="codigo"><pre><code data-lang="php">DateHelper::toSql();                                // agora
+DateHelper::toSql(&#x27;+30 minutes&#x27;);                   // daqui a 30 minutos
+DateHelper::toSql(&#x27;today&#x27;, &#x27;user&#x27;);                 // meia-noite de hoje do usuário: &#x27;2026-10-04 03:00:00&#x27;
+DateHelper::toSql(&#x27;2026-12-25 08:00&#x27;, &#x27;America/Sao_Paulo&#x27;);   // &#x27;2026-12-25 11:00:00&#x27;
+DateHelper::toSql(&#x27;2026-10-04T23:30:00-03:00&#x27;);     // &#x27;2026-10-05 02:30:00&#x27; (fuso do texto)
+DateHelper::toSql($linha-&gt;data_opcional);           // null se vazio</code></pre></div></div>
+<div class="metodo"><h3 id="fromUser"><code>fromUser()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::fromUser(mixed $value, string|null $format = null): string|null</div><p>Converte o que o usuário digitou, no fuso dele, para UTC. Sem <code>$format</code>, aceita os <a href="#entradas">formatos fixos</a> (não aceita relativos como <code>'tomorrow'</code>, que não fazem sentido vindo de um formulário). Com <code>$format</code>, exige exatamente esse formato.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$value</code></td><td>mixed</td><td>Texto do formulário.</td></tr><tr><td><code>$format</code></td><td>string|null</td><td>Formato exigido, ex.: <code>'d/m/Y H:i'</code>.</td></tr></tbody></table></div><p class="retorno"><strong>Retorna:</strong> <code>'Y-m-d H:i:s'</code> em UTC, ou <code>null</code> se vazio. Data inválida lança <code>InvalidArgumentException</code>.</p><div class="codigo"><pre><code data-lang="php">DateHelper::fromUser(&#x27;25/12/2026 14:30&#x27;);           // &#x27;2026-12-25 17:30:00&#x27;
+DateHelper::fromUser(&#x27;2026-12-25T14:30&#x27;);           // input datetime-local: &#x27;2026-12-25 17:30:00&#x27;
+DateHelper::fromUser(&#x27;25/12/2026&#x27;);                 // &#x27;2026-12-25 03:00:00&#x27; (meia-noite dele)
+DateHelper::fromUser(&#x27;12-25-2026&#x27;, &#x27;m-d-Y&#x27;);        // formato próprio
+DateHelper::fromUser(&#x27;&#x27;);                           // null
+DateHelper::fromUser(&#x27;31/02/2026&#x27;);                 // InvalidArgumentException</code></pre></div></div>
+<div class="metodo"><h3 id="toUser"><code>toUser()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::toUser(mixed $value, string $format = DateHelper::BR_DATETIME): string</div><p>Formata uma data gravada em UTC no fuso do usuário. É o que você usa nas views e nas respostas para a tela.</p><p class="retorno"><strong>Retorna:</strong> Texto formatado, ou <code>''</code> se vazio.</p><div class="codigo"><pre><code data-lang="php">echo DateHelper::toUser($pedido-&gt;created_at);                      // &#x27;04/10/2026 23:30&#x27;
+echo DateHelper::toUser($pedido-&gt;created_at, DateHelper::BR);      // &#x27;04/10/2026&#x27;
+echo DateHelper::toUser($pedido-&gt;cancelado_em);                    // &#x27;&#x27; se a coluna for NULL
+
+// Preencher um input datetime-local para edição
+&lt;input type=&quot;datetime-local&quot; name=&quot;entrega&quot;
+       value=&quot;&lt;?php echo DateHelper::toUser($pedido-&gt;entrega_em, &#x27;Y-m-d\TH:i&#x27;); ?&gt;&quot;&gt;</code></pre></div></div>
+<div class="metodo"><h3 id="format"><code>format()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::format(mixed $value, string $format = DateHelper::BR_DATETIME, string|DateTimeZone $timezone = &#x27;user&#x27;): string</div><p>Igual a <code>toUser()</code>, mas num fuso que você escolhe. <code>$value</code> é interpretado como UTC.</p><div class="codigo"><pre><code data-lang="php">// Horário da filial de Manaus, independente de quem está vendo
+echo DateHelper::format($pedido-&gt;created_at, DateHelper::BR_DATETIME, &#x27;America/Manaus&#x27;);   // &#x27;04/10/2026 22:30&#x27;
+
+// Data para uma API externa, em ISO 8601 UTC
+$payload[&#x27;data&#x27;] = DateHelper::format($pedido-&gt;created_at, DateHelper::ISO, &#x27;UTC&#x27;);       // &#x27;2026-10-05T02:30:00+00:00&#x27;</code></pre></div></div>
+<div class="metodo"><h3 id="longDate"><code>longDate()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::longDate(mixed $value, bool $withTime = false, bool $withWeekday = false, string|DateTimeZone $timezone = &#x27;user&#x27;): string</div><p>Data por extenso em português, sem depender do <code>setlocale</code> do servidor. Útil em contratos, recibos e e-mails.</p><div class="codigo"><pre><code data-lang="php">DateHelper::longDate($pedido-&gt;created_at);               // &#x27;4 de outubro de 2026&#x27;
+DateHelper::longDate($pedido-&gt;created_at, true);         // &#x27;4 de outubro de 2026 às 23:30&#x27;
+DateHelper::longDate($pedido-&gt;created_at, true, true);   // &#x27;domingo, 4 de outubro de 2026 às 23:30&#x27;</code></pre></div></div>
+<div class="metodo"><h3 id="parse"><code>parse()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::parse(mixed $value, string|DateTimeZone $timezone = &#x27;UTC&#x27;, bool $allowRelative = true): DateTimeImmutable</div><p>A base dos outros métodos: interpreta <code>$value</code> no fuso <code>$timezone</code> e devolve o mesmo instante em UTC. Use quando quiser o objeto para cálculos próprios.</p><p class="retorno"><strong>Retorna:</strong> <code>DateTimeImmutable</code> em UTC. Vazio ou inválido lança <code>InvalidArgumentException</code>.</p><div class="codigo"><pre><code data-lang="php">$inicio = DateHelper::parse($evento-&gt;inicio);                       // UTC
+$local = $inicio-&gt;setTimezone(DateHelper::userTimezone());         // fuso do usuário
+$fimDoEvento = $inicio-&gt;modify(&#x27;+2 hours&#x27;);</code></pre></div></div>
+<div class="metodo"><h3 id="timestamp"><code>timestamp()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::timestamp(mixed $value = &#x27;now&#x27;): int</div><p>Timestamp Unix do instante.</p><div class="codigo"><pre><code data-lang="php">$expiraEm = DateHelper::timestamp($token-&gt;expira_em);</code></pre></div></div>
+<h2 id="comparar" data-titulo="Métodos: validar e comparar">Métodos: validar e comparar</h2>
+<div class="metodo"><h3 id="isValid"><code>isValid()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::isValid(mixed $value, string|null $format = null): bool</div><p>Indica se <code>$value</code> é uma data válida nos <a href="#entradas">formatos fixos</a> ou, com <code>$format</code>, exatamente nesse formato. Vazio é inválido. Não lança.</p><div class="codigo"><pre><code data-lang="php">DateHelper::isValid(&#x27;29/02/2024&#x27;);             // true (ano bissexto)
+DateHelper::isValid(&#x27;29/02/2026&#x27;);             // false
+DateHelper::isValid(&#x27;2026-10-05&#x27;, &#x27;Y-m-d&#x27;);    // true</code></pre></div></div>
+<div class="metodo"><h3 id="isEmpty"><code>isEmpty()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::isEmpty(mixed $value): bool</div><p>Indica se o valor conta como "sem data": <code>null</code>, <code>false</code>, <code>''</code>, <code>'0000-00-00'</code> ou <code>'0000-00-00 00:00:00'</code>.</p><div class="codigo"><pre><code data-lang="php">if (DateHelper::isEmpty($artigo-&gt;publish_down)) {
+    // sem data de expiração
+}</code></pre></div></div>
+<div class="metodo"><h3 id="isPast"><code>isPast() / isFuture()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::isPast(mixed $value): bool
+DateHelper::isFuture(mixed $value): bool</div><p>Compara com agora. Datas sem fuso são lidas como UTC (o que vem do banco).</p><div class="codigo"><pre><code data-lang="php">if (DateHelper::isPast($cupom-&gt;valido_ate)) {
+    return ApiResponseHelper::error(&#x27;Cupom expirado.&#x27;);
+}</code></pre></div></div>
+<div class="metodo"><h3 id="diffInSeconds"><code>diffInSeconds()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::diffInSeconds(mixed $from, mixed $to = &#x27;now&#x27;): int</div><p>Segundos de <code>$from</code> até <code>$to</code>: positivo se <code>$to</code> for depois.</p><div class="codigo"><pre><code data-lang="php">$segundosParado = DateHelper::diffInSeconds($job-&gt;heartbeat_em);   // até agora</code></pre></div></div>
+<div class="metodo"><h3 id="diffInDays"><code>diffInDays()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::diffInDays(mixed $from, mixed $to = &#x27;now&#x27;, string|DateTimeZone $timezone = &#x27;user&#x27;): int</div><p>Dias <strong>de calendário</strong> entre as datas, contados no fuso informado. Ignora as horas: de 23:00 de um dia a 01:00 do dia seguinte é 1 dia. É o que o usuário espera em "vence em 3 dias" ou "atrasado há 2 dias".</p><div class="codigo"><pre><code data-lang="php">$dias = DateHelper::diffInDays(&#x27;now&#x27;, $boleto-&gt;vencimento);
+echo $dias &gt;= 0 ? &quot;Vence em {$dias} dia(s)&quot; : &#x27;Atrasado há &#x27; . abs($dias) . &#x27; dia(s)&#x27;;</code></pre></div></div>
+<div class="metodo"><h3 id="relative"><code>relative()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::relative(mixed $value, mixed $reference = &#x27;now&#x27;): string</div><p>Texto relativo em português: <code>agora</code> (menos de 45 segundos), <code>há 5 minutos</code>, <code>em 3 dias</code>, <code>há 2 meses</code>, <code>há 1 ano</code>.</p><div class="codigo"><pre><code data-lang="php">echo DateHelper::relative($comentario-&gt;created_at);   // &#x27;há 5 minutos&#x27;
+echo DateHelper::relative($evento-&gt;inicio);           // &#x27;em 3 dias&#x27;</code></pre></div></div>
+<h2 id="periodos" data-titulo="Métodos: períodos para filtros e relatórios">Métodos: períodos para filtros e relatórios</h2>
+<p>Os três métodos devolvem <code>['start' =&gt; ..., 'end' =&gt; ...]</code> em UTC, no formato do banco e <strong>inclusivos</strong> (o fim é <code>23:59:59</code> no fuso do usuário). Encaixam direto no <code>whereBetween()</code>.</p>
+<div class="metodo"><h3 id="range"><code>range()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::range(string $period = &#x27;day&#x27;, mixed $reference = &#x27;now&#x27;, string|DateTimeZone $timezone = &#x27;user&#x27;): array</div><p>Início e fim do dia, da semana (segunda a domingo), do mês ou do ano que contém <code>$reference</code>, no fuso informado.</p><div class="tabela"><table><thead><tr><th>Parâmetro</th><th>Tipo</th><th>Descrição</th></tr></thead><tbody><tr><td><code>$period</code></td><td>string</td><td><code>&#x27;day&#x27;</code>, <code>&#x27;week&#x27;</code>, <code>&#x27;month&#x27;</code> ou <code>&#x27;year&#x27;</code>.</td></tr><tr><td><code>$reference</code></td><td>mixed</td><td>Uma data dentro do período. Padrão: agora. <strong>Só data</strong> (<code>'2026-02-10'</code>, <code>'10/02/2026'</code>) é o dia do calendário; <strong>data com hora</strong> é um instante em UTC, como vem do banco; <strong>relativa</strong> (<code>'today'</code>, <code>'+30 days'</code>) é calculada no fuso do período.</td></tr><tr><td><code>$timezone</code></td><td>string|DateTimeZone</td><td>Fuso em que o período é contado. Padrão: o do usuário.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">$hoje = DateHelper::range(&#x27;day&#x27;);
+// [&#x27;start&#x27; =&gt; &#x27;2026-10-04 03:00:00&#x27;, &#x27;end&#x27; =&gt; &#x27;2026-10-05 02:59:59&#x27;]
+
+$vendasHoje = PedidoModel::query()-&gt;pagos()
+    -&gt;whereBetween(&#x27;created_at&#x27;, $hoje[&#x27;start&#x27;], $hoje[&#x27;end&#x27;])
+    -&gt;sum(&#x27;total&#x27;);
+
+DateHelper::range(&#x27;week&#x27;);                    // segunda a domingo desta semana
+DateHelper::range(&#x27;month&#x27;, &#x27;2026-02-10&#x27;);     // fevereiro de 2026
+DateHelper::range(&#x27;year&#x27;);                    // ano atual
+DateHelper::range(&#x27;day&#x27;, $pedido-&gt;created_at); // o dia (do usuário) em que o pedido foi feito</code></pre></div></div>
+<div class="metodo"><h3 id="lastDays"><code>lastDays()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::lastDays(int $days, mixed $reference = &#x27;now&#x27;, string|DateTimeZone $timezone = &#x27;user&#x27;): array</div><p>Os últimos <code>$days</code> dias contando hoje: <code>lastDays(7)</code> é hoje e os 6 dias anteriores, inteiros. <code>$reference</code> segue a mesma regra de <code>range()</code>.</p><div class="codigo"><pre><code data-lang="php">$semana = DateHelper::lastDays(7);
+$novos = ClienteModel::query()-&gt;whereBetween(&#x27;created_at&#x27;, $semana[&#x27;start&#x27;], $semana[&#x27;end&#x27;])-&gt;count();</code></pre></div></div>
+<div class="metodo"><h3 id="between"><code>between()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::between(mixed $from, mixed $to, string|DateTimeZone $timezone = &#x27;user&#x27;): array</div><p>Intervalo entre duas datas digitadas pelo usuário, como o filtro "de/até" de um relatório: de 00:00:00 de <code>$from</code> a 23:59:59 de <code>$to</code>, no fuso dele. Não aceita textos relativos. Fim antes do início lança <code>InvalidArgumentException</code>.</p><div class="codigo"><pre><code data-lang="php">$de = InputHelper::date(&#x27;de&#x27;, DateHelper::today());     // &#x27;2026-10-01&#x27; (input type=&quot;date&quot;)
+$ate = InputHelper::date(&#x27;ate&#x27;, DateHelper::today());
+
+$periodo = DateHelper::between($de, $ate);
+// [&#x27;start&#x27; =&gt; &#x27;2026-10-01 03:00:00&#x27;, &#x27;end&#x27; =&gt; &#x27;2026-10-05 02:59:59&#x27;]
+
+$pedidos = PedidoModel::query()
+    -&gt;whereBetween(&#x27;created_at&#x27;, $periodo[&#x27;start&#x27;], $periodo[&#x27;end&#x27;])
+    -&gt;paginate(20, $pagina);</code></pre></div></div>
+<h2 id="metodos-fuso" data-titulo="Métodos: fuso horário">Métodos: fuso horário</h2>
+<div class="metodo"><h3 id="userTimezone"><code>userTimezone()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::userTimezone(): DateTimeZone</div><p>O fuso do usuário atual, escolhido na <a href="#fusos">ordem descrita acima</a>.</p><div class="codigo"><pre><code data-lang="php">echo DateHelper::userTimezone()-&gt;getName();   // &#x27;America/Sao_Paulo&#x27;</code></pre></div></div>
+<div class="metodo"><h3 id="timezoneForUser"><code>timezoneForUser()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::timezoneForUser(int $userId): DateTimeZone</div><p>O fuso de um usuário específico (perfil, senão configuração global, senão UTC). Para quando o código roda fora da sessão dele, como no worker da fila.</p><div class="codigo"><pre><code data-lang="php">// Job que envia o resumo do pedido por e-mail
+$fuso = DateHelper::timezoneForUser($payload[&#x27;usuario_id&#x27;]);
+$quando = DateHelper::format($pedido-&gt;created_at, DateHelper::BR_DATETIME, $fuso);</code></pre></div></div>
+<div class="metodo"><h3 id="setUserTimezone"><code>setUserTimezone()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::setUserTimezone(string|DateTimeZone|null $timezone = null): void</div><p>Fixa o fuso usado como <code>'user'</code> até ser chamado de novo. <code>null</code> volta ao automático. Útil no worker CLI, onde não há usuário logado, e em testes.</p><div class="codigo"><pre><code data-lang="php">DateHelper::setUserTimezone(DateHelper::timezoneForUser($job-&gt;usuario_id));
+try {
+    // toUser(), range() etc. usam o fuso do dono do job
+} finally {
+    DateHelper::setUserTimezone(null);
+}</code></pre></div></div>
+<div class="metodo"><h3 id="timezone"><code>timezone()</code><span class="tag estatico">estático</span></h3><div class="assinatura">DateHelper::timezone(string|DateTimeZone $timezone = &#x27;user&#x27;): DateTimeZone</div><p>Converte <code>'UTC'</code>, <code>'user'</code>, um nome de fuso ou um <code>DateTimeZone</code> em <code>DateTimeZone</code>. Nome inválido lança <code>InvalidArgumentException</code>.</p><div class="codigo"><pre><code data-lang="php">$fuso = DateHelper::timezone($params-&gt;get(&#x27;fuso_filial&#x27;, &#x27;user&#x27;));</code></pre></div></div>
+<h2 id="receitas" data-titulo="Receitas">Receitas</h2>
+<h3 id="receita-crud">Formulário com data e hora</h3>
+<div class="codigo"><div class="titulo-codigo">Controller</div><pre><code data-lang="php">// Salvar: o usuário digitou no fuso dele
+$entrega = InputHelper::string(&#x27;entrega&#x27;, &#x27;&#x27;, &#x27;post&#x27;);     // &#x27;2026-12-25T14:30&#x27; (datetime-local)
+
+try {
+    $dados[&#x27;entrega_em&#x27;] = DateHelper::fromUser($entrega);   // null se vazio
+} catch (InvalidArgumentException $e) {
+    return ApiResponseHelper::error(&#x27;Data de entrega inválida.&#x27;, 422);
+}
+
+PedidoModel::query()-&gt;update($id, $dados);
+
+// Editar: devolver no formato do input
+$valor = DateHelper::toUser($pedido-&gt;entrega_em, &#x27;Y-m-d\TH:i&#x27;);</code></pre></div>
+<h3 id="receita-lista">Lista para a tela (JSON)</h3>
+<div class="codigo"><pre><code data-lang="php">$pedidos = PedidoModel::query()-&gt;latest()-&gt;limit(20)-&gt;get();
+
+foreach ($pedidos as $pedido) {
+    $pedido-&gt;criado_em_texto = DateHelper::toUser($pedido-&gt;created_at);   // &#x27;04/10/2026 23:30&#x27;
+    $pedido-&gt;criado_ha = DateHelper::relative($pedido-&gt;created_at);       // &#x27;há 5 minutos&#x27;
+}
+
+return ApiResponseHelper::success($pedidos);</code></pre></div>
+<h3 id="receita-dashboard">Dashboard: hoje, semana e mês</h3>
+<div class="codigo"><pre><code data-lang="php">$totais = [];
+
+foreach ([&#x27;day&#x27; =&gt; &#x27;hoje&#x27;, &#x27;week&#x27; =&gt; &#x27;semana&#x27;, &#x27;month&#x27; =&gt; &#x27;mes&#x27;] as $periodo =&gt; $chave) {
+    $r = DateHelper::range($periodo);
+
+    $totais[$chave] = PedidoModel::query()-&gt;pagos()
+        -&gt;whereBetween(&#x27;created_at&#x27;, $r[&#x27;start&#x27;], $r[&#x27;end&#x27;])
+        -&gt;sum(&#x27;total&#x27;);
+}</code></pre></div>
+<h3 id="receita-fila">Agendar um job no horário do usuário</h3>
+<div class="codigo"><pre><code data-lang="php">// &quot;Enviar o lembrete amanhã às 8h&quot; do ponto de vista do usuário
+$amanha8h = DateHelper::toSql(&#x27;tomorrow 08:00&#x27;, &#x27;user&#x27;);   // &#x27;2026-10-05 11:00:00&#x27; (UTC)
+
+QueueHelper::push(&#x27;enviar_lembrete&#x27;, [&#x27;pedido_id&#x27; =&gt; $id], [
+    &#x27;disponivel_em&#x27; =&gt; $amanha8h,
+    &#x27;usuario_id&#x27; =&gt; $userId,
+]);</code></pre></div>
+<h3 id="receita-vencimento">Vencimento e prazo</h3>
+<div class="codigo"><pre><code data-lang="php">// Prazo de 30 dias a partir de hoje do usuário, até o fim do dia
+$fimDoPrazo = DateHelper::range(&#x27;day&#x27;, DateHelper::toSql(&#x27;+30 days&#x27;, &#x27;user&#x27;));
+$dados[&#x27;vence_em&#x27;] = $fimDoPrazo[&#x27;end&#x27;];
+
+// Na tela
+$dias = DateHelper::diffInDays(&#x27;now&#x27;, $boleto-&gt;vence_em);
+$situacao = $dias &lt; 0 ? &#x27;vencido&#x27; : ($dias === 0 ? &#x27;vence hoje&#x27; : &quot;vence em {$dias} dia(s)&quot;);</code></pre></div>
+<h3 id="receita-teste">Teste com o relógio congelado</h3>
+<div class="codigo"><pre><code data-lang="php">DateHelper::setTestNow(&#x27;2026-12-31 23:59:00&#x27;);
+DateHelper::setUserTimezone(&#x27;America/Sao_Paulo&#x27;);
+
+$r = DateHelper::range(&#x27;year&#x27;);   // 2026 inteiro no fuso de São Paulo
+
+DateHelper::setTestNow(null);
+DateHelper::setUserTimezone(null);</code></pre></div>
+<h2 id="integracao" data-titulo="Integração com os outros helpers">Integração com os outros helpers</h2>
+<div class="tabela"><table><thead><tr><th>Helper</th><th>Uso</th></tr></thead><tbody><tr><td><a href="orm-base-configuracao.html"><code>OrmBase</code></a> / <code>OrmTables</code></td><td>Timestamps (<code>created_at</code>, <code>updated_at</code>) e soft delete (<code>deleted_at</code>) gravados com <code>DateHelper::nowSql()</code>, em UTC.</td></tr><tr><td><a href="queue-helper.html"><code>QueueHelper</code></a></td><td>Datas da fila, <code>disponivel_em</code>, <code>purge()</code> e filtros de data usam o <code>DateHelper</code>. Aceitam os mesmos formatos.</td></tr><tr><td><a href="input-helper.html"><code>InputHelper</code></a></td><td><code>InputHelper::date()</code> e <code>dateBr()</code> leem a data do formulário (<code>'Y-m-d'</code>); passe o resultado para <code>between()</code> ou <code>fromUser()</code>.</td></tr><tr><td><a href="audit-helper.html"><code>AuditHelper</code></a></td><td>Já grava em UTC (<code>JFactory::getDate()</code>), coerente com o restante.</td></tr></tbody></table></div>
+<div class="nota aviso"><strong class="rotulo">Atualizando de uma versão anterior</strong><p>Até a versão anterior, o <code>OrmBase</code> gravava os timestamps e o <code>deleted_at</code> com <code>date()</code>, no fuso do PHP do servidor. Se o seu servidor não está em UTC, os registros antigos estão no horário local e os novos em UTC. Para saber, compare um <code>created_at</code> recente com a hora UTC atual. Se precisar alinhar os antigos, converta com um <code>UPDATE</code> único (ex.: MySQL <code>CONVERT_TZ(created_at, 'America/Sao_Paulo', '+00:00')</code>) para os registros anteriores à atualização.</p></div>
+<h2 id="erros" data-titulo="Erros comuns">Erros comuns</h2>
+<div class="tabela"><table><thead><tr><th>Sintoma</th><th>Causa e solução</th></tr></thead><tbody><tr><td>Datas na tela 3 horas adiantadas</td><td>A data UTC do banco foi impressa direto. Use <code>DateHelper::toUser()</code>.</td></tr><tr><td>Relatório "de hoje" sem as vendas da noite</td><td>O filtro foi montado com a data local sem converter. Use <code>DateHelper::range('day')</code> ou <code>between()</code>.</td></tr><tr><td>Data gravada 3 horas atrasada</td><td>Gravou com <code>date()</code> ou gravou o texto do usuário sem converter. Use <code>nowSql()</code> ou <code>fromUser()</code>.</td></tr><tr><td><code>InvalidArgumentException: Data inválida</code></td><td>Formato não aceito ou data impossível (31/02). Valide antes com <code>isValid()</code> ou trate a exceção e responda 422.</td></tr><tr><td>Tudo em UTC no worker da fila</td><td>Não há usuário logado no CLI. Use <code>timezoneForUser()</code> ou <code>setUserTimezone()</code>.</td></tr><tr><td><code>fromUser('amanhã')</code> recusado</td><td><code>fromUser()</code> não aceita textos relativos. Use <code>toSql('tomorrow', 'user')</code>.</td></tr></tbody></table></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="conceitos.html">Conceitos</a>: retorno, erros e convenções dos helpers.</li><li><a href="orm-base-leitura.html">OrmBase — leitura</a>: <code>whereBetween()</code>, <code>paginate()</code> e agregações.</li><li><a href="guia-fila.html">Guia: fila de jobs</a>: agendamento com <code>disponivel_em</code>.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="validation-helper.html"><small>← Anterior</small>ValidationHelper</a><a class="proxima" href="api-response-helper.html"><small>Próxima →</small>ApiResponseHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmBase</code>, <code>OrmTables</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>CsvHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code> e <code>QueueHelper</code>.</p>
+</main>
+</div>
+</body>
+</html>

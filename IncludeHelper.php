@@ -19,11 +19,12 @@ class IncludeHelper
      */
     private static $dependencies = array(
         'LogHelper'           => array(),
+        'DateHelper'          => array(),
         'InputHelper'         => array(),
         'ValidationHelper'    => array(),
         'DbConnectionHelper'  => array(),
         'DbTransactionHelper' => array('DbConnectionHelper'),
-        'OrmBase'             => array('DbConnectionHelper', 'DbTransactionHelper'),
+        'OrmBase'             => array('DbConnectionHelper', 'DbTransactionHelper', 'DateHelper'),
         'OrmTables'           => array('OrmBase'),
         'ApiResponseHelper'   => array('LogHelper'),
         'PermissionHelper'    => array('LogHelper', 'ApiResponseHelper'),
@@ -32,7 +33,7 @@ class IncludeHelper
         'CsvHelper'           => array('OrmTables', 'DbTransactionHelper', 'ValidationHelper', 'LogHelper'),
         'ChunkUploadHelper'   => array('LogHelper'),
         'ExportHelper'        => array('LogHelper'),
-        'QueueHelper'         => array('LogHelper'),
+        'QueueHelper'         => array('LogHelper', 'DateHelper'),
         'UploadMaster'        => array()
     );
 

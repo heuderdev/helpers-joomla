@@ -1,6 +1,6 @@
 ---
 name: joomla-helpers
-description: Cria, refatora e revisa código de componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
+description: Cria, refatora e revisa código de componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
 ---
 
 # Joomla com os helpers
@@ -25,7 +25,7 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 | `references/entrada-saida.md` | InputHelper, regras do ValidationHelper, respostas, permissões |
 | `references/arquivos.md` | upload, download, arquivos, importar/exportar CSV, arquivos gigantes |
 | `references/fila.md` | tarefas demoradas, jobs, worker, cron |
-| `references/infra.md` | LogHelper, AuditHelper, IncludeHelper |
+| `references/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper (datas e fuso) |
 | `references/receitas.md` | pedido que combina vários helpers (exclusão auditada, CSV em fila, exportação, download privado, sincronizar bancos) |
 | `references/refatoracao.md` | **sempre** ao refatorar ou revisar código existente |
 
@@ -63,6 +63,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 | CSV entra / sai | `CsvHelper::import(...)` / `ExportHelper::download(...)` |
 | Demorado | `QueueHelper::push()` + `extends AbstractJob` + `fila/cli/queue-worker.php` |
 | Log / auditoria | `LogHelper::error(...)` / `AuditHelper::updated(...)` |
+| Data / hora / fuso | gravar `DateHelper::nowSql()`; mostrar `toUser($v)`; formulário `fromUser($v)`; período `range('month')` / `between($de, $ate)` |
 
 ## Contratos que mais causam bug
 
@@ -71,7 +72,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 - `PermissionHelper::require*` em HTML sem `$redirect` devolve `false` e **não para**: `if (!...) return;` (ou `setUseApiResponse(true)`).
 - `updateWhere/deleteWhere` sem `where` lançam, salvo `allowMassOperation()`.
 - `whereLike` já faz "contém"; `when($v, fn)` ignora `'0'`, `0` e `''`.
-- Datas dos helpers em UTC. `ChunkUploadHelper.php` define `ChunkHelper` e hoje não compila (linha ~2003, `'\'` → `'\\'`). `LogHelper::write` é privado.
+- Datas no banco em UTC: grave com `DateHelper::nowSql()`/`fromUser()`, nunca `date()`; mostre com `toUser()`; filtre período com `range()`/`between()` (senão "hoje" perde a noite). `ChunkUploadHelper.php` define `ChunkHelper`. `LogHelper::write` é privado.
 
 ## Esqueleto de controller
 
