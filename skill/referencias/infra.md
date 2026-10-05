@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -95,3 +95,15 @@ RateLimitHelper::clear('login:' . $u);                // login certo zera
 ```
 - Contador atômico no banco (upsert MySQL/MariaDB ou PostgreSQL 9.5+), tabela `#__helpers_rate_limits` criada sozinha (`tables/rateLimitHelper.sql`). Janela fixa. Banco fora → libera (`setFailOpen(false)` para SMS pago).
 - `ip()` só confia em X-Forwarded-For com `setTrustedProxies([...])`. Login: chave por conta **e** por IP; conte só as erradas; mensagem não revela se o usuário existe.
+
+## CryptoHelper (segredos, webhooks, tokens)
+
+```php
+$v = CryptoHelper::encrypt($tokenApi, 'config.erp_token');   // grava no banco ('h1:...')
+$t = CryptoHelper::decrypt($v, 'config.erp_token');          // null se adulterado/contexto/chave errada
+CryptoHelper::verifySignature(file_get_contents('php://input'), $assinatura, $segredo, ['prefix' => 'sha256=']);
+$link = CryptoHelper::sign(['pedido' => $id], 86400);  CryptoHelper::verifySigned($t);   // dados legíveis, não alteráveis
+CryptoHelper::token(); CryptoHelper::numericCode(6); CryptoHelper::hashToken($token); CryptoHelper::equals($a, $b);
+```
+- XChaCha20-Poly1305 (sodium) ou AES-256-CBC+HMAC; contexto amarra o valor à coluna. Chave: `setKey(base64 de 32 bytes)` fora da pasta pública (padrão: derivada do `secret` do Joomla; trocar o secret perde os dados). Rotação: `setPreviousKeys()` + `reencrypt()`.
+- Senha de usuário **não**: use `JUserHelper::hashPassword()`. Coluna cifrada não é buscável: guarde também `hashToken()` para busca. Token no banco só como `hashToken()`.

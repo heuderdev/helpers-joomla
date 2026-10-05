@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CryptoHelper · helpers-joomla</title>
+<meta name="description" content="CryptoHelper: criptografia autenticada para segredos no banco, assinatura HMAC de webhooks, links assinados com prazo e tokens aleatórios seguros, em PHP 7.0+.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › CryptoHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" class="ativo" aria-current="page" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>CryptoHelper</h1><p class="lead">Criptografia autenticada para segredos guardados no banco (tokens de API, credenciais de integração), conferência de assinatura de webhooks, links assinados com prazo e tokens e códigos aleatórios seguros.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/CryptoHelper.php&#x27;;
+
+// Gravar o token do ERP que o administrador digitou
+$dados[&#x27;erp_token&#x27;] = CryptoHelper::encrypt($tokenDigitado, &#x27;config.erp_token&#x27;);
+
+// Usar
+$token = CryptoHelper::decrypt($config-&gt;erp_token, &#x27;config.erp_token&#x27;);   // null se adulterado ou chave errada
+
+if ($token === null) {
+    return ApiResponseHelper::error(&#x27;Configure novamente o token do ERP.&#x27;);
+}</code></pre></div>
+<ul>
+<li><strong>Criptografia autenticada</strong>: XChaCha20-Poly1305 (extensão sodium, padrão no PHP 7.2+) ou, sem sodium, AES-256-CBC + HMAC-SHA256. Um byte alterado faz o <code>decrypt</code> devolver <code>null</code>, nunca lixo.</li>
+<li><strong>Contexto</strong>: o valor fica preso ao lugar (<code>'config.erp_token'</code>, <code>'clientes.cpf'</code>). Copiar o valor cifrado de uma coluna para outra não funciona.</li>
+<li><strong>Nonce aleatório a cada chamada</strong>: o mesmo texto cifrado duas vezes dá resultados diferentes (ninguém descobre que dois clientes têm o mesmo dado).</li>
+<li><strong>Texto ASCII</strong> (<code>h1:...</code>), seguro para <code>VARCHAR</code>/<code>TEXT</code>: cerca de 1,4 vez o tamanho original + 60 caracteres. Use <code>TEXT</code> ou um <code>VARCHAR</code> com folga.</li>
+</ul>
+<div class="nota aviso"><p><strong class="rotulo">Senhas de usuários não se criptografam</strong> Senha se guarda com hash lento e irreversível: use o do Joomla (<code>JUserHelper::hashPassword()</code> / <code>verifyPassword()</code>). O CryptoHelper é para segredos que o sistema precisa <strong>ler de volta</strong> (token de API, senha de SMTP de um cliente, certificado).</p></div>
+<h2 id="chave" data-titulo="A chave">A chave</h2>
+<p>Sem configuração, a chave é derivada do <code>secret</code> do <code>configuration.php</code>. Funciona, mas quem troca o <code>secret</code> (ou restaura o site com outro <code>configuration.php</code>) perde o acesso a tudo que foi cifrado. Em produção, gere uma chave própria e guarde fora da pasta pública:</p>
+<div class="codigo"><pre><code data-lang="bash">php -r &#x27;echo base64_encode(random_bytes(32)), PHP_EOL;&#x27;      # ou CryptoHelper::generateKey()</code></pre></div>
+<div class="codigo"><pre><code data-lang="php">// Uma vez, no início do componente: de variável de ambiente ou de um arquivo fora do public_html
+CryptoHelper::setKey(getenv(&#x27;LOJA_CRYPTO_KEY&#x27;) ?: trim(file_get_contents(&#x27;/home/loja/chaves/crypto.key&#x27;)));</code></pre></div>
+<h3 id="rotacao">Troca de chave (rotação)</h3>
+<div class="codigo"><pre><code data-lang="php">CryptoHelper::setKey($chaveNova);
+CryptoHelper::setPreviousKeys(array($chaveAntiga));   // decrypt tenta a nova e depois as antigas
+
+// Recifra aos poucos (ex.: num job) e, quando acabar, remova a chave antiga
+foreach (OrmTables::table(&#x27;#__loja_integracoes&#x27;)-&gt;get() as $linha) {
+    $novo = CryptoHelper::reencrypt($linha-&gt;token, &#x27;integracoes.token&#x27;);
+
+    if ($novo !== null) {
+        OrmTables::table(&#x27;#__loja_integracoes&#x27;)-&gt;where(&#x27;id&#x27;, $linha-&gt;id)-&gt;update(array(&#x27;token&#x27; =&gt; $novo));
+    }
+}</code></pre></div>
+<div class="nota perigo"><p>Faça backup da chave junto com o backup do banco, em lugar separado. Sem a chave, os dados cifrados são irrecuperáveis.</p></div>
+<h2 id="criptografia" data-titulo="Criptografia">Métodos de criptografia</h2>
+<div class="metodo"><h3 id="encrypt"><code>encrypt()</code> / <code>decrypt()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CryptoHelper::encrypt(string $plaintext, string $context = ''): string
+CryptoHelper::decrypt(string $encrypted, string $context = ''): string|null</div><p><code>decrypt</code> devolve <code>null</code> (e registra no log <code>crypto</code>) se o valor foi adulterado, é de outro contexto, foi cifrado com outra chave ou nem é um valor cifrado. Lança exceção só se o PHP não tiver como decifrar (valor <code>h1:</code> num servidor sem sodium).</p></div>
+<div class="metodo"><h3 id="isEncrypted"><code>isEncrypted()</code> / <code>reencrypt()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CryptoHelper::isEncrypted(string $value): bool
+CryptoHelper::reencrypt(string $encrypted, string $context = ''): string|null</div><p>Para migrar colunas que ainda têm valores em claro e para rotação de chave.</p>
+<div class="codigo"><pre><code data-lang="php">// Migração: cifra o que ainda está em claro
+if (!CryptoHelper::isEncrypted($linha-&gt;cpf)) {
+    $atualizar[&#x27;cpf&#x27;] = CryptoHelper::encrypt($linha-&gt;cpf, &#x27;clientes.cpf&#x27;);
+}</code></pre></div>
+</div>
+<div class="nota aviso"><p>Coluna cifrada não pode ser buscada com <code>WHERE cpf = ?</code> nem ordenada. Se precisar buscar, guarde também um índice cego: <code>cpf_hash = CryptoHelper::hashToken($cpfSóDígitos)</code>, e busque por ele.</p></div>
+<h2 id="webhooks" data-titulo="Webhooks">Assinatura de webhooks</h2>
+<div class="metodo"><h3 id="verifySignature"><code>verifySignature()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CryptoHelper::verifySignature(string $payload, string $signature, string $secret, array $options = array()): bool</div><p>Confere em tempo constante. Opções: <code>algo</code> (<code>sha256</code>), <code>encoding</code> (<code>hex</code> ou <code>base64</code>), <code>prefix</code> (ex.: <code>sha256=</code>).</p>
+<div class="codigo"><pre><code data-lang="php">$corpo = file_get_contents(&#x27;php://input&#x27;);   // o corpo CRU: re-codificar o JSON muda os bytes e quebra a assinatura
+$assinatura = isset($_SERVER[&#x27;HTTP_X_HUB_SIGNATURE_256&#x27;]) ? $_SERVER[&#x27;HTTP_X_HUB_SIGNATURE_256&#x27;] : &#x27;&#x27;;
+
+if (!CryptoHelper::verifySignature($corpo, $assinatura, $segredoDoWebhook, array(&#x27;prefix&#x27; =&gt; &#x27;sha256=&#x27;))) {
+    return ApiResponseHelper::unauthorized(&#x27;Assinatura inválida.&#x27;);
+}</code></pre></div>
+<p>Para receber webhooks com proteção contra reenvio e processamento pela fila, veja o <a href="webhook-helper.html">WebhookHelper</a>.</p></div>
+<div class="metodo"><h3 id="hmac"><code>hmac()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CryptoHelper::hmac(string $data, string|null $secret = null, string $algo = 'sha256'): string</div><p>HMAC em hex. Sem <code>$secret</code>, usa uma subchave da chave mestra (para assinar coisas do próprio sistema, como webhooks que você envia).</p></div>
+<h2 id="links-assinados" data-titulo="Links assinados">Links assinados com prazo</h2>
+<div class="metodo"><h3 id="sign"><code>sign()</code> / <code>verifySigned()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CryptoHelper::sign(array $data, int $seconds = 3600): string
+CryptoHelper::verifySigned(string $token): array|null</div><p>Um link que carrega dados e não pode ser alterado nem usado depois do prazo, sem tabela de tokens: "baixar o boleto", "confirmar presença", "descadastrar".</p>
+<div class="codigo"><pre><code data-lang="php">// Gerar (e-mail)
+$link = JUri::root() . &#x27;index.php?option=com_loja&amp;task=boleto.baixar&amp;t=&#x27; . CryptoHelper::sign(array(&#x27;pedido&#x27; =&gt; $pedido-&gt;id), 7 * 86400);
+
+// Conferir (controller)
+$dados = CryptoHelper::verifySigned(InputHelper::string(&#x27;t&#x27;));
+
+if ($dados === null) {
+    return ApiResponseHelper::forbidden(&#x27;Link inválido ou vencido.&#x27;);
+}
+
+$pedidoId = (int) $dados[&#x27;pedido&#x27;];</code></pre></div>
+<p>Os dados ficam <strong>legíveis</strong> no link (base64), só não podem ser alterados. Não coloque segredos neles. Para uso único ("redefinir senha"), use um token guardado com <code>hashToken()</code>.</p></div>
+<h2 id="tokens" data-titulo="Tokens e códigos">Tokens, códigos e comparação</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Resultado</th><th>Uso</th></tr></thead><tbody>
+<tr><td><code>token($bytes = 32)</code></td><td><code>7oce1Y5lP-VULkAo_xG...</code> (43 caracteres)</td><td>links de redefinição, chaves de API, ids públicos imprevisíveis</td></tr>
+<tr><td><code>numericCode($digitos = 6)</code></td><td><code>'048213'</code> (com zeros à esquerda)</td><td>código por SMS/e-mail (limite as tentativas com o <a href="rate-limit-helper.html">RateLimitHelper</a>)</td></tr>
+<tr><td><code>hashToken($token)</code></td><td>HMAC-SHA256 em hex (64)</td><td>guardar o token no banco; quem lê o banco não consegue usá-lo</td></tr>
+<tr><td><code>equals($conhecido, $recebido)</code></td><td><code>bool</code> em tempo constante</td><td>comparar tokens, códigos e assinaturas (nunca com <code>===</code>)</td></tr>
+<tr><td><code>mask($valor, $visiveis = 4)</code></td><td><code>j***@exemplo.com</code>, <code>*******8909</code></td><td>mostrar dado sensível em telas e logs</td></tr>
+<tr><td><code>generateKey()</code></td><td>32 bytes em base64</td><td>criar a chave mestra</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Redefinição de senha
+$token = CryptoHelper::token();
+OrmTables::table(&#x27;#__loja_resets&#x27;)-&gt;create(array(
+    &#x27;user_id&#x27; =&gt; $usuario-&gt;id,
+    &#x27;token_hash&#x27; =&gt; CryptoHelper::hashToken($token),   // só o hash vai ao banco
+    &#x27;expira_em&#x27; =&gt; DateHelper::toSql(&#x27;+1 hour&#x27;),
+));
+MailHelper::queue(array(&#x27;to&#x27; =&gt; $usuario-&gt;email, &#x27;subject&#x27; =&gt; &#x27;Redefinir senha&#x27;, &#x27;template&#x27; =&gt; &#x27;reset&#x27;, &#x27;data&#x27; =&gt; array(&#x27;link&#x27; =&gt; $urlBase . &#x27;&amp;t=&#x27; . $token)));
+
+// Ao receber o link
+$registro = OrmTables::table(&#x27;#__loja_resets&#x27;)
+    -&gt;where(&#x27;token_hash&#x27;, CryptoHelper::hashToken(InputHelper::string(&#x27;t&#x27;)))
+    -&gt;where(&#x27;expira_em&#x27;, &#x27;&gt;&#x27;, DateHelper::nowSql())
+    -&gt;first();</code></pre></div>
+<h2 id="requisitos" data-titulo="Requisitos">Requisitos</h2>
+<ul><li>PHP 7.0+ com <code>openssl</code>; com <code>sodium</code> (padrão no 7.2+) usa XChaCha20-Poly1305. Valores <code>h2:</code> (openssl) são lidos em qualquer servidor; valores <code>h1:</code> exigem sodium no servidor que lê.</li><li>Sem <code>setKey()</code>, um <code>secret</code> do Joomla com pelo menos 16 caracteres.</li></ul>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="webhook-helper.html">WebhookHelper</a>: receber webhooks assinados.</li><li><a href="rate-limit-helper.html">RateLimitHelper</a>: limite de tentativas de códigos.</li><li><a href="log-helper.html">LogHelper</a>: mascaramento de segredos no log.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="rate-limit-helper.html"><small>← Anterior</small>RateLimitHelper</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>
