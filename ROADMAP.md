@@ -16,7 +16,7 @@ Fila de trabalho em ordem. Quem retomar (sessão nova ou depois do limite de uso
 Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$dependencies` (e `$autoloadMap`); `skills/joomla-helpers/scripts/instalar.sh` (`DEP` e `TODOS`); `docs/<helper>.html`; link no nav e no rodapé de **todos** os `docs/*.html`; anterior/próxima dos vizinhos; card em `docs/index.html`; seção em `docs/referencia-rapida.html`; `index.html` da raiz; ficha nas duas skills (`skills/joomla-helpers/` e `skill/`). Código PHP 7.0+ e passar em `skills/joomla-helpers/scripts/checar.sh`; `php -l` em tudo.
 
 - [x] 1. Vigia.js: corrigir erro sem campo que trava o envio em silêncio (vai para a mensagem geral) e `min`/`max` em listas indexadas (objetos contam chaves); atualizar `docs/vigia-js.html` (remover os avisos de limitação) e testar no jsdom.
-- [ ] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).
+- [x] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).
 - [ ] 3. `HttpHelper`
 - [ ] 4. `LockHelper`
 - [ ] 5. `CacheHelper`
@@ -33,7 +33,8 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 
 ### Notas de retomada
 
-- (vazio)
+- Ferramenta de docs: `/tmp/claude-1000/-developer-helpersJoomla/c10b9e3f-ad8d-495d-a7f4-258375c63021/scratchpad/docs_tool.py` (gera página a partir de `.src`, regrava nav/anterior-próxima/rodapé de todos os docs, `card()`, `ref()`, `root()`). Lista do menu em `nav.json` ao lado. Se o arquivo sumiu, a navegação é HTML estático: copie de uma página existente.
+- Item 2 também corrigiu: `PermissionHelper` chamava `LogHelper::write` (privado; log de negativas nunca gravava) e expunha o contexto no JSON; `ExportHelper` usava escape vazio no `fputcsv` (só existe no PHP 7.4+).
 
 ## Prioridade alta
 

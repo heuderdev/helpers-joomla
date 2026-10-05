@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ExportHelper · helpers-joomla</title>
+<meta name="description" content="ExportHelper: exportação de CSV para arquivo ou download direto, com colunas calculadas, proteção contra injeção de fórmulas, BOM para o Excel e consultas grandes em lotes.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › ExportHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" class="ativo" aria-current="page" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>ExportHelper</h1><p class="lead">Exporta listas para CSV, em arquivo ou como download direto: colunas com rótulo e cálculo, proteção contra injeção de fórmulas no Excel, BOM para acentos e consultas grandes em lotes, sem estourar a memória.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">public function exportar()
+{
+    if (!PermissionHelper::require(&#x27;core.manage&#x27;)) {
+        return;
+    }
+
+    $db = JFactory::getDbo();
+    $query = $db-&gt;getQuery(true)
+        -&gt;select(&#x27;id, cliente, total, status, created_at&#x27;)
+        -&gt;from(&#x27;#__loja_pedidos&#x27;)
+        -&gt;order(&#x27;id&#x27;);   // ordem estável: obrigatória para ler em lotes
+
+    ExportHelper::download(&#x27;pedidos-&#x27; . date(&#x27;Y-m-d&#x27;) . &#x27;.csv&#x27;, ExportHelper::generatorFromQuery($query), array(
+        &#x27;id&#x27; =&gt; &#x27;Pedido&#x27;,
+        &#x27;cliente&#x27; =&gt; &#x27;Cliente&#x27;,
+        &#x27;total&#x27; =&gt; array(&#x27;label&#x27; =&gt; &#x27;Total (R$)&#x27;, &#x27;callback&#x27; =&gt; function ($linha) {
+            return number_format((float) $linha[&#x27;total&#x27;], 2, &#x27;,&#x27;, &#x27;.&#x27;);
+        }),
+        &#x27;status&#x27; =&gt; &#x27;Status&#x27;,
+        &#x27;created_at&#x27; =&gt; &#x27;Data&#x27;,
+    ), array(&#x27;utf8_bom&#x27; =&gt; true));
+
+    JFactory::getApplication()-&gt;close();   // sem isto, o Joomla acrescenta o HTML do template ao arquivo
+}</code></pre></div>
+<ul>
+<li><strong>Separador <code>;</code> por padrão</strong>: o Excel em português abre direto, com as colunas certas.</li>
+<li><strong>Injeção de fórmulas bloqueada</strong>: valores que começam com <code>=</code>, <code>+</code>, <code>-</code>, <code>@</code>, tab ou CR ganham um <code>'</code> na frente, para o Excel não executar <code>=HYPERLINK(...)</code> digitado por um cliente.</li>
+<li><strong>Memória constante</strong>: aceita array, <code>Traversable</code> ou generator; <code>generatorFromQuery()</code> lê o banco em lotes.</li>
+<li><strong>Arquivos só dentro do site</strong>: caminhos com <code>../</code> ou fora de <code>JPATH_SITE</code> são recusados.</li>
+</ul>
+<div class="nota aviso"><p><code>fromQuery()</code>, <code>downloadFromQuery()</code> e <code>generatorFromQuery()</code> recebem SQL (texto ou <code>JDatabaseQuery</code>) e executam no banco padrão do Joomla (<code>JFactory::getDbo()</code>), não numa conexão registrada no <code>DbConnectionHelper</code>. Para outro banco ou para usar o <a href="orm-base-leitura.html">OrmBase</a>, passe as linhas você mesmo (array ou generator, ex.: lendo com <code>chunk()</code>).</p></div>
+<h2 id="colunas" data-titulo="Colunas">Colunas</h2>
+<p>O terceiro argumento diz quais colunas sair, em que ordem e com que título. Quatro formas, que podem ser misturadas:</p>
+<div class="codigo"><pre><code data-lang="php">$colunas = array(
+    &#x27;id&#x27;,                                              // chave e título iguais
+    &#x27;nome&#x27; =&gt; &#x27;Nome do cliente&#x27;,                       // chave =&gt; título
+    &#x27;endereco.cidade&#x27; =&gt; &#x27;Cidade&#x27;,                     // caminho com ponto em arrays aninhados
+    &#x27;situacao&#x27; =&gt; function ($linha, $indice) {         // calculada (título = chave)
+        return $linha[&#x27;ativo&#x27;] ? &#x27;Ativo&#x27; : &#x27;Inativo&#x27;;
+    },
+    &#x27;valor&#x27; =&gt; array(                                  // completa
+        &#x27;label&#x27; =&gt; &#x27;Valor (R$)&#x27;,
+        &#x27;key&#x27; =&gt; &#x27;total&#x27;,
+        &#x27;callback&#x27; =&gt; function ($linha) {
+            return number_format((float) $linha[&#x27;total&#x27;], 2, &#x27;,&#x27;, &#x27;.&#x27;);
+        },
+    ),
+    array(&#x27;key&#x27; =&gt; &#x27;email&#x27;, &#x27;label&#x27; =&gt; &#x27;E-mail&#x27;),      // lista de arrays
+);</code></pre></div>
+<p>Linhas podem ser arrays ou objetos. Valores: <code>null</code> → vazio; <code>true</code>/<code>false</code> → <code>Sim</code>/<code>Não</code>; <code>DateTime</code> → <code>Y-m-d H:i:s</code>; arrays e objetos → JSON; texto é aparado (<code>trim</code>).</p>
+<h2 id="metodos" data-titulo="Métodos">Métodos</h2>
+<div class="metodo"><h3 id="download"><code>download()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ExportHelper::download(string $fileName, array|Traversable $rows, array $columns, array $options = array()): bool</div><p>Envia o CSV direto para o navegador (sem gravar no disco): limpa os buffers de saída, manda os cabeçalhos de download (<code>no-store</code>, <code>nosniff</code>, nome com acentos via <code>filename*</code>) e escreve linha a linha. Devolve <code>false</code> se falhar antes de começar. <strong>Chame <code>$app-&gt;close()</code> logo depois.</strong></p></div>
+<div class="metodo"><h3 id="csv"><code>csv()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ExportHelper::csv(string $filePath, array|Traversable $rows, array $columns, string|null $baseDirectory = null, array $options = array()): array</div><p>Grava o CSV num arquivo (relativo à base, criada se não existir). Devolve o envelope <code>{ success, status, mensagem, data: { file: {...}, export: {...} } }</code>; <code>file</code> tem <code>relative_path</code>, <code>url</code>, <code>size</code>, <code>size_formatted</code>…; <code>export</code> tem <code>rows_written</code> e <code>bytes_written</code>.</p>
+<div class="codigo"><pre><code data-lang="php">$nome = ExportHelper::temporaryFileName(&#x27;clientes&#x27;);   // clientes_20261005143000_9f2c....csv (imprevisível)
+$r = ExportHelper::csv(&#x27;exportacoes/&#x27; . $nome, $linhas, $colunas, &#x27;administrator/tmp&#x27;);
+
+if (!$r[&#x27;success&#x27;]) {
+    return ApiResponseHelper::error($r[&#x27;mensagem&#x27;]);
+}
+
+$caminho = $r[&#x27;data&#x27;][&#x27;file&#x27;][&#x27;relative_path&#x27;];</code></pre></div>
+</div>
+<div class="metodo"><h3 id="fromQuery"><code>fromQuery()</code> / <code>downloadFromQuery()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ExportHelper::fromQuery(string $filePath, string|JDatabaseQuery $query, array $columns, $baseDirectory = null, array $options = array()): array
+ExportHelper::downloadFromQuery(string $fileName, string|JDatabaseQuery $query, array $columns, array $options = array()): bool</div><p>Executam a consulta e exportam o resultado. Carregam <strong>todas as linhas na memória</strong> (<code>loadAssocList</code>): bom até algumas dezenas de milhares de linhas. Para mais, use <code>generatorFromQuery()</code>.</p></div>
+<div class="metodo"><h3 id="generatorFromQuery"><code>generatorFromQuery()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ExportHelper::generatorFromQuery(string|JDatabaseQuery $query, int $batchSize = 1000): Generator</div><p>Lê a consulta em lotes (<code>LIMIT/OFFSET</code>, de 1 a 10.000 linhas) e entrega linha a linha. A consulta <strong>precisa de <code>ORDER BY</code></strong> por uma coluna única (ex.: <code>id</code>): sem ordem estável, o banco pode repetir ou pular linhas entre os lotes.</p></div>
+<div class="metodo"><h3 id="temporaryFileName"><code>temporaryFileName()</code><span class="tag estatico">estático</span></h3><div class="assinatura">ExportHelper::temporaryFileName(string $prefix = 'exportacao'): string</div><p>Nome com data e 32 caracteres aleatórios. Use para arquivos gravados em pasta acessível: o nome não pode ser adivinhado.</p></div>
+<h2 id="opcoes" data-titulo="Opções">Opções</h2>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>delimiter</code></td><td><code>;</code></td><td>Separador (1 caractere). Use <code>,</code> para sistemas em inglês, <code>"\t"</code> para TSV.</td></tr>
+<tr><td><code>enclosure</code> / <code>escape</code></td><td><code>"</code> / vazio</td><td>Aspas e escape do <code>fputcsv</code>. Escape vazio = padrão RFC 4180 (aspas dobradas); no PHP anterior a 7.4 vira <code>\</code>.</td></tr>
+<tr><td><code>headers</code></td><td><code>true</code></td><td>Escreve a linha de títulos.</td></tr>
+<tr><td><code>utf8_bom</code></td><td><code>false</code></td><td>Escreve o BOM: o Excel no Windows passa a mostrar os acentos certos. Deixe desligado para importação em outros sistemas.</td></tr>
+<tr><td><code>protect_csv_injection</code></td><td><code>true</code></td><td>Prefixa <code>'</code> em valores que começam com <code>= + - @</code>. Desligar só para arquivos que não serão abertos em planilha (note que números negativos também ganham o prefixo).</td></tr>
+<tr><td><code>max_rows</code></td><td>500.000</td><td>Limite de segurança; acima dele a exportação falha (troque com <code>setMaxRows()</code>).</td></tr>
+<tr><td><code>overwrite</code></td><td><code>true</code></td><td>Só em <code>csv()</code>: sobrescrever arquivo existente.</td></tr>
+<tr><td><code>on_row</code></td><td>—</td><td><code>function ($linha, $indice, $escritas)</code> depois de cada linha.</td></tr>
+<tr><td><code>on_progress</code> / <code>progress_every</code></td><td>— / 1000</td><td><code>function ($escritas)</code> a cada N linhas e no fim (ex.: <code>QueueHelper::progress()</code>).</td></tr>
+</tbody></table></div>
+<div class="nota aviso"><p>Com <code>protect_csv_injection</code>, <code>-150,00</code> sai como <code>'-150,00</code>. Se a planilha precisa somar negativos, formate o valor numa coluna calculada sem sinal no início (ex.: <code>(150,00)</code>) ou desligue a proteção só quando todos os dados vierem do próprio sistema.</p></div>
+<h2 id="grandes" data-titulo="Exportações grandes">Exportações grandes (pela fila)</h2>
+<p>Acima de alguns segundos, a exportação não deve rodar na requisição (timeout, pessoa clicando de novo). Gere o arquivo num job e avise quando ficar pronto:</p>
+<div class="codigo"><pre><code data-lang="php">class ExportarPedidosJob extends AbstractJob
+{
+    public function handle()
+    {
+        $db = JFactory::getDbo();
+        $query = $db-&gt;getQuery(true)
+            -&gt;select(&#x27;id, cliente, total, status, created_at&#x27;)
+            -&gt;from(&#x27;#__loja_pedidos&#x27;)
+            -&gt;where(&#x27;created_at &gt;= &#x27; . $db-&gt;quote($this-&gt;getPayload(&#x27;desde&#x27;)))
+            -&gt;order(&#x27;id&#x27;);
+
+        $nome = &#x27;exportacoes/&#x27; . ExportHelper::temporaryFileName(&#x27;pedidos&#x27;);
+        $self = $this;
+
+        $total = (int) $this-&gt;getPayload(&#x27;total&#x27;);   // contado ao criar o job
+
+        $r = ExportHelper::csv($nome, ExportHelper::generatorFromQuery($query, 2000), $this-&gt;getPayload(&#x27;colunas&#x27;), &#x27;administrator/tmp&#x27;, array(
+            &#x27;utf8_bom&#x27; =&gt; true,
+            &#x27;on_progress&#x27; =&gt; function ($linhas) use ($self, $total) {
+                $self-&gt;progress($linhas, $total);   // a tela acompanha pelo QueueHelper::status()
+            },
+        ));
+
+        if (!$r[&#x27;success&#x27;]) {
+            throw new RuntimeException($r[&#x27;mensagem&#x27;]);
+        }
+
+        return array(&#x27;arquivo&#x27; =&gt; $r[&#x27;data&#x27;][&#x27;file&#x27;][&#x27;relative_path&#x27;]);   // o worker conclui o job com este resultado
+    }
+}</code></pre></div>
+<p>Entregue o arquivo pronto com <a href="upload-master.html"><code>UploadMaster::stream()</code></a> ou <a href="file-helper.html">FileHelper</a>, depois de conferir que ele pertence a quem pediu. Veja o <a href="guia-fila.html">guia da fila</a>.</p>
+<h2 id="configuracao" data-titulo="Configuração">Configuração</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setBaseDirectory($pasta)</code> / <code>getBaseDirectory()</code></td><td>Pasta base dos arquivos (padrão: raiz do site). Prefira <code>administrator/tmp</code> ou uma pasta bloqueada por <code>.htaccess</code>.</td></tr>
+<tr><td><code>setMaxRows($n)</code></td><td>Limite de linhas.</td></tr>
+<tr><td><code>setDirectoryPermission()</code> / <code>setFilePermission()</code></td><td>Permissões (<code>0755</code> / <code>0644</code>).</td></tr>
+<tr><td><code>setLogCategory()</code> / <code>setLogDirectory()</code></td><td>Log das exportações (<code>export_helper.php</code>).</td></tr>
+<tr><td><code>formatBytes($bytes)</code></td><td><code>1.5 MB</code>.</td></tr>
+</tbody></table></div>
+<div class="nota perigo"><p>Exportações costumam ter dados pessoais (CPF, e-mail, telefone). Não grave em pasta pública com nome previsível, exija permissão na task (<code>PermissionHelper::require</code>) e apague os arquivos antigos.</p></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="csv-helper.html">CsvHelper</a>: o caminho inverso (importar CSV).</li><li><a href="queue-helper.html">QueueHelper</a>: exportações em segundo plano.</li><li><a href="permission-helper.html">PermissionHelper</a>: quem pode exportar.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="csv-helper.html"><small>← Anterior</small>CsvHelper</a><a class="proxima" href="file-helper.html"><small>Próxima →</small>FileHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

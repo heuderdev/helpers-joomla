@@ -721,6 +721,11 @@ class ExportHelper
 
     private static function writeCsvLine($handle, array $line, $delimiter, $enclosure, $escape)
     {
+        // Escape vazio (padrão RFC 4180) só existe no fputcsv a partir do PHP 7.4.
+        if ($escape === '' && PHP_VERSION_ID < 70400) {
+            $escape = '\\';
+        }
+
         $result = fputcsv(
             $handle,
             $line,

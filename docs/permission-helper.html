@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PermissionHelper · helpers-joomla</title>
+<meta name="description" content="PermissionHelper: permissões do Joomla (ACL) em uma linha no controller, acesso por registro contra IDOR, grupos, níveis de acesso e resposta 401/403 padronizada.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › PermissionHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" class="ativo" aria-current="page" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>PermissionHelper</h1><p class="lead">Permissões do Joomla (ACL) em uma linha no controller: <code>core.edit</code> no componente ou no registro, "só o dono do pedido", grupos e níveis de acesso, com resposta 401/403 padronizada e registro das tentativas negadas.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">public function excluir()
+{
+    // 401 se não estiver logado, 403 se não puder: responde e encerra (JSON) ou avisa (HTML)
+    if (!PermissionHelper::require(&#x27;core.delete&#x27;)) {
+        return;
+    }
+
+    $id = InputHelper::int(&#x27;id&#x27;);
+
+    // O pedido é deste cliente? (protege contra IDOR: trocar o id na URL)
+    if (!PermissionHelper::requireAccessEntity(&#x27;pedido&#x27;, $id, &#x27;core.delete&#x27;)) {
+        return;
+    }
+
+    // ... exclui
+}</code></pre></div>
+<ul>
+<li><strong>Usa a ACL do Joomla</strong> (<code>$user-&gt;authorise()</code>): o que o administrador configura em <em>Opções → Permissões</em> do componente vale aqui.</li>
+<li><strong>Nunca lança exceção para negar</strong>: os métodos <code>can*</code> devolvem <code>false</code> em qualquer erro (falha fechada).</li>
+<li><strong>Respostas padronizadas</strong>: com o <code>ApiResponseHelper</code> carregado, nega com <code>unauthorized()</code> (401) ou <code>forbidden()</code> (403). Em JSON, responde e encerra; em HTML, mostra a mensagem do Joomla.</li>
+<li><strong>Registra as negativas</strong>: log <code>permission_helper.warning</code> com usuário, grupos, IP e URL e, se o <a href="audit-helper.html">AuditHelper</a> estiver carregado, um evento de segurança no banco.</li>
+</ul>
+<div class="nota aviso"><p>Os métodos <code>require*</code> <strong>devolvem <code>false</code></strong> quando negam. Em requisições HTML o Joomla não encerra: sempre use <code>if (!PermissionHelper::require(...)) { return; }</code>.</p></div>
+<h2 id="acoes" data-titulo="Ações e assets">Ações e assets do Joomla</h2>
+<p>Uma permissão é uma <strong>ação</strong> num <strong>asset</strong>. As ações padrão são <code>core.admin</code>, <code>core.manage</code>, <code>core.create</code>, <code>core.edit</code>, <code>core.edit.own</code>, <code>core.edit.state</code>, <code>core.delete</code>; o componente pode declarar outras no <code>access.xml</code> (ex.: <code>loja.pedido.faturar</code>). O asset é o componente (<code>com_loja</code>) ou um registro (<code>com_loja.pedido.15</code>).</p>
+<div class="codigo"><div class="titulo-codigo">administrator/components/com_loja/access.xml</div><pre><code data-lang="xml">&lt;access component=&quot;com_loja&quot;&gt;
+    &lt;section name=&quot;component&quot;&gt;
+        &lt;action name=&quot;core.admin&quot; title=&quot;JACTION_ADMIN&quot; /&gt;
+        &lt;action name=&quot;core.manage&quot; title=&quot;JACTION_MANAGE&quot; /&gt;
+        &lt;action name=&quot;core.create&quot; title=&quot;JACTION_CREATE&quot; /&gt;
+        &lt;action name=&quot;core.edit&quot; title=&quot;JACTION_EDIT&quot; /&gt;
+        &lt;action name=&quot;core.delete&quot; title=&quot;JACTION_DELETE&quot; /&gt;
+        &lt;action name=&quot;loja.pedido.faturar&quot; title=&quot;Faturar pedidos&quot; /&gt;
+    &lt;/section&gt;
+&lt;/access&gt;</code></pre></div>
+<p>Sem componente informado, vale o <code>option</code> da requisição (<code>com_loja</code>), ou o definido em <code>setDefaultComponent()</code>.</p>
+<h2 id="consultar" data-titulo="Consultar (can)">Consultar sem responder: <code>can*</code></h2>
+<p>Devolvem <code>true</code>/<code>false</code>. Use em views (mostrar ou esconder botões) e em regras de negócio.</p>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Verdadeiro quando</th></tr></thead><tbody>
+<tr><td><code>can($acao, $asset = null, $usuario = null)</code></td><td>o usuário logado tem a ação no asset (padrão: o componente atual)</td></tr>
+<tr><td><code>canComponent($acao, $componente = null)</code></td><td>tem a ação no componente</td></tr>
+<tr><td><code>canEntity($acao, $tipo, $id, $componente = null)</code></td><td>tem a ação no registro (asset <code>com_loja.pedido.15</code>)</td></tr>
+<tr><td><code>canAny(array $acoes, $asset)</code> / <code>canAll(...)</code></td><td>tem alguma / todas</td></tr>
+<tr><td><code>isAdmin($componente = null)</code></td><td><code>core.admin</code> no componente ou no site (Super Usuário)</td></tr>
+<tr><td><code>isManager($componente = null)</code></td><td><code>core.manage</code> ou admin</td></tr>
+<tr><td><code>canAccessEntity($tipo, $id, $acao = 'core.view')</code></td><td>admin, ou ACL do registro, ou o <a href="#resolvedores">resolvedor</a> do tipo diz que sim</td></tr>
+<tr><td><code>evaluate(callable $regra, $usuario, $contexto)</code></td><td>a função <code>($usuario, $contexto)</code> devolve verdadeiro</td></tr>
+</tbody></table></div>
+<div class="codigo"><div class="titulo-codigo">tmpl/default.php</div><pre><code data-lang="php">&lt;?php if (PermissionHelper::can(&#x27;core.edit&#x27;)) : ?&gt;
+    &lt;a class=&quot;btn btn-primary&quot; href=&quot;&lt;?php echo JRoute::_(&#x27;index.php?option=com_loja&amp;task=pedido.edit&amp;id=&#x27; . (int) $pedido-&gt;id); ?&gt;&quot;&gt;Editar&lt;/a&gt;
+&lt;?php endif; ?&gt;
+
+&lt;?php if (PermissionHelper::canEntity(&#x27;loja.pedido.faturar&#x27;, &#x27;pedido&#x27;, $pedido-&gt;id)) : ?&gt;
+    &lt;button type=&quot;button&quot; data-faturar=&quot;&lt;?php echo (int) $pedido-&gt;id; ?&gt;&quot;&gt;Faturar&lt;/button&gt;
+&lt;?php endif; ?&gt;</code></pre></div>
+<div class="nota aviso"><p>Esconder o botão não protege nada: a task do controller precisa do <code>require*</code> correspondente.</p></div>
+<h2 id="exigir" data-titulo="Exigir (require)">Exigir no controller: <code>require*</code></h2>
+<p>Mesmos critérios dos <code>can*</code>; se negar, registra, responde 401/403 e devolve <code>false</code>. Sem login, todos respondem 401 antes de olhar a permissão.</p>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve se permitido</th></tr></thead><tbody>
+<tr><td><code>requireLogin($mensagem, $redirect)</code></td><td>o <code>JUser</code></td></tr>
+<tr><td><code>require($acao, $asset, $mensagem, $redirect, $contexto)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireComponent($acao, $componente, ...)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireEntity($acao, $tipo, $id, $componente, ...)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireAccessEntity($tipo, $id, $acao = 'core.view', ...)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireAny(array $acoes, ...)</code> / <code>requireAll(...)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireGroup($grupoId, ...)</code> / <code>requireAnyGroup(array $grupos, ...)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireUserIn($ids, ...)</code> / <code>requireAllowedUser(array $ids, ...)</code></td><td><code>true</code></td></tr>
+<tr><td><code>requireCallback(callable $regra, ...)</code></td><td><code>true</code></td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Mensagem e destino próprios (o destino só vale em requisições HTML)
+if (!PermissionHelper::require(&#x27;loja.pedido.faturar&#x27;, null, &#x27;Só o financeiro fatura pedidos.&#x27;, JRoute::_(&#x27;index.php?option=com_loja&amp;view=pedidos&#x27;, false))) {
+    return;
+}
+
+// Regra de negócio como permissão
+if (!PermissionHelper::requireCallback(function ($usuario) use ($pedido) {
+    return $pedido-&gt;status === &#x27;aberto&#x27; &amp;&amp; (int) $pedido-&gt;vendedor_id === (int) $usuario-&gt;id;
+}, &#x27;Só o vendedor do pedido pode alterá-lo enquanto estiver aberto.&#x27;)) {
+    return;
+}</code></pre></div>
+<h2 id="resolvedores" data-titulo="Acesso por registro (IDOR)">Acesso por registro: resolvedores (contra IDOR)</h2>
+<p>A ACL do Joomla responde "pode editar pedidos", não "pode editar <strong>este</strong> pedido". Para a área do cliente ("só vejo os meus pedidos"), registre um resolvedor por tipo. <code>canAccessEntity</code>/<code>requireAccessEntity</code> liberam se o usuário for admin do componente, se a ACL do registro permitir, ou se o resolvedor devolver <code>true</code>.</p>
+<div class="codigo"><pre><code data-lang="php">// Uma vez, no início do componente (ex.: site/loja.php)
+PermissionHelper::registerEntityResolver(&#x27;pedido&#x27;, function ($pedidoId, $usuario, $contexto) {
+    return OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+        -&gt;where(&#x27;id&#x27;, (int) $pedidoId)
+        -&gt;where(&#x27;cliente_user_id&#x27;, (int) $usuario-&gt;id)
+        -&gt;exists();
+});
+
+PermissionHelper::registerEntityResolver(&#x27;endereco&#x27;, function ($id, $usuario) {
+    return OrmTables::table(&#x27;#__loja_enderecos&#x27;)-&gt;where(&#x27;id&#x27;, (int) $id)-&gt;where(&#x27;user_id&#x27;, (int) $usuario-&gt;id)-&gt;exists();
+});
+
+// No controller
+$id = InputHelper::int(&#x27;id&#x27;);
+
+if (!PermissionHelper::requireAccessEntity(&#x27;pedido&#x27;, $id)) {
+    return;   // 403 &quot;Você não possui permissão para acessar este registro.&quot; + log + auditoria
+}</code></pre></div>
+<p>O <code>$contexto</code> recebe <code>entity_type</code>, <code>entity_id</code>, <code>component</code>, <code>action</code> e o que você passar no último argumento. Tipos aceitam letras, números, <code>_</code> e <code>-</code>; ids vazios, zero ou negativos são recusados.</p>
+<h2 id="grupos" data-titulo="Usuário, grupos e níveis">Usuário, grupos e níveis de acesso</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>user($usuario = null)</code></td><td>o <code>JUser</code> informado ou o logado</td></tr>
+<tr><td><code>userId()</code>, <code>isLoggedIn()</code>, <code>isGuest()</code></td><td>id (0 = visitante) e atalhos</td></tr>
+<tr><td><code>groups()</code></td><td>ids dos grupos autorizados (inclui os herdados)</td></tr>
+<tr><td><code>hasGroup($id)</code>, <code>hasAnyGroup(array)</code>, <code>hasAllGroups(array)</code></td><td><code>bool</code></td></tr>
+<tr><td><code>viewLevels()</code>, <code>canView($nivel)</code></td><td>níveis de acesso (o campo <code>access</code> dos registros)</td></tr>
+<tr><td><code>isUserIn($ids)</code>, <code>allowsUser($userId, array $ids)</code></td><td>o usuário está numa lista fixa de ids</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Lista só o que o nível de acesso do usuário permite (como o com_content faz)
+$niveis = PermissionHelper::viewLevels() ?: array(1);   // 1 = Público
+$artigos = OrmTables::table(&#x27;#__loja_paginas&#x27;)-&gt;whereIn(&#x27;access&#x27;, $niveis)-&gt;get();</code></pre></div>
+<div class="nota dica"><p>Prefira ações (<code>can('loja.pedido.faturar')</code>) a grupos fixos (<code>hasGroup(9)</code>): o id do grupo muda de um site para outro, e a ação pode ser concedida a qualquer grupo pelo administrador.</p></div>
+<h2 id="configuracao" data-titulo="Configuração">Configuração</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setDefaultComponent('com_loja')</code></td><td><code>option</code> da requisição</td><td>Componente quando nenhum é informado (útil em CLI e plugins).</td></tr>
+<tr><td><code>setUseApiResponse(bool)</code></td><td><code>true</code></td><td>Responder pelo <code>ApiResponseHelper</code>. Sem ele: JSON simples ou <code>enqueueMessage</code> + redirect.</td></tr>
+<tr><td><code>setLogDenied(bool)</code> / <code>setAuditDenied(bool)</code></td><td><code>true</code></td><td>Registrar negativas no log / na auditoria.</td></tr>
+<tr><td><code>setLogCategory($c)</code> / <code>setLogDirectory($d)</code></td><td><code>permission_helper</code></td><td>Onde gravar o log (via <a href="log-helper.html">LogHelper</a>).</td></tr>
+<tr><td><code>registerEntityResolver($tipo, callable)</code></td><td>—</td><td>Regra de acesso a registros de um tipo.</td></tr>
+</tbody></table></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="api-response-helper.html">ApiResponseHelper</a>: as respostas 401/403.</li><li><a href="audit-helper.html">AuditHelper</a>: eventos de acesso negado no banco.</li><li><a href="log-helper.html">LogHelper</a>: o log das negativas.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="log-helper.html"><small>← Anterior</small>LogHelper</a><a class="proxima" href="csv-helper.html"><small>Próxima →</small>CsvHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

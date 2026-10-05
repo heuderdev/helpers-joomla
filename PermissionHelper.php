@@ -26,9 +26,9 @@ class PermissionHelper
     private static function log($message, array $context = array(), $level = 'warning')
     {
         try {
-            if (class_exists('LogHelper')) {
-                LogHelper::write(
-                    $level,
+            // LogHelper expõe um método público por nível (warning(), error()...).
+            if (class_exists('LogHelper') && method_exists('LogHelper', $level)) {
+                LogHelper::$level(
                     $message,
                     self::$logCategory,
                     $context,
@@ -232,8 +232,8 @@ class PermissionHelper
                 array(
                     'success' => false,
                     'status' => 'erro',
-                    'mensagem' => $message,
-                    'context' => $context
+                    // Sem o contexto: ele tem usuário, grupos e IP, que não devem ir ao navegador.
+                    'mensagem' => $message
                 ),
                 JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
             );

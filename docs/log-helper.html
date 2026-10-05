@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LogHelper · helpers-joomla</title>
+<meta name="description" content="LogHelper: logs por categoria e nível no JLog do Joomla, com request_id, usuário, IP e mascaramento automático de senhas, tokens e cartões.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › LogHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" class="ativo" aria-current="page" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>LogHelper</h1><p class="lead">Logs do componente por categoria e nível, gravados pelo <code>JLog</code> do Joomla, com contexto da requisição (<code>request_id</code>, usuário, IP, URL) e mascaramento automático de senhas, tokens e cartões.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>O <code>LogHelper</code> é a base de log dos outros helpers (<code>ApiResponseHelper</code>, <code>DbTransactionHelper</code>, <code>PermissionHelper</code>, <code>FileHelper</code>) e pode ser usado direto no seu código:</p>
+<ul>
+<li><strong>Um arquivo por categoria e nível</strong>: <code>pagamento.error.php</code>, <code>api.info.php</code>, na pasta de logs do Joomla (<code>administrator/logs</code> ou o <code>log_path</code> do <code>configuration.php</code>).</li>
+<li><strong>Contexto automático</strong> em toda linha: <code>request_id</code>, <code>user_id</code>, método, URL e IP.</li>
+<li><strong>Segredos mascarados</strong>: chaves como <code>senha</code>, <code>token</code>, <code>authorization</code>, <code>cvv</code>, <code>api_key</code> viram <code>********1234</code>, inclusive dentro de arrays aninhados.</li>
+<li><strong>Nunca derruba a requisição</strong>: se o log falhar (pasta sem permissão, disco cheio), o método devolve <code>false</code> e o código segue.</li>
+</ul>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/LogHelper.php&#x27;;
+
+LogHelper::info(&#x27;Pedido criado.&#x27;, &#x27;pedidos&#x27;, array(&#x27;pedido_id&#x27; =&gt; 15, &#x27;total&#x27; =&gt; 199.9));
+LogHelper::error(&#x27;Falha ao emitir nota.&#x27;, &#x27;fiscal&#x27;, array(&#x27;pedido_id&#x27; =&gt; 15, &#x27;resposta&#x27; =&gt; $corpo));
+
+try {
+    // ...
+} catch (Throwable $e) {
+    LogHelper::exception($e, &#x27;pedidos&#x27;, array(&#x27;pedido_id&#x27; =&gt; 15));
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">administrator/logs/pedidos.info.php</div><pre><code data-lang="text">2026-10-05T14:30:12+00:00 INFO pedidos Pedido criado. | Contexto: {&quot;request_id&quot;:&quot;6f1c2a9e-...&quot;,&quot;user_id&quot;:42,&quot;request_method&quot;:&quot;POST&quot;,&quot;request_uri&quot;:&quot;/index.php?option=com_loja&amp;task=pedido.salvar&quot;,&quot;ip&quot;:&quot;200.10.20.30&quot;,&quot;pedido_id&quot;:15,&quot;total&quot;:199.9}</code></pre></div>
+<h2 id="niveis" data-titulo="Níveis e categorias">Níveis e categorias</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Quando usar</th></tr></thead><tbody>
+<tr><td><code>debug()</code></td><td>Detalhes para depurar; desligue em produção (<code>setEnabled</code> ou não chame).</td></tr>
+<tr><td><code>info()</code></td><td>Eventos normais que você quer poder rastrear (pedido criado, importação concluída).</td></tr>
+<tr><td><code>notice()</code></td><td>Algo incomum, mas esperado (cupom expirado usado, nova tentativa).</td></tr>
+<tr><td><code>warning()</code></td><td>Problema contornado (API lenta, valor ajustado, permissão negada).</td></tr>
+<tr><td><code>error()</code></td><td>A operação falhou.</td></tr>
+<tr><td><code>critical()</code> / <code>alert()</code> / <code>emergency()</code></td><td>Falha que exige ação imediata (pagamento sem confirmação, banco fora).</td></tr>
+</tbody></table></div>
+<p>A categoria vira o nome do arquivo: só letras, números, <code>_</code>, <code>.</code> e <code>-</code> (o resto vira <code>_</code>), até 100 caracteres. Sem categoria, vale <code>application</code> (troque com <code>setDefaultCategory()</code>).</p>
+<div class="metodo"><h3 id="niveis-assinatura"><code>debug() … emergency()</code><span class="tag estatico">estático</span></h3><div class="assinatura">LogHelper::info(string $message, string|null $category = null, array $context = array(), string|null $directory = null): bool</div><p>Grava a mensagem com o contexto. <code>$directory</code> troca a pasta só nesta chamada (relativa a <code>JPATH_SITE</code> ou absoluta dentro dela); também pode vir em <code>$context['log_directory']</code>. Devolve <code>true</code> se gravou.</p></div>
+<h2 id="atalhos" data-titulo="Atalhos por assunto">Atalhos por assunto</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Categoria</th><th>Nível</th></tr></thead><tbody>
+<tr><td><code>exception(Throwable $e, $categoria, $contexto)</code></td><td>a informada</td><td>error, com classe, código, arquivo, linha e trace (até 20 mil caracteres)</td></tr>
+<tr><td><code>database(Throwable $e, $sql, $contexto)</code></td><td><code>database</code></td><td>error, com a consulta (até 15 mil caracteres)</td></tr>
+<tr><td><code>security($mensagem, $contexto)</code></td><td><code>security</code></td><td>warning</td></tr>
+<tr><td><code>api($mensagem, $contexto, $nivel)</code></td><td><code>api</code></td><td>info (ou o informado)</td></tr>
+<tr><td><code>upload(...)</code>, <code>queue(...)</code>, <code>audit(...)</code>, <code>payment(...)</code></td><td><code>upload</code>, <code>queue</code>, <code>audit</code>, <code>payment</code></td><td>info (ou o informado)</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">LogHelper::security(&#x27;Tentativa de editar pedido de outro cliente.&#x27;, array(&#x27;pedido_id&#x27; =&gt; $id));
+LogHelper::payment(&#x27;Webhook recebido.&#x27;, array(&#x27;evento&#x27; =&gt; $evento, &#x27;authorization&#x27; =&gt; $header));   // authorization mascarado
+LogHelper::api(&#x27;Frete calculado.&#x27;, array(&#x27;cep&#x27; =&gt; $cep, &#x27;tempo_ms&#x27; =&gt; 840), LogHelper::LEVEL_NOTICE);
+LogHelper::database($e, (string) $query);</code></pre></div>
+<h2 id="mascaramento" data-titulo="Dados sensíveis">Dados sensíveis</h2>
+<p>Toda chave do contexto que contenha um destes nomes tem o valor mascarado (só os 4 últimos caracteres ficam visíveis; valores com até 4 caracteres viram <code>****</code>):</p>
+<p><code>password</code>, <code>senha</code>, <code>token</code>, <code>csrf</code>, <code>authorization</code>, <code>bearer</code>, <code>api_key</code>, <code>apikey</code>, <code>secret</code>, <code>client_secret</code>, <code>access_token</code>, <code>refresh_token</code>, <code>private_key</code>, <code>credit_card</code>, <code>card_number</code>, <code>numero_cartao</code>, <code>cvv</code>, <code>cvc</code>, <code>security_code</code>, <code>cookie</code>, <code>session</code>, <code>sessid</code>.</p>
+<p>A comparação ignora maiúsculas e trata <code>-</code> e espaço como <code>_</code>: <code>X-Api-Key</code>, <code>senha_atual</code> e <code>gateway_token</code> são mascarados. Valores longos são cortados em 10 mil caracteres (<code>...[truncado]</code>).</p>
+<div class="codigo"><pre><code data-lang="php">LogHelper::addSensitiveKey(&#x27;cpf&#x27;);            // passa a mascarar cpf, cpf_titular...
+LogHelper::addSensitiveKey(&#x27;chave_pix&#x27;);
+
+$seguro = LogHelper::sanitize($_POST);       // o mesmo mascaramento, para usar fora do log</code></pre></div>
+<div class="nota aviso"><p>O mascaramento olha as <strong>chaves</strong>. Um segredo dentro de um texto livre (<code>'resposta' =&gt; 'token=abc123...'</code>) ou na própria mensagem não é detectado: nunca concatene segredos na mensagem.</p></div>
+<h2 id="request-id" data-titulo="request_id">request_id</h2>
+<p>Cada requisição recebe um UUID v4, gravado em todas as linhas de log dela. O <code>ApiResponseHelper</code> devolve o mesmo valor em <code>request_id</code> nas respostas de erro, e o Vigia.js o expõe em <code>e.requestId</code>: com o número que a pessoa vê na tela (ou que vem no chamado), você acha todas as linhas daquela requisição.</p>
+<div class="codigo"><pre><code data-lang="php">LogHelper::getRequestId();                         // &#x27;6f1c2a9e-...&#x27;
+LogHelper::setRequestId($_SERVER[&#x27;HTTP_X_REQUEST_ID&#x27;]);   // reaproveita o id do proxy/load balancer</code></pre></div>
+<div class="codigo"><pre><code data-lang="bash">grep -h &#x27;6f1c2a9e&#x27; administrator/logs/*.php</code></pre></div>
+<h2 id="configuracao" data-titulo="Configuração">Configuração</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setEnabled(bool)</code></td><td>Liga/desliga todo o log (ex.: em testes).</td></tr>
+<tr><td><code>setDefaultCategory($categoria)</code></td><td>Categoria quando nenhuma é informada (padrão <code>application</code>).</td></tr>
+<tr><td><code>setBaseDirectory($pasta)</code> / <code>getBaseDirectory()</code></td><td>Pasta dos logs. Precisa ficar dentro de <code>JPATH_SITE</code>; sem <code>../</code>. É criada se não existir.</td></tr>
+<tr><td><code>setDirectoryPermission(0750)</code></td><td>Permissão das pastas criadas (padrão <code>0755</code>).</td></tr>
+<tr><td><code>setRequestId($id)</code> / <code>getRequestId()</code></td><td>Define / lê o id da requisição.</td></tr>
+<tr><td><code>addSensitiveKey($chave)</code> / <code>sanitize($dados)</code></td><td>Mascaramento.</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// No início do componente (ex.: loja.php)
+LogHelper::setDefaultCategory(&#x27;com_loja&#x27;);
+LogHelper::setBaseDirectory(&#x27;administrator/logs/com_loja&#x27;);   // separa os logs do componente</code></pre></div>
+<div class="nota aviso"><p>Os arquivos têm extensão <code>.php</code> e começam com <code>#&lt;?php die('Forbidden.'); ?&gt;</code> (padrão do <code>JLog</code>): mesmo numa pasta pública, não são servidos como texto. Ainda assim, prefira <code>administrator/logs</code> e não aponte o log para uma pasta de uploads.</p></div>
+<h2 id="boas-praticas" data-titulo="Boas práticas">Boas práticas</h2>
+<ul>
+<li><strong>Uma categoria por assunto</strong> (<code>pedidos</code>, <code>fiscal</code>, <code>integracao_erp</code>): os arquivos ficam pequenos e fáceis de vigiar.</li>
+<li><strong>Contexto em vez de concatenação</strong>: <code>info('Pedido pago.', 'pedidos', array('id' =&gt; $id))</code> e não <code>info('Pedido ' . $id . ' pago.')</code>. Fica pesquisável e mascarado.</li>
+<li><strong>Log não é auditoria</strong>: para "quem alterou o quê", com antes e depois, use o <a href="audit-helper.html">AuditHelper</a>, que grava no banco.</li>
+<li><strong>Rotação</strong>: o <code>JLog</code> não apaga arquivos antigos. Use o <code>logrotate</code> do servidor ou um cron que comprima os logs mensais.</li>
+</ul>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="api-response-helper.html">ApiResponseHelper</a>: responde com o <code>request_id</code> e registra exceções.</li><li><a href="audit-helper.html">AuditHelper</a>: trilha de auditoria no banco.</li><li><a href="erros-e-solucoes.html">Erros e soluções</a>.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="api-response-helper.html"><small>← Anterior</small>ApiResponseHelper</a><a class="proxima" href="permission-helper.html"><small>Próxima →</small>PermissionHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>
