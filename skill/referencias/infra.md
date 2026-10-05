@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -118,3 +118,14 @@ FormatHelper::slug('Pão de Açúcar');         // 'pao-de-acucar' · limit($htm
 FormatHelper::number($v, 2); percent(12.5); bytes(1536); name('MARIA DA SILVA'); initials($nome);
 ```
 - Não lança; valor inválido volta como veio (texto) ou ''. Formatar não valida (CPF errado sai formatado): valide com ValidationHelper. Na view, escape a saída.
+
+## SettingsHelper (configurações do componente)
+
+```php
+$limite = SettingsHelper::int('limite_upload_mb', 10);   // string/int/float/bool/array/oneOf; padrão se ausente ou vazio
+$token = SettingsHelper::secret('erp_token');            // decifra (CryptoHelper)
+SettingsHelper::requireKeys(['erp_url', 'erp_token']);   // RuntimeException "Configure em Opções do componente: ..."
+SettingsHelper::set('erp_token', $novo, true);           // grava em #__extensions (cifrado); exija core.admin
+SettingsHelper::setComponent('com_x');                   // CLI/plugin; padrão = option da requisição
+```
+- `bool` entende '1'/'0', sim/não; `array` aceita campo múltiplo, JSON ou texto por vírgula/linha; `'smtp.host'` lê subform. Repita no código o default do config.xml (só vale após salvar as Opções).

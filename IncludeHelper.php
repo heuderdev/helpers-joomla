@@ -42,7 +42,8 @@ class IncludeHelper
         'RateLimitHelper'     => array('LogHelper', 'ApiResponseHelper', 'DbConnectionHelper'),
         'CryptoHelper'        => array('LogHelper'),
         'FormatHelper'        => array(),
-        'WebhookHelper'       => array('LogHelper', 'ApiResponseHelper', 'CryptoHelper', 'DbConnectionHelper')
+        'WebhookHelper'       => array('LogHelper', 'ApiResponseHelper', 'CryptoHelper', 'DbConnectionHelper'),
+        'SettingsHelper'      => array()
     );
 
     /**
