@@ -19,7 +19,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).
 - [x] 3. `HttpHelper`
 - [x] 4. `LockHelper`
-- [ ] 5. `CacheHelper`
+- [x] 5. `CacheHelper`
 - [ ] 6. `MailHelper`
 - [ ] 7. `RateLimitHelper`
 - [ ] 8. `CryptoHelper`

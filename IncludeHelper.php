@@ -36,7 +36,8 @@ class IncludeHelper
         'QueueHelper'         => array('LogHelper', 'DateHelper'),
         'UploadMaster'        => array(),
         'HttpHelper'          => array('LogHelper'),
-        'LockHelper'          => array('LogHelper', 'DbConnectionHelper')
+        'LockHelper'          => array('LogHelper', 'DbConnectionHelper'),
+        'CacheHelper'         => array('LogHelper', 'LockHelper')
     );
 
     /**

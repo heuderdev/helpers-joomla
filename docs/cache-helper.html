@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CacheHelper · helpers-joomla</title>
+<meta name="description" content="CacheHelper: remember() para resultados caros (dashboards, totais, APIs externas) sobre o cache do Joomla, com prazo por item, invalidação por prefixo e proteção contra recálculo simultâneo.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › CacheHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" class="ativo" aria-current="page" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>CacheHelper</h1><p class="lead">Guarda resultados caros (dashboards, totais, respostas de APIs, listas de selects) no cache do Joomla com <code>remember()</code>: prazo por item, invalidação por prefixo e um único recálculo quando muitos pedidos chegam juntos.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/CacheHelper.php&#x27;;
+
+$totais = CacheHelper::remember(&#x27;dashboard:totais&#x27;, 300, function () {
+    return array(
+        &#x27;pedidos_hoje&#x27; =&gt; OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;whereBetween(&#x27;created_at&#x27;, ...)-&gt;count(),
+        &#x27;faturamento_mes&#x27; =&gt; OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;sum(&#x27;total&#x27;),
+    );
+});</code></pre></div>
+<ul>
+<li><strong>Usa o cache do site</strong>: o handler escolhido na configuração global (arquivo, Redis, Memcached, APCu) e o botão "Limpar cache" do administrador. Funciona mesmo com o cache do site desligado (ele não afeta o CacheHelper).</li>
+<li><strong>Prazo por item, em segundos</strong>, conferido na leitura. <code>null</code>, <code>false</code> e arrays vazios também são guardados: "não encontrado" não vira consulta repetida.</li>
+<li><strong>Invalidação por prefixo</strong> sem percorrer itens: <code>flushPrefix('dashboard')</code>.</li>
+<li><strong>Um recálculo só</strong>: com o <a href="lock-helper.html">LockHelper</a> carregado, quando a chave expira e 50 pedidos chegam juntos, um calcula e os outros esperam o resultado (em vez de 50 consultas pesadas ao mesmo tempo).</li>
+<li><strong>Nunca derruba a página</strong>: se o armazenamento falhar, o valor é calculado e a página segue (o erro vai para o log <code>cache</code>).</li>
+</ul>
+<h2 id="metodos" data-titulo="Métodos">Métodos</h2>
+<div class="metodo"><h3 id="remember"><code>remember()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::remember(string $key, int $seconds, callable $callback, array $options = array()): mixed</div><p>Devolve o valor guardado ou executa o callback, guarda por <code>$seconds</code> e devolve. Exceção no callback não é guardada (sobe normalmente). Opções: <code>'lock' =&gt; false</code> (não espera outros processos), <code>'lock_wait' =&gt; 10</code> (segundos esperando o recálculo de outro processo; depois disso calcula também).</p></div>
+<div class="metodo"><h3 id="rememberForever"><code>rememberForever()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::rememberForever(string $key, callable $callback): mixed</div><p>Sem prazo: até <code>forget()</code>, <code>flushPrefix()</code> ou limpeza do cache. Para dados que você invalida ao alterar (configurações, listas de categorias).</p></div>
+<div class="metodo"><h3 id="get"><code>get() / set() / has() / forget() / pull()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::get(string $key, mixed $default = null): mixed
+CacheHelper::set(string $key, mixed $value, int $seconds = 0): bool
+CacheHelper::has(string $key): bool
+CacheHelper::forget(string $key): bool
+CacheHelper::pull(string $key, mixed $default = null): mixed</div><p>Acesso direto. <code>pull()</code> lê e apaga.</p></div>
+<div class="metodo"><h3 id="flushPrefix"><code>flushPrefix()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::flushPrefix(string $prefix): bool</div><p>Invalida todas as chaves cujo trecho antes do primeiro <code>:</code> é <code>$prefix</code>. Custo constante: troca a "versão" do prefixo; os itens antigos deixam de ser lidos e expiram sozinhos.</p></div>
+<div class="metodo"><h3 id="flush"><code>flush()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::flush(): bool</div><p>Apaga tudo do grupo do CacheHelper (não o cache de páginas e módulos do site).</p></div>
+<div class="metodo"><h3 id="increment"><code>increment()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::increment(string $key, int $by = 1, int $seconds = 0): int</div><p>Contador simples. <strong>Não é atômico</strong> entre processos: para limitar tentativas use o <a href="rate-limit-helper.html">RateLimitHelper</a>.</p></div>
+<div class="metodo"><h3 id="configuracao"><code>setGroup() / setEnabled() / setController() / stats()</code><span class="tag estatico">estático</span></h3><div class="assinatura">CacheHelper::setGroup(string $group): void
+CacheHelper::setEnabled(bool $enabled): void</div><p>Grupo do cache do Joomla (padrão <code>helpers_cache</code>; use <code>com_loja</code> para separar), desligar o cache (ex.: depurando), trocar o controlador (testes) e contadores <code>hits</code>, <code>misses</code>, <code>writes</code> da requisição.</p></div>
+<h2 id="chaves" data-titulo="Chaves e invalidação">Chaves e invalidação</h2>
+<p>Use <strong><code>assunto:detalhes</code></strong>. O assunto é o que você invalida junto; os detalhes, tudo que muda o resultado (filtros, página, usuário, idioma):</p>
+<div class="codigo"><pre><code data-lang="php">$chave = &#x27;pedidos:lista:&#x27; . md5(json_encode(array($filtros, $pagina, $ordem)));
+$lista = CacheHelper::remember($chave, 120, function () use ($filtros, $pagina, $ordem) { /* ... */ });
+
+// Ao gravar um pedido: todas as listas e o dashboard ficam velhos
+CacheHelper::flushPrefix(&#x27;pedidos&#x27;);
+CacheHelper::flushPrefix(&#x27;dashboard&#x27;);</code></pre></div>
+<div class="nota perigo"><p><strong class="rotulo">Dados de um usuário na chave de todos</strong> Se o resultado depende de quem pediu (permissões, "meus pedidos", preços por grupo), o id do usuário ou do grupo <strong>precisa estar na chave</strong>: <code>'meus-pedidos:' . $userId</code>. Senão o primeiro a chegar define o que todos veem.</p></div>
+<h3 id="quando-invalidar">Invalidar ao gravar ou deixar expirar?</h3>
+<div class="tabela"><table><thead><tr><th>Dado</th><th>Estratégia</th></tr></thead><tbody>
+<tr><td>Totais de dashboard, relatórios</td><td>prazo curto (1 a 10 min); ninguém precisa do número do segundo</td></tr>
+<tr><td>Listas de selects (categorias, estados, formas de pagamento)</td><td><code>rememberForever</code> + <code>flushPrefix</code> no save do cadastro</td></tr>
+<tr><td>Resposta de API externa (cotação, CEP)</td><td>prazo do próprio dado (CEP: dias; cotação: minutos)</td></tr>
+<tr><td>Token OAuth</td><td>prazo um pouco menor que o <code>expires_in</code> (veja <a href="http-helper.html#receita-token">HttpHelper</a>)</td></tr>
+<tr><td>Saldo, estoque, status de pagamento</td><td><strong>não use cache</strong> para decidir; no máximo para exibir</td></tr>
+</tbody></table></div>
+<h2 id="receitas" data-titulo="Receitas">Receitas</h2>
+<div class="codigo"><pre><code data-lang="php">// Configurações do componente lidas em toda requisição
+$config = CacheHelper::rememberForever(&#x27;config:loja&#x27;, function () {
+    return OrmTables::table(&#x27;#__loja_config&#x27;)-&gt;pluck(&#x27;valor&#x27;, &#x27;chave&#x27;);
+});
+
+// Model: invalida ao salvar
+class ProdutoModel extends OrmBase
+{
+    protected $table = &#x27;#__loja_produtos&#x27;;
+
+    public static function salvar(array $dados)
+    {
+        $id = static::query()-&gt;create($dados)-&gt;id;
+        CacheHelper::flushPrefix(&#x27;produtos&#x27;);
+
+        return $id;
+    }
+
+    public static function vitrine()
+    {
+        return CacheHelper::remember(&#x27;produtos:vitrine&#x27;, 600, function () {
+            return static::query()-&gt;where(&#x27;ativo&#x27;, 1)-&gt;orderBy(&#x27;vendas&#x27;, &#x27;DESC&#x27;)-&gt;limit(12)-&gt;get();
+        });
+    }
+}</code></pre></div>
+<div class="nota aviso"><p>Guarde <strong>dados</strong> (arrays, escalares, objetos simples), não conexões, closures ou recursos. Objetos são serializados: a classe precisa estar carregada na leitura.</p></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="lock-helper.html">LockHelper</a>: usado para evitar recálculos simultâneos.</li><li><a href="http-helper.html">HttpHelper</a>: respostas de APIs externas.</li><li><a href="rate-limit-helper.html">RateLimitHelper</a>: contadores de tentativas.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="lock-helper.html"><small>← Anterior</small>LockHelper</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code> e <code>Vigia.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

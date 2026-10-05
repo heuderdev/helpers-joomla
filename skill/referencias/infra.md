@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -72,3 +72,15 @@ if (LockHelper::acquire('import:' . $id)) { try { ... } finally { LockHelper::re
 - Drivers: `auto` (GET_LOCK no MySQL/MariaDB, `pg_try_advisory_lock` no PostgreSQL), `file` (flock, um servidor). Soltam sozinhas se o processo morrer; exceção no callback solta e relança.
 - Evita execução **simultânea**, não repetida: releia o estado dentro da trava. `isLocked()` só para exibir. Nome por recurso (`'pedido:' . $id`) para paralelizar o resto. Em job: sem trava → `$this->release(60)`.
 - PgBouncer em modo transaction não suporta trava de sessão (use `setDriver('file')`).
+
+## CacheHelper (resultados caros)
+
+```php
+$totais = CacheHelper::remember('dashboard:totais', 300, function () { return Servico::totais(); });
+$cats = CacheHelper::rememberForever('categorias:select', $fn);
+CacheHelper::flushPrefix('categorias');      // no save do cadastro: invalida categorias:*
+CacheHelper::get($k, $padrao) / set($k, $v, $seg) / has / forget / pull / flush()
+```
+- Sobre o cache do Joomla (handler do site), funciona com o cache do site desligado; prazo por item em segundos; guarda `null`/`false`; falha de armazenamento não derruba (calcula e segue).
+- Chave `assunto:detalhes`; `flushPrefix('assunto')` invalida tudo do assunto. Resultado que depende do usuário/grupo → id na chave.
+- Com LockHelper carregado, um só processo recalcula a chave expirada (opção `'lock' => false` desliga). `increment()` não é atômico (limites → RateLimitHelper). Nunca use cache para decidir saldo/estoque.

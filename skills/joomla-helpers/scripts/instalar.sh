@@ -20,8 +20,9 @@ declare -A DEP=(
     [QueueHelper]="DateHelper"
     [HttpHelper]="LogHelper"
     [LockHelper]="LogHelper DbConnectionHelper"
+    [CacheHelper]="LogHelper LockHelper"
 )
-TODOS="LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper IncludeHelper"
+TODOS="LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper IncludeHelper"
 
 FORCAR=0; PEDIDOS=()
 for a in "$@"; do
