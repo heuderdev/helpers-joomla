@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -84,3 +84,14 @@ CacheHelper::get($k, $padrao) / set($k, $v, $seg) / has / forget / pull / flush(
 - Sobre o cache do Joomla (handler do site), funciona com o cache do site desligado; prazo por item em segundos; guarda `null`/`false`; falha de armazenamento não derruba (calcula e segue).
 - Chave `assunto:detalhes`; `flushPrefix('assunto')` invalida tudo do assunto. Resultado que depende do usuário/grupo → id na chave.
 - Com LockHelper carregado, um só processo recalcula a chave expirada (opção `'lock' => false` desliga). `increment()` não é atômico (limites → RateLimitHelper). Nunca use cache para decidir saldo/estoque.
+
+## RateLimitHelper (limite de tentativas)
+
+```php
+if (!RateLimitHelper::enforce('contato:' . RateLimitHelper::ip(), 5, 3600)) return;   // 429 + Retry-After
+$s = RateLimitHelper::hit('busca:' . $ip, 60, 60);   // ['allowed','hits','limit','remaining','retry_after','reset_at']
+RateLimitHelper::tooManyAttempts('login:' . $u, 5);   // só consulta
+RateLimitHelper::clear('login:' . $u);                // login certo zera
+```
+- Contador atômico no banco (upsert MySQL/MariaDB ou PostgreSQL 9.5+), tabela `#__helpers_rate_limits` criada sozinha (`tables/rateLimitHelper.sql`). Janela fixa. Banco fora → libera (`setFailOpen(false)` para SMS pago).
+- `ip()` só confia em X-Forwarded-For com `setTrustedProxies([...])`. Login: chave por conta **e** por IP; conte só as erradas; mensagem não revela se o usuário existe.

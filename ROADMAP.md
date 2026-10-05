@@ -21,7 +21,7 @@ Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$de
 - [x] 4. `LockHelper`
 - [x] 5. `CacheHelper`
 - [x] 6. `MailHelper`
-- [ ] 7. `RateLimitHelper`
+- [x] 7. `RateLimitHelper`
 - [ ] 8. `CryptoHelper`
 - [ ] 9. `PermissionHelper::requireToken()` (token do formulário ou header `X-CSRF-Token`)
 - [ ] 10. `js/lista.js` — par do Vigia para listagens (paginação/ordenação/filtros na URL, debounce, cancelamento, ações em lote) sobre `ApiResponseHelper::paginated()` e `InputHelper::pagination()/sorting()/filters()`.
