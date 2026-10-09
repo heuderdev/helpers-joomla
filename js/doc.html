@@ -1,0 +1,2693 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vigia.js para Laravel</title>
+<meta name="description" content="Como o vigia-laravel.js funciona por dentro: validação, máscaras, requisições, contrato com o servidor e receitas para Laravel + Blade.">
+<meta name="csrf-token" content="demo-token-da-documentacao">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Os estilos do próprio Vigia: usados pelas demonstrações ao vivo -->
+<link rel="stylesheet" href="vigia-laravel.css">
+
+<style>
+:root {
+    --bg: #f7f8fa;
+    --bg-elev: #ffffff;
+    --bg-sunken: #eef1f5;
+    --bg-code: #0f1419;
+    --fg: #1a1f2b;
+    --fg-soft: #4a5468;
+    --fg-mute: #737d90;
+    --line: #dde2ea;
+    --line-strong: #c4ccd8;
+    --accent: #0b6bcb;
+    --accent-soft: #e6f0fb;
+    --accent-ink: #084f96;
+    --ok: #067647;
+    --ok-soft: #e7f7ee;
+    --warn: #93370d;
+    --warn-soft: #fff6e0;
+    --bad: #b42318;
+    --bad-soft: #fdeceb;
+    --violet: #6941c6;
+    --violet-soft: #f1ecfd;
+    --code-fg: #e6e1cf;
+    --code-mute: #7f8b99;
+    --code-key: #ff8f40;
+    --code-str: #aad94c;
+    --code-fn: #ffb454;
+    --code-num: #d2a6ff;
+    --code-tag: #39bae6;
+    --code-attr: #ffb454;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 4px 16px rgba(16, 24, 40, .06);
+    --sidebar: 290px;
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0d1117;
+        --bg-elev: #151b23;
+        --bg-sunken: #1b222c;
+        --bg-code: #0a0e14;
+        --fg: #e6edf3;
+        --fg-soft: #b1bac4;
+        --fg-mute: #8b949e;
+        --line: #2a313c;
+        --line-strong: #3a4350;
+        --accent: #58a6ff;
+        --accent-soft: #11243b;
+        --accent-ink: #9ccbff;
+        --ok: #56d39a;
+        --ok-soft: #0c2a1d;
+        --warn: #f5c35b;
+        --warn-soft: #2e2208;
+        --bad: #ff8e85;
+        --bad-soft: #3a1512;
+        --violet: #b99cff;
+        --violet-soft: #241a3d;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 16px rgba(0, 0, 0, .3);
+        color-scheme: dark;
+    }
+}
+
+:root[data-theme="dark"] {
+    --bg: #0d1117;
+    --bg-elev: #151b23;
+    --bg-sunken: #1b222c;
+    --bg-code: #0a0e14;
+    --fg: #e6edf3;
+    --fg-soft: #b1bac4;
+    --fg-mute: #8b949e;
+    --line: #2a313c;
+    --line-strong: #3a4350;
+    --accent: #58a6ff;
+    --accent-soft: #11243b;
+    --accent-ink: #9ccbff;
+    --ok: #56d39a;
+    --ok-soft: #0c2a1d;
+    --warn: #f5c35b;
+    --warn-soft: #2e2208;
+    --bad: #ff8e85;
+    --bad-soft: #3a1512;
+    --violet: #b99cff;
+    --violet-soft: #241a3d;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 16px rgba(0, 0, 0, .3);
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code, kbd, pre { font-family: var(--mono); }
+
+:not(pre) > code {
+    font-size: .86em;
+    padding: .12em .4em;
+    border-radius: 5px;
+    background: var(--bg-sunken);
+    border: 1px solid var(--line);
+    color: var(--fg);
+    overflow-wrap: anywhere;
+}
+
+kbd {
+    font-size: .8em;
+    padding: .1em .45em;
+    border: 1px solid var(--line-strong);
+    border-bottom-width: 2px;
+    border-radius: 5px;
+    background: var(--bg-elev);
+}
+
+/* ---------------------------------------------------------------- layout */
+
+.layout {
+    display: grid;
+    grid-template-columns: var(--sidebar) minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+    background: var(--bg-elev);
+    padding: 22px 16px 40px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px 16px;
+}
+
+.brand-logo {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, var(--accent), var(--violet));
+    color: #fff;
+    font-weight: 800;
+    font-size: 17px;
+}
+
+.brand strong { display: block; font-size: 15px; line-height: 1.2; }
+.brand span { font-size: 12px; color: var(--fg-mute); }
+
+.toc-search {
+    width: 100%;
+    margin: 0 0 14px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--bg-sunken);
+    color: var(--fg);
+    font: inherit;
+    font-size: 14px;
+}
+
+.toc-search:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.toc-group {
+    margin: 16px 8px 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+}
+
+.toc a {
+    display: block;
+    padding: 5px 10px;
+    border-radius: 7px;
+    color: var(--fg-soft);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.toc a:hover { background: var(--bg-sunken); text-decoration: none; color: var(--fg); }
+.toc a.active { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+.toc a .n { display: inline-block; min-width: 1.6em; color: var(--fg-mute); font-variant-numeric: tabular-nums; }
+
+.main { min-width: 0; }
+
+.topbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 32px 0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    color: var(--fg);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn:hover { border-color: var(--line-strong); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { filter: brightness(1.08); }
+
+.menu-toggle { display: none; }
+
+.content {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 8px 32px 120px;
+}
+
+/* ---------------------------------------------------------------- hero */
+
+.hero { padding: 36px 0 28px; }
+
+.eyebrow {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-size: 12.5px;
+    font-weight: 600;
+}
+
+.hero h1 {
+    margin: 16px 0 10px;
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -.03em;
+    font-weight: 800;
+}
+
+.hero h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--accent), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.lead { font-size: 1.15rem; color: var(--fg-soft); max-width: 720px; margin: 0; }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 26px;
+}
+
+.stat {
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+}
+
+.stat b { display: block; font-size: 1.5rem; letter-spacing: -.02em; }
+.stat span { font-size: 13px; color: var(--fg-mute); }
+
+/* ---------------------------------------------------------------- sections */
+
+section.doc { padding-top: 40px; }
+
+section.doc > h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0 0 6px;
+    font-size: 1.75rem;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+}
+
+section.doc > h2 .num {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+}
+
+.section-lead { margin: 0 0 18px; color: var(--fg-soft); font-size: 1.05rem; }
+
+h3 { margin: 30px 0 8px; font-size: 1.2rem; letter-spacing: -.01em; }
+h4 { margin: 22px 0 6px; font-size: 1rem; }
+
+p { margin: 0 0 14px; }
+ul, ol { margin: 0 0 14px; padding-left: 1.4em; }
+li { margin: 4px 0; }
+
+hr.sep { border: 0; border-top: 1px solid var(--line); margin: 48px 0 0; }
+
+/* ---------------------------------------------------------------- callouts */
+
+.callout {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 10px;
+    margin: 18px 0;
+    padding: 14px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+}
+
+.callout .ico {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.callout strong.t { display: block; margin-bottom: 2px; }
+
+.callout.info { background: var(--accent-soft); border-color: transparent; }
+.callout.info .ico { background: var(--accent); color: #fff; }
+.callout.ok { background: var(--ok-soft); border-color: transparent; }
+.callout.ok .ico { background: var(--ok); color: #fff; }
+.callout.warn { background: var(--warn-soft); border-color: transparent; }
+.callout.warn .ico { background: var(--warn); color: #fff; }
+.callout.bad { background: var(--bad-soft); border-color: transparent; }
+.callout.bad .ico { background: var(--bad); color: #fff; }
+.callout.why { background: var(--violet-soft); border-color: transparent; }
+.callout.why .ico { background: var(--violet); color: #fff; }
+
+/* ---------------------------------------------------------------- code */
+
+.code {
+    position: relative;
+    margin: 14px 0 18px;
+    border-radius: var(--radius);
+    background: var(--bg-code);
+    border: 1px solid #1d2530;
+    overflow: hidden;
+}
+
+.code .bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px 7px 14px;
+    border-bottom: 1px solid #1d2530;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--code-mute);
+}
+
+.code .copy {
+    padding: 3px 9px;
+    border-radius: 6px;
+    border: 1px solid #2a3542;
+    background: transparent;
+    color: var(--code-mute);
+    font: inherit;
+    cursor: pointer;
+}
+
+.code .copy:hover { color: var(--code-fg); border-color: #3b4858; }
+
+.code pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: var(--code-fg);
+    font-size: 13.5px;
+    line-height: 1.6;
+    tab-size: 4;
+}
+
+.code pre code { background: none; border: 0; padding: 0; color: inherit; font-size: inherit; }
+
+/* Cores do highlight.js (tema próprio) */
+.hljs-comment, .hljs-quote { color: var(--code-mute); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-literal, .hljs-type { color: var(--code-key); }
+.hljs-string, .hljs-regexp, .hljs-addition { color: var(--code-str); }
+.hljs-title, .hljs-title.function_, .hljs-section { color: var(--code-fn); }
+.hljs-number, .hljs-symbol { color: var(--code-num); }
+.hljs-tag, .hljs-name { color: var(--code-tag); }
+.hljs-attr, .hljs-attribute, .hljs-variable, .hljs-template-variable, .hljs-property { color: var(--code-attr); }
+.hljs-meta { color: var(--code-num); }
+
+/* ---------------------------------------------------------------- tables */
+
+.table-wrap {
+    margin: 14px 0 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    background: var(--bg-elev);
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { background: var(--bg-sunken); font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--fg-mute); font-weight: 700; }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+td.wrap code { white-space: normal; }
+
+/* ---------------------------------------------------------------- cards / grids */
+
+.grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 16px 0; }
+
+.card {
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+}
+
+.card h4 { margin: 0 0 6px; display: flex; gap: 8px; align-items: center; }
+.card p { margin: 0; color: var(--fg-soft); font-size: 14.5px; }
+.card .tag { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--bg-sunken); color: var(--fg-mute); }
+
+/* Mapa da arquitetura */
+.arch {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 18px 0;
+    padding: 16px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+}
+
+.arch .layer {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--fg-mute);
+    margin-top: 6px;
+}
+
+.arch .box {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--bg-sunken);
+    font-size: 13.5px;
+    line-height: 1.45;
+}
+
+.arch .box b { display: block; font-size: 14px; }
+.arch .box small { color: var(--fg-mute); font-family: var(--mono); font-size: 11.5px; }
+.arch .box.api { border-color: var(--accent); background: var(--accent-soft); }
+.arch .box.dom { border-color: var(--violet); background: var(--violet-soft); }
+.arch .box.net { border-color: var(--ok); background: var(--ok-soft); }
+.arch .box.core { border-color: var(--warn); background: var(--warn-soft); }
+
+/* Linha do tempo (passo a passo) */
+.steps { list-style: none; padding: 0; margin: 18px 0; counter-reset: step; }
+
+.steps > li {
+    position: relative;
+    margin: 0;
+    padding: 0 0 20px 50px;
+    counter-increment: step;
+}
+
+.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.steps > li::after {
+    content: "";
+    position: absolute;
+    left: 15px;
+    top: 34px;
+    bottom: 2px;
+    width: 2px;
+    background: var(--line);
+}
+
+.steps > li:last-child::after { display: none; }
+.steps > li > strong:first-child { display: block; font-size: 15.5px; margin-bottom: 2px; padding-top: 4px; }
+.steps > li p { margin: 0 0 6px; color: var(--fg-soft); }
+
+/* Escada de prioridade */
+.ladder { display: grid; gap: 6px; margin: 16px 0; }
+
+.ladder div {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: var(--bg-elev);
+    font-size: 14.5px;
+}
+
+.ladder div b {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    display: grid;
+    place-items: center;
+    background: var(--bg-sunken);
+    font-size: 13px;
+}
+
+.ladder div:first-child { border-color: var(--accent); }
+.ladder div:first-child b { background: var(--accent); color: #fff; }
+
+/* Diagrama de sequência */
+.diagram {
+    margin: 18px 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    overflow-x: auto;
+}
+
+.diagram svg { display: block; min-width: 760px; width: 100%; height: auto; }
+.seq-lane { stroke: var(--line-strong); stroke-dasharray: 4 5; }
+.seq-head rect { fill: var(--bg-sunken); stroke: var(--line-strong); }
+.seq-head text { fill: var(--fg); font: 600 13px var(--font); }
+.seq-msg { stroke: var(--accent); stroke-width: 1.6; fill: none; }
+.seq-ret { stroke: var(--ok); stroke-width: 1.6; fill: none; stroke-dasharray: 6 4; }
+.seq-self { stroke: var(--violet); stroke-width: 1.6; fill: none; }
+.seq-label { fill: var(--fg); font: 12.5px var(--font); }
+.seq-note { fill: var(--fg-mute); font: 11.5px var(--mono); }
+.seq-arrow { fill: var(--accent); }
+.seq-arrow-ret { fill: var(--ok); }
+.seq-arrow-self { fill: var(--violet); }
+.seq-num { fill: var(--accent); }
+.seq-num-t { fill: #fff; font: 700 10.5px var(--font); }
+
+/* ---------------------------------------------------------------- demos */
+
+.demo {
+    margin: 18px 0 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.demo-head {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg-sunken);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.demo-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+.demo-body { padding: 18px; }
+.demo-cols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 18px; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; margin-bottom: 4px; font-size: 13.5px; font-weight: 600; }
+.field .hint { display: block; margin-top: 3px; font-size: 12px; color: var(--fg-mute); font-family: var(--mono); }
+
+.demo input[type="text"],
+.demo input[type="email"],
+.demo input[type="password"],
+.demo select,
+.demo textarea {
+    width: 100%;
+    padding: 8px 11px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+    font-size: 14.5px;
+}
+
+.demo textarea { font-family: var(--mono); font-size: 13px; min-height: 140px; }
+.demo input:focus, .demo select:focus, .demo textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.demo .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.demo .check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+.demo .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
+.out {
+    margin: 0;
+    padding: 12px 14px;
+    min-height: 120px;
+    max-height: 420px;
+    overflow: auto;
+    border-radius: var(--radius-sm);
+    background: var(--bg-code);
+    color: var(--code-fg);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.out-label { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-mute); }
+
+.mask-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.mask-grid div { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--bg-sunken); font-size: 13px; }
+.mask-grid div b { display: block; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--fg-mute); }
+.mask-grid div code { background: none; border: 0; padding: 0; font-size: 14px; }
+
+.no-lib {
+    display: none;
+    margin: 14px 0;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--warn-soft);
+    color: var(--warn);
+    font-size: 14px;
+}
+
+.no-lib.show { display: block; }
+
+/* ---------------------------------------------------------------- FAQ / details */
+
+details.qa {
+    margin: 8px 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elev);
+}
+
+details.qa summary {
+    cursor: pointer;
+    padding: 11px 14px;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+}
+
+details.qa summary::-webkit-details-marker { display: none; }
+details.qa summary::before { content: "+"; color: var(--accent); font-weight: 800; width: 12px; }
+details.qa[open] summary::before { content: "−"; }
+details.qa .a { padding: 0 14px 12px 36px; color: var(--fg-soft); }
+details.qa .a p:last-child { margin-bottom: 0; }
+
+.pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.pill.ok { background: var(--ok-soft); color: var(--ok); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.info { background: var(--accent-soft); color: var(--accent-ink); }
+
+.levels { display: grid; gap: 12px; margin: 16px 0; }
+.level { padding: 16px 18px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-elev); }
+.level header { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.level header b { font-size: 15.5px; }
+.level p { margin: 0 0 8px; color: var(--fg-soft); }
+.level p:last-child { margin: 0; }
+
+footer.end {
+    margin-top: 70px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    color: var(--fg-mute);
+    font-size: 13.5px;
+}
+
+/* ---------------------------------------------------------------- responsivo */
+
+@media (max-width: 1080px) {
+    .layout { grid-template-columns: minmax(0, 1fr); }
+
+    .sidebar {
+        position: fixed;
+        z-index: 50;
+        inset: 0 auto 0 0;
+        width: min(86vw, 320px);
+        transform: translateX(-102%);
+        transition: transform .2s ease;
+        box-shadow: var(--shadow);
+    }
+
+    body.menu-open .sidebar { transform: none; }
+    .menu-toggle { display: inline-flex; }
+    .topbar { justify-content: space-between; padding: 12px 16px 0; position: sticky; top: 0; z-index: 40; background: var(--bg); padding-bottom: 10px; }
+    .content { padding: 0 16px 100px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+    .grid-2, .grid-3, .arch, .demo-cols, .mask-grid, .demo .row { grid-template-columns: minmax(0, 1fr); }
+    section.doc > h2 { font-size: 1.45rem; }
+    .code pre { font-size: 12.5px; }
+    th, td { padding: 8px 10px; }
+}
+
+@media print {
+    .sidebar, .topbar, .demo, .copy { display: none !important; }
+    .layout { display: block; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- =============================================================== MENU -->
+<aside class="sidebar" id="sidebar" aria-label="Sumário">
+    <div class="brand">
+        <div class="brand-logo" aria-hidden="true">V</div>
+        <div>
+            <strong>Vigia.js · Laravel</strong>
+            <span>Documentação por dentro · v1.0.0</span>
+        </div>
+    </div>
+
+    <input class="toc-search" id="toc-search" type="search" placeholder="Filtrar seções..." aria-label="Filtrar seções">
+
+    <nav class="toc" id="toc">
+        <div class="toc-group">Começo</div>
+        <a href="#visao"><span class="n">01</span>O que é, em 1 minuto</a>
+        <a href="#arquivos"><span class="n">02</span>Os 4 arquivos</a>
+        <a href="#rapido"><span class="n">03</span>Começo rápido</a>
+        <a href="#arquitetura"><span class="n">04</span>Arquitetura</a>
+        <a href="#ciclo"><span class="n">05</span>A vida de um envio</a>
+
+        <div class="toc-group">Por dentro</div>
+        <a href="#init"><span class="n">06</span>Inicialização</a>
+        <a href="#config"><span class="n">07</span>Configuração e prioridade</a>
+        <a href="#dados"><span class="n">08</span>Dos campos aos dados</a>
+        <a href="#validacao"><span class="n">09</span>Motor de validação</a>
+        <a href="#mensagens"><span class="n">10</span>Mensagens e rótulos</a>
+        <a href="#aovivo"><span class="n">11</span>Validação ao vivo</a>
+        <a href="#erros"><span class="n">12</span>Exibição dos erros</a>
+        <a href="#mascaras"><span class="n">13</span>Máscaras</a>
+        <a href="#http"><span class="n">14</span>Camada HTTP</a>
+        <a href="#contrato"><span class="n">15</span>Contrato com o servidor</a>
+        <a href="#eventos"><span class="n">16</span>Eventos e ganchos</a>
+        <a href="#estado"><span class="n">17</span>Estado e Alpine.js</a>
+
+        <div class="toc-group">Na prática</div>
+        <a href="#laboratorio"><span class="n">18</span>Laboratório ao vivo</a>
+        <a href="#receitas"><span class="n">19</span>Receitas Laravel</a>
+        <a href="#equivalencia"><span class="n">20</span>Regras: Vigia ↔ Laravel</a>
+        <a href="#armadilhas"><span class="n">21</span>Armadilhas</a>
+        <a href="#api"><span class="n">22</span>Referência da API</a>
+        <a href="#explicar"><span class="n">23</span>Como explicar para alguém</a>
+    </nav>
+</aside>
+
+<!-- =============================================================== CONTEÚDO -->
+<div class="main">
+    <div class="topbar">
+        <button class="btn menu-toggle" id="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false">☰ Sumário</button>
+        <button class="btn" id="theme-toggle" type="button" aria-label="Alternar tema claro/escuro">◐ Tema</button>
+    </div>
+
+    <main class="content">
+
+        <!-- ======================================================= HERO -->
+        <header class="hero">
+            <span class="eyebrow">vigia-laravel.js · documentação técnica completa</span>
+            <h1>Como o <em>Vigia.js</em> funciona<br>por debaixo dos panos</h1>
+            <p class="lead">
+                Uma biblioteca de ~3.400 linhas, sem dependências além do axios, que transforma um
+                <code>&lt;form&gt;</code> comum do Blade em um formulário que valida, aplica máscaras,
+                envia por AJAX, entende as respostas do Laravel e coloca cada erro no campo certo.
+                Aqui está cada engrenagem, com o porquê de cada decisão.
+            </p>
+
+            <div class="stats">
+                <div class="stat"><b>62</b><span>regras reconhecidas</span></div>
+                <div class="stat"><b>31</b><span>nomes de máscara prontos</span></div>
+                <div class="stat"><b>5</b><span>eventos de ciclo de vida</span></div>
+                <div class="stat"><b>0</b><span>linhas de JS para o caso comum</span></div>
+            </div>
+        </header>
+
+        <!-- ======================================================= 01 -->
+        <section class="doc" id="visao">
+            <h2><span class="num">01</span>O que é, em 1 minuto</h2>
+            <p class="section-lead">A ideia central cabe em uma frase: <strong>o HTML descreve, o Vigia executa, o servidor confirma.</strong></p>
+
+            <div class="grid-3">
+                <div class="card">
+                    <h4>📝 O HTML descreve</h4>
+                    <p>Regras em <code>data-rules</code>, mensagens em <code>data-msg-*</code>, máscaras em <code>data-mask</code>. Nenhuma linha de JavaScript para o caso comum.</p>
+                </div>
+                <div class="card">
+                    <h4>⚙️ O Vigia executa</h4>
+                    <p>Valida enquanto a pessoa digita, formata CPF e dinheiro, envia por AJAX com token e mostra o carregando.</p>
+                </div>
+                <div class="card">
+                    <h4>🛡️ O servidor confirma</h4>
+                    <p>O Laravel valida de novo (segurança) e responde num formato fixo. O Vigia põe cada erro embaixo do campo com o mesmo <code>name</code>.</p>
+                </div>
+            </div>
+
+            <p>O problema que ele resolve: em todo formulário AJAX, alguém escreve de novo o mesmo código — pegar os campos, validar, montar o <code>FormData</code>, mandar o token, travar o botão, ler a resposta, descobrir qual erro é de qual campo, limpar os erros antigos, mostrar a mensagem de sucesso. O Vigia faz isso uma vez, do mesmo jeito em todas as telas.</p>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que não usar só a validação do Laravel?</strong>
+                    <p>Porque a do Laravel só roda depois do envio. A do navegador avisa na hora, sem esperar o servidor — e evita mandar 500 MB de vídeo só para descobrir que o CPF estava errado. Mas a do navegador é <em>conforto</em>, não segurança: qualquer pessoa pode desligá-la. Por isso as duas existem, e o contrato entre elas é o formato da resposta.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 02 -->
+        <section class="doc" id="arquivos">
+            <h2><span class="num">02</span>Os 4 arquivos</h2>
+            <p class="section-lead">Tudo o que você desenvolveu para o Laravel, e onde cada peça mora no projeto.</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Arquivo</th><th>Vai para</th><th>Papel</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>vigia-laravel.js</code></td><td><code>public/js/</code></td><td>A biblioteca. Expõe o objeto global <code>window.Vigia</code>.</td></tr>
+                        <tr><td><code>vigia-laravel.css</code></td><td><code>public/css/</code></td><td>Estilos mínimos: campo inválido, mensagem, alertas, botão girando, barra de progresso. Obrigatório com Tailwind; opcional com Bootstrap.</td></tr>
+                        <tr><td><code>vigia-laravel.d.ts</code></td><td><code>types/</code></td><td>Só para o editor (VS Code / Cursor): autocompletar e documentação ao passar o mouse. Nunca é carregado no navegador.</td></tr>
+                        <tr><td><code>ResponseService.php</code></td><td><code>app/Services/</code></td><td>O lado do servidor do contrato: toda resposta sai no formato que o Vigia entende.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout info">
+                <div class="ico">i</div>
+                <div>
+                    <strong class="t">Origem</strong>
+                    <p>O <code>vigia-laravel.js</code> é o <code>vigia.js</code> do projeto Joomla (helpers-joomla) com quatro mudanças: como acha o token, PUT/PATCH/DELETE com <code>_method</code>, sem <code>Joomla.renderMessages</code> e uma mensagem para o 419. Todo o resto — validação, máscaras, eventos — é idêntico. Quem aprende um, sabe o outro.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 03 -->
+        <section class="doc" id="rapido">
+            <h2><span class="num">03</span>Começo rápido</h2>
+            <p class="section-lead">Três trechos. É tudo o que um cadastro comum precisa.</p>
+
+            <h3>1. O layout carrega as peças (uma vez)</h3>
+<div class="code"><div class="bar"><span>resources/views/layouts/app.blade.php</span></div><pre><code class="language-html">&lt;meta name="csrf-token" content="{{ csrf_token() }}"&gt;
+
+&lt;link rel="stylesheet" href="{{ asset('css/vigia-laravel.css') }}"&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/axios@1.6.8/dist/axios.min.js"&gt;&lt;/script&gt;
+&lt;script src="{{ asset('js/vigia-laravel.js') }}"&gt;&lt;/script&gt;</code></pre></div>
+
+            <h3>2. O formulário só descreve</h3>
+<div class="code"><div class="bar"><span>resources/views/clientes/create.blade.php</span></div><pre><code class="language-html">&lt;form method="post" action="{{ route('clientes.store') }}" data-vigia&gt;
+    @csrf
+    &lt;div data-vigia-message&gt;&lt;/div&gt;
+
+    &lt;label for="nome"&gt;Nome&lt;/label&gt;
+    &lt;input id="nome" name="nome" required data-rules="min_length:3|max_length:150"&gt;
+
+    &lt;label for="email"&gt;E-mail&lt;/label&gt;
+    &lt;input id="email" name="email" type="email" required&gt;
+
+    &lt;label for="cpf"&gt;CPF&lt;/label&gt;
+    &lt;input id="cpf" name="cpf" data-mask="cpf" data-rules="required|cpf"
+           data-msg-cpf="Esse CPF não existe."&gt;
+
+    &lt;button type="submit" data-loading-text="Salvando..."&gt;Salvar&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+
+            <h3>3. O controller valida de novo e responde no contrato</h3>
+<div class="code"><div class="bar"><span>app/Http/Controllers/ClienteController.php</span></div><pre><code class="language-php">public function store(Request $request)
+{
+    $dados = $request-&gt;validate([
+        'nome'  =&gt; 'required|min:3|max:150',
+        'email' =&gt; 'required|email|unique:clientes',
+        'cpf'   =&gt; ['required', new Cpf],      // regra própria
+    ]);
+    // Falhou? O Laravel lança ValidationException → 422 → cada erro no seu campo.
+
+    $cliente = Cliente::create($dados);
+
+    return ResponseService::created('Cliente cadastrado.', ['id' =&gt; $cliente-&gt;id]);
+}</code></pre></div>
+
+            <div class="callout ok">
+                <div class="ico">✓</div>
+                <div>
+                    <strong class="t">O que você ganhou sem escrever JavaScript</strong>
+                    <ul>
+                        <li>Máscara no CPF enquanto digita, com o cursor no lugar certo.</li>
+                        <li>Validação ao sair de cada campo; depois do primeiro erro, a cada tecla.</li>
+                        <li>Envio por AJAX em multipart com <code>X-CSRF-TOKEN</code>, botão travado e com "Salvando...".</li>
+                        <li>Erro "e-mail já em uso" do servidor aparecendo embaixo do campo e-mail.</li>
+                        <li>Mensagem de sucesso verde no <code>[data-vigia-message]</code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 04 -->
+        <section class="doc" id="arquitetura">
+            <h2><span class="num">04</span>Arquitetura</h2>
+            <p class="section-lead">O arquivo é um único módulo (padrão UMD) dividido em camadas. As de baixo não sabem que as de cima existem.</p>
+
+            <div class="arch" role="img" aria-label="Camadas do Vigia.js">
+                <div class="layer">API pública — window.Vigia</div>
+                <div class="box api"><b>Vigia.form()</b><small>formFor</small><br>cria/recupera a instância de um form</div>
+                <div class="box api"><b>Vigia.http</b><small>get/post/put/patch/delete</small><br>requisições soltas</div>
+                <div class="box api"><b>Vigia.validate / mask / rules</b><small>config · init · alpine</small><br>peças avulsas</div>
+
+                <div class="layer">Camada de formulário — VigiaForm (uma por form)</div>
+                <div class="box dom"><b>Coleta</b><small>elements · getData · toFormData</small><br>lê os campos do DOM</div>
+                <div class="box dom"><b>Validação na tela</b><small>validate · validateField</small><br>regras do HTML + JS</div>
+                <div class="box dom"><b>Exibição</b><small>_renderField · notify · _setLoading</small><br>erros, alertas, botão</div>
+
+                <div class="layer">Motores (sem DOM — funcionam sozinhos)</div>
+                <div class="box core"><b>Regras</b><small>RULES · parseRules · validate</small><br>62 regras, assíncronas</div>
+                <div class="box core"><b>Mensagens</b><small>messageFor · labelOf</small><br>prioridade e rótulos</div>
+                <div class="box core"><b>Máscaras</b><small>MASKS · format · unmask</small><br>padrões e números</div>
+
+                <div class="layer">Rede</div>
+                <div class="box net"><b>axios (instância própria)</b><small>getAxios</small><br>criada na 1ª requisição</div>
+                <div class="box net"><b>Interceptor de ida</b><small>token · multipart · _method</small><br>prepara a requisição</div>
+                <div class="box net"><b>Interceptor de volta</b><small>normalizeResponse · toVigiaError</small><br>traduz a resposta</div>
+            </div>
+
+            <h3>O envelope UMD (as primeiras linhas)</h3>
+<div class="code"><div class="bar"><span>vigia-laravel.js · linhas 21–27</span></div><pre><code class="language-javascript">(function (root, factory) {
+    if (typeof module === 'object' &amp;&amp; module.exports) {
+        module.exports = factory(root);     // Node / bundler (Vite, webpack)
+    } else {
+        root.Vigia = factory(root);         // &lt;script&gt; comum → window.Vigia
+    }
+}(typeof window !== 'undefined' ? window : this, function (window) {
+    'use strict';
+    // ... toda a biblioteca ...
+    return Vigia;
+}));</code></pre></div>
+            <p>Esse padrão faz o mesmo arquivo funcionar em um <code>&lt;script&gt;</code> no Blade e importado pelo Vite. Tudo o que está dentro da função é privado: só o objeto <code>Vigia</code> do final sai para fora. Por isso variáveis como <code>config</code>, <code>RULES</code> e <code>MASKS</code> não poluem a página e não colidem com outras bibliotecas.</p>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que ES5 (<code>var</code>, <code>function</code>) e não classes?</strong>
+                    <p>Para rodar direto no navegador, sem build, inclusive em navegadores antigos de computadores corporativos. Não precisa de Vite, Babel ou npm para usar.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 05 -->
+        <section class="doc" id="ciclo">
+            <h2><span class="num">05</span>A vida de um envio</h2>
+            <p class="section-lead">O que acontece, em ordem, entre o clique em "Salvar" e a mensagem na tela. Se você entender esta seção, entende o Vigia.</p>
+
+            <div class="diagram">
+                <svg viewBox="0 0 900 640" role="img" aria-labelledby="seq-title">
+                    <title id="seq-title">Diagrama de sequência do envio de um formulário</title>
+                    <defs>
+                        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="seq-arrow"/></marker>
+                        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="seq-arrow-ret"/></marker>
+                        <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="seq-arrow-self"/></marker>
+                    </defs>
+
+                    <line class="seq-lane" x1="100" y1="50" x2="100" y2="630"/>
+                    <line class="seq-lane" x1="340" y1="50" x2="340" y2="630"/>
+                    <line class="seq-lane" x1="580" y1="50" x2="580" y2="630"/>
+                    <line class="seq-lane" x1="810" y1="50" x2="810" y2="630"/>
+
+                    <g class="seq-head"><rect x="40" y="10" width="120" height="34" rx="8"/><text x="100" y="32" text-anchor="middle">Pessoa</text></g>
+                    <g class="seq-head"><rect x="270" y="10" width="140" height="34" rx="8"/><text x="340" y="32" text-anchor="middle">VigiaForm</text></g>
+                    <g class="seq-head"><rect x="505" y="10" width="150" height="34" rx="8"/><text x="580" y="32" text-anchor="middle">axios + interceptores</text></g>
+                    <g class="seq-head"><rect x="745" y="10" width="130" height="34" rx="8"/><text x="810" y="32" text-anchor="middle">Laravel</text></g>
+
+                    <!-- 1 -->
+                    <line class="seq-msg" x1="100" y1="80" x2="336" y2="80" marker-end="url(#a1)"/>
+                    <text class="seq-label" x="112" y="72">clica em Salvar (evento submit)</text>
+                    <!-- 2 -->
+                    <path class="seq-self" d="M340,110 h40 v26 h-36" marker-end="url(#a3)"/>
+                    <text class="seq-label" x="390" y="120">preventDefault · se já está enviando, ignora</text>
+                    <text class="seq-note" x="390" y="136">_onSubmit → submit()</text>
+                    <!-- 3 -->
+                    <path class="seq-self" d="M340,166 h40 v26 h-36" marker-end="url(#a3)"/>
+                    <text class="seq-label" x="390" y="176">validate(): getData + rules + mensagens</text>
+                    <text class="seq-note" x="390" y="192">inválido → foco + vigia:invalid → FIM</text>
+                    <!-- 4 -->
+                    <path class="seq-self" d="M340,222 h40 v26 h-36" marker-end="url(#a3)"/>
+                    <text class="seq-label" x="390" y="232">vigia:before (cancelável) · trava botões</text>
+                    <text class="seq-note" x="390" y="248">_trigger('before') · _setLoading(true)</text>
+                    <!-- 5 -->
+                    <line class="seq-msg" x1="340" y1="290" x2="576" y2="290" marker-end="url(#a1)"/>
+                    <text class="seq-label" x="352" y="282">http.request(FormData)</text>
+                    <!-- 6 -->
+                    <path class="seq-self" d="M580,312 h40 v26 h-36" marker-end="url(#a3)"/>
+                    <text class="seq-label" x="628" y="322">cabeçalhos · X-CSRF-TOKEN</text>
+                    <text class="seq-note" x="628" y="338">PUT/PATCH/DELETE → POST + _method</text>
+                    <!-- 7 -->
+                    <line class="seq-msg" x1="580" y1="372" x2="806" y2="372" marker-end="url(#a1)"/>
+                    <text class="seq-label" x="592" y="364">POST multipart (progresso ↑)</text>
+                    <!-- 8 -->
+                    <path class="seq-self" d="M810,394 h30 v26 h-26" marker-end="url(#a3)"/>
+                    <text class="seq-note" x="700" y="440" text-anchor="start">CSRF · validate · ResponseService</text>
+                    <!-- 9 -->
+                    <line class="seq-ret" x1="810" y1="470" x2="584" y2="470" marker-end="url(#a2)"/>
+                    <text class="seq-label" x="600" y="462">JSON: success · mensagem · errors</text>
+                    <!-- 10 -->
+                    <path class="seq-self" d="M580,492 h40 v26 h-36" marker-end="url(#a3)"/>
+                    <text class="seq-label" x="628" y="502">normaliza / VigiaError (4xx/5xx)</text>
+                    <text class="seq-note" x="628" y="518">normalizeResponse · toVigiaError</text>
+                    <!-- 11 -->
+                    <line class="seq-ret" x1="580" y1="552" x2="344" y2="552" marker-end="url(#a2)"/>
+                    <text class="seq-label" x="360" y="544">resposta normalizada ou erro</text>
+                    <!-- 12 -->
+                    <line class="seq-ret" x1="340" y1="604" x2="104" y2="604" marker-end="url(#a2)"/>
+                    <text class="seq-label" x="112" y="596">erros nos campos · mensagem · eventos</text>
+                    <text class="seq-note" x="112" y="622">vigia:success | vigia:error → vigia:complete</text>
+                </svg>
+            </div>
+
+            <ol class="steps">
+                <li>
+                    <strong>O clique vira um evento <code>submit</code></strong>
+                    <p>O Vigia escuta o <code>submit</code> do form (não o clique do botão). Assim, apertar <kbd>Enter</kbd> num campo também passa por ele. O <code>_onSubmit</code> chama <code>event.preventDefault()</code> para a página não recarregar e guarda <code>event.submitter</code> (qual botão foi clicado).</p>
+                </li>
+                <li>
+                    <strong>Proteção contra clique duplo e confirmação</strong>
+                    <p>Se <code>this.loading</code> já é <code>true</code>, o envio é ignorado. Se o form tem <code>data-vigia-confirm="Tem certeza?"</code>, aparece o <code>window.confirm</code>; "Cancelar" para tudo.</p>
+                </li>
+                <li>
+                    <strong>Validação completa no navegador</strong>
+                    <p><code>validate()</code> lê os dados (<code>getData</code>), junta as regras do HTML e do JS (<code>rules()</code>), roda o motor e desenha os erros. Se algo falhar: foca o primeiro campo inválido (na ordem da tela), dispara <code>vigia:invalid</code> e <strong>para aqui</strong> — nada vai para o servidor.</p>
+                </li>
+                <li>
+                    <strong><code>vigia:before</code>: o último ponto de parada</strong>
+                    <p>Evento cancelável com os dados que serão enviados. Um <code>e.preventDefault()</code> ou um <code>onBefore</code> que devolve <code>false</code> cancela o envio sem erro.</p>
+                </li>
+                <li>
+                    <strong>Montagem do corpo e trava da tela</strong>
+                    <p><code>toFormData()</code> monta o multipart (arquivos inclusos), acrescenta o <code>name=value</code> do botão clicado e <code>_setLoading(true)</code> põe a classe <code>vigia-loading</code> no form, <code>aria-busy="true"</code>, desabilita todos os botões de envio e troca o texto do clicado pelo <code>data-loading-text</code>.</p>
+                </li>
+                <li>
+                    <strong>Interceptor de ida (axios)</strong>
+                    <p>Acrescenta <code>X-Requested-With: XMLHttpRequest</code>, <code>Accept: application/json</code> e <code>X-CSRF-TOKEN</code>. Se o método é PUT/PATCH/DELETE, troca por POST com <code>_method</code>. Durante o upload, <code>onUploadProgress</code> atualiza a barra <code>[data-vigia-progress]</code>.</p>
+                </li>
+                <li>
+                    <strong>O Laravel processa</strong>
+                    <p>O middleware de CSRF confere o cabeçalho, o <code>_method</code> vira PUT, o controller valida e o <code>ResponseService</code> (ou o próprio Laravel, no 422) responde em JSON.</p>
+                </li>
+                <li>
+                    <strong>Interceptor de volta: tradução</strong>
+                    <p>Toda resposta vira o mesmo objeto <code>{ success, status, message, data, errors, meta, requestId, httpStatus }</code>. Respostas 4xx/5xx, falta de rede e tempo esgotado viram um <code>VigiaError</code> com <code>isValidation</code>, <code>isNetwork</code>, <code>isTimeout</code>...</p>
+                </li>
+                <li>
+                    <strong>Sucesso ou erro na tela</strong>
+                    <p><b>Sucesso:</b> limpa os erros, mostra a mensagem (verde, amarela para <code>aviso</code>, azul para <code>info</code>), dispara <code>vigia:success</code>, aplica <code>reset</code> e <code>redirect</code> se configurados. <b>Erro:</b> cada mensagem vai para o seu campo; o que não tem campo vira a mensagem geral; dispara <code>vigia:error</code>.</p>
+                </li>
+                <li>
+                    <strong>Sempre: destrava e <code>vigia:complete</code></strong>
+                    <p>Os botões voltam ao estado e texto originais (inclusive os que já estavam desabilitados antes continuam desabilitados) e o evento <code>vigia:complete</code> roda em qualquer desfecho.</p>
+                </li>
+            </ol>
+
+            <div class="callout info">
+                <div class="ico">i</div>
+                <div>
+                    <strong class="t"><code>submit()</code> nunca rejeita</strong>
+                    <p>A Promise de <code>vigia.submit()</code> sempre resolve: com a resposta, com <code>{ valid: false, errors }</code> ou com <code>null</code> (cancelado). Os erros já foram mostrados na tela e nos eventos — você não precisa de <code>try/catch</code>.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="sep">
+
+        <!-- ======================================================= 06 -->
+        <section class="doc" id="init">
+            <h2><span class="num">06</span>Inicialização</h2>
+            <p class="section-lead">Como um form com <code>data-vigia</code> "ganha vida" sem nenhuma chamada sua.</p>
+
+            <ol class="steps">
+                <li>
+                    <strong>Quando o arquivo carrega</strong>
+                    <p>Se a página ainda está sendo lida (<code>document.readyState === 'loading'</code>), espera o <code>DOMContentLoaded</code>. Se já terminou, agenda com <code>setTimeout(start, 0)</code> — dá tempo de você chamar <code>Vigia.config({ autoInit: false })</code> logo depois do <code>&lt;script&gt;</code>.</p>
+                </li>
+                <li>
+                    <strong><code>init(document)</code> varre a página</strong>
+                    <p>Primeiro aplica as máscaras de todo <code>[data-mask]</code> (estando ou não dentro de um form Vigia). Depois cria uma instância para cada <code>form[data-vigia]</code> ou <code>[data-vigia-form]</code>.</p>
+                </li>
+                <li>
+                    <strong><code>MutationObserver</code> vigia o que chega depois</strong>
+                    <p>Todo elemento adicionado à página (modal carregado por AJAX, linha nova de tabela, componente do Livewire) passa por <code>init(node)</code>. Por isso um form que aparece depois também funciona sozinho.</p>
+                </li>
+            </ol>
+
+            <h3>Uma instância por form, sempre a mesma</h3>
+<div class="code"><div class="bar"><span>formFor (simplificado)</span></div><pre><code class="language-javascript">function formFor(el, options) {
+    if (el.__vigia) {                       // já existe?
+        if (options) el.__vigia.configure(options);
+        return el.__vigia;                  // devolve a mesma
+    }
+    el.__vigia = new VigiaForm(el, options);
+    return el.__vigia;
+}</code></pre></div>
+            <p>A instância fica guardada no próprio elemento (<code>form.__vigia</code>). Chamar <code>Vigia.form(form, {...})</code> num form que o auto-init já criou <strong>não cria outra</strong>: só acrescenta as opções. Por isso dá para ter <code>data-vigia</code> no HTML e ainda assim chamar <code>Vigia.form(form, { rules: {...} })</code> no script.</p>
+
+            <h3>O que o construtor faz</h3>
+            <ul>
+                <li><code>configure(options)</code> — junta as opções (ver próxima seção).</li>
+                <li><code>_bind()</code> — liga <code>form.noValidate = true</code> (desliga os balões nativos do navegador, para o Vigia mostrar as mensagens dele) e registra 4 ouvintes no <strong>form</strong>: <code>submit</code>, <code>focusout</code>, <code>input</code>, <code>change</code>.</li>
+                <li>Lê <code>data-vigia-errors</code>: se o form já nasce com erros (JSON), mostra na hora. Útil quando a página volta de um envio tradicional.</li>
+            </ul>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que os ouvintes ficam no form e não em cada campo?</strong>
+                    <p>Delegação de eventos: <code>input</code>, <code>change</code> e <code>focusout</code> sobem do campo até o form. Com 4 ouvintes no form, campos adicionados depois (um item novo de uma lista) já funcionam, sem registrar nada. E <code>focusout</code> é usado no lugar de <code>blur</code> justamente porque <code>blur</code> não sobe.</p>
+                </div>
+            </div>
+
+            <p>Para remover: <code>vigia.destroy()</code> tira os ouvintes, limpa os erros e apaga <code>form.__vigia</code>. Use antes de remover um form da página em uma tela de página única.</p>
+        </section>
+
+        <!-- ======================================================= 07 -->
+        <section class="doc" id="config">
+            <h2><span class="num">07</span>Configuração e prioridade</h2>
+            <p class="section-lead">Há três lugares para configurar. Quando dois dizem coisas diferentes, vale o mais específico.</p>
+
+            <div class="ladder">
+                <div><b>1</b><span><strong>Opções do JS</strong> — <code>Vigia.form(form, { validateOn: 'submit' })</code></span></div>
+                <div><b>2</b><span><strong>JSON do <code>data-vigia</code></strong> — <code>data-vigia='{"validateOn":"submit"}'</code></span></div>
+                <div><b>3</b><span><strong>Atributo <code>data-vigia-*</code></strong> — <code>data-vigia-validate-on="submit"</code></span></div>
+                <div><b>4</b><span><strong>Configuração global</strong> — <code>Vigia.config({ validateOn: 'submit' })</code></span></div>
+            </div>
+
+            <p>Por dentro, <code>configure()</code> faz <code>extend({}, this.options, jsonDoDataVigia, opcoesDoJs)</code> — o último ganha. Depois, cada leitura passa por <code>option(nome, atributo, padrão)</code>, que procura nessa ordem: <code>this.options</code> → atributo <code>data-vigia-*</code> → padrão global.</p>
+
+            <p><code>rules</code>, <code>messages</code> e <code>labels</code> são <strong>somados</strong>, não substituídos: os do <code>data-vigia</code>, os de <code>data-vigia-rules</code>/<code>-messages</code>/<code>-labels</code> e os do JS se juntam.</p>
+
+            <h3>Opções do formulário</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Opção</th><th>Atributo</th><th>Padrão</th><th>O que faz</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>url</code></td><td><code>data-vigia-url</code></td><td><code>action</code> do form</td><td>Para onde enviar.</td></tr>
+                        <tr><td><code>method</code></td><td>— (usa <code>method</code>)</td><td><code>post</code></td><td><code>get</code> vira query string; <code>put/patch/delete</code> viram POST + <code>_method</code>.</td></tr>
+                        <tr><td><code>validateOn</code></td><td><code>data-vigia-validate-on</code></td><td><code>blur</code></td><td><code>blur</code>, <code>input</code> ou <code>submit</code>.</td></tr>
+                        <tr><td><code>submit</code></td><td><code>data-vigia-submit</code></td><td><code>ajax</code></td><td><code>native</code>: valida e deixa o navegador enviar de verdade (com recarga).</td></tr>
+                        <tr><td><code>confirm</code></td><td><code>data-vigia-confirm</code></td><td>—</td><td>Texto do <code>confirm()</code> antes de tudo.</td></tr>
+                        <tr><td><code>reset</code></td><td><code>data-vigia-reset</code></td><td><code>false</code></td><td>Limpa o form depois do sucesso.</td></tr>
+                        <tr><td><code>redirect</code></td><td><code>data-vigia-redirect</code></td><td>—</td><td>Navega depois do sucesso. Também lê <code>data.redirect</code> da resposta.</td></tr>
+                        <tr><td><code>successMessage</code></td><td><code>data-vigia-success-message</code></td><td><code>true</code></td><td><code>false</code> esconde a mensagem verde (útil com SweetAlert).</td></tr>
+                        <tr><td><code>notify</code></td><td><code>data-vigia-notify</code></td><td><code>auto</code></td><td><code>none</code>: não mostra mensagem geral.</td></tr>
+                        <tr><td><code>focusInvalid</code></td><td><code>data-vigia-focus</code></td><td><code>true</code></td><td>Foca e rola até o primeiro erro.</td></tr>
+                        <tr><td><code>render</code></td><td>—</td><td><code>true</code></td><td><code>false</code>: não mexe no DOM (você desenha, ex.: Alpine).</td></tr>
+                        <tr><td><code>request</code></td><td>— (só JSON)</td><td>—</td><td>Repassado ao axios: <code>{"request":{"timeout":0}}</code>.</td></tr>
+                        <tr><td><code>rules</code> / <code>messages</code> / <code>labels</code></td><td><code>data-vigia-rules</code>...</td><td>—</td><td>Regras por chave (aceita <code>*</code>), mensagens e rótulos.</td></tr>
+                        <tr><td><code>onBefore</code>, <code>onSuccess</code>...</td><td>—</td><td>—</td><td>Callbacks (ver <a href="#eventos">Eventos</a>).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout warn">
+                <div class="ico">!</div>
+                <div>
+                    <strong class="t">Atributos sem valor e "false"</strong>
+                    <p>No <code>option()</code>, um atributo vazio vale <code>true</code> (<code>data-vigia-reset</code>) e o texto <code>"false"</code> vale <code>false</code> (<code>data-vigia-success-message="false"</code>). Qualquer outro texto chega como texto.</p>
+                </div>
+            </div>
+
+            <h3>Configuração global (<code>Vigia.config</code>)</h3>
+<div class="code"><div class="bar"><span>valores padrão</span></div><pre><code class="language-javascript">Vigia.config({
+    token: '',               // vazio = descobre sozinho
+    timeout: 30000,          // ms (vale na criação da instância do axios)
+    validateOn: 'blur',
+    focusInvalid: true,
+    firstErrorOnly: true,    // só a 1ª mensagem de cada campo
+    notify: 'auto',
+    autoInit: true,
+    classes: {
+        invalid:  'is-invalid invalid vigia-invalid',
+        valid:    '',
+        feedback: 'invalid-feedback vigia-feedback',
+        loading:  'vigia-loading',
+        alert: { success: 'alert alert-success vigia-alert', /* ... */ }
+    },
+    messages: {},            // troca as mensagens padrão das regras
+    httpMessages: {}         // troca as mensagens de erro HTTP
+});</code></pre></div>
+            <p><code>Vigia.config</code> faz um <em>merge profundo</em>: <code>Vigia.config({ classes: { invalid: 'border-red-500' } })</code> troca só essa classe e mantém as outras. As classes padrão já incluem as do Bootstrap (<code>is-invalid</code>, <code>invalid-feedback</code>, <code>alert</code>), por isso com Bootstrap tudo já sai estilizado.</p>
+        </section>
+
+        <!-- ======================================================= 08 -->
+        <section class="doc" id="dados">
+            <h2><span class="num">08</span>Dos campos aos dados</h2>
+            <p class="section-lead">Como o Vigia transforma os <code>&lt;input&gt;</code> em um objeto para validar e em um <code>FormData</code> para enviar.</p>
+
+            <h3>Quais campos entram (<code>isSubmittable</code>)</h3>
+            <p>Um campo entra se tem <code>name</code>, <strong>não está <code>disabled</code></strong> e não é botão (<code>button</code>, <code>submit</code>, <code>reset</code>, <code>image</code>). Checkbox e radio só entram se marcados. É exatamente a regra do envio nativo do HTML.</p>
+
+            <div class="callout ok">
+                <div class="ico">✓</div>
+                <div>
+                    <strong class="t">Truque: <code>disabled</code> desliga a validação também</strong>
+                    <p>Campo <code>disabled</code> não é validado nem enviado. Para um campo que só vale em certa situação (ex.: "descreva a sucessão" só quando a opção está marcada), desabilite-o quando não se aplica — nenhuma regra extra é necessária.</p>
+                </div>
+            </div>
+
+            <h3>O valor de cada campo (<code>elementValue</code>)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Campo</th><th>Valor lido</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>type="file"</code></td><td>Um <code>File</code> (ou lista de <code>File</code> com <code>multiple</code>)</td></tr>
+                        <tr><td><code>&lt;select multiple&gt;</code></td><td>Lista dos valores selecionados</td></tr>
+                        <tr><td>Com máscara e <code>data-unmask</code></td><td>O valor <strong>sem</strong> máscara (<code>R$ 1.234,56</code> → <code>1234.56</code>)</td></tr>
+                        <tr><td>Qualquer outro</td><td><code>el.value</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Nomes com colchetes viram objetos (<code>assign</code>)</h3>
+            <p>O mesmo formato que o PHP usa para montar o <code>$_POST</code>:</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th><code>name</code> no HTML</th><th>Em <code>getData()</code></th><th>Chave de erro</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>email</code></td><td><code>{ email: '...' }</code></td><td><code>email</code></td></tr>
+                        <tr><td><code>itens[0][nome]</code></td><td><code>{ itens: { 0: { nome: '...' } } }</code></td><td><code>itens.0.nome</code></td></tr>
+                        <tr><td><code>categorias[]</code> (checkbox)</td><td><code>{ categorias: ['a', 'c'] }</code></td><td><code>categorias</code></td></tr>
+                        <tr><td><code>tags[]</code> (vários texto)</td><td><code>{ tags: ['x', 'y'] }</code></td><td><code>tags.0</code>, <code>tags.1</code> (pela posição)</td></tr>
+                        <tr><td><code>endereco[cidade]</code></td><td><code>{ endereco: { cidade: '...' } }</code></td><td><code>endereco.cidade</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>A conversão entre as duas formas é feita por duas funções pequenas, e é ela que permite que um erro <code>itens.1.quantidade</code> vindo do Laravel ache o campo <code>itens[1][quantidade]</code>:</p>
+<div class="code"><div class="bar"><span>nameToKey / keyToName</span></div><pre><code class="language-javascript">nameToKey('itens[0][nome]')   // 'itens.0.nome'
+nameToKey('tags[]')           // 'tags'
+keyToName('itens.0.nome')     // 'itens[0][nome]'</code></pre></div>
+
+            <h3>Dois formatos de saída</h3>
+            <div class="grid-2">
+                <div class="card">
+                    <h4><code>getData()</code> <span class="tag">para validar</span></h4>
+                    <p>Objeto aninhado. As regras leem dele com caminhos como <code>itens.0.nome</code> (<code>getNested</code>), e regras como <code>same:senha</code> consultam outros campos.</p>
+                </div>
+                <div class="card">
+                    <h4><code>toFormData()</code> <span class="tag">para enviar</span></h4>
+                    <p>Multipart com os <code>name</code> originais, um <code>append</code> por arquivo, por item de lista e por opção. É o que o <code>$request-&gt;input()</code> e o <code>$request-&gt;file()</code> leem.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 09 -->
+        <section class="doc" id="validacao">
+            <h2><span class="num">09</span>Motor de validação</h2>
+            <p class="section-lead">O coração do Vigia. Funciona sem DOM — <code>Vigia.validate(dados, regras)</code> roda até no Node.</p>
+
+            <h3>De onde vêm as regras de um campo</h3>
+            <p><code>VigiaForm.rules()</code> monta um objeto <code>{ chave: [regras] }</code> juntando três fontes. Se a mesma regra aparece em duas, vale a primeira:</p>
+            <ol>
+                <li><strong>Regras do JS</strong> — <code>options.rules</code> / <code>data-vigia-rules</code>, que aceitam curinga: <code>'itens.*.quantidade'</code>.</li>
+                <li><strong><code>data-rules</code></strong> do campo.</li>
+                <li><strong>Atributos nativos</strong> do HTML, traduzidos:</li>
+            </ol>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Atributo HTML</th><th>Vira a regra</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>required</code></td><td><code>required</code></td></tr>
+                        <tr><td><code>type="email"</code> / <code>url</code> / <code>number</code> / <code>date</code> / <code>time</code></td><td><code>email</code> / <code>url</code> / <code>numeric</code> / <code>date</code> / <code>time</code></td></tr>
+                        <tr><td><code>type="datetime-local"</code></td><td><code>datetime:Y-m-d\TH:i</code> (ou com segundos, se <code>step</code> &lt; 60)</td></tr>
+                        <tr><td><code>minlength="3"</code></td><td><code>min_length:3</code></td></tr>
+                        <tr><td><code>maxlength="150"</code></td><td><code>max_length:150</code> — <em>ignorado se o campo tem máscara</em> (os pontos e traços contariam)</td></tr>
+                        <tr><td><code>min</code> / <code>max</code> (em <code>number</code> e <code>range</code>)</td><td><code>min:N</code> / <code>max:N</code></td></tr>
+                        <tr><td><code>pattern="[A-Z]{3}"</code></td><td><code>regex:/^(?:[A-Z]{3})$/u</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Os quatro formatos de regra (<code>parseRules</code>)</h3>
+<div class="code"><div class="bar"><span>todos equivalentes onde fizer sentido</span></div><pre><code class="language-javascript">'required|email|max_length:150'                 // texto, igual ao PHP
+['required', 'integer', 'min:1']               // lista
+{ required: true, in: ['a', 'b'] }             // objeto
+['required', function (valor, dados, campo) {   // lista com função
+    return valor !== 'admin' || 'Esse nome é reservado.';
+}]</code></pre></div>
+            <p>Um detalhe esperto do texto: <strong><code>regex</code> é sempre lido por último</strong>. Tudo depois de <code>regex:</code> vira o padrão, inteiro — assim um <code>|</code> dentro da expressão (<code>regex:/^(a|b)$/</code>) não é confundido com o separador de regras. Por isso coloque <code>regex</code> no fim.</p>
+
+            <h3>Curingas: <code>itens.*.quantidade</code> (<code>expandRules</code>)</h3>
+            <p>Antes de validar, cada regra com <code>*</code> é multiplicada pelos itens que <em>existem nos dados</em>. Com dois itens na tela, <code>itens.*.quantidade</code> vira <code>itens.0.quantidade</code> e <code>itens.1.quantidade</code>. Se a pessoa adicionar um terceiro, a próxima validação já inclui <code>itens.2</code>. É o mesmo comportamento do Laravel.</p>
+
+            <h3>Como um campo é validado (<code>validateField</code>)</h3>
+            <ol class="steps">
+                <li>
+                    <strong>Pega o valor pelo caminho</strong>
+                    <p><code>getNested(dados, 'itens.1.quantidade')</code> e decide se está vazio (<code>valueExists</code>): <code>null</code>, texto só com espaços, lista vazia e objeto vazio contam como vazio.</p>
+                </li>
+                <li>
+                    <strong>Campo vazio? Só regras de presença</strong>
+                    <p>Com o campo vazio, só rodam <code>required</code>, <code>required_if</code>, <code>required_with</code> e <code>accepted</code>. Um <code>email</code> num campo opcional vazio não reclama — igual ao Laravel com <code>nullable</code>. <code>nullable</code> em si é ignorado.</p>
+                </li>
+                <li>
+                    <strong>As regras rodam em sequência, em cadeia de Promises</strong>
+                    <p>Uma depois da outra, na ordem declarada. <strong>Todas</strong> rodam (não para no primeiro erro); <code>firstErrorOnly</code> decide quantas mensagens aparecem.</p>
+                </li>
+                <li>
+                    <strong>Cada regra passa por <code>runRule</code></strong>
+                    <p>Função própria? Roda. Regra só de servidor (<code>unique</code>, <code>exists</code>, <code>callback</code>)? Passa. Valor é lista/objeto e a regra espera texto (<code>email</code>, <code>cpf</code>...)? Falha. Regra desconhecida? <strong>Passa</strong> (igual ao ValidationHelper) — um erro de digitação em <code>data-rules</code> não trava o form.</p>
+                </li>
+            </ol>
+
+            <h3>O que uma regra pode devolver</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Retorno</th><th>Significado</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>true</code> (ou qualquer valor "verdadeiro")</td><td>Válido.</td></tr>
+                        <tr><td><code>false</code></td><td>Inválido, com a mensagem padrão da regra.</td></tr>
+                        <tr><td><code>'Texto'</code></td><td>Inválido com esse texto. <code>:field</code> vira o rótulo do campo.</td></tr>
+                        <tr><td><code>''</code> (texto vazio)</td><td>Inválido com a mensagem padrão.</td></tr>
+                        <tr><td><code>Promise</code> de qualquer um acima</td><td>Assíncrono (ex.: consultar o servidor). Se a Promise rejeitar, vira inválido com a mensagem padrão.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="callout warn">
+                <div class="ico">!</div>
+                <div>
+                    <strong class="t">Regra-função não roda com campo vazio</strong>
+                    <p>Consequência direta do passo 2. Para regras do tipo "preencha A <em>ou</em> B", ponha a função num campo oculto que sempre tem valor (a "âncora") e mostre o erro com <code>data-error-for</code>. Veja a <a href="#r-um-ou-outro">receita</a>.</p>
+                </div>
+            </div>
+
+            <h3>Campos são validados em paralelo</h3>
+            <p><code>validate()</code> roda todos os campos ao mesmo tempo (<code>Promise.all</code>) e depois <strong>reordena</strong> os erros na ordem em que as regras foram declaradas — e o <code>VigiaForm</code> reordena de novo pela <strong>posição na tela</strong> (<code>_inDomOrder</code>). Por isso o "primeiro erro" focado é sempre o mais acima na página, mesmo que uma regra assíncrona termine antes.</p>
+
+            <h3>O contrato do resultado</h3>
+<div class="code"><div class="bar"><span>o mesmo do ValidationHelper::validate() do PHP</span></div><pre><code class="language-javascript">Vigia.validate(
+    { email: 'x', itens: [{ quantidade: 9 }] },
+    { email: 'required|email', 'itens.*.quantidade': 'integer|max:5' },
+    {},                                          // mensagens
+    { 'itens.*.quantidade': 'Quantidade' }       // rótulos
+).then(console.log);
+
+// {
+//   valid: false,
+//   errors: {
+//     email: ['O campo Email deve conter um e-mail válido.'],
+//     'itens.0.quantidade': ['O campo Quantidade (item 1) deve ser menor ou igual a 5.']
+//   },
+//   first_error: 'O campo Email deve conter um e-mail válido.'
+// }</code></pre></div>
+
+            <h3>Regras que você cria (<code>Vigia.rules.add</code>)</h3>
+<div class="code"><div class="bar"><span>regra global, usável em qualquer data-rules</span></div><pre><code class="language-javascript">Vigia.rules.add('maior_idade', function (valor) {
+    var nascimento = Vigia.utils.parseDate(valor, 'd/m/Y');
+    if (!nascimento) return false;
+    var limite = new Date();
+    limite.setFullYear(limite.getFullYear() - 18);
+    return nascimento &lt;= limite;
+}, 'É preciso ter 18 anos ou mais.');
+
+// &lt;input name="nascimento" data-mask="date" data-rules="required|date_br|maior_idade"&gt;</code></pre></div>
+            <p>A assinatura de uma regra global é <code>(valor, parametros, contexto)</code>, onde <code>contexto = { data, field, options }</code>. Os parâmetros vêm do texto: <code>minha_regra:10,20</code> → <code>['10', '20']</code>.</p>
+        </section>
+
+        <!-- ======================================================= 10 -->
+        <section class="doc" id="mensagens">
+            <h2><span class="num">10</span>Mensagens e rótulos</h2>
+            <p class="section-lead">Como o Vigia escolhe a frase de cada erro e o nome do campo dentro dela.</p>
+
+            <h3>A escada da mensagem (<code>messageFor</code>)</h3>
+            <p>Para o campo <code>itens.1.quantidade</code> e a regra <code>max</code>, a primeira que existir vence:</p>
+            <div class="ladder">
+                <div><b>1</b><span><code>messages['itens.1.quantidade.max']</code> — exata para esse item</span></div>
+                <div><b>2</b><span><code>messages['itens.*.quantidade.max']</code> — para qualquer item</span></div>
+                <div><b>3</b><span><code>messages['max']</code> — para a regra em todo o form</span></div>
+                <div><b>4</b><span>Atributo <code>data-msg-max</code> no campo (<code>_</code> vira <code>-</code>: <code>min_length</code> → <code>data-msg-min-length</code>)</span></div>
+                <div><b>5</b><span><code>Vigia.config({ messages: { max: '...' } })</code> — global</span></div>
+                <div><b>6</b><span>Mensagem passada em <code>Vigia.rules.add(nome, fn, mensagem)</code></span></div>
+                <div><b>7</b><span>Mensagem padrão em português (<code>MESSAGES</code>)</span></div>
+                <div><b>8</b><span><code>'O campo :field é inválido.'</code></span></div>
+            </div>
+
+            <h3>Marcadores substituídos</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Marcador</th><th>Vira</th><th>Regras</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>:field</code></td><td>O rótulo do campo</td><td>Todas</td></tr>
+                        <tr><td><code>:value</code></td><td>O 1º parâmetro</td><td><code>min</code>, <code>max</code>, <code>min_length</code>, <code>max_length</code>, <code>length</code>, <code>file_size</code>, <code>digits</code>, <code>password</code></td></tr>
+                        <tr><td><code>:min</code> / <code>:max</code></td><td>Os dois parâmetros</td><td><code>between</code>, <code>digits_between</code></td></tr>
+                        <tr><td><code>:other</code></td><td>O <em>rótulo</em> do outro campo</td><td><code>same</code>, <code>different</code>, <code>required_with</code></td></tr>
+                        <tr><td><code>:date</code></td><td>Rótulo do outro campo, ou "hoje", "amanhã", "ontem", "agora", ou a data</td><td><code>after</code>, <code>before</code> e variações</td></tr>
+                        <tr><td><code>:values</code></td><td>Parâmetros separados por vírgula</td><td><code>starts_with</code>, <code>ends_with</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>O rótulo do campo (<code>labelOf</code> + <code>labelText</code>)</h3>
+            <ol>
+                <li><code>labels['campo']</code> (do <code>data-vigia-labels</code> ou do JS).</li>
+                <li><code>data-label="..."</code> no campo.</li>
+                <li>O texto do <code>&lt;label for="id"&gt;</code> — sem asterisco final, sem <code>.required</code>/<code>.star</code> e sem campos aninhados.</li>
+                <li>O <code>&lt;label&gt;</code> que envolve o campo.</li>
+                <li><code>aria-label</code>.</li>
+                <li>O próprio nome, com a 1ª letra maiúscula: <code>data_nascimento</code> → "Data nascimento".</li>
+            </ol>
+            <p>Para itens de lista, acrescenta a posição contando de 1: <code>itens.1.quantidade</code> com rótulo "Quantidade" vira <strong>"Quantidade (item 2)"</strong> — exatamente o formato do contrato.</p>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que as mensagens são iguais às do PHP?</strong>
+                    <p>A tabela <code>MESSAGES</code> e o algoritmo de rótulos foram copiados do <code>ValidationHelper</code>. A pessoa vê a mesma frase venha o erro do navegador ou do servidor — a interface não "muda de voz".</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 11 -->
+        <section class="doc" id="aovivo">
+            <h2><span class="num">11</span>Validação ao vivo</h2>
+            <p class="section-lead">O que dispara a validação enquanto a pessoa preenche, e como o Vigia evita respostas fora de ordem.</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Modo</th><th>Ao sair do campo</th><th>A cada tecla</th><th>Ao enviar</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>blur</code> (padrão)</td><td><span class="pill ok">sim</span></td><td><span class="pill info">só se o campo já tem erro</span></td><td><span class="pill ok">sim</span></td></tr>
+                        <tr><td><code>input</code></td><td><span class="pill ok">sim</span></td><td><span class="pill ok">sim</span></td><td><span class="pill ok">sim</span></td></tr>
+                        <tr><td><code>submit</code></td><td><span class="pill bad">não</span></td><td><span class="pill info">só se o campo já tem erro</span></td><td><span class="pill ok">sim</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Checkbox, radio, select e arquivo validam no <code>change</code>, em qualquer modo — não faz sentido esperar a pessoa "sair" de um checkbox.</p>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que <code>blur</code> é o padrão?</strong>
+                    <p>Validar a cada tecla grita "e-mail inválido" na 1ª letra. Validar só no envio deixa a pessoa errar tudo antes de saber. O <code>blur</code> espera a pessoa terminar o campo e, depois que existe um erro, passa a conferir a cada tecla — o erro some no instante em que é corrigido.</p>
+                </div>
+            </div>
+
+            <h3>Proteção contra corrida (<code>_sequence</code>)</h3>
+            <p>Regras assíncronas (como <code>remote</code>, que pergunta ao servidor) podem terminar fora de ordem: a pessoa digita "ana", depois "ana@x.com", e a resposta do "ana" chega por último. Para isso não sobrescrever o resultado novo:</p>
+<div class="code"><div class="bar"><span>validateField (resumo)</span></div><pre><code class="language-javascript">var sequence = (this._sequence[key] || 0) + 1;
+this._sequence[key] = sequence;
+
+return validate(...).then(function (result) {
+    if (self._sequence[key] !== sequence) {
+        return result;          // chegou uma validação mais nova: ignora esta
+    }
+    // ... desenha os erros
+});</code></pre></div>
+
+            <h3>Campos que dependem de outros (<code>_revalidateDependents</code>)</h3>
+            <p>Quando um campo muda, o Vigia procura <strong>campos que já estão com erro</strong> e cujas regras citam esse campo como parâmetro (<code>same:senha</code>, <code>required_if:tipo,pj</code>, <code>after:data_inicio</code>) ou são a confirmação dele (<code>senha</code> ↔ <code>senha_confirmation</code>). Esses são validados de novo. Resultado: corrigir a senha apaga o erro "a confirmação não confere" sem a pessoa tocar na confirmação.</p>
+        </section>
+
+        <!-- ======================================================= 12 -->
+        <section class="doc" id="erros">
+            <h2><span class="num">12</span>Exibição dos erros</h2>
+            <p class="section-lead">Onde cada mensagem aparece, com que classes, e o que acontece com erros que não têm campo.</p>
+
+            <h3>Onde a mensagem do campo aparece (<code>_feedbackFor</code>)</h3>
+            <ol>
+                <li><strong>Um elemento seu</strong> com <code>data-error-for="chave"</code> (aceita <code>itens.0.nome</code> ou <code>itens[0][nome]</code>). Use para grupos de checkbox e para a "âncora".</li>
+                <li><strong>Um que o Vigia já criou</strong> antes para essa chave (<code>data-vigia-feedback-for</code>).</li>
+                <li><strong>Cria um <code>&lt;div&gt;</code></strong> logo depois do campo, com <code>id="vigia-erro-N"</code>, <code>aria-live="polite"</code> e as classes <code>invalid-feedback vigia-feedback</code>. Ajustes: em checkbox/radio, vai depois do <code>.form-check</code>/<code>label</code>; em <code>.input-group</code>, depois do grupo (para não quebrar o visual do Bootstrap).</li>
+            </ol>
+
+            <h3>O que muda no campo</h3>
+            <ul>
+                <li>Classes <code>is-invalid invalid vigia-invalid</code>.</li>
+                <li><code>aria-invalid="true"</code> e o id da mensagem em <code>aria-describedby</code> — o leitor de tela lê o erro ao focar o campo.</li>
+                <li>Quando corrige: tudo é removido, e a <code>&lt;div&gt;</code> criada pelo Vigia é apagada (a sua, de <code>data-error-for</code>, só é escondida).</li>
+            </ul>
+
+            <h3>Erros sem campo na tela</h3>
+            <p><code>showErrors()</code> separa os erros em dois grupos. Chaves que começam com <code>_</code> (<code>_general</code>, <code>_system</code>) ou que não acham nenhum campo nem <code>data-error-for</code> são "órfãs" e viram a <strong>mensagem geral</strong>. Um erro nunca some em silêncio.</p>
+
+            <h3>A mensagem geral (<code>notify</code>)</h3>
+            <ul>
+                <li>Vai no <code>[data-vigia-message]</code> do form. Se não existir, o Vigia cria um no topo do form.</li>
+                <li>Recebe <code>role="alert"</code> para erro (o leitor de tela anuncia na hora) e <code>role="status"</code> para o resto.</li>
+                <li>Classes por tipo: <code>success</code>, <code>error</code>, <code>warning</code> (status <code>aviso</code>), <code>info</code>.</li>
+            </ul>
+
+            <div class="callout ok">
+                <div class="ico">✓</div>
+                <div>
+                    <strong class="t">Seguro contra injeção de HTML</strong>
+                    <p>Toda mensagem — da regra ou do servidor — é escrita com <code>textContent</code> / <code>createTextNode</code>, nunca <code>innerHTML</code>. Se um nome de usuário malicioso voltar dentro de uma mensagem de erro, ele aparece como texto, não roda como código.</p>
+                </div>
+            </div>
+
+            <h3>A lógica da mensagem geral num erro do servidor</h3>
+            <p>Quando o envio falha, o Vigia evita repetir o óbvio:</p>
+            <ul>
+                <li>Há erros órfãos → a mensagem geral mostra só eles.</li>
+                <li>Todos os erros acharam campo → <strong>nenhuma</strong> mensagem geral (os campos já explicam).</li>
+                <li>Não veio nenhum erro de campo (403, 500, sem rede) → a mensagem geral mostra a <code>mensagem</code> da resposta ou a mensagem HTTP padrão.</li>
+            </ul>
+        </section>
+
+        <!-- ======================================================= 13 -->
+        <section class="doc" id="mascaras">
+            <h2><span class="num">13</span>Máscaras</h2>
+            <p class="section-lead">Um mini-motor de formatação que roda a cada tecla, sem perder a posição do cursor.</p>
+
+            <h3>A linguagem dos padrões</h3>
+            <div class="grid-3">
+                <div class="card"><h4><code>9</code></h4><p>Um dígito.</p></div>
+                <div class="card"><h4><code>a</code></h4><p>Uma letra (A–Z).</p></div>
+                <div class="card"><h4><code>*</code></h4><p>Letra ou dígito. O resto é literal: <code>. - / ( ) espaço</code>.</p></div>
+            </div>
+
+            <h3>Como <code>applyPattern</code> formata</h3>
+            <ol class="steps">
+                <li><strong>Limpa</strong><p>Tira tudo que não é letra ou dígito: <code>"123.45"</code> → <code>"12345"</code>.</p></li>
+                <li><strong>Percorre o padrão</strong><p>Literal? Escreve. Marcador? Pega o próximo caractere digitado que ele aceita (pulando os que não aceita: uma letra num marcador <code>9</code> é descartada).</p></li>
+                <li><strong>Corta literais soltos no fim</strong><p><code>"123."</code> vira <code>"123"</code> — senão apagar com <kbd>Backspace</kbd> esbarraria no ponto e não sairia do lugar.</p></li>
+            </ol>
+
+            <h3>Máscaras que mudam de forma</h3>
+            <p>Um padrão pode ser uma <strong>função</strong> que recebe o que foi digitado e devolve o padrão. É assim que telefone alterna entre fixo e celular, e <code>cpf_cnpj</code> entre CPF e CNPJ:</p>
+<div class="code"><div class="bar"><span>MASKS (trecho)</span></div><pre><code class="language-javascript">cpf_cnpj: function (raw) {
+    // Até 11 dígitos aceita um a mais, para a pessoa conseguir "passar" para CNPJ.
+    return onlyDigits(raw).length &lt;= 11 ? '999.999.999-999' : '99.999.999/9999-99';
+},
+phone: function (raw) {
+    return onlyDigits(raw).length &lt;= 10 ? '(99) 9999-99999' : '(99) 99999-9999';
+}</code></pre></div>
+
+            <h3>Máscaras de número (estilo caixa registradora)</h3>
+            <p><code>money</code>, <code>decimal</code>, <code>integer</code> e <code>percent</code> não usam padrão: os dígitos entram pela direita. Digitar <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> mostra <code>R$ 0,01</code> → <code>R$ 0,12</code> → <code>R$ 1,23</code>. Um valor vindo do banco com ponto (<code>"1234.5"</code>) é respeitado como decimal e vira <code>R$ 1.234,50</code>.</p>
+            <p>Ajustes por atributo: <code>data-mask-decimals</code>, <code>data-mask-prefix</code> (ex.: <code>""</code> para tirar o "R$ "), <code>data-mask-suffix</code>, <code>data-mask-thousands</code>, <code>data-mask-negative</code>.</p>
+
+            <h3>O cursor no lugar certo</h3>
+            <p>Reformatar o valor faria o cursor pular para o fim — impossível corrigir um dígito no meio do CPF. O <code>onMaskInput</code> resolve contando quantos caracteres <em>reais</em> (não literais) existem antes do cursor, formata, e põe o cursor logo depois do mesmo número de caracteres reais no texto novo (<code>caretAfterRaw</code>).</p>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que o ouvinte da máscara usa <code>capture</code>?</strong>
+                    <p><code>addEventListener('input', onMaskInput, true)</code> roda na fase de captura, <em>antes</em> dos outros ouvintes. Assim o <code>x-model</code> do Alpine, o Livewire ou o seu código já recebem o valor formatado. E durante a digitação com teclado de composição (acentos em celulares, IME), a máscara espera a composição terminar (<code>event.isComposing</code>).</p>
+                </div>
+            </div>
+
+            <h3>Outros cuidados automáticos</h3>
+            <ul>
+                <li><strong><code>inputmode</code>:</strong> se o campo não tem, o Vigia põe <code>numeric</code> ou <code>decimal</code> em máscaras só de números — o celular abre o teclado numérico.</li>
+                <li><strong>Valor inicial:</strong> se o campo já vem preenchido (edição), é formatado na inicialização.</li>
+                <li><strong>Sem máscara no envio:</strong> com <code>data-unmask</code>, o valor enviado (e validado!) é o limpo.</li>
+            </ul>
+
+            <h3>Tirando a máscara (<code>unmask</code>)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Máscara</th><th>Na tela</th><th>Sem máscara</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>money</code></td><td><code>R$ 1.234,56</code></td><td><code>1234.56</code></td></tr>
+                        <tr><td><code>date</code></td><td><code>31/12/2026</code></td><td><code>2026-12-31</code></td></tr>
+                        <tr><td><code>datetime</code></td><td><code>31/12/2026 14:30</code></td><td><code>2026-12-31 14:30</code></td></tr>
+                        <tr><td><code>cpf</code></td><td><code>123.456.789-09</code></td><td><code>12345678909</code></td></tr>
+                        <tr><td><code>time</code></td><td><code>14:30</code></td><td><code>14:30</code> (mantém)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Catálogo</h3>
+            <p class="wrap"><code>cpf</code> · <code>cnpj</code> · <code>cpf_cnpj</code> · <code>cep</code> · <code>phone</code>/<code>telefone</code> · <code>celular</code> · <code>fixo</code> · <code>date</code>/<code>data</code> · <code>time</code>/<code>hora</code> · <code>time_seconds</code> · <code>datetime</code> · <code>credit_card</code>/<code>cartao</code> · <code>validade_cartao</code> · <code>pis</code> · <code>cnh</code> · <code>placa</code> (Mercosul e antiga, maiúsculas) · <code>uuid</code> · <code>money</code>/<code>moeda</code>/<code>dinheiro</code> · <code>decimal</code> · <code>integer</code>/<code>inteiro</code> · <code>percent</code> · <code>uppercase</code> · <code>lowercase</code> · <code>digits</code> — ou qualquer padrão direto: <code>data-mask="aaa-9999"</code>.</p>
+<div class="code"><div class="bar"><span>máscara própria</span></div><pre><code class="language-javascript">Vigia.mask.add('processo', '9999999-99.9999.9.99.9999');   // nº CNJ
+Vigia.mask.add('sku', { pattern: 'aa-9999', uppercase: true });
+
+Vigia.mask(document.querySelector('#codigo'), 'sku');      // aplica por JS
+Vigia.mask.format('12345678909', 'cpf');                    // '123.456.789-09'</code></pre></div>
+        </section>
+
+        <!-- ======================================================= 14 -->
+        <section class="doc" id="http">
+            <h2><span class="num">14</span>Camada HTTP</h2>
+            <p class="section-lead">Uma instância própria do axios com dois interceptores. É aqui que está a adaptação para o Laravel.</p>
+
+            <h3>Criada só quando precisa (<code>getAxios</code>)</h3>
+            <p>A instância é criada na <strong>primeira requisição</strong>, não quando o arquivo carrega. Duas consequências práticas:</p>
+            <ul>
+                <li>O axios pode ser carregado <em>depois</em> do Vigia — inclusive o do <code>resources/js/bootstrap.js</code> do Laravel via Vite (<code>window.axios = axios</code>). Só precisa existir na hora do primeiro envio.</li>
+                <li>É criada com <code>window.axios.create()</code>, então os interceptores do Vigia <strong>não afetam</strong> o <code>window.axios</code> que o resto da aplicação usa.</li>
+            </ul>
+
+            <h3>Interceptor de ida</h3>
+<div class="code"><div class="bar"><span>vigia-laravel.js · interceptors.request</span></div><pre><code class="language-javascript">setHeader(cfg, 'X-Requested-With', 'XMLHttpRequest');      // $request-&gt;ajax()
+setHeader(cfg, 'Accept', 'application/json, text/plain, */*'); // $request-&gt;expectsJson()
+
+if (token) setHeader(cfg, 'X-CSRF-TOKEN', token);           // VerifyCsrfToken
+
+if (method !== 'get' &amp;&amp; method !== 'head') {
+    if (!cfg.json &amp;&amp; !cfg.data) cfg.data = {};
+    if (!cfg.json &amp;&amp; isObject(cfg.data)) cfg.data = objectToFormData(cfg.data);
+
+    // PHP não lê multipart em PUT/PATCH/DELETE
+    if (!cfg.json &amp;&amp; method !== 'post' &amp;&amp; cfg.data instanceof FormData) {
+        if (!cfg.data.has('_method')) cfg.data.append('_method', method.toUpperCase());
+        cfg.method = 'post';
+    }
+}</code></pre></div>
+            <p><code>setHeader</code> <strong>não sobrescreve</strong> um cabeçalho que você já passou — suas opções sempre ganham.</p>
+
+            <h3>Onde o token é procurado (<code>findToken</code>)</h3>
+            <div class="ladder">
+                <div><b>1</b><span><code>Vigia.config({ token: '...' })</code></span></div>
+                <div><b>2</b><span><code>&lt;input name="_token"&gt;</code> dentro do form (o <code>@csrf</code>)</span></div>
+                <div><b>3</b><span><code>&lt;input name="_token"&gt;</code> em qualquer lugar da página</span></div>
+                <div><b>4</b><span><code>&lt;meta name="csrf-token" content="..."&gt;</code></span></div>
+            </div>
+            <p>Para uma rota pública ou API de terceiros, <code>{ vigiaToken: false }</code> não manda o cabeçalho. Para APIs de terceiros (ViaCEP etc.), prefira <code>fetch</code>: o <code>Vigia.http</code> é feito para o seu backend.</p>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que multipart e não JSON?</strong>
+                    <p>Multipart é o formato do envio nativo de um form: aceita arquivos, e o Laravel lê com <code>$request-&gt;input()</code> e <code>$request-&gt;file()</code> sem configuração. JSON não leva arquivos. Com <code>{ json: true }</code> você pode mandar JSON quando não houver arquivos — e aí o método original (PUT etc.) é mantido, porque o Laravel lê corpo JSON em qualquer método.</p>
+                </div>
+            </div>
+
+            <div class="callout why">
+                <div class="ico">?</div>
+                <div>
+                    <strong class="t">Por que <code>_method</code>?</strong>
+                    <p>O PHP só monta <code>$_POST</code> e <code>$_FILES</code> a partir de corpo multipart quando o método é POST. Um PUT multipart chegaria com os dados vazios. O Laravel tem a solução padrão — o campo <code>_method</code>, o mesmo do <code>@method('PUT')</code> do Blade — e o roteador trata a requisição como PUT.</p>
+                </div>
+            </div>
+
+            <h3>Objetos viram campos com colchetes (<code>objectToFormData</code>)</h3>
+<div class="code"><div class="bar"><span>Vigia.http.post(url, objeto)</span></div><pre><code class="language-javascript">{ nome: 'A', ativo: true, nada: null, tags: ['x', 'y'], itens: [{ qtd: 2 }] }
+
+// vira:
+// nome=A  ativo=1  nada=  tags[]=x  tags[]=y  itens[0][qtd]=2</code></pre></div>
+            <p>Booleanos viram <code>1</code>/<code>0</code> e <code>null</code> vira texto vazio — que o middleware <code>ConvertEmptyStringsToNull</code> do Laravel transforma de volta em <code>null</code>.</p>
+
+            <h3>Interceptor de volta: tudo vira o mesmo objeto</h3>
+            <p><code>normalizeResponse</code> aceita o envelope do <code>ResponseService</code> e também o formato nativo do Laravel (<code>{ message, errors }</code>): ele reconhece um "envelope" se a resposta tem <code>success</code>, <code>mensagem</code> <em>ou</em> <code>errors</code>.</p>
+<div class="code"><div class="bar"><span>a resposta normalizada</span></div><pre><code class="language-javascript">{
+    success: true,          // do corpo; sem o campo, deduz pelo status HTTP
+    status: 'sucesso',      // sucesso | erro | aviso | info
+    message: '...',         // lê "mensagem" (ResponseService) ou "message" (Laravel)
+    data: { id: 7 },
+    errors: {},             // sempre { campo: [mensagens] }
+    meta: {},               // ex.: { paginacao: {...} }
+    requestId: '9f2c...',   // do corpo ou do cabeçalho X-Request-Id
+    httpStatus: 201,
+    json: true,             // false se veio HTML/texto
+    raw: /* resposta do axios */
+}</code></pre></div>
+
+            <p>Os <code>errors</code> passam por <code>normalizeErrors</code>: texto vira <code>{ _general: [texto] }</code>, lista vira <code>{ _general: [...] }</code>, e mensagem solta num campo vira lista.</p>
+
+            <h3>Quando dá errado: <code>VigiaError</code></h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Propriedade</th><th>Significado</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>message</code></td><td>Mensagem do servidor ou a padrão do status.</td></tr>
+                        <tr><td><code>httpStatus</code></td><td>0 quando não houve resposta.</td></tr>
+                        <tr><td><code>errors</code></td><td><code>{ campo: [mensagens] }</code></td></tr>
+                        <tr><td><code>isValidation</code></td><td>Status 422.</td></tr>
+                        <tr><td><code>isNetwork</code></td><td>Sem conexão / servidor fora.</td></tr>
+                        <tr><td><code>isTimeout</code></td><td>Passou do <code>timeout</code>.</td></tr>
+                        <tr><td><code>isCancel</code></td><td>Cancelado por <code>AbortController</code>.</td></tr>
+                        <tr><td><code>response</code> / <code>original</code></td><td>Resposta normalizada / erro original do axios.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Mensagens HTTP padrão</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Chave</th><th>Mensagem</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>network</code></td><td>Não foi possível conectar ao servidor. Verifique sua conexão.</td></tr>
+                        <tr><td><code>timeout</code></td><td>O servidor demorou para responder. Tente novamente.</td></tr>
+                        <tr><td><code>unexpected</code></td><td>O servidor enviou uma resposta inesperada.</td></tr>
+                        <tr><td><code>401</code></td><td>Sua sessão expirou. Entre novamente.</td></tr>
+                        <tr><td><code>403</code></td><td>Você não possui permissão para esta operação.</td></tr>
+                        <tr><td><code>404</code> · <code>405</code> · <code>409</code></td><td>Registro não encontrado · Método não permitido · Conflito de dados</td></tr>
+                        <tr><td><code>413</code></td><td>O envio é maior do que o servidor aceita.</td></tr>
+                        <tr><td><code>419</code></td><td>Sua sessão expirou. Recarregue a página.</td></tr>
+                        <tr><td><code>422</code></td><td>Corrija os campos informados.</td></tr>
+                        <tr><td><code>429</code> · <code>500</code> · <code>503</code></td><td>Muitas tentativas · Erro interno · Serviço indisponível</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Só são usadas quando o servidor não manda a própria mensagem. Troque com <code>Vigia.config({ httpMessages: { 419: '...' } })</code>.</p>
+
+            <h3>Requisições fora de formulário</h3>
+<div class="code"><div class="bar"><span>Vigia.http</span></div><pre><code class="language-javascript">Vigia.http.get('/cidades', { uf: 'SC' })
+    .then(function (resposta) { console.log(resposta.data); })
+    .catch(function (erro) { alert(erro.message); });          // 4xx/5xx/rede
+
+Vigia.http.delete('/clientes/7');                            // POST + _method=DELETE
+Vigia.http.put('/clientes/7', { nome: 'Ana' });              // POST + _method=PUT
+Vigia.http.put('/clientes/7', { nome: 'Ana' }, { json: true }); // PUT de verdade, JSON</code></pre></div>
+
+            <div class="callout warn">
+                <div class="ico">!</div>
+                <div>
+                    <strong class="t">Diferença sutil: form x <code>Vigia.http</code></strong>
+                    <p>No <strong>formulário</strong>, uma resposta 2xx com <code>success: false</code> é tratada como erro. No <strong><code>Vigia.http</code></strong>, ela <em>resolve</em> normalmente — confira <code>resposta.success</code>. Só 4xx/5xx, rede e tempo esgotado rejeitam a Promise.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 15 -->
+        <section class="doc" id="contrato">
+            <h2><span class="num">15</span>Contrato com o servidor</h2>
+            <p class="section-lead">O "idioma" que o Laravel e o Vigia combinaram. Respeite-o e tudo encaixa sozinho.</p>
+
+<div class="code"><div class="bar"><span>422 — ResponseService::validationError()</span></div><pre><code class="language-json">{
+    "success": false,
+    "status": "erro",
+    "mensagem": "O valor informado no campo E-mail já está em uso.",
+    "data": null,
+    "errors": {
+        "email": ["O valor informado no campo E-mail já está em uso."],
+        "itens.1.quantidade": ["O campo Quantidade (item 2) deve ser menor ou igual a 5."],
+        "_general": ["Estoque insuficiente."]
+    },
+    "request_id": "9f2c..."
+}</code></pre></div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Chave em <code>errors</code></th><th>O Vigia procura</th><th>Resultado</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>email</code></td><td><code>name="email"</code></td><td>Embaixo do campo e-mail</td></tr>
+                        <tr><td><code>itens.1.quantidade</code></td><td><code>name="itens[1][quantidade]"</code></td><td>Embaixo da quantidade do 2º item</td></tr>
+                        <tr><td><code>categorias.2</code></td><td><code>categorias.2</code> → não acha → sobe para <code>categorias</code></td><td>No grupo <code>categorias[]</code> (<code>_elementsFor</code> sobe nível a nível)</td></tr>
+                        <tr><td><code>_general</code></td><td>Começa com <code>_</code> → nunca é campo</td><td>Mensagem geral</td></tr>
+                        <tr><td><code>campo_que_nao_existe</code></td><td>Não acha nada</td><td>Mensagem geral (nunca some)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Como o Vigia classifica cada resposta (no form)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Resposta</th><th>Tratada como</th></tr></thead>
+                    <tbody>
+                        <tr><td>2xx, JSON, <code>success</code> diferente de <code>false</code></td><td><span class="pill ok">sucesso</span></td></tr>
+                        <tr><td>2xx, JSON, <code>success: false</code></td><td><span class="pill bad">erro</span> com os <code>errors</code> da resposta</td></tr>
+                        <tr><td>2xx, mas HTML ou texto</td><td><span class="pill bad">erro</span> "resposta inesperada"</td></tr>
+                        <tr><td>4xx / 5xx</td><td><span class="pill bad">erro</span> com <code>mensagem</code> e <code>errors</code> do corpo</td></tr>
+                        <tr><td>Sem resposta</td><td><span class="pill bad">erro</span> de rede ou tempo esgotado</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Status → cor da mensagem de sucesso</h3>
+            <p><code>sucesso</code> → verde · <code>aviso</code> (<code>ResponseService::warning</code>) → amarelo · <code>info</code> (<code>ResponseService::info</code>) → azul.</p>
+
+            <div class="callout ok">
+                <div class="ico">✓</div>
+                <div>
+                    <strong class="t">Funciona até sem o ResponseService</strong>
+                    <p>O <code>$request-&gt;validate()</code> do Laravel, numa requisição do Vigia (que pede JSON), já devolve 422 com <code>{ "message": "...", "errors": { ... } }</code>. Como tem <code>errors</code>, o Vigia reconhece e põe cada erro no seu campo. O <code>ResponseService</code> padroniza o resto: sucesso, 403, 404, 419, 500 e o <code>request_id</code>.</p>
+                </div>
+            </div>
+
+            <h3>Ligando o ResponseService às exceções (Laravel 11+)</h3>
+<div class="code"><div class="bar"><span>bootstrap/app.php</span></div><pre><code class="language-php">-&gt;withExceptions(function (Exceptions $exceptions) {
+    $exceptions-&gt;render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+        if ($request-&gt;expectsJson()) {          // o Vigia manda Accept: application/json
+            return \App\Services\ResponseService::fromThrowable($e);
+        }
+    });
+})</code></pre></div>
+            <p>Assim, <code>authorize()</code>, <code>findOrFail()</code>, token vencido, <code>throttle</code> e qualquer exceção também chegam no formato certo. As páginas Blade normais (sem <code>expectsJson</code>) continuam com o comportamento padrão do Laravel.</p>
+        </section>
+
+        <!-- ======================================================= 16 -->
+        <section class="doc" id="eventos">
+            <h2><span class="num">16</span>Eventos e ganchos</h2>
+            <p class="section-lead">Cinco momentos do ciclo, três jeitos de escutar cada um.</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Evento</th><th>Quando</th><th><code>detail</code></th><th>Cancelável</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>vigia:invalid</code></td><td>A validação do navegador falhou no envio</td><td><code>{ errors }</code></td><td>não</td></tr>
+                        <tr><td><code>vigia:before</code></td><td>Passou na validação, vai enviar</td><td><code>{ data }</code></td><td><span class="pill ok">sim</span></td></tr>
+                        <tr><td><code>vigia:success</code></td><td>Resposta de sucesso</td><td><code>{ response, data }</code></td><td>não</td></tr>
+                        <tr><td><code>vigia:error</code></td><td>Erro do servidor, de rede ou tempo</td><td><code>{ error, errors }</code></td><td>não</td></tr>
+                        <tr><td><code>vigia:complete</code></td><td>Sempre, no fim de um envio</td><td><code>{ response }</code></td><td>não</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>Nos eventos do DOM, o <code>detail</code> também traz <code>form</code> e <code>vigia</code> (a instância). Os eventos <strong>sobem</strong> (<code>bubbles</code>): dá para escutar todos os forms da página num ouvinte só no <code>document</code>.</p>
+
+            <h3>Os três jeitos, na ordem em que rodam (<code>_trigger</code>)</h3>
+<div class="code"><div class="bar"><span>1 · callback · 2 · .on() · 3 · evento do DOM</span></div><pre><code class="language-javascript">// 1. Callback nas opções (onBefore, onSuccess, onError, onInvalid, onComplete)
+var vigia = Vigia.form('#form-cliente', {
+    onSuccess: function (detail, vigia) { console.log(detail.data.id); }
+});
+
+// 2. vigia.on() — vários ouvintes por evento
+vigia.on('error', function (detail) { console.log(detail.error.httpStatus); });
+
+// 3. Evento do DOM — o jeito mais comum
+document.querySelector('#form-cliente').addEventListener('vigia:success', function (e) {
+    window.location.href = '/clientes/' + e.detail.data.id;
+});</code></pre></div>
+
+            <h3>Cancelando o envio</h3>
+<div class="code"><div class="bar"><span>vigia:before</span></div><pre><code class="language-javascript">form.addEventListener('vigia:before', function (e) {
+    if (!podeEnviar()) {
+        e.preventDefault();          // nada é enviado, nenhum erro aparece
+    }
+});
+// ou: onBefore: function () { return false; }</code></pre></div>
+
+            <div class="callout info">
+                <div class="ico">i</div>
+                <div>
+                    <strong class="t"><code>vigia:before</code> não altera o corpo</strong>
+                    <p>O <code>detail.data</code> é uma cópia para leitura. O corpo enviado é montado do DOM logo depois (<code>toFormData</code>). Para enviar algo a mais, coloque um <code>&lt;input type="hidden"&gt;</code> no form. Nunca passe <code>request.data</code> nas opções: ele substituiria o corpo inteiro.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 17 -->
+        <section class="doc" id="estado">
+            <h2><span class="num">17</span>Estado e Alpine.js</h2>
+            <p class="section-lead">Toda mudança passa por um só lugar, o que torna a integração com frameworks reativos trivial.</p>
+
+            <p>A instância guarda o estado em propriedades públicas (<code>errors</code>, <code>loading</code>, <code>progress</code>, <code>response</code>, <code>message</code>, <code>messageType</code>), e toda alteração passa por <code>_setState()</code>, que chama <code>onState(estado)</code> com uma foto completa, incluindo <code>valid</code>. É o mesmo padrão de "fonte única da verdade" de bibliotecas como Redux.</p>
+
+            <h3>Com Alpine.js (opcional)</h3>
+            <p>Se o Alpine estiver na página, o Vigia se registra no evento <code>alpine:init</code> e oferece o componente <code>vigia</code> e a diretiva <code>x-mask</code>:</p>
+<div class="code"><div class="bar"><span>Blade + Alpine</span></div><pre><code class="language-html">&lt;form method="post" action="{{ route('clientes.store') }}"
+      x-data="vigia({ render: false }, { tipo: 'pf' })"&gt;
+    @csrf
+
+    &lt;input name="documento" x-mask="tipo === 'pf' ? 'cpf' : 'cnpj'"
+           :class="hasError('documento') &amp;&amp; 'border-red-500'"&gt;
+    &lt;p x-show="hasError('documento')" x-text="error('documento')"&gt;&lt;/p&gt;
+
+    &lt;button :disabled="loading" x-text="loading ? progress + '%' : 'Salvar'"&gt;&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+            <p><code>render: false</code> diz ao Vigia para não mexer no DOM: ele só valida, envia e atualiza o estado; o Alpine desenha. O segundo objeto do <code>vigia(...)</code> entra no componente (seus campos e métodos).</p>
+            <div class="callout warn">
+                <div class="ico">!</div>
+                <div>
+                    <strong class="t">Ordem de carregamento</strong>
+                    <p>O <code>vigia-laravel.js</code> precisa estar na página <strong>antes</strong> do <code>Alpine.start()</code> (que dispara o <code>alpine:init</code>). Com Vite, carregue o Vigia num <code>&lt;script&gt;</code> comum no <code>&lt;head&gt;</code>; o <code>app.js</code> do Vite (módulo) roda depois.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="sep">
+
+        <!-- ======================================================= 18 -->
+        <section class="doc" id="laboratorio">
+            <h2><span class="num">18</span>Laboratório ao vivo</h2>
+            <p class="section-lead">Estas demonstrações usam o <code>vigia-laravel.js</code> de verdade, carregado desta mesma pasta. Nada é enviado a servidor algum.</p>
+
+            <div class="no-lib" id="no-lib">O <code>vigia-laravel.js</code> não foi encontrado ao lado deste arquivo. Abra o <code>doc.html</code> na mesma pasta do <code>vigia-laravel.js</code> e do <code>vigia-laravel.css</code> para usar as demonstrações.</div>
+
+            <!-- Demo 1 -->
+            <div class="demo">
+                <div class="demo-head"><span class="dot"></span>Demo 1 · Formulário completo (envio interceptado no <code>vigia:before</code>)</div>
+                <div class="demo-body">
+                    <div class="demo-cols">
+                        <form id="demo-form" method="post" action="/clientes" data-vigia
+                              data-vigia-rules='{"itens.*.quantidade": "required|integer|max:5"}'
+                              data-vigia-labels='{"itens.*.quantidade": "Quantidade"}'>
+                            <div data-vigia-message></div>
+
+                            <div class="field">
+                                <label for="d-nome">Nome</label>
+                                <input type="text" id="d-nome" name="nome" required data-rules="min_length:3|max_length:150"
+                                       data-msg-min-length="Informe pelo menos 3 letras.">
+                                <span class="hint">required · min_length:3 · data-msg-min-length</span>
+                            </div>
+
+                            <div class="row">
+                                <div class="field">
+                                    <label for="d-email">E-mail</label>
+                                    <input type="email" id="d-email" name="email" required>
+                                    <span class="hint">type="email" vira a regra email</span>
+                                </div>
+                                <div class="field">
+                                    <label for="d-cpf">CPF</label>
+                                    <input type="text" id="d-cpf" name="cpf" data-mask="cpf" data-rules="required|cpf">
+                                    <span class="hint">data-mask="cpf" · cpf (dígitos)</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="field">
+                                    <label for="d-valor">Valor</label>
+                                    <input type="text" id="d-valor" name="valor" data-mask="money" data-unmask
+                                           data-rules="required|min:10" data-msg-min="O valor mínimo é R$ 10,00.">
+                                    <span class="hint">money · data-unmask · min:10</span>
+                                </div>
+                                <div class="field">
+                                    <label for="d-nasc">Nascimento</label>
+                                    <input type="text" id="d-nasc" name="nascimento" data-mask="date"
+                                           data-rules="required|date_br|before:today">
+                                    <span class="hint">date_br · before:today</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="field">
+                                    <label for="d-senha">Senha</label>
+                                    <input type="password" id="d-senha" name="senha" data-rules="required|password:8|confirmed">
+                                    <span class="hint">password:8 · confirmed</span>
+                                </div>
+                                <div class="field">
+                                    <label for="d-senha2">Confirme a senha</label>
+                                    <input type="password" id="d-senha2" name="senha_confirmation" required>
+                                    <span class="hint">revalida a senha ao mudar</span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="field">
+                                    <label for="d-q0">Quantidade (item 1)</label>
+                                    <input type="text" id="d-q0" name="itens[0][quantidade]" data-mask="integer" value="2">
+                                    <span class="hint">itens.*.quantidade · max:5</span>
+                                </div>
+                                <div class="field">
+                                    <label for="d-q1">Quantidade (item 2)</label>
+                                    <input type="text" id="d-q1" name="itens[1][quantidade]" data-mask="integer" value="9">
+                                    <span class="hint">começa inválido: 9 &gt; 5</span>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="check"><input type="checkbox" name="termos" value="1" data-rules="accepted"> Li e aceito os termos</label>
+                            </div>
+
+                            <div class="actions">
+                                <button type="submit" class="btn primary" data-loading-text="Enviando...">Enviar</button>
+                                <button type="button" class="btn" id="demo-422">Simular 422 do Laravel</button>
+                                <button type="button" class="btn" id="demo-limpar">Limpar</button>
+                            </div>
+                        </form>
+
+                        <div>
+                            <p class="out-label">Eventos e dados</p>
+                            <pre class="out" id="demo-saida">Preencha e clique em Enviar.
+O vigia:before mostra o que seria enviado ao Laravel.</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo 2 -->
+            <div class="demo">
+                <div class="demo-head"><span class="dot"></span>Demo 2 · Laboratório de máscaras</div>
+                <div class="demo-body">
+                    <div class="row">
+                        <div class="field">
+                            <label for="m-tipo">Máscara</label>
+                            <select id="m-tipo">
+                                <option>cpf_cnpj</option><option>cpf</option><option>cnpj</option><option>cep</option>
+                                <option>phone</option><option>date</option><option>datetime</option><option>time</option>
+                                <option>money</option><option>decimal</option><option>percent</option><option>integer</option>
+                                <option>placa</option><option>credit_card</option><option>pis</option><option>uppercase</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="m-campo">Digite aqui</label>
+                            <input type="text" id="m-campo" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="mask-grid">
+                        <div><b>Na tela (format)</b><code id="m-tela">—</code></div>
+                        <div><b>Sem máscara (unmask)</b><code id="m-limpo">—</code></div>
+                        <div><b>inputmode</b><code id="m-mode">—</code></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo 3 -->
+            <div class="demo">
+                <div class="demo-head"><span class="dot"></span>Demo 3 · Testador de regras (<code>Vigia.validate</code>)</div>
+                <div class="demo-body">
+                    <div class="row">
+                        <div class="field">
+                            <label for="r-regras">Regras</label>
+                            <input type="text" id="r-regras" value="required|cpf_cnpj">
+                        </div>
+                        <div class="field">
+                            <label for="r-valor">Valor</label>
+                            <input type="text" id="r-valor" value="111.111.111-11">
+                        </div>
+                    </div>
+                    <p class="out-label">Resultado</p>
+                    <pre class="out" id="r-saida" style="min-height:80px"></pre>
+                </div>
+            </div>
+
+            <!-- Demo 4 -->
+            <div class="demo">
+                <div class="demo-head"><span class="dot"></span>Demo 4 · Raio-X da resposta (<code>Vigia.http.normalize</code>)</div>
+                <div class="demo-body">
+                    <div class="demo-cols">
+                        <div>
+                            <div class="field">
+                                <label for="n-status">Status HTTP</label>
+                                <select id="n-status">
+                                    <option value="422">422 · validação (ResponseService)</option>
+                                    <option value="422-laravel">422 · validação (formato nativo do Laravel)</option>
+                                    <option value="201">201 · criado</option>
+                                    <option value="200-aviso">200 · aviso</option>
+                                    <option value="419">419 · token vencido (Laravel sem ResponseService)</option>
+                                    <option value="200-html">200 · HTML (ex.: redirect seguido)</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="n-corpo">Corpo</label>
+                                <textarea id="n-corpo" spellcheck="false"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="out-label">Objeto que o Vigia usa</p>
+                            <pre class="out" id="n-saida"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================= 19 -->
+        <section class="doc" id="receitas">
+            <h2><span class="num">19</span>Receitas Laravel</h2>
+            <p class="section-lead">Os casos que aparecem em todo projeto, prontos para copiar.</p>
+
+            <h3 id="r-editar">Editar (PUT) e excluir (DELETE)</h3>
+<div class="code"><div class="bar"><span>edit.blade.php</span></div><pre><code class="language-html">&lt;form method="post" action="{{ route('clientes.update', $cliente) }}" data-vigia&gt;
+    @csrf
+    @method('PUT')
+    &lt;div data-vigia-message&gt;&lt;/div&gt;
+    &lt;input name="nome" value="{{ old('nome', $cliente-&gt;nome) }}" required&gt;
+    &lt;button type="submit" data-loading-text="Salvando..."&gt;Salvar&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;button type="button" onclick="excluir({{ $cliente-&gt;id }})"&gt;Excluir&lt;/button&gt;
+&lt;script&gt;
+function excluir(id) {
+    if (!confirm('Excluir este cliente?')) return;
+    Vigia.http.delete('/clientes/' + id)
+        .then(function () { location.href = '/clientes'; })
+        .catch(function (erro) { alert(erro.message); });
+}
+&lt;/script&gt;</code></pre></div>
+
+            <h3 id="r-arquivos">Upload com barra de progresso</h3>
+<div class="code"><div class="bar"><span>Blade</span></div><pre><code class="language-html">&lt;form method="post" action="{{ route('documentos.store') }}"
+      data-vigia='{"request": {"timeout": 0}}'&gt;
+    @csrf
+    &lt;div data-vigia-message&gt;&lt;/div&gt;
+
+    &lt;input type="file" name="fotos[]" multiple
+           data-rules="required|max:10|file_size:2M|file_extension:jpg,jpeg,png|image"
+           data-msg-max="Envie no máximo 10 fotos."&gt;
+
+    &lt;div class="vigia-progress"&gt;&lt;div data-vigia-progress&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;button type="submit" data-loading-text="Enviando..."&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+<div class="code"><div class="bar"><span>Controller</span></div><pre><code class="language-php">$request-&gt;validate([
+    'fotos'   =&gt; 'required|array|max:10',
+    'fotos.*' =&gt; 'file|max:2048|mimes:jpg,jpeg,png|image',   // max em KB no Laravel!
+]);</code></pre></div>
+            <p><code>timeout: 0</code> tira o limite de 30 s (arquivos grandes). Confira também <code>upload_max_filesize</code> e <code>post_max_size</code> no PHP: passou do limite, o Laravel responde 413 e o Vigia mostra "O envio é maior do que o servidor aceita".</p>
+
+            <h3 id="r-um-ou-outro">"Preencha A ou B" (a âncora oculta)</h3>
+<div class="code"><div class="bar"><span>Blade</span></div><pre><code class="language-html">&lt;input name="telefone" data-mask="phone"&gt;
+&lt;input name="email" type="email"&gt;
+
+&lt;input type="hidden" name="contato" value="1"&gt;   &lt;!-- âncora: sempre tem valor --&gt;
+&lt;div data-error-for="contato"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+Vigia.form('#form-contato', {
+    rules: {
+        contato: [function (valor, dados) {
+            return !!(dados.telefone || dados.email) || 'Informe telefone ou e-mail.';
+        }]
+    }
+});
+&lt;/script&gt;</code></pre></div>
+            <p>No servidor, devolva o erro na mesma chave: <code>ResponseService::validationError(['contato' =&gt; 'Informe telefone ou e-mail.'])</code>.</p>
+
+            <h3 id="r-grupo">Grupo de checkbox com uma mensagem só</h3>
+<div class="code"><div class="bar"><span>Blade</span></div><pre><code class="language-html">@foreach ($interesses as $i)
+    &lt;label&gt;
+        &lt;input type="checkbox" name="interesses[]" value="{{ $i-&gt;id }}"
+               @if ($loop-&gt;first) data-rules="required|min:2" data-msg-min="Escolha pelo menos 2." @endif&gt;
+        {{ $i-&gt;nome }}
+    &lt;/label&gt;
+@endforeach
+&lt;div data-error-for="interesses"&gt;&lt;/div&gt;</code></pre></div>
+            <p>A regra fica só no primeiro item; o valor validado é a lista dos marcados (<code>min:2</code> conta itens). A mensagem vai para o <code>data-error-for</code>.</p>
+
+            <h3 id="r-dependente">Selects dependentes (estado → cidade)</h3>
+<div class="code"><div class="bar"><span>Blade</span></div><pre><code class="language-javascript">document.querySelector('#uf').addEventListener('change', function () {
+    var cidade = document.querySelector('#cidade');
+    cidade.length = 1;                                  // mantém o "Selecione"
+
+    Vigia.http.get('{{ route('cidades.index') }}', { uf: this.value }).then(function (r) {
+        r.data.forEach(function (c) { cidade.add(new Option(c.nome, c.id)); });
+    });
+});</code></pre></div>
+            <p><code>new Option(texto, valor)</code> cria a opção sem montar HTML — nenhum nome de cidade é interpretado como código.</p>
+
+            <h3 id="r-remote">Conferir no servidor enquanto digita (<code>remote</code>)</h3>
+<div class="code"><div class="bar"><span>Blade + rota</span></div><pre><code class="language-php">&lt;input name="email" type="email" required data-rules="remote:{{ route('validar.email') }}"&gt;
+
+// routes/web.php
+Route::post('/validar/email', function (Request $request) {
+    $existe = User::where('email', $request-&gt;input('value'))-&gt;exists();
+
+    return $existe
+        ? ResponseService::validationError(['email' =&gt; 'Este e-mail já está em uso.'])
+        : ResponseService::success('ok');
+})-&gt;name('validar.email');</code></pre></div>
+            <p>O Vigia manda <code>{ field, value }</code>. Se o servidor cair, a regra <strong>passa</strong> (não trava o form) — o envio valida de novo no controller. A proteção contra corrida da seção 11 garante que só a última resposta conta.</p>
+
+            <h3 id="r-redirect">Redirecionar depois de salvar</h3>
+<div class="code"><div class="bar"><span>Controller</span></div><pre><code class="language-php">return ResponseService::created('Cliente cadastrado.', [
+    'id'       =&gt; $cliente-&gt;id,
+    'redirect' =&gt; route('clientes.show', $cliente),   // o Vigia navega sozinho
+]);</code></pre></div>
+
+            <h3 id="r-botoes">Dois botões: "Rascunho" e "Publicar"</h3>
+<div class="code"><div class="bar"><span>Blade + controller</span></div><pre><code class="language-html">&lt;button type="submit" name="acao" value="rascunho"&gt;Salvar rascunho&lt;/button&gt;
+&lt;button type="submit" name="acao" value="publicar" data-loading-text="Publicando..."&gt;Publicar&lt;/button&gt;
+
+&lt;!-- No controller: $request-&gt;input('acao') === 'publicar' --&gt;</code></pre></div>
+            <p>O Vigia guarda <code>event.submitter</code> e acrescenta o <code>name=value</code> do botão clicado — como o envio nativo faz. Só o botão clicado recebe o texto de carregando.</p>
+
+            <h3 id="r-old">Voltando de um envio tradicional (sem AJAX)</h3>
+<div class="code"><div class="bar"><span>Blade</span></div><pre><code class="language-html">&lt;form method="post" action="..." data-vigia data-vigia-submit="native"
+      data-vigia-errors="{{ json_encode($errors-&gt;getMessages()) }}"&gt;</code></pre></div>
+            <p><code>native</code>: o Vigia valida no navegador e, se estiver tudo certo, deixa o navegador enviar normalmente. Se o Laravel devolver com erros (<code>redirect()-&gt;back()-&gt;withErrors()</code>), o <code>data-vigia-errors</code> mostra cada um no seu campo, com o mesmo visual. O <code>{{ }}</code> escapa as aspas; o navegador as devolve ao ler o atributo.</p>
+
+            <h3 id="r-modal">Formulário dentro de um modal carregado por AJAX</h3>
+            <p>Não precisa fazer nada: o <code>MutationObserver</code> inicializa forms e máscaras que entram na página depois. Ao trocar o conteúdo do modal várias vezes, chame <code>form.__vigia.destroy()</code> antes de remover o form antigo, se ele tiver ouvintes seus.</p>
+
+            <h3 id="r-sweet">SweetAlert no lugar da mensagem verde</h3>
+<div class="code"><div class="bar"><span>Blade</span></div><pre><code class="language-javascript">// &lt;form ... data-vigia data-vigia-success-message="false"&gt;
+form.addEventListener('vigia:success', function (e) {
+    Swal.fire('Pronto!', e.detail.response.message, 'success');
+});
+form.addEventListener('vigia:error', function (e) {
+    if (!Object.keys(e.detail.errors).length) {
+        Swal.fire('Ops', e.detail.error.message, 'error');   // 403, 500, rede...
+    }
+});</code></pre></div>
+        </section>
+
+        <!-- ======================================================= 20 -->
+        <section class="doc" id="equivalencia">
+            <h2><span class="num">20</span>Regras: Vigia ↔ Laravel</h2>
+            <p class="section-lead">As regras do navegador usam os nomes do ValidationHelper (Joomla). No controller, use a coluna do Laravel.</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>No HTML (Vigia)</th><th>No controller (Laravel)</th><th>Atenção</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>required</code></td><td><code>required</code></td><td></td></tr>
+                        <tr><td><code>min_length:3</code> / <code>max_length:150</code></td><td><code>min:3</code> / <code>max:150</code> (com <code>string</code>)</td><td>No Vigia, <code>min</code>/<code>max</code> em texto numérico comparam o <em>número</em>.</td></tr>
+                        <tr><td><code>length:8</code></td><td><code>size:8</code></td><td></td></tr>
+                        <tr><td><code>min:1</code> / <code>max:10</code> / <code>between:1,10</code></td><td>iguais (com <code>numeric</code>, <code>integer</code> ou <code>array</code>)</td><td>Em lista, contam itens nos dois.</td></tr>
+                        <tr><td><code>integer</code> · <code>numeric</code> · <code>boolean</code> · <code>email</code> · <code>url</code> · <code>json</code> · <code>array</code> · <code>string</code></td><td>iguais</td><td></td></tr>
+                        <tr><td><code>decimal</code></td><td><code>numeric</code> ou <code>decimal:0,2</code></td><td>O Vigia aceita "1.234,56"; o Laravel quer ponto. Use <code>data-unmask</code>.</td></tr>
+                        <tr><td><code>date</code> (Y-m-d)</td><td><code>date</code> ou <code>date_format:Y-m-d</code></td><td></td></tr>
+                        <tr><td><code>date_br</code></td><td><code>date_format:d/m/Y</code></td><td>Com <code>data-unmask</code> o valor vira Y-m-d: use <code>date</code> no HTML.</td></tr>
+                        <tr><td><code>after</code> · <code>before</code> · <code>after_or_equal</code> · <code>before_or_equal</code></td><td>iguais</td><td>Ambos aceitam outro campo ou <code>today</code>.</td></tr>
+                        <tr><td><code>in:a,b</code> · <code>not_in</code> · <code>regex</code> · <code>same</code> · <code>different</code> · <code>confirmed</code></td><td>iguais</td><td></td></tr>
+                        <tr><td><code>required_if:tipo,pj</code> · <code>required_with:x</code> · <code>accepted</code></td><td>iguais</td><td></td></tr>
+                        <tr><td><code>alpha</code> · <code>alpha_num</code> · <code>alpha_dash</code></td><td>iguais</td><td>O <code>alpha</code> do Vigia aceita espaços; o do Laravel, não.</td></tr>
+                        <tr><td><code>digits:8</code> · <code>digits_between</code> · <code>starts_with</code> · <code>ends_with</code> · <code>uuid</code> · <code>ip</code></td><td>iguais</td><td></td></tr>
+                        <tr><td><code>file</code> · <code>image</code></td><td><code>file</code> · <code>image</code></td><td>O Vigia não aceita SVG em <code>image</code>.</td></tr>
+                        <tr><td><code>file_size:2M</code></td><td><code>max:2048</code></td><td><strong>Laravel mede em KB.</strong></td></tr>
+                        <tr><td><code>file_extension:jpg,png</code></td><td><code>extensions:jpg,png</code> (11+) ou <code>mimes:jpg,png</code></td><td></td></tr>
+                        <tr><td><code>file_mime:image/png</code></td><td><code>mimetypes:image/png</code></td><td>O navegador deduz pela extensão; o Laravel lê o conteúdo.</td></tr>
+                        <tr><td><code>image_dimensions:800,600</code></td><td><code>dimensions:max_width=800,max_height=600</code></td><td></td></tr>
+                        <tr><td><code>password:8</code></td><td><code>Password::min(8)-&gt;mixedCase()-&gt;numbers()-&gt;symbols()</code></td><td></td></tr>
+                        <tr><td><code>cpf</code> · <code>cnpj</code> · <code>cpf_cnpj</code> · <code>phone</code> · <code>cep</code> · <code>pis</code> · <code>cnh</code> · <code>placa</code> · <code>credit_card</code></td><td>Regra própria (<code>php artisan make:rule Cpf</code>) ou um pacote de validações brasileiras</td><td>O Laravel não tem nativas.</td></tr>
+                        <tr><td><code>unique</code> · <code>exists</code></td><td><code>unique:tabela</code> · <code>exists:tabela,id</code></td><td>No navegador sempre passam.</td></tr>
+                        <tr><td><code>remote:/url</code></td><td>—</td><td>Só do navegador: chama uma rota sua.</td></tr>
+                        <tr><td><code>nullable</code></td><td><code>nullable</code></td><td>No Vigia é implícito (vazio só testa presença).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======================================================= 21 -->
+        <section class="doc" id="armadilhas">
+            <h2><span class="num">21</span>Armadilhas</h2>
+            <p class="section-lead">O que já confundiu alguém, e por quê.</p>
+
+            <details class="qa"><summary>"O servidor enviou uma resposta inesperada."</summary><div class="a">
+                <p>O controller devolveu HTML com status 2xx. Causas comuns: <code>return redirect()-&gt;back()</code> (o axios segue o redirecionamento e recebe a página), <code>return view(...)</code>, um <code>dd()</code> esquecido, ou um aviso do PHP impresso antes do JSON. Responda sempre com <code>ResponseService</code> nas rotas que o Vigia chama.</p>
+            </div></details>
+
+            <details class="qa"><summary>419 "Sua sessão expirou" logo no primeiro envio</summary><div class="a">
+                <p>O Vigia não achou o token. Confira se o layout tem <code>&lt;meta name="csrf-token" content="{{ csrf_token() }}"&gt;</code> ou se o form tem <code>@csrf</code>. Abra a aba Rede do navegador e veja se o cabeçalho <code>X-CSRF-TOKEN</code> foi enviado. <code>Vigia.http.token()</code> no console mostra o que ele encontrou.</p>
+            </div></details>
+
+            <details class="qa"><summary>Os dados chegam vazios num PUT</summary><div class="a">
+                <p>Isso acontece se você usar outro cliente HTTP com multipart em PUT. O Vigia já converte para POST + <code>_method</code>. Se você passou <code>{ json: true }</code> com arquivos, os arquivos não vão (JSON não carrega arquivos).</p>
+            </div></details>
+
+            <details class="qa"><summary>A data passa no navegador e falha no Laravel (ou o contrário)</summary><div class="a">
+                <p>Com <code>data-mask="date"</code>, a tela mostra <code>31/12/2026</code>. Sem <code>data-unmask</code>, é isso que vai ao servidor: use <code>date_br</code> no HTML e <code>date_format:d/m/Y</code> no Laravel. Com <code>data-unmask</code>, vai <code>2026-12-31</code> — e a validação do navegador também passa a ver <code>2026-12-31</code>: troque para <code>date</code> no HTML e <code>date</code> no Laravel.</p>
+            </div></details>
+
+            <details class="qa"><summary><code>file_size:2M</code> no HTML e <code>max:2</code> no Laravel</summary><div class="a">
+                <p>O <code>max</code> do Laravel para arquivos é em <strong>kilobytes</strong>: 2 MB é <code>max:2048</code>. Com <code>max:2</code>, todo arquivo acima de 2 KB é recusado pelo servidor.</p>
+            </div></details>
+
+            <details class="qa"><summary>Minha regra-função não roda</summary><div class="a">
+                <p>Ela não roda com o campo vazio (só regras de presença rodam). Use a âncora oculta da <a href="#r-um-ou-outro">receita "A ou B"</a>. Confira também se o campo não está <code>disabled</code>.</p>
+            </div></details>
+
+            <details class="qa"><summary>Checkbox desmarcado não chega no controller</summary><div class="a">
+                <p>Igual ao envio nativo: só os marcados vão. No Laravel, leia com <code>$request-&gt;boolean('ativo')</code>, que devolve <code>false</code> quando o campo não veio.</p>
+            </div></details>
+
+            <details class="qa"><summary><code>Vigia.config({ timeout })</code> não mudou nada</summary><div class="a">
+                <p>O <code>timeout</code> global é lido quando a instância do axios é criada (na 1ª requisição). Chame <code>Vigia.config</code> antes de qualquer envio, ou passe por formulário: <code>data-vigia='{"request":{"timeout":0}}'</code>, que vale a cada envio.</p>
+            </div></details>
+
+            <details class="qa"><summary>O <code>maxlength</code> não valida no campo com máscara</summary><div class="a">
+                <p>De propósito: os pontos e traços da máscara contariam como caracteres. A própria máscara já limita o tamanho.</p>
+            </div></details>
+
+            <details class="qa"><summary>Escrevi uma regra errada e o form aceitou tudo</summary><div class="a">
+                <p>Regra desconhecida passa (para não travar o form por um erro de digitação). Teste a regra no <a href="#laboratorio">laboratório</a> ou com <code>Vigia.rules.has('minha_regra')</code>.</p>
+            </div></details>
+
+            <details class="qa"><summary>Os campos do form ficam marcados pela validação nativa do navegador</summary><div class="a">
+                <p>Não deveriam: o Vigia liga <code>form.noValidate = true</code>. Se acontecer, o form não tem <code>data-vigia</code> (não foi inicializado) ou outra biblioteca (jQuery Validate) está ligada nele. Um form deve ter um só validador.</p>
+            </div></details>
+        </section>
+
+        <!-- ======================================================= 22 -->
+        <section class="doc" id="api">
+            <h2><span class="num">22</span>Referência da API</h2>
+            <p class="section-lead">Tudo o que <code>window.Vigia</code> expõe. Métodos que começam com <code>_</code> são internos.</p>
+
+            <h3>Global</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Membro</th><th>Retorna</th><th>Descrição</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>Vigia.form(el, opcoes?)</code></td><td><code>VigiaForm</code></td><td>Cria ou recupera a instância de um form (elemento ou seletor).</td></tr>
+                        <tr><td><code>Vigia.config(opcoes?)</code></td><td>config</td><td>Lê ou altera a configuração global (merge profundo).</td></tr>
+                        <tr><td><code>Vigia.init(raiz?)</code></td><td>—</td><td>Inicializa <code>[data-mask]</code> e <code>[data-vigia]</code> dentro de <code>raiz</code>.</td></tr>
+                        <tr><td><code>Vigia.validate(dados, regras, msgs?, rotulos?)</code></td><td><code>Promise</code></td><td>Validação sem DOM: <code>{ valid, errors, first_error }</code>.</td></tr>
+                        <tr><td><code>Vigia.http.get/post/put/patch/delete</code></td><td><code>Promise</code></td><td>Requisições com token e resposta normalizada.</td></tr>
+                        <tr><td><code>Vigia.http.request(cfg)</code> · <code>.instance()</code> · <code>.token()</code> · <code>.normalize(resp)</code></td><td></td><td>Requisição livre · instância do axios · token encontrado · normalizar resposta.</td></tr>
+                        <tr><td><code>Vigia.rules.add(nome, fn, msg?)</code> · <code>.has(nome)</code> · <code>.parse(regras)</code> · <code>.test(nome, valor, params?, dados?)</code></td><td></td><td>Registrar, consultar, interpretar e testar regras.</td></tr>
+                        <tr><td><code>Vigia.mask(el, spec?)</code> · <code>.format(v, spec)</code> · <code>.unmask(v, spec)</code> · <code>.add(nome, spec)</code> · <code>.masks</code></td><td></td><td>Aplicar, formatar, limpar e registrar máscaras.</td></tr>
+                        <tr><td><code>Vigia.messages</code></td><td>objeto</td><td>Mensagens padrão (pode alterar direto).</td></tr>
+                        <tr><td><code>Vigia.alpine</code></td><td>plugin</td><td>Para registrar manualmente: <code>Alpine.plugin(Vigia.alpine)</code>.</td></tr>
+                        <tr><td><code>Vigia.Error</code></td><td>função</td><td>Cria um <code>VigiaError</code>.</td></tr>
+                        <tr><td><code>Vigia.utils</code></td><td>objeto</td><td><code>nameToKey</code>, <code>keyToName</code>, <code>toNumber</code>, <code>parseDate</code>, <code>formatDate</code>, <code>cpf</code>, <code>cnpj</code>.</td></tr>
+                        <tr><td><code>Vigia.version</code></td><td>texto</td><td><code>'1.0.0'</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Instância (<code>VigiaForm</code>)</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Membro</th><th>Descrição</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>submit(botao?)</code></td><td>Valida e envia. Promise que nunca rejeita.</td></tr>
+                        <tr><td><code>validate()</code></td><td>Valida tudo e mostra os erros, sem enviar.</td></tr>
+                        <tr><td><code>validateField(chave)</code> · <code>validateElement(el)</code></td><td>Valida um campo.</td></tr>
+                        <tr><td><code>getData()</code> · <code>toFormData()</code></td><td>Dados como objeto / como <code>FormData</code>.</td></tr>
+                        <tr><td><code>rules()</code></td><td>As regras finais (JS + HTML) por chave.</td></tr>
+                        <tr><td><code>setErrors(erros)</code></td><td>Limpa e mostra estes erros (ex.: de uma requisição sua).</td></tr>
+                        <tr><td><code>showErrors(erros, {focus, general})</code></td><td>Acrescenta erros. Devolve as mensagens órfãs.</td></tr>
+                        <tr><td><code>clearErrors({keepMessage})</code></td><td>Remove erros (e a mensagem geral, se não <code>keepMessage</code>).</td></tr>
+                        <tr><td><code>notify(msg, tipo)</code></td><td>Mostra a mensagem geral (<code>success|error|warning|info</code>).</td></tr>
+                        <tr><td><code>focusFirstError()</code></td><td>Foca o primeiro campo com erro.</td></tr>
+                        <tr><td><code>configure(opcoes)</code> · <code>option(nome, atributo, padrao)</code></td><td>Acrescentar / ler opções.</td></tr>
+                        <tr><td><code>on(evento, fn)</code></td><td>Ouvinte: <code>invalid|before|success|error|complete</code>.</td></tr>
+                        <tr><td><code>keyOf(el)</code> · <code>elements()</code></td><td>Chave de erro de um campo · campos que entram.</td></tr>
+                        <tr><td><code>reset()</code> · <code>destroy()</code></td><td>Limpa o form e os erros · remove o Vigia do form.</td></tr>
+                        <tr><td><code>errors</code> · <code>loading</code> · <code>progress</code> · <code>response</code> · <code>message</code> · <code>messageType</code></td><td>Estado atual (somente leitura).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Atributos HTML</h3>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Atributo</th><th>Onde</th><th>Para quê</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>data-vigia</code> (vazio ou JSON)</td><td>form</td><td>Ativa o Vigia; o JSON traz opções.</td></tr>
+                        <tr><td><code>data-vigia-*</code></td><td>form</td><td>Opções individuais (ver seção 7).</td></tr>
+                        <tr><td><code>data-vigia-rules</code> / <code>-messages</code> / <code>-labels</code> / <code>-errors</code></td><td>form</td><td>JSON de regras, mensagens, rótulos e erros iniciais.</td></tr>
+                        <tr><td><code>data-vigia-message</code></td><td>dentro do form</td><td>Onde vai a mensagem geral.</td></tr>
+                        <tr><td><code>data-vigia-progress</code></td><td>dentro do form</td><td>Barra (<code>&lt;progress&gt;</code> ou <code>&lt;div&gt;</code> com largura).</td></tr>
+                        <tr><td><code>data-rules</code></td><td>campo</td><td>Regras do campo.</td></tr>
+                        <tr><td><code>data-msg-REGRA</code></td><td>campo</td><td>Mensagem da regra (<code>_</code> → <code>-</code>).</td></tr>
+                        <tr><td><code>data-label</code></td><td>campo</td><td>Rótulo usado em <code>:field</code>.</td></tr>
+                        <tr><td><code>data-field</code></td><td>campo</td><td>Chave extra de erro para este campo.</td></tr>
+                        <tr><td><code>data-mask</code> + <code>data-mask-*</code></td><td>campo</td><td>Máscara e ajustes.</td></tr>
+                        <tr><td><code>data-unmask</code></td><td>campo</td><td>Valida e envia o valor sem máscara.</td></tr>
+                        <tr><td><code>data-error-for="chave"</code></td><td>qualquer elemento</td><td>Onde mostrar o erro dessa chave.</td></tr>
+                        <tr><td><code>data-loading-text</code></td><td>botão</td><td>Texto durante o envio.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ======================================================= 23 -->
+        <section class="doc" id="explicar">
+            <h2><span class="num">23</span>Como explicar para alguém</h2>
+            <p class="section-lead">Três versões da mesma explicação, para três públicos, e as perguntas que costumam vir depois.</p>
+
+            <div class="levels">
+                <div class="level">
+                    <header><span class="pill info">30 segundos</span><b>Para gestor ou cliente</b></header>
+                    <p>"Criamos uma peça que padroniza todos os formulários do sistema. A pessoa vê o erro na hora em que digita, com a mensagem embaixo do campo certo, e os dados são conferidos de novo no servidor por segurança. Cada tela nova sai mais rápido e todas se comportam igual."</p>
+                </div>
+                <div class="level">
+                    <header><span class="pill ok">2 minutos</span><b>Para um dev que vai usar</b></header>
+                    <p>"Põe <code>data-vigia</code> no form, as regras em <code>data-rules</code> e as máscaras em <code>data-mask</code>. Ele valida no navegador, envia em AJAX com o token do Laravel e entende a resposta do <code>ResponseService</code>: cada chave de <code>errors</code> vai para o campo com o mesmo <code>name</code>. Se precisa reagir, escuta <code>vigia:success</code>. No controller, valida de novo com <code>$request-&gt;validate()</code> e responde com <code>ResponseService</code>."</p>
+                </div>
+                <div class="level">
+                    <header><span class="pill warn">10 minutos</span><b>Para um dev sênior que vai revisar</b></header>
+                    <p>"É um módulo UMD em ES5, sem build. Tem três motores sem DOM — regras (62, assíncronas, com curinga), mensagens (escada de prioridade, rótulos com '(item N)') e máscaras (padrões 9/a/*, padrões dinâmicos, números à direita, cursor preservado). Em cima, um <code>VigiaForm</code> por form, com eventos delegados, estado centralizado em <code>_setState</code> e proteção de corrida por campo. A rede é uma instância própria do axios, criada sob demanda, com um interceptor que põe o <code>X-CSRF-TOKEN</code> e converte PUT/PATCH/DELETE em POST + <code>_method</code>, e outro que normaliza qualquer resposta num objeto só. Mensagens são escritas com <code>textContent</code>; erros sem campo nunca somem."</p>
+                </div>
+            </div>
+
+            <h3>Perguntas que vão aparecer</h3>
+
+            <details class="qa"><summary>"Por que não usar uma biblioteca pronta (jQuery Validate, VeeValidate, Livewire)?"</summary><div class="a">
+                <p>O jQuery Validate só valida: o envio, o token, a leitura da resposta e o mapeamento dos erros do servidor ficam por conta de cada tela. O VeeValidate exige Vue. O Livewire exige reescrever a tela como componente. O Vigia funciona num Blade comum, fala o mesmo formato do backend e cobre o ciclo inteiro — e as regras brasileiras (CPF, CNPJ, PIS, CNH, placa) já vêm prontas.</p>
+            </div></details>
+
+            <details class="qa"><summary>"Se o navegador valida, por que validar de novo no servidor?"</summary><div class="a">
+                <p>Porque qualquer pessoa pode desligar o JavaScript ou mandar a requisição direto com outra ferramenta. A validação do navegador é para a <em>experiência</em>; a do servidor é para a <em>segurança e a integridade dos dados</em>. Regras como <code>unique</code> só o servidor pode conferir.</p>
+            </div></details>
+
+            <details class="qa"><summary>"Como um erro do servidor sabe em qual campo aparecer?"</summary><div class="a">
+                <p>A chave do erro é o nome do campo em notação de pontos (<code>itens.1.quantidade</code>), que é exatamente o que o Laravel produz. O Vigia converte para colchetes (<code>itens[1][quantidade]</code>), procura o campo com esse <code>name</code> e, se não achar, sobe um nível. O que não acha campo vira a mensagem geral.</p>
+            </div></details>
+
+            <details class="qa"><summary>"E se a pessoa clicar duas vezes em Salvar?"</summary><div class="a">
+                <p>Durante o envio, <code>loading</code> é <code>true</code> e todos os botões de envio ficam desabilitados; um segundo <code>submit</code> é ignorado logo na primeira linha de <code>submit()</code>.</p>
+            </div></details>
+
+            <details class="qa"><summary>"É seguro? E o CSRF?"</summary><div class="a">
+                <p>O token vai no cabeçalho <code>X-CSRF-TOKEN</code>, conferido pelo middleware do Laravel. Mensagens nunca são inseridas como HTML. Só há envio ao seu próprio backend (e às rotas que você puser em <code>remote:</code>).</p>
+            </div></details>
+
+            <details class="qa"><summary>"E a acessibilidade?"</summary><div class="a">
+                <p>Campo inválido recebe <code>aria-invalid</code> e <code>aria-describedby</code> apontando para a mensagem; as mensagens têm <code>aria-live</code>; a mensagem geral de erro usa <code>role="alert"</code>; o form em envio recebe <code>aria-busy</code>; o foco vai para o primeiro erro.</p>
+            </div></details>
+
+            <details class="qa"><summary>"Funciona com conteúdo carregado depois (modal, Livewire, Turbo)?"</summary><div class="a">
+                <p>Sim. Um <code>MutationObserver</code> inicializa forms e máscaras que entram na página; os ouvintes são delegados ao form, então campos novos já funcionam.</p>
+            </div></details>
+
+            <details class="qa"><summary>"Qual o custo de desempenho?"</summary><div class="a">
+                <p>Quatro ouvintes por form, independentemente do número de campos. A validação ao vivo valida só o campo alterado (e os que dependem dele). O axios só é instanciado no primeiro envio.</p>
+            </div></details>
+
+            <footer class="end">
+                Documentação do <code>vigia-laravel.js</code> 1.0.0, escrita a partir do código-fonte. Ao alterar a biblioteca, atualize as seções afetadas — principalmente <a href="#http">14</a> e <a href="#contrato">15</a>, que descrevem o contrato com o Laravel.
+            </footer>
+        </section>
+
+    </main>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="vigia-laravel.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    // ---------------------------------------------------------------- tema
+    var root = document.documentElement;
+
+    try {
+        var salvo = localStorage.getItem('vigia-doc-tema');
+        if (salvo) root.setAttribute('data-theme', salvo);
+    } catch (e) {}
+
+    document.getElementById('theme-toggle').addEventListener('click', function () {
+        var atual = root.getAttribute('data-theme')
+            || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var novo = atual === 'dark' ? 'light' : 'dark';
+
+        root.setAttribute('data-theme', novo);
+        try { localStorage.setItem('vigia-doc-tema', novo); } catch (e) {}
+    });
+
+    // ---------------------------------------------------------------- menu (celular)
+    var toggle = document.getElementById('menu-toggle');
+
+    toggle.addEventListener('click', function () {
+        var aberto = document.body.classList.toggle('menu-open');
+        toggle.setAttribute('aria-expanded', aberto ? 'true' : 'false');
+    });
+
+    document.querySelectorAll('#toc a').forEach(function (a) {
+        a.addEventListener('click', function () {
+            document.body.classList.remove('menu-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // ---------------------------------------------------------------- filtro do sumário
+    document.getElementById('toc-search').addEventListener('input', function () {
+        var termo = this.value.trim().toLowerCase();
+
+        document.querySelectorAll('#toc a').forEach(function (a) {
+            var secao = document.querySelector(a.getAttribute('href'));
+            var texto = (a.textContent + ' ' + (secao ? secao.textContent : '')).toLowerCase();
+            a.style.display = !termo || texto.indexOf(termo) !== -1 ? '' : 'none';
+        });
+    });
+
+    // ---------------------------------------------------------------- seção ativa
+    var links = {};
+    document.querySelectorAll('#toc a').forEach(function (a) { links[a.getAttribute('href').slice(1)] = a; });
+
+    if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting && links[entry.target.id]) {
+                    Object.keys(links).forEach(function (id) { links[id].classList.remove('active'); });
+                    links[entry.target.id].classList.add('active');
+                }
+            });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+
+        document.querySelectorAll('section.doc').forEach(function (s) { observer.observe(s); });
+    }
+
+    // ---------------------------------------------------------------- código: cores e copiar
+    document.querySelectorAll('.code').forEach(function (bloco) {
+        var code = bloco.querySelector('code');
+        var bar = bloco.querySelector('.bar');
+        var botao = document.createElement('button');
+
+        botao.type = 'button';
+        botao.className = 'copy';
+        botao.textContent = 'Copiar';
+        botao.addEventListener('click', function () {
+            var feito = function () {
+                botao.textContent = 'Copiado ✓';
+                setTimeout(function () { botao.textContent = 'Copiar'; }, 1400);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code.textContent).then(feito, function () {});
+            }
+        });
+
+        bar.appendChild(botao);
+
+        if (window.hljs) {
+            window.hljs.highlightElement(code);
+        }
+    });
+
+    // ---------------------------------------------------------------- demonstrações
+    if (!window.Vigia) {
+        document.getElementById('no-lib').classList.add('show');
+        return;
+    }
+
+    var json = function (valor) { return JSON.stringify(valor, null, 2); };
+
+    // Demo 1 ------------------------------------------------------------
+    var form = document.getElementById('demo-form');
+    var saida = document.getElementById('demo-saida');
+    var linhas = [];
+
+    var log = function (titulo, valor) {
+        linhas.unshift('● ' + titulo + (valor === undefined ? '' : '\n' + json(valor)));
+        linhas = linhas.slice(0, 6);
+        saida.textContent = linhas.join('\n\n');
+    };
+
+    form.addEventListener('vigia:invalid', function (e) {
+        log('vigia:invalid — nada é enviado', e.detail.errors);
+    });
+
+    form.addEventListener('vigia:before', function (e) {
+        // A documentação não tem servidor: cancela o envio e mostra o que iria.
+        e.preventDefault();
+
+        var multipart = [];
+        e.detail.vigia.toFormData().forEach(function (valor, chave) { multipart.push(chave + ' = ' + valor); });
+
+        log('vigia:before — envio cancelado aqui. Corpo multipart que iria ao Laravel', multipart);
+        log('getData() — o objeto que as regras validaram', e.detail.data);
+        e.detail.vigia.notify('Tudo válido! Veja ao lado o que seria enviado.', 'success');
+    });
+
+    document.getElementById('demo-422').addEventListener('click', function () {
+        var resposta = {
+            success: false,
+            status: 'erro',
+            mensagem: 'O valor informado no campo E-mail já está em uso.',
+            data: null,
+            errors: {
+                email: ['O valor informado no campo E-mail já está em uso.'],
+                'itens.1.quantidade': ['O campo Quantidade (item 2) deve ser menor ou igual a 5.'],
+                _general: ['Estoque insuficiente.']
+            },
+            request_id: '9f2c...'
+        };
+
+        // O mesmo caminho de um erro real: normaliza e entrega os erros à instância.
+        var normalizada = Vigia.http.normalize({ status: 422, headers: {}, data: resposta });
+        var vigia = Vigia.form(form);
+        var orfas = vigia.setErrors(normalizada.errors);
+
+        log('setErrors() com o 422 do contrato — mensagens sem campo', orfas);
+    });
+
+    document.getElementById('demo-limpar').addEventListener('click', function () {
+        Vigia.form(form).reset();
+        linhas = [];
+        saida.textContent = 'Formulário limpo.';
+    });
+
+    // Demo 2 ------------------------------------------------------------
+    var tipo = document.getElementById('m-tipo');
+    var campo = document.getElementById('m-campo');
+
+    var atualizarMascara = function () {
+        document.getElementById('m-tela').textContent = campo.value || '—';
+        document.getElementById('m-limpo').textContent = campo.value ? Vigia.mask.unmask(campo.value, tipo.value) || '—' : '—';
+        document.getElementById('m-mode').textContent = campo.getAttribute('inputmode') || '(nenhum)';
+    };
+
+    var trocarMascara = function () {
+        campo.removeAttribute('inputmode');
+        campo.value = '';
+        Vigia.mask(campo, tipo.value);
+        atualizarMascara();
+        campo.focus();
+    };
+
+    tipo.addEventListener('change', trocarMascara);
+    campo.addEventListener('input', atualizarMascara);
+    Vigia.mask(campo, tipo.value);
+    atualizarMascara();
+
+    // Demo 3 ------------------------------------------------------------
+    var regras = document.getElementById('r-regras');
+    var valor = document.getElementById('r-valor');
+
+    var testar = function () {
+        Vigia.validate({ campo: valor.value }, { campo: regras.value }, {}, { campo: 'Campo' }).then(function (r) {
+            document.getElementById('r-saida').textContent = json(r);
+        });
+    };
+
+    regras.addEventListener('input', testar);
+    valor.addEventListener('input', testar);
+    testar();
+
+    // Demo 4 ------------------------------------------------------------
+    var exemplos = {
+        '422': { status: 422, body: { success: false, status: 'erro', mensagem: 'O valor informado no campo E-mail já está em uso.', data: null, errors: { email: ['O valor informado no campo E-mail já está em uso.'], _general: ['Estoque insuficiente.'] }, request_id: '9f2c4a' } },
+        '422-laravel': { status: 422, body: { message: 'The email has already been taken.', errors: { email: ['The email has already been taken.'] } } },
+        '201': { status: 201, body: { success: true, status: 'sucesso', mensagem: 'Cliente cadastrado.', data: { id: 7, redirect: '/clientes/7' }, errors: {}, request_id: 'a1b2c3' } },
+        '200-aviso': { status: 200, body: { success: true, status: 'aviso', mensagem: 'Salvo, mas o e-mail de boas-vindas não foi enviado.', data: null, errors: {}, request_id: 'd4e5f6' } },
+        '419': { status: 419, body: { message: 'CSRF token mismatch.' } },
+        '200-html': { status: 200, body: '<!doctype html><html><body>Página de login</body></html>' }
+    };
+
+    var status = document.getElementById('n-status');
+    var corpo = document.getElementById('n-corpo');
+
+    var normalizar = function () {
+        var exemplo = exemplos[status.value];
+        var dado;
+
+        try {
+            dado = JSON.parse(corpo.value);
+        } catch (e) {
+            dado = corpo.value;
+        }
+
+        var r = Vigia.http.normalize({ status: exemplo.status, headers: {}, data: dado });
+        delete r.raw;
+
+        var interpretacao = r.json === false
+            ? '→ No form: erro "resposta inesperada".'
+            : r.httpStatus >= 400 || r.success === false
+                ? '→ No form: erro. Mensagem: "' + (r.message || '(padrão do status ' + r.httpStatus + ')') + '"'
+                : '→ No form: sucesso (' + (r.status || 'sucesso') + ').';
+
+        document.getElementById('n-saida').textContent = json(r) + '\n\n' + interpretacao;
+    };
+
+    status.addEventListener('change', function () {
+        var exemplo = exemplos[status.value];
+        corpo.value = typeof exemplo.body === 'string' ? exemplo.body : json(exemplo.body);
+        normalizar();
+    });
+
+    corpo.addEventListener('input', normalizar);
+    status.dispatchEvent(new Event('change'));
+})();
+</script>
+</body>
+</html>
