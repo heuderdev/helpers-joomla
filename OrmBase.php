@@ -1686,6 +1686,266 @@ class OrmBase
         }
     }
 
+    /*
+     * SQL escrito à mão, na conexão deste model, para o que o builder não
+     * cobre (CTE, UNION, subquery, função específica do banco etc.).
+     * Os valores vão SEMPRE em $bindings, nunca concatenados no SQL:
+     *
+     * $orm->raw('SELECT * FROM #__pedidos WHERE status = ? AND total > ?', ['pago', 100]);
+     * $orm->raw('SELECT * FROM #__pedidos WHERE id IN (:ids)', ['ids' => [1, 2, 3]]);
+     * $orm->rawExecute('UPDATE #__pedidos SET status = ? WHERE id = ?', ['pago', 10]);
+     *
+     * - Placeholders posicionais (?) ou nomeados (:nome), sem misturar.
+     * - Array vira lista separada por vírgula (para IN); array vazio lança exceção.
+     * - null vira NULL, bool vira 1/0, int/float vão sem aspas (servem em
+     *   LIMIT), DateTimeInterface vira 'Y-m-d H:i:s', o resto passa por quote().
+     * - ? e :nome dentro de strings, identificadores entre aspas/crases e
+     *   comentários são ignorados; :: (cast do PostgreSQL) também.
+     * - #__ é trocado pelo prefixo do Joomla, como no restante do ORM.
+     * - Não usa os where/select/join montados e não aplica casts.
+     */
+    public function raw($sql, array $bindings = [])
+    {
+        return $this->executarRaw($sql, $bindings, function () {
+            return $this->db->loadObjectList();
+        });
+    }
+
+    // Primeira linha (objeto) ou null. Não adiciona LIMIT: coloque no SQL.
+    public function rawFirst($sql, array $bindings = [])
+    {
+        return $this->executarRaw($sql, $bindings, function () {
+            return $this->db->loadObject();
+        });
+    }
+
+    // Primeira coluna da primeira linha, ou null.
+    public function rawValue($sql, array $bindings = [])
+    {
+        return $this->executarRaw($sql, $bindings, function () {
+            return $this->db->loadResult();
+        });
+    }
+
+    // INSERT/UPDATE/DELETE/DDL. Devolve as linhas afetadas.
+    public function rawExecute($sql, array $bindings = [])
+    {
+        return $this->executarRaw($sql, $bindings, function () {
+            $this->db->execute();
+
+            return (int) $this->db->getAffectedRows();
+        });
+    }
+
+    // SQL final com os bindings aplicados, sem executar. Útil para depurar.
+    public function rawSql($sql, array $bindings = [])
+    {
+        return $this->aplicarBindings($sql, $bindings);
+    }
+
+    protected function executarRaw($sql, array $bindings, callable $carregar)
+    {
+        $sql = $this->aplicarBindings($sql, $bindings);
+
+        try {
+            $this->db->setQuery($sql);
+
+            return $carregar();
+        } catch (Throwable $e) {
+            throw new RuntimeException(
+                'Erro ao executar SQL raw: ' . $e->getMessage(),
+                500,
+                $e
+            );
+        }
+    }
+
+    protected function aplicarBindings($sql, array $bindings)
+    {
+        $sql = trim((string) $sql);
+
+        if ($sql === '') {
+            throw new InvalidArgumentException('O SQL raw não pode ser vazio.');
+        }
+
+        $posicionais = [];
+        $nomeados = [];
+
+        foreach ($bindings as $chave => $valor) {
+            if (is_int($chave)) {
+                $posicionais[] = $valor;
+            } else {
+                $nomeados[ltrim($chave, ':')] = $valor;
+            }
+        }
+
+        if (!empty($posicionais) && !empty($nomeados)) {
+            throw new InvalidArgumentException(
+                'Use bindings posicionais (?) ou nomeados (:nome), não os dois.'
+            );
+        }
+
+        $resultado = '';
+        $tamanho = strlen($sql);
+        $indicePosicional = 0;
+        $nomesUsados = [];
+
+        for ($i = 0; $i < $tamanho; $i++) {
+            $caractere = $sql[$i];
+            $proximo = $i + 1 < $tamanho ? $sql[$i + 1] : '';
+
+            // Strings e identificadores entre aspas: copia sem interpretar.
+            if ($caractere === "'" || $caractere === '"' || $caractere === '`') {
+                $fim = $this->fimDoLiteral($sql, $i, $caractere);
+                $resultado .= substr($sql, $i, $fim - $i + 1);
+                $i = $fim;
+                continue;
+            }
+
+            // Comentário de linha: -- até o fim da linha.
+            if ($caractere === '-' && $proximo === '-') {
+                $fim = strpos($sql, "\n", $i);
+                $fim = $fim === false ? $tamanho - 1 : $fim;
+                $resultado .= substr($sql, $i, $fim - $i + 1);
+                $i = $fim;
+                continue;
+            }
+
+            // Comentário de bloco: /* ... */
+            if ($caractere === '/' && $proximo === '*') {
+                $fim = strpos($sql, '*/', $i + 2);
+                $fim = $fim === false ? $tamanho - 1 : $fim + 1;
+                $resultado .= substr($sql, $i, $fim - $i + 1);
+                $i = $fim;
+                continue;
+            }
+
+            if ($caractere === '?') {
+                if (!array_key_exists($indicePosicional, $posicionais)) {
+                    throw new InvalidArgumentException(
+                        'O SQL raw tem mais placeholders ? do que bindings (' .
+                        count($posicionais) . ' informados).'
+                    );
+                }
+
+                $resultado .= $this->valorSqlRaw($posicionais[$indicePosicional], '#' . ($indicePosicional + 1));
+                $indicePosicional++;
+                continue;
+            }
+
+            // :: é cast do PostgreSQL, não placeholder.
+            if ($caractere === ':' && $proximo === ':') {
+                $resultado .= '::';
+                $i++;
+                continue;
+            }
+
+            if ($caractere === ':' && preg_match('/\G:([a-zA-Z_][a-zA-Z0-9_]*)/', $sql, $m, 0, $i)) {
+                $nome = $m[1];
+
+                if (!array_key_exists($nome, $nomeados)) {
+                    throw new InvalidArgumentException(
+                        'Binding :' . $nome . ' usado no SQL raw mas não informado.'
+                    );
+                }
+
+                $resultado .= $this->valorSqlRaw($nomeados[$nome], ':' . $nome);
+                $nomesUsados[$nome] = true;
+                $i += strlen($m[0]) - 1;
+                continue;
+            }
+
+            $resultado .= $caractere;
+        }
+
+        if ($indicePosicional < count($posicionais)) {
+            throw new InvalidArgumentException(
+                'O SQL raw tem ' . $indicePosicional . ' placeholders ? mas ' .
+                count($posicionais) . ' bindings foram informados.'
+            );
+        }
+
+        $naoUsados = array_diff(array_keys($nomeados), array_keys($nomesUsados));
+
+        if (!empty($naoUsados)) {
+            throw new InvalidArgumentException(
+                'Bindings informados mas não usados no SQL raw: :' .
+                implode(', :', $naoUsados) . '.'
+            );
+        }
+
+        return $resultado;
+    }
+
+    /*
+     * Posição da aspa que fecha o literal aberto em $inicio. Aceita aspa
+     * duplicada ('') e, em strings, escape com barra (\') do MySQL.
+     */
+    protected function fimDoLiteral($sql, $inicio, $aspa)
+    {
+        $tamanho = strlen($sql);
+
+        for ($i = $inicio + 1; $i < $tamanho; $i++) {
+            if ($sql[$i] === '\\' && $aspa !== '`') {
+                $i++;
+                continue;
+            }
+
+            if ($sql[$i] !== $aspa) {
+                continue;
+            }
+
+            if ($i + 1 < $tamanho && $sql[$i + 1] === $aspa) {
+                $i++;
+                continue;
+            }
+
+            return $i;
+        }
+
+        throw new InvalidArgumentException(
+            'O SQL raw tem uma aspa ' . $aspa . ' sem fechamento.'
+        );
+    }
+
+    protected function valorSqlRaw($valor, $placeholder)
+    {
+        if (is_array($valor)) {
+            if (empty($valor)) {
+                throw new InvalidArgumentException(
+                    'O binding ' . $placeholder . ' é um array vazio; IN () é SQL inválido.'
+                );
+            }
+
+            return implode(', ', array_map(function ($item) use ($placeholder) {
+                if (is_array($item)) {
+                    throw new InvalidArgumentException(
+                        'O binding ' . $placeholder . ' não aceita array dentro de array.'
+                    );
+                }
+
+                return $this->valorSqlRaw($item, $placeholder);
+            }, $valor));
+        }
+
+        if (is_int($valor) || (is_float($valor) && is_finite($valor))) {
+            return (string) $valor;
+        }
+
+        if ($valor instanceof DateTimeInterface) {
+            return $this->db->quote($valor->format('Y-m-d H:i:s'));
+        }
+
+        if (is_object($valor) && !method_exists($valor, '__toString')) {
+            throw new InvalidArgumentException(
+                'O binding ' . $placeholder . ' recebeu um objeto ' .
+                get_class($valor) . ' que não pode virar texto.'
+            );
+        }
+
+        return $this->valorSql(is_object($valor) ? (string) $valor : $valor);
+    }
+
      /**
      * Remove todos os registros da tabela e reinicia o auto incremento.
      *

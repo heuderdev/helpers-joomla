@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OrmBase: SQL raw · helpers-joomla</title>
+<meta name="description" content="SQL raw no OrmBase e no OrmTables: raw, rawFirst, rawValue, rawExecute e rawSql com bindings posicionais e nomeados.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › OrmBase — SQL raw</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" class="ativo" aria-current="page" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>OrmBase: SQL raw</h1>
+<p class="lead">SQL escrito à mão, com os valores passados por bindings, para o que o builder não cobre: CTE, UNION, subquery, funções do banco e relatórios.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2><p>O builder (<code>where</code>, <code>join</code>, <code>groupBy</code>…) resolve a maior parte dos casos e já adapta o SQL entre MySQL e PostgreSQL. Quando ele não alcança, use os métodos raw: você escreve o SQL inteiro e passa os <strong>valores separados</strong>, em <code>$bindings</code>. O ORM coloca cada valor no lugar do seu placeholder já escapado, então o SQL continua protegido contra injeção.</p><div class="tabela"><table><thead><tr><th>Preciso…</th><th>Use</th><th>Retorna</th></tr></thead><tbody><tr><td>uma lista de linhas</td><td><a href="#raw"><code>raw()</code></a></td><td><code>stdClass[]</code> (vazio se nada)</td></tr><tr><td>uma linha só</td><td><a href="#rawFirst"><code>rawFirst()</code></a></td><td>objeto ou <code>null</code></td></tr><tr><td>um número ou valor único</td><td><a href="#rawValue"><code>rawValue()</code></a></td><td>o valor ou <code>null</code></td></tr><tr><td>INSERT, UPDATE, DELETE, DDL</td><td><a href="#rawExecute"><code>rawExecute()</code></a></td><td>linhas afetadas (<code>int</code>)</td></tr><tr><td>ver o SQL final sem executar</td><td><a href="#rawSql"><code>rawSql()</code></a></td><td><code>string</code></td></tr></tbody></table></div><p>Existem em toda instância do ORM (models e <code>OrmTables::table()</code>) e também como atalhos estáticos em <a href="#sem-model"><code>OrmTables</code></a>, que não pedem tabela.</p><div class="codigo"><pre><code data-lang="php">$resumo = OrmTables::raw(
+    'SELECT status, COUNT(*) AS total, SUM(total) AS valor
+       FROM #__loja_pedidos
+      WHERE created_at &gt;= ?
+      GROUP BY status',
+    ['2026-10-01 00:00:00']
+);
+
+foreach ($resumo as $linha) {
+    echo $linha-&gt;status . ': ' . $linha-&gt;total;
+}</code></pre></div><div class="nota"><p>Use raw como exceção. Se dá para fazer com o builder, prefira o builder: ele aplica <code>softDeletes</code>, casts e as diferenças entre os bancos sozinho.</p></div><h2 id="bindings" data-titulo="Bindings: como passar os valores">Bindings: como passar os valores</h2><p>Escreva um placeholder no lugar de cada valor e passe os valores no segundo parâmetro. Há dois estilos, que <strong>não podem ser misturados</strong> no mesmo SQL.</p><h3 id="posicionais">Posicionais: <code>?</code></h3><p>Cada <code>?</code> recebe o próximo valor da lista, na ordem.</p><div class="codigo"><pre><code data-lang="php">OrmTables::raw(
+    'SELECT * FROM #__loja_pedidos WHERE status = ? AND total &gt; ? LIMIT ?',
+    ['pago', 100, 20]
+);
+// ... WHERE status = 'pago' AND total &gt; 100 LIMIT 20</code></pre></div><h3 id="nomeados">Nomeados: <code>:nome</code></h3><p>Mais legível quando há muitos valores ou o mesmo valor aparece várias vezes. A chave pode vir com ou sem os dois-pontos (<code>'inicio'</code> ou <code>':inicio'</code>).</p><div class="codigo"><pre><code data-lang="php">OrmTables::raw(
+    'SELECT * FROM #__loja_pedidos
+      WHERE created_at BETWEEN :inicio AND :fim
+         OR pago_em BETWEEN :inicio AND :fim',
+    ['inicio' =&gt; '2026-10-01 00:00:00', 'fim' =&gt; '2026-10-31 23:59:59']
+);</code></pre></div><h3 id="listas">Listas para <code>IN</code></h3><p>Passe um array: ele vira os valores separados por vírgula. Os parênteses ficam no SQL.</p><div class="codigo"><pre><code data-lang="php">OrmTables::raw(
+    'SELECT * FROM #__loja_pedidos WHERE id IN (:ids) AND status IN (:status)',
+    ['ids' =&gt; [10, 11, 12], 'status' =&gt; ['pago', 'enviado']]
+);
+// ... WHERE id IN (10, 11, 12) AND status IN ('pago', 'enviado')</code></pre></div><div class="nota aviso"><p>Array vazio lança <code>InvalidArgumentException</code>, porque <code>IN ()</code> é SQL inválido. Trate antes: <code>if (empty($ids)) { return []; }</code>.</p></div><h3 id="conversao">Como cada valor vai para o SQL</h3><div class="tabela"><table><thead><tr><th>Valor no PHP</th><th>No SQL</th></tr></thead><tbody><tr><td><code>'texto'</code></td><td><code>'texto'</code>, escapado pelo <code>quote()</code> do banco</td></tr><tr><td><code>10</code>, <code>9.9</code> (int/float)</td><td><code>10</code>, <code>9.9</code>, sem aspas (funciona em <code>LIMIT</code>/<code>OFFSET</code>)</td></tr><tr><td><code>'10'</code> (string numérica)</td><td><code>'10'</code>, com aspas. Em <code>LIMIT</code>, converta com <code>(int)</code></td></tr><tr><td><code>null</code></td><td><code>NULL</code></td></tr><tr><td><code>true</code> / <code>false</code></td><td><code>'1'</code> / <code>'0'</code></td></tr><tr><td><code>DateTime</code> / <code>DateTimeImmutable</code></td><td><code>'Y-m-d H:i:s'</code></td></tr><tr><td><code>[1, 2, 3]</code></td><td><code>1, 2, 3</code></td></tr><tr><td>objeto com <code>__toString()</code></td><td>o texto, escapado</td></tr></tbody></table></div><div class="nota aviso"><p><code>null</code> vira <code>NULL</code> literal, então <code>coluna = ?</code> com <code>null</code> gera <code>coluna = NULL</code>, que <strong>nunca</strong> é verdadeiro. Para comparar com nulo, escreva <code>coluna IS NULL</code> no SQL.</p></div><h3 id="ignorados">O que não é placeholder</h3><p>O ORM lê o SQL e só troca placeholders que estão no código SQL. Ficam intactos:</p><ul><li><code>?</code> e <code>:nome</code> dentro de strings (<code>'...'</code>), de identificadores (<code>"..."</code>, <code>`...`</code>) e de comentários (<code>-- ...</code>, <code>/* ... */</code>);</li><li>o cast do PostgreSQL, <code>::</code>: <code>created_at::date = :dia</code> funciona;</li><li>o prefixo <code>#__</code>, que é trocado pelo prefixo do Joomla na execução, como no restante do ORM.</li></ul><h2 id="metodos" data-titulo="Métodos">Métodos</h2><div class="metodo"><h3 id="raw"><code>raw()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;raw(string $sql, array $bindings = []): array</div><p>Executa o SQL e devolve todas as linhas como <code>stdClass[]</code>. Sem resultado, devolve <code>[]</code>.</p><div class="codigo"><pre><code data-lang="php">$maisVendidos = PedidoModel::query()-&gt;raw(
+    'SELECT p.id, p.nome, SUM(i.quantidade) AS vendidos
+       FROM #__loja_pedido_itens i
+       JOIN #__loja_produtos p ON p.id = i.produto_id
+      WHERE i.created_at &gt;= :desde
+      GROUP BY p.id, p.nome
+      ORDER BY vendidos DESC
+      LIMIT :limite',
+    ['desde' =&gt; '2026-10-01', 'limite' =&gt; 10]
+);</code></pre></div><div class="nota"><p>Os métodos raw <strong>não usam</strong> os filtros montados na instância (<code>where</code>, <code>join</code>, <code>orderBy</code>…), <strong>não aplicam</strong> <a href="orm-base-configuracao.html#casts">casts</a> e <strong>não filtram</strong> <code>softDeletes</code>: escreva <code>deleted_at IS NULL</code> no SQL se precisar. Os valores voltam como o driver entrega (normalmente strings).</p></div></div><div class="metodo"><h3 id="rawFirst"><code>rawFirst()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;rawFirst(string $sql, array $bindings = []): object|null</div><p>Primeira linha do resultado, ou <code>null</code>.</p><div class="codigo"><pre><code data-lang="php">$ultimo = OrmTables::rawFirst(
+    'SELECT * FROM #__loja_pedidos WHERE cliente_id = ? ORDER BY created_at DESC LIMIT 1',
+    [$clienteId]
+);
+
+if ($ultimo === null) {
+    // cliente sem pedidos
+}</code></pre></div><div class="nota aviso"><p>Não adiciona <code>LIMIT</code>. Sem ele, o banco busca todas as linhas e o PHP descarta as outras: coloque <code>LIMIT 1</code> no SQL.</p></div></div><div class="metodo"><h3 id="rawValue"><code>rawValue()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;rawValue(string $sql, array $bindings = []): mixed</div><p>Primeira coluna da primeira linha, ou <code>null</code>. Ideal para contagens e somas.</p><div class="codigo"><pre><code data-lang="php">$faturamento = (float) OrmTables::rawValue(
+    'SELECT COALESCE(SUM(total), 0) FROM #__loja_pedidos WHERE status = ? AND pago_em &gt;= ?',
+    ['pago', '2026-10-01 00:00:00']
+);</code></pre></div><div class="nota"><p>O valor vem como o driver entrega, em geral como string. Converta com <code>(int)</code> ou <code>(float)</code>.</p></div></div><div class="metodo"><h3 id="rawExecute"><code>rawExecute()</code><span class="tag final">executa a consulta</span></h3><div class="assinatura">$orm-&gt;rawExecute(string $sql, array $bindings = []): int</div><p>Para comandos que não devolvem linhas: <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>CREATE</code>, <code>ALTER</code>… Devolve quantas linhas foram afetadas.</p><div class="codigo"><pre><code data-lang="php">// UPDATE com JOIN (o builder não faz)
+$afetadas = OrmTables::rawExecute(
+    'UPDATE #__loja_pedidos p
+       JOIN #__loja_clientes c ON c.id = p.cliente_id
+        SET p.prioridade = 1
+      WHERE c.vip = ? AND p.status = ?',
+    [true, 'pendente']
+);
+
+// INSERT ... SELECT
+OrmTables::rawExecute(
+    'INSERT INTO #__loja_pedidos_arquivo SELECT * FROM #__loja_pedidos WHERE created_at &lt; ?',
+    ['2025-01-01']
+);</code></pre></div><div class="nota"><p>Não devolve o id inserido. Para isso, prefira <a href="orm-base-escrita.html#create"><code>create()</code></a>. Se precisar mesmo de INSERT raw: no PostgreSQL use <code>rawValue('INSERT ... RETURNING id', ...)</code>; no MySQL, leia <code>$orm-&gt;db()-&gt;insertid()</code> logo depois, na mesma instância.</p></div><div class="nota perigo"><p>Ao contrário de <a href="orm-base-escrita.html#updateWhere"><code>updateWhere()</code></a>/<code>deleteWhere()</code>, aqui <strong>não há proteção</strong> contra UPDATE/DELETE sem <code>WHERE</code>. Revise o SQL antes de rodar.</p></div></div><div class="metodo"><h3 id="rawSql"><code>rawSql()</code></h3><div class="assinatura">$orm-&gt;rawSql(string $sql, array $bindings = []): string</div><p>Devolve o SQL com os bindings já aplicados, <strong>sem executar</strong>. Útil para depurar ou registrar em log. O <code>#__</code> ainda não foi trocado pelo prefixo.</p><div class="codigo"><pre><code data-lang="php">echo OrmTables::rawSql(
+    'SELECT * FROM #__loja_pedidos WHERE id IN (?) AND status = ?',
+    [[1, 2], "it's"]
+);
+// SELECT * FROM #__loja_pedidos WHERE id IN (1, 2) AND status = 'it\'s'</code></pre></div></div><h2 id="sem-model" data-titulo="Sem model: OrmTables">Sem model: OrmTables</h2><p>Para SQL que não pertence a uma tabela só (relatórios, UNION entre tabelas), use os atalhos estáticos. O terceiro parâmetro aceita <code>connection</code>, para rodar em <a href="guia-multiplos-bancos.html">outro banco</a>.</p><div class="assinatura">OrmTables::raw(string $sql, array $bindings = [], array $opcoes = []): array
+OrmTables::rawFirst(string $sql, array $bindings = [], array $opcoes = []): object|null
+OrmTables::rawValue(string $sql, array $bindings = [], array $opcoes = []): mixed
+OrmTables::rawExecute(string $sql, array $bindings = [], array $opcoes = []): int
+OrmTables::rawSql(string $sql, array $bindings = [], array $opcoes = []): string</div><div class="codigo"><pre><code data-lang="php">// banco do Joomla
+$total = (int) OrmTables::rawValue('SELECT COUNT(*) FROM #__users WHERE block = ?', [0]);
+
+// outro banco registrado no DbConnectionHelper
+$clientes = OrmTables::raw(
+    'SELECT codigo, razao_social FROM clientes WHERE uf = ?',
+    ['SP'],
+    ['connection' =&gt; 'erp']
+);</code></pre></div><p>Num model, o raw usa a conexão do próprio model (<code>protected $connection</code>):</p><div class="codigo"><pre><code data-lang="php">class PedidoModel extends OrmBase
+{
+    protected $table = '#__loja_pedidos';
+
+    public function resumoPorMes($ano)
+    {
+        return $this-&gt;raw(
+            'SELECT MONTH(created_at) AS mes, COUNT(*) AS qtd, SUM(total) AS valor
+               FROM #__loja_pedidos
+              WHERE YEAR(created_at) = ? AND deleted_at IS NULL
+              GROUP BY MONTH(created_at)
+              ORDER BY mes',
+            [(int) $ano]
+        );
+    }
+}
+
+$meses = (new PedidoModel())-&gt;resumoPorMes(2026);</code></pre></div><h2 id="seguranca" data-titulo="Segurança">Segurança</h2><p>Binding protege <strong>valores</strong>. Nomes de tabela, nomes de coluna, <code>ASC</code>/<code>DESC</code> e palavras-chave não podem ser bindings: se vierem da tela, valide contra uma lista fixa.</p><div class="codigo"><pre><code data-lang="php">// ERRADO: injeção de SQL
+OrmTables::raw(&quot;SELECT * FROM #__loja_pedidos WHERE status = '&quot; . $_GET['status'] . &quot;'&quot;);
+
+// CERTO: valor por binding
+OrmTables::raw('SELECT * FROM #__loja_pedidos WHERE status = ?', [$status]);
+
+// ordenação vinda da tela: lista fixa
+$colunas = ['created_at' =&gt; 'created_at', 'total' =&gt; 'total'];
+$coluna = $colunas[$ordem] ?? 'created_at';
+$direcao = strtoupper($direcao) === 'ASC' ? 'ASC' : 'DESC';
+
+OrmTables::raw(
+    &quot;SELECT * FROM #__loja_pedidos WHERE status = ? ORDER BY $coluna $direcao LIMIT ?&quot;,
+    [$status, 50]
+);</code></pre></div><div class="nota perigo"><p>Nunca concatene nada que veio do usuário no <code>$sql</code>, nem "só um número". Valores vão em <code>$bindings</code>; identificadores, só de uma lista fixa sua.</p></div><h2 id="transacoes" data-titulo="Dentro de transações">Dentro de transações</h2><p>Os métodos raw rodam na conexão da instância, então entram na transação dela. Misture à vontade com os métodos do builder:</p><div class="codigo"><pre><code data-lang="php">PedidoModel::query()-&gt;transaction(function ($pedidos) use ($pedidoId) {
+    $pedidos-&gt;update($pedidoId, ['status' =&gt; 'cancelado']);
+
+    $pedidos-&gt;rawExecute(
+        'UPDATE #__loja_produtos p
+           JOIN #__loja_pedido_itens i ON i.produto_id = p.id
+            SET p.estoque = p.estoque + i.quantidade
+          WHERE i.pedido_id = ?',
+        [$pedidoId]
+    );
+});</code></pre></div><p>Com <a href="db-transaction-helper.html#run"><code>DbTransactionHelper::run()</code></a> numa conexão nomeada, passe a mesma conexão no raw: <code>OrmTables::rawExecute($sql, $bindings, ['connection' =&gt; 'erp'])</code>.</p><h2 id="bancos" data-titulo="MySQL e PostgreSQL">MySQL e PostgreSQL</h2><p>O SQL raw vai <strong>como você escreveu</strong>: o ORM não adapta funções nem sintaxe. <code>YEAR()</code>, <code>UPDATE ... JOIN</code> e crases só existem no MySQL; <code>ILIKE</code>, <code>RETURNING</code> e <code>::</code> só no PostgreSQL. Se o componente roda nos dois, escolha o SQL pelo banco:</p><div class="codigo"><pre><code data-lang="php">$orm = PedidoModel::query();
+
+$sql = $orm-&gt;serverType() === DbConnectionHelper::POSTGRESQL
+    ? 'SELECT EXTRACT(MONTH FROM created_at) AS mes, COUNT(*) AS qtd FROM #__loja_pedidos WHERE created_at &gt;= ? GROUP BY 1'
+    : 'SELECT MONTH(created_at) AS mes, COUNT(*) AS qtd FROM #__loja_pedidos WHERE created_at &gt;= ? GROUP BY 1';
+
+$porMes = $orm-&gt;raw($sql, ['2026-01-01']);</code></pre></div><div class="tabela"><table><thead><tr><th>Limitação no PostgreSQL</th><th>Como contornar</th></tr></thead><tbody><tr><td>Operadores JSONB <code>?</code>, <code>?|</code>, <code>?&amp;</code> são lidos como placeholder</td><td>Use as funções equivalentes: <code>jsonb_exists(col, ?)</code>, <code>jsonb_exists_any(col, ?)</code>, <code>jsonb_exists_all(col, ?)</code></td></tr><tr><td>Strings com <code>$$...$$</code> não são reconhecidas</td><td>Use aspas simples, ou rode o DDL sem bindings</td></tr></tbody></table></div><p>Mais diferenças em <a href="guia-mysql-postgresql.html">MySQL e PostgreSQL</a>.</p><h2 id="erros" data-titulo="Erros">Erros</h2><div class="tabela"><table><thead><tr><th>Exceção</th><th>Quando</th></tr></thead><tbody><tr><td><code>InvalidArgumentException</code></td><td>SQL vazio; mais <code>?</code> do que valores ou mais valores do que <code>?</code>; <code>:nome</code> sem valor ou valor nomeado não usado; <code>?</code> misturado com <code>:nome</code>; array vazio ou array dentro de array; aspa sem fechamento; objeto que não vira texto. Lançada <strong>antes</strong> de ir ao banco.</td></tr><tr><td><code>RuntimeException</code></td><td>Erro do banco (sintaxe, tabela inexistente, constraint…). Mensagem "Erro ao executar SQL raw: …", com a exceção original em <code>getPrevious()</code>. Código 500.</td></tr></tbody></table></div><div class="codigo"><pre><code data-lang="php">try {
+    $linhas = OrmTables::raw($sql, $bindings);
+} catch (InvalidArgumentException $e) {
+    // erro de programação: SQL e bindings não batem
+} catch (RuntimeException $e) {
+    LogHelper::error('Relatório falhou', 'relatorios', ['erro' =&gt; $e-&gt;getMessage()]);
+}</code></pre></div>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="orm-base-models.html"><small>← Anterior</small>OrmBase — models</a><a class="proxima" href="input-helper.html"><small>Próxima →</small>InputHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

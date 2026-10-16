@@ -58,6 +58,23 @@ $m = new PedidoModel();            // ou PedidoModel::query()
 | `truncate(true)` | esvazia (exige `true`) |
 | `transaction(function ($orm) {...}, ['retries' => 3])` | transação na conexão da instância |
 
+### SQL raw (o que o builder não cobre: CTE, UNION, subquery, funções do banco)
+Valores **sempre** em `$bindings`, nunca concatenados. `?` posicional ou `:nome` nomeado (não misture); array vira lista para `IN (?)` (vazio lança exceção); null → NULL, bool → 1/0, int/float sem aspas (ok em LIMIT), DateTime → `'Y-m-d H:i:s'`. Ignora `?`/`:x` dentro de strings e comentários e o `::` do PostgreSQL. `#__` vira o prefixo. Não usa os filtros montados nem aplica casts. Erros de banco → `RuntimeException`; binding faltando/sobrando → `InvalidArgumentException`.
+
+| Método | Retorno |
+|---|---|
+| `raw($sql, $bindings = [])` | `stdClass[]` |
+| `rawFirst($sql, $bindings)` | objeto ou null (não adiciona LIMIT) |
+| `rawValue($sql, $bindings)` | primeira coluna da primeira linha |
+| `rawExecute($sql, $bindings)` | linhas afetadas (INSERT/UPDATE/DELETE/DDL) |
+| `rawSql($sql, $bindings)` | SQL final, sem executar (depuração) |
+
+Sem model: `OrmTables::raw($sql, $bindings, ['connection' => 'erp'])` (idem `rawFirst/rawValue/rawExecute/rawSql`).
+```php
+$linhas = OrmTables::raw('SELECT status, COUNT(*) total FROM #__pedidos WHERE criado_em >= :ini AND id IN (:ids) GROUP BY status', ['ini' => '2026-01-01', 'ids' => [1, 2, 3]]);
+$afetadas = PedidoModel::query()->rawExecute('UPDATE #__pedidos SET status = ? WHERE id = ?', ['pago', 10]);
+```
+
 `db()` devolve o driver; `serverType()` 'mysql'/'postgresql'; `newQuery()` cópia limpa.
 
 ## DbTransactionHelper

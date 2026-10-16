@@ -100,4 +100,44 @@ class OrmTables
 	{
 		return array_keys(self::$instancias);
 	}
+
+	/*
+	 * SQL raw sem precisar de tabela/model. Mesmas regras de bindings do
+	 * OrmBase::raw(). Conexão diferente: ['connection' => 'erp'] em $opcoes.
+	 *
+	 * OrmTables::raw('SELECT * FROM #__pedidos WHERE status = ?', ['pago']);
+	 */
+	public static function raw($sql, array $bindings = [], array $opcoes = [])
+	{
+		return self::semTabela($opcoes)->raw($sql, $bindings);
+	}
+
+	public static function rawFirst($sql, array $bindings = [], array $opcoes = [])
+	{
+		return self::semTabela($opcoes)->rawFirst($sql, $bindings);
+	}
+
+	public static function rawValue($sql, array $bindings = [], array $opcoes = [])
+	{
+		return self::semTabela($opcoes)->rawValue($sql, $bindings);
+	}
+
+	public static function rawExecute($sql, array $bindings = [], array $opcoes = [])
+	{
+		return self::semTabela($opcoes)->rawExecute($sql, $bindings);
+	}
+
+	public static function rawSql($sql, array $bindings = [], array $opcoes = [])
+	{
+		return self::semTabela($opcoes)->rawSql($sql, $bindings);
+	}
+
+	/*
+	 * Os métodos raw não usam a tabela da instância; o nome abaixo só
+	 * satisfaz o construtor do OrmBase.
+	 */
+	protected static function semTabela(array $opcoes)
+	{
+		return new OrmBase('__sql_raw__', $opcoes);
+	}
 }
