@@ -1,10 +1,13 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
-jimport('joomla.filesystem.path');
+if (!class_exists('PlatformHelper', false)) {
+    require_once __DIR__ . '/PlatformHelper.php';
+}
 
 /*
  * Erro com mensagem segura para mostrar ao usuário ("A extensão do
@@ -214,9 +217,9 @@ class UploadMaster
         'audio/'
     );
 
-    private static function log($message, $level = JLog::ERROR)
+    private static function log($message, $level = PlatformHelper::LOG_ERROR)
     {
-        JLog::add(
+        PlatformHelper::log(
             self::truncate($message, 5000),
             $level,
             self::$logCategory
@@ -252,7 +255,7 @@ class UploadMaster
             $error->getMessage() .
             ' | Arquivo: ' . $error->getFile() .
             ' | Linha: ' . $error->getLine(),
-            JLog::ERROR
+            PlatformHelper::LOG_ERROR
         );
 
         if (self::$throwExceptions) {
@@ -282,7 +285,7 @@ class UploadMaster
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(JPATH_SITE);
+        $siteRoot = realpath(PlatformHelper::rootPath());
 
         if ($siteRoot === false) {
             throw new UploadMasterException('Não foi possível localizar a raiz do site.');
@@ -336,7 +339,7 @@ class UploadMaster
             );
         }
 
-        if (!JFolder::exists($baseDirectory)) {
+        if (!PlatformHelper::folderExists($baseDirectory)) {
             if (!self::createDirectory($baseDirectory)) {
                 throw new UploadMasterException(
                     'Não foi possível criar o diretório base informado.'
@@ -397,7 +400,7 @@ class UploadMaster
                 );
             }
 
-            $safePart = JFolder::makeSafe($part);
+            $safePart = PlatformHelper::folderMakeSafe($part);
 
             if ($safePart === '') {
                 throw new UploadMasterException(
@@ -424,7 +427,7 @@ class UploadMaster
             $missing[] = $current;
         }
 
-        if (!JFolder::create($directory, self::$directoryPermission)) {
+        if (!PlatformHelper::folderCreate($directory, self::$directoryPermission)) {
             return false;
         }
 
@@ -471,7 +474,7 @@ class UploadMaster
             );
         }
 
-        if (!JFolder::exists($fullDirectory)) {
+        if (!PlatformHelper::folderExists($fullDirectory)) {
             if (!self::createDirectory($fullDirectory)) {
                 throw new UploadMasterException(
                     'Não foi possível criar o diretório de destino.'
@@ -533,7 +536,7 @@ class UploadMaster
 
         $fileName = self::removeAccents($fileName);
         $fileName = preg_replace('/\s+/', '_', trim($fileName));
-        $fileName = JFile::makeSafe($fileName);
+        $fileName = PlatformHelper::makeSafe($fileName);
         $fileName = ltrim((string) $fileName, '.');
 
         $parts = explode('.', $fileName);
@@ -593,7 +596,7 @@ class UploadMaster
     private static function getExtension($fileName)
     {
         $extension = strtolower(
-            trim((string) JFile::getExt($fileName))
+            trim((string) PlatformHelper::getExt($fileName))
         );
 
         if ($extension === '') {
@@ -1008,7 +1011,7 @@ class UploadMaster
         $fileName = self::normalizeFileName($fileName);
         $destination = $directory . '/' . $fileName;
 
-        if (!JFile::exists($destination)) {
+        if (!PlatformHelper::fileExists($destination)) {
             return $fileName;
         }
 
@@ -1016,8 +1019,8 @@ class UploadMaster
             return $fileName;
         }
 
-        $extension = JFile::getExt($fileName);
-        $baseName = JFile::stripExt($fileName);
+        $extension = PlatformHelper::getExt($fileName);
+        $baseName = PlatformHelper::stripExt($fileName);
         $suffix = 1;
 
         do {
@@ -1030,7 +1033,7 @@ class UploadMaster
             $destination = $directory . '/' . $candidate;
 
             $suffix++;
-        } while (JFile::exists($destination));
+        } while (PlatformHelper::fileExists($destination));
 
         return $candidate;
     }
@@ -1072,33 +1075,21 @@ class UploadMaster
 
     private static function buildUrl($absolutePath)
     {
-        $relativePath = self::relativePathBySite($absolutePath);
-
-        if ($relativePath === null) {
-            return null;
-        }
-
-        return rtrim(JUri::root(), '/') .
-            '/' .
-            str_replace(
-                '%2F',
-                '/',
-                rawurlencode($relativePath)
-            );
+        return PlatformHelper::url($absolutePath);
     }
 
     private static function fileData($absolutePath, array $extra = array(), $baseDirectory = null)
     {
         $absolutePath = self::normalizePath($absolutePath);
 
-        if (!JFile::exists($absolutePath)) {
+        if (!PlatformHelper::fileExists($absolutePath)) {
             throw new UploadMasterException(
                 'Arquivo não encontrado após a operação.'
             );
         }
 
         $fileName = basename($absolutePath);
-        $extension = strtolower(JFile::getExt($fileName));
+        $extension = strtolower(PlatformHelper::getExt($fileName));
         $size = filesize($absolutePath);
         $mime = self::getMimeType($absolutePath);
 
@@ -1162,7 +1153,7 @@ class UploadMaster
             );
         }
 
-        if (!JFile::exists($absolutePath)) {
+        if (!PlatformHelper::fileExists($absolutePath)) {
             throw new UploadMasterException(
                 'Arquivo não encontrado.'
             );
@@ -1468,7 +1459,7 @@ class UploadMaster
             self::log(
                 '[' . __METHOD__ . '] ' .
                 $error->getMessage(),
-                JLog::ERROR
+                PlatformHelper::LOG_ERROR
             );
 
             if (self::$throwExceptions) {
@@ -1667,10 +1658,7 @@ class UploadMaster
 
     public static function getFileFromInput($fieldName, $index = null)
     {
-        $app = JFactory::getApplication();
-        $input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
-
-        $files = $input->files->get($fieldName, null, 'array');
+        $files = PlatformHelper::uploadedFiles($fieldName);
 
         if (empty($files)) {
             return null;
@@ -1770,19 +1758,17 @@ class UploadMaster
                 '/' .
                 $destinationName;
 
-            if ($overwrite && JFile::exists($destinationPath)) {
-                if (!JFile::delete($destinationPath)) {
+            if ($overwrite && PlatformHelper::fileExists($destinationPath)) {
+                if (!PlatformHelper::fileDelete($destinationPath)) {
                     throw new UploadMasterException(
                         'Não foi possível substituir o arquivo já existente.'
                     );
                 }
             }
 
-            if (!JFile::upload(
+            if (!PlatformHelper::fileUpload(
                 $file['tmp_name'],
-                $destinationPath,
-                false,
-                false
+                $destinationPath
             )) {
                 throw new UploadMasterException(
                     'Não foi possível salvar o arquivo enviado.'
@@ -1921,7 +1907,7 @@ class UploadMaster
                 $baseDirectory
             );
 
-            if (!JFile::delete($filePath)) {
+            if (!PlatformHelper::fileDelete($filePath)) {
                 throw new UploadMasterException(
                     'Não foi possível excluir o arquivo.'
                 );
@@ -2067,16 +2053,16 @@ class UploadMaster
 
             if (
                 !empty($options['overwrite']) &&
-                JFile::exists($destinationPath)
+                PlatformHelper::fileExists($destinationPath)
             ) {
-                if (!JFile::delete($destinationPath)) {
+                if (!PlatformHelper::fileDelete($destinationPath)) {
                     throw new UploadMasterException(
                         'Não foi possível substituir o arquivo de destino.'
                     );
                 }
             }
 
-            if (!JFile::copy($sourcePath, $destinationPath)) {
+            if (!PlatformHelper::fileCopy($sourcePath, $destinationPath)) {
                 throw new UploadMasterException(
                     'Não foi possível copiar o arquivo.'
                 );
@@ -2185,16 +2171,16 @@ class UploadMaster
 
             if (
                 !empty($options['overwrite']) &&
-                JFile::exists($destinationPath)
+                PlatformHelper::fileExists($destinationPath)
             ) {
-                if (!JFile::delete($destinationPath)) {
+                if (!PlatformHelper::fileDelete($destinationPath)) {
                     throw new UploadMasterException(
                         'Não foi possível substituir o arquivo de destino.'
                     );
                 }
             }
 
-            if (!JFile::move($sourcePath, $destinationPath)) {
+            if (!PlatformHelper::fileMove($sourcePath, $destinationPath)) {
                 throw new UploadMasterException(
                     'Não foi possível mover o arquivo.'
                 );
@@ -2426,7 +2412,7 @@ class UploadMaster
             $destinationName = self::ensureUniqueFileName($destinationDirectory, $destinationName, !empty($options['overwrite']));
             $destinationPath = $destinationDirectory . '/' . $destinationName;
 
-            if (!empty($options['overwrite']) && JFile::exists($destinationPath) && !JFile::delete($destinationPath)) {
+            if (!empty($options['overwrite']) && PlatformHelper::fileExists($destinationPath) && !PlatformHelper::fileDelete($destinationPath)) {
                 throw new UploadMasterException(
                     'Não foi possível substituir a miniatura existente.'
                 );
@@ -2545,7 +2531,7 @@ class UploadMaster
                     header('Content-Range: bytes */' . $size);
 
                     if ($close) {
-                        JFactory::getApplication()->close();
+                        PlatformHelper::close();
                     }
 
                     return false;
@@ -2623,7 +2609,7 @@ class UploadMaster
             }
 
             if ($close) {
-                JFactory::getApplication()->close();
+                PlatformHelper::close();
             }
 
             return true;
@@ -2631,7 +2617,7 @@ class UploadMaster
             self::log(
                 '[' . __METHOD__ . '] ' .
                 $error->getMessage(),
-                JLog::ERROR
+                PlatformHelper::LOG_ERROR
             );
 
             if (self::$throwExceptions) {
@@ -2708,7 +2694,7 @@ class UploadMaster
                     $baseDirectory
                 )
             ) {
-                if (!JFolder::exists($directory)) {
+                if (!PlatformHelper::folderExists($directory)) {
                     $directory = self::normalizePath(
                         dirname($directory)
                     );
@@ -2717,7 +2703,7 @@ class UploadMaster
                 }
 
                 // O index.html criado pelo próprio helper não conta como conteúdo.
-                $files = JFolder::files(
+                $files = PlatformHelper::files(
                     $directory,
                     '.',
                     false,
@@ -2732,7 +2718,7 @@ class UploadMaster
                     array()
                 );
 
-                $folders = JFolder::folders(
+                $folders = PlatformHelper::folders(
                     $directory,
                     '.',
                     false,
@@ -2750,7 +2736,7 @@ class UploadMaster
                     break;
                 }
 
-                if (!JFolder::delete($directory)) {
+                if (!PlatformHelper::folderDelete($directory)) {
                     break;
                 }
 

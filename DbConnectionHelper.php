@@ -1,6 +1,9 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; carrega no Joomla, Laravel ou PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
 /*
  * Registro de conexões de banco.
@@ -83,7 +86,7 @@ class DbConnectionHelper
         $nome = $nome === null ? self::PADRAO : trim((string) $nome);
 
         if ($nome === self::PADRAO || $nome === '') {
-            return JFactory::getDbo();
+            return self::conexaoDoJoomla();
         }
 
         if (isset(self::$conexoes[$nome])) {
@@ -200,6 +203,21 @@ class DbConnectionHelper
         }
 
         return $nome;
+    }
+
+    /*
+     * Conexão do site: pelo container no Joomla 4, 5 e 6 (o mesmo objeto
+     * do Factory::getDbo()), pelo getDbo() no Joomla 3.
+     */
+    private static function conexaoDoJoomla()
+    {
+        $factory = class_exists('Joomla\\CMS\\Factory') ? 'Joomla\\CMS\\Factory' : 'JFactory';
+
+        if (method_exists($factory, 'getContainer') && interface_exists('Joomla\\Database\\DatabaseInterface')) {
+            return $factory::getContainer()->get('Joomla\\Database\\DatabaseInterface');
+        }
+
+        return $factory::getDbo();
     }
 
     private static function criarDriver(array $opcoes)

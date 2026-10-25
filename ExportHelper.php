@@ -1,9 +1,13 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
+if (!class_exists('PlatformHelper', false)) {
+    require_once __DIR__ . '/PlatformHelper.php';
+}
 
 class ExportHelper
 {
@@ -39,27 +43,27 @@ class ExportHelper
     private static function log($level, $message, array $context = array())
     {
         try {
-            $priority = JLog::INFO;
+            $priority = PlatformHelper::LOG_INFO;
 
             switch (strtolower((string) $level)) {
                 case 'debug':
-                    $priority = JLog::DEBUG;
+                    $priority = PlatformHelper::LOG_DEBUG;
                     break;
 
                 case 'notice':
-                    $priority = JLog::NOTICE;
+                    $priority = PlatformHelper::LOG_NOTICE;
                     break;
 
                 case 'warning':
-                    $priority = JLog::WARNING;
+                    $priority = PlatformHelper::LOG_WARNING;
                     break;
 
                 case 'error':
-                    $priority = JLog::ERROR;
+                    $priority = PlatformHelper::LOG_ERROR;
                     break;
 
                 case 'critical':
-                    $priority = JLog::CRITICAL;
+                    $priority = PlatformHelper::LOG_CRITICAL;
                     break;
             }
 
@@ -85,7 +89,7 @@ class ExportHelper
                     self::$logDirectory
                 );
 
-                JLog::addLogger(
+                PlatformHelper::addLogger(
                     array(
                         'text_file' => self::$logCategory . '.php',
                         'text_file_path' => $directory,
@@ -96,7 +100,7 @@ class ExportHelper
                 );
             }
 
-            JLog::add(
+            PlatformHelper::log(
                 self::limitText(
                     (string) $message . $contextText,
                     20000
@@ -141,7 +145,7 @@ class ExportHelper
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(JPATH_SITE);
+        $siteRoot = realpath(PlatformHelper::rootPath());
 
         if ($siteRoot === false) {
             throw new RuntimeException(
@@ -209,8 +213,8 @@ class ExportHelper
             );
         }
 
-        if (!JFolder::exists($directory)) {
-            if (!JFolder::create(
+        if (!PlatformHelper::folderExists($directory)) {
+            if (!PlatformHelper::folderCreate(
                 $directory,
                 self::$directoryPermission
             )) {
@@ -259,8 +263,8 @@ class ExportHelper
             );
         }
 
-        if (!JFolder::exists($baseDirectory)) {
-            if (!JFolder::create(
+        if (!PlatformHelper::folderExists($baseDirectory)) {
+            if (!PlatformHelper::folderCreate(
                 $baseDirectory,
                 self::$directoryPermission
             )) {
@@ -316,7 +320,7 @@ class ExportHelper
                 );
             }
 
-            $safePart = JFile::makeSafe($part);
+            $safePart = PlatformHelper::makeSafe($part);
 
             if ($safePart === '') {
                 throw new RuntimeException(
@@ -356,8 +360,8 @@ class ExportHelper
 
         $directory = dirname($filePath);
 
-        if (!JFolder::exists($directory)) {
-            if (!JFolder::create(
+        if (!PlatformHelper::folderExists($directory)) {
+            if (!PlatformHelper::folderCreate(
                 $directory,
                 self::$directoryPermission
             )) {
@@ -407,19 +411,7 @@ class ExportHelper
 
     private static function buildUrl($filePath)
     {
-        $relativePath = self::siteRelativePath($filePath);
-
-        if ($relativePath === null) {
-            return null;
-        }
-
-        return rtrim(JUri::root(), '/') .
-            '/' .
-            str_replace(
-                '%2F',
-                '/',
-                rawurlencode($relativePath)
-            );
+        return PlatformHelper::url($filePath);
     }
 
     private static function normalizeDelimiter($delimiter)
@@ -467,7 +459,7 @@ class ExportHelper
             str_replace('\\', '/', (string) $fileName)
         );
 
-        $fileName = JFile::makeSafe($fileName);
+        $fileName = PlatformHelper::makeSafe($fileName);
 
         if ($fileName === '') {
             throw new InvalidArgumentException(
@@ -475,7 +467,7 @@ class ExportHelper
             );
         }
 
-        if (strtolower(JFile::getExt($fileName)) !== 'csv') {
+        if (strtolower(PlatformHelper::getExt($fileName)) !== 'csv') {
             $fileName .= '.csv';
         }
 
@@ -859,7 +851,7 @@ class ExportHelper
 
     private static function fileData($filePath, $baseDirectory = null)
     {
-        if (!JFile::exists($filePath)) {
+        if (!PlatformHelper::fileExists($filePath)) {
             throw new RuntimeException(
                 'Arquivo de exportação não encontrado.'
             );
@@ -882,7 +874,7 @@ class ExportHelper
             ),
             'file_name' => basename($filePath),
             'extension' => strtolower(
-                JFile::getExt(basename($filePath))
+                PlatformHelper::getExt(basename($filePath))
             ),
             'size' => $size !== false ? (int) $size : 0,
             'size_formatted' => self::formatBytes(
@@ -1027,7 +1019,7 @@ class ExportHelper
                 : true;
 
             if (
-                JFile::exists($filePath) &&
+                PlatformHelper::fileExists($filePath) &&
                 !$overwrite
             ) {
                 throw new RuntimeException(
@@ -1182,26 +1174,31 @@ class ExportHelper
         }
     }
 
+    /*
+     * Aceita SQL em texto, a query do Joomla, o Builder do Laravel ou
+     * array(sql, bindings) (Laravel e PHP puro). Ver PlatformHelper::queryRows().
+     */
+    private static function validateQuery($query)
+    {
+        if (
+            is_object($query) ||
+            (is_string($query) && trim($query) !== '') ||
+            (is_array($query) && isset($query[0]) && is_string($query[0]) && trim($query[0]) !== '')
+        ) {
+            return;
+        }
+
+        throw new InvalidArgumentException(
+            'Query de exportação inválida.'
+        );
+    }
+
     public static function fromQuery($filePath, $query, array $columns, $baseDirectory = null, array $options = array())
     {
         try {
-            $db = JFactory::getDbo();
+            self::validateQuery($query);
 
-            if ($query instanceof JDatabaseQuery) {
-                $db->setQuery($query);
-            } elseif (is_string($query) && trim($query) !== '') {
-                $db->setQuery($query);
-            } else {
-                throw new InvalidArgumentException(
-                    'Query de exportação inválida.'
-                );
-            }
-
-            $rows = $db->loadAssocList();
-
-            if (!is_array($rows)) {
-                $rows = array();
-            }
+            $rows = PlatformHelper::queryRows($query);
 
             return self::csv(
                 $filePath,
@@ -1229,23 +1226,9 @@ class ExportHelper
     public static function downloadFromQuery($fileName, $query, array $columns, array $options = array())
     {
         try {
-            $db = JFactory::getDbo();
+            self::validateQuery($query);
 
-            if ($query instanceof JDatabaseQuery) {
-                $db->setQuery($query);
-            } elseif (is_string($query) && trim($query) !== '') {
-                $db->setQuery($query);
-            } else {
-                throw new InvalidArgumentException(
-                    'Query de exportação inválida.'
-                );
-            }
-
-            $rows = $db->loadAssocList();
-
-            if (!is_array($rows)) {
-                $rows = array();
-            }
+            $rows = PlatformHelper::queryRows($query);
 
             return self::download(
                 $fileName,
@@ -1268,29 +1251,17 @@ class ExportHelper
 
     public static function generatorFromQuery($query, $batchSize = 1000)
     {
-        $db = JFactory::getDbo();
-
-        if ($query instanceof JDatabaseQuery) {
-            $query = (string) $query;
-        }
-
-        if (!is_string($query) || trim($query) === '') {
-            throw new InvalidArgumentException(
-                'Query de exportação inválida.'
-            );
-        }
+        self::validateQuery($query);
 
         $batchSize = max(1, min(10000, (int) $batchSize));
         $offset = 0;
 
         while (true) {
-            $db->setQuery(
+            $rows = PlatformHelper::queryRows(
                 $query,
                 $offset,
                 $batchSize
             );
-
-            $rows = $db->loadAssocList();
 
             if (empty($rows)) {
                 break;

@@ -12,6 +12,8 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 | `Vitrine.js` (`js/`) | Listagens com paginação, ordenação e filtros na URL, busca com espera e cancelamento, ações por linha e em lote. |
 | `FormatHelper` | Dinheiro (e centavos inteiros), números, CPF/CNPJ, CEP, telefone, slug, resumo, plural, nomes. |
 | Docs | Páginas do `LogHelper`, `PermissionHelper` e `ExportHelper`. |
+| `PlatformHelper` | `LogHelper`, `FileHelper`, `ExportHelper`, `CsvHelper`, `ChunkHelper` e `UploadMaster` rodam no Joomla 3 a 6, no Laravel e em PHP puro (Joomla continua o padrão). Testado em 2026-10-25 com Joomla 3.10.12, 4.4.14, 5.4.10, 6.2.0 e Laravel 13 no PHP 8.4. |
+| Docs do `PlatformHelper` | Sistemas completos (importação com prévia e rejeitados, exportação, foto/documento, CLI com retomada, backup) em Joomla, Laravel e PHP puro, executados de ponta a ponta. Corrigidos no caminho: `ChunkHelper::readLines()` gravava no checkpoint o fim do buffer (a retomada pulava linhas); `CsvHelper::import()` ignorava `createdAtColumn`/`updatedAtColumn`; `DbConnectionHelper` e `DbTransactionHelper` usavam `JFactory`/`JLog` (quebravam o `import()` e o ORM no Joomla 6). |
 
 ## Execução noturna (iniciada em 2026-10-05 01:15, entrega 08:00)
 

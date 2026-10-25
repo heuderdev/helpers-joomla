@@ -1,9 +1,13 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
-jimport('joomla.log.log');
-jimport('joomla.filesystem.folder');
+if (!class_exists('PlatformHelper', false)) {
+    require_once __DIR__ . '/PlatformHelper.php';
+}
 
 class LogHelper
 {
@@ -76,7 +80,7 @@ class LogHelper
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(JPATH_SITE);
+        $siteRoot = realpath(PlatformHelper::rootPath());
 
         if ($siteRoot === false) {
             throw new RuntimeException(
@@ -130,31 +134,31 @@ class LogHelper
     {
         switch (self::normalizeLevel($level)) {
             case self::LEVEL_DEBUG:
-                return JLog::DEBUG;
+                return PlatformHelper::LOG_DEBUG;
 
             case self::LEVEL_INFO:
-                return JLog::INFO;
+                return PlatformHelper::LOG_INFO;
 
             case self::LEVEL_NOTICE:
-                return JLog::NOTICE;
+                return PlatformHelper::LOG_NOTICE;
 
             case self::LEVEL_WARNING:
-                return JLog::WARNING;
+                return PlatformHelper::LOG_WARNING;
 
             case self::LEVEL_ERROR:
-                return JLog::ERROR;
+                return PlatformHelper::LOG_ERROR;
 
             case self::LEVEL_CRITICAL:
-                return JLog::CRITICAL;
+                return PlatformHelper::LOG_CRITICAL;
 
             case self::LEVEL_ALERT:
-                return JLog::ALERT;
+                return PlatformHelper::LOG_ALERT;
 
             case self::LEVEL_EMERGENCY:
-                return JLog::EMERGENCY;
+                return PlatformHelper::LOG_EMERGENCY;
         }
 
-        return JLog::INFO;
+        return PlatformHelper::LOG_INFO;
     }
 
     private static function truncate($value, $limit = null)
@@ -326,10 +330,7 @@ class LogHelper
                 return self::$baseDirectory;
             }
 
-            $directory = JFactory::getConfig()->get(
-                'log_path',
-                JPATH_ADMINISTRATOR . '/logs'
-            );
+            $directory = PlatformHelper::logPath();
         }
 
         $directory = trim((string) $directory);
@@ -360,8 +361,8 @@ class LogHelper
             );
         }
 
-        if (!JFolder::exists($directory)) {
-            if (!JFolder::create(
+        if (!PlatformHelper::folderExists($directory)) {
+            if (!PlatformHelper::folderCreate(
                 $directory,
                 self::$directoryPermission
             )) {
@@ -423,7 +424,7 @@ class LogHelper
             $level .
             '.php';
 
-        JLog::addLogger(
+        PlatformHelper::addLogger(
             array(
                 'text_file' => $fileName,
                 'text_file_path' => $directory,
@@ -438,13 +439,9 @@ class LogHelper
 
     private static function requestContext()
     {
-        $user = JFactory::getUser();
-
         return array(
             'request_id' => self::getRequestId(),
-            'user_id' => !empty($user) && (int) $user->id > 0
-                ? (int) $user->id
-                : null,
+            'user_id' => PlatformHelper::userId(),
             'request_method' => isset($_SERVER['REQUEST_METHOD'])
                 ? strtoupper($_SERVER['REQUEST_METHOD'])
                 : null,
@@ -491,7 +488,7 @@ class LogHelper
                 $message .= ' | Contexto: ' . $contextText;
             }
 
-            JLog::add(
+            PlatformHelper::log(
                 $message,
                 self::priority($level),
                 $category

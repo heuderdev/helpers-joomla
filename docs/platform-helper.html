@@ -1,0 +1,2307 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlatformHelper · helpers-joomla</title>
+<meta name="description" content="PlatformHelper: os helpers de arquivo, log, upload e exportação no Joomla 3 a 6, no Laravel e em PHP puro, com sistemas completos de exemplo testados nas três plataformas.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › PlatformHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="platform-helper.html" class="ativo" aria-current="page" data-busca="plataforma laravel php puro joomla 6 compatibilidade jfile jfolder jlog">PlatformHelper<span class="arquivo">PlatformHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>PlatformHelper</h1>
+<p class="lead">Os helpers de arquivo, log, upload e exportação (<code>LogHelper</code>, <code>FileHelper</code>, <code>ExportHelper</code>, <code>CsvHelper</code>, <code>ChunkHelper</code> e <code>UploadMaster</code>) funcionam no Joomla 3, 4, 5 e 6, no Laravel e em PHP puro com o mesmo código. Esta página mostra como, com um sistema completo montado nas três plataformas.</p>
+<div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<p>Os seis helpers não chamam mais <code>JFile</code>, <code>JFolder</code>, <code>JLog</code>, <code>JFactory</code> ou <code>JUri</code> diretamente: passam pelo <code>PlatformHelper.php</code>, que descobre onde está rodando e usa o recurso nativo de cada ambiente. No Joomla, as chamadas vão para as mesmas classes de antes, então os sites que já usam os helpers continuam iguais.</p>
+<div class="tabela"><table><thead><tr><th>Recurso</th><th>Joomla 3 a 6 (padrão)</th><th>Laravel</th><th>PHP puro</th></tr></thead><tbody><tr><td>Arquivos e pastas</td><td><code>File</code>/<code>Folder</code> do Joomla</td><td colspan="2">Funções nativas do PHP, com as mesmas regras do Joomla (<code>makeSafe</code>, filtros de listagem, permissões)</td></tr><tr><td>Raiz permitida</td><td><code>JPATH_SITE</code></td><td><code>base_path()</code></td><td><code>DOCUMENT_ROOT</code> (web) ou pasta atual (CLI), ou <code>setRootPath()</code></td></tr><tr><td>URL dos arquivos</td><td><code>Uri::root()</code> + caminho a partir da raiz</td><td><code>public/</code> e <code>storage/app/public</code> (<code>/storage</code>)</td><td>Só as pastas de <code>addPublicPath()</code>; sem elas, o <code>DOCUMENT_ROOT</code></td></tr><tr><td>Logs</td><td><code>Log</code> do Joomla, na pasta <code>log_path</code></td><td>Arquivos em <code>storage/logs</code></td><td>Arquivos em <code>&lt;raiz&gt;/logs</code>, ou <code>setLogPath()</code></td></tr><tr><td>Banco (<code>ExportHelper::*FromQuery</code>)</td><td>Conexão do site</td><td>Facade <code>DB</code>, Query ou Eloquent Builder</td><td>PDO de <code>setPdo()</code></td></tr><tr><td>Usuário no contexto dos logs</td><td><code>getIdentity()</code> / <code>getUser()</code></td><td><code>auth()-&gt;id()</code></td><td><code>setUserResolver()</code></td></tr><tr><td>Arquivo enviado (<code>UploadMaster::getFileFromInput</code>)</td><td><code>$input-&gt;files</code></td><td><code>request()-&gt;file()</code></td><td><code>$_FILES</code> (campo múltiplo já organizado)</td></tr></tbody></table></div>
+<p>A detecção é automática: <code>_JEXEC</code> definido → Joomla; <code>app()</code> do Laravel ativo → Laravel; senão, PHP puro. Para forçar, use <code>PlatformHelper::setPlatform('php')</code>.</p>
+<div class="nota aviso"><p>Copie o <code>PlatformHelper.php</code> junto com os helpers: cada um o carrega com <code>require_once __DIR__ . '/PlatformHelper.php'</code>. O <code>instalar.sh</code> e o <code>IncludeHelper</code> já tratam ele como dependência.</p></div>
+<h2 id="fluxos" data-titulo="O sistema de exemplo">O sistema de exemplo</h2>
+<p>Os três exemplos abaixo montam o mesmo cadastro de clientes (nome, e-mail, CPF, cidade, limite de crédito, foto e documento), com quatro fluxos completos. O código de cada plataforma foi executado de ponta a ponta antes de entrar nesta página (veja <a href="#como-foi-testado">Como foi testado</a>).</p>
+<div class="tabela"><table><thead><tr><th>Fluxo</th><th>O que faz</th><th>Helpers</th></tr></thead><tbody><tr><td><strong>Importar planilha</strong></td><td>Recebe o CSV, mostra a prévia, grava as linhas válidas e devolve um CSV com as recusadas para corrigir.</td><td>UploadMaster · CsvHelper (preview, import/process, writeRejectedCsv) · ValidationHelper · LogHelper</td></tr><tr><td><strong>Exportar</strong></td><td>Baixa os clientes em CSV (abre certo no Excel), lendo o banco em lotes.</td><td>ExportHelper (generatorFromQuery, download/csv) · LogHelper</td></tr><tr><td><strong>Foto e documento</strong></td><td>Foto pública com miniatura; PDF privado que só sai depois do login.</td><td>UploadMaster (upload, thumbnail, publicData, delete, stream/info) · LogHelper</td></tr><tr><td><strong>Rotinas (CLI)</strong></td><td>Planilha de milhões de linhas em fatias com retomada; backup diário em ZIP e limpeza do que venceu.</td><td>ChunkHelper (readLines, resumeLines) · ValidationHelper · ExportHelper · FileHelper (createZip, cleanOlderThan, listFiles) · UploadMaster · LogHelper</td></tr></tbody></table></div>
+<p>Em todos eles:</p><ul><li><strong>Planilhas, rejeitados e documentos ficam numa pasta privada</strong>, fora do alcance da URL. Só as fotos ficam numa pasta pública.</li><li><strong>O passo de confirmação usa o arquivo guardado na sessão</strong>, nunca um caminho mandado pelo navegador.</li><li><strong>Toda escrita exige login e token CSRF</strong>; o download de documento passa por permissão e gera log de auditoria.</li><li><strong>O <code>UploadMaster</code> confere o tipo real do arquivo</strong>: um JPG renomeado para <code>.pdf</code> é recusado ("A extensão do arquivo não corresponde ao seu tipo real.").</li></ul>
+<h3>Instalar os helpers</h3>
+<div class="codigo"><div class="titulo-codigo">instalar.sh copia cada helper com as dependências (inclusive o PlatformHelper.php)</div><pre><code data-lang="bash"># Joomla: dentro do componente
+skills/joomla-helpers/scripts/instalar.sh administrator/components/com_clientes/helpers \
+    UploadMaster CsvHelper ExportHelper FileHelper ChunkUploadHelper LogHelper IncludeHelper
+
+# Laravel e PHP puro: na pasta helpers/ do projeto
+skills/joomla-helpers/scripts/instalar.sh helpers \
+    UploadMaster CsvHelper ExportHelper FileHelper ChunkUploadHelper LogHelper ValidationHelper
+</code></pre></div>
+<h2 id="tela" data-titulo="A tela de importação">A tela de importação (igual nas três)</h2>
+<p>O mesmo JavaScript serve às três plataformas: as URLs vêm dos atributos <code>data-previa</code> e <code>data-confirmar</code> do formulário, e o token CSRF é um campo escondido dele. O texto que vem do servidor (e da planilha) é sempre inserido com <code>textContent</code>, nunca como HTML. As telas de cada plataforma estão nas seções seguintes.</p>
+<div class="codigo"><div class="titulo-codigo">clientes-importacao.js (media/<wbr>com_<wbr>clientes/js no Joomla, public/js no Laravel e no PHP puro)</div><pre><code data-lang="js">// clientes-importacao.js: envia a planilha, mostra a prévia e confirma a importação.
+// O mesmo arquivo serve ao Joomla, ao Laravel e ao PHP puro: as URLs vêm do formulário
+// (data-previa e data-confirmar) e o token CSRF é um campo escondido dele.
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('form-importacao');
+
+    if (!form) {
+        return;
+    }
+
+    var saida = document.getElementById('resultado-importacao');
+    var confirmar = document.getElementById('confirmar-importacao');
+
+    function enviar(url, dados) {
+        return fetch(url, {
+            method: 'POST',
+            body: dados,
+            credentials: 'same-origin',
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+        }).then(function (resposta) {
+            return resposta.json().then(function (json) {
+                if (!resposta.ok) {
+                    throw new Error(json.mensagem || json.message || 'Erro ' + resposta.status);
+                }
+
+                return json;
+            });
+        });
+    }
+
+    // textContent: o texto vindo do servidor (e da planilha) nunca vira HTML.
+    function paragrafo(texto) {
+        var p = document.createElement('p');
+        p.textContent = texto;
+
+        return p;
+    }
+
+    function previa(json) {
+        var tabela = document.createElement('table');
+        var cabecalho = tabela.insertRow();
+
+        json.colunas.forEach(function (coluna) {
+            var th = document.createElement('th');
+            th.textContent = coluna;
+            cabecalho.appendChild(th);
+        });
+
+        json.previa.forEach(function (linha) {
+            var tr = tabela.insertRow();
+
+            json.colunas.forEach(function (coluna) {
+                tr.insertCell().textContent = linha.dados[coluna] === null ? '' : linha.dados[coluna];
+            });
+        });
+
+        return tabela;
+    }
+
+    form.addEventListener('submit', function (evento) {
+        evento.preventDefault();
+        confirmar.hidden = true;
+        saida.replaceChildren(paragrafo('Enviando a planilha…'));
+
+        enviar(form.dataset.previa, new FormData(form)).then(function (json) {
+            saida.replaceChildren(paragrafo(json.mensagem || json.message), previa(json));
+            confirmar.hidden = false;
+        }).catch(function (erro) {
+            saida.replaceChildren(paragrafo(erro.message));
+        });
+    });
+
+    confirmar.addEventListener('click', function () {
+        var dados = new FormData(form);
+        dados.delete('planilha');   // o servidor usa a planilha guardada na sessão
+        confirmar.hidden = true;
+        saida.replaceChildren(paragrafo('Importando…'));
+
+        enviar(form.dataset.confirmar, dados).then(function (json) {
+            // Joomla devolve novos/atualizados; Laravel e PHP puro, gravadas.
+            var gravadas = json.gravadas !== undefined ? json.gravadas : json.novos + json.atualizados;
+            var itens = [paragrafo(json.linhas + ' linhas · ' + gravadas + ' gravadas · ' + json.rejeitadas + ' recusadas')];
+
+            json.erros.forEach(function (erro) {
+                itens.push(paragrafo('Linha ' + erro.line + ': ' + erro.message));
+            });
+
+            if (json.download_rejeitados) {
+                var link = document.createElement('a');
+                link.href = json.download_rejeitados;
+                link.textContent = 'Baixar as linhas recusadas para corrigir e importar de novo';
+                itens.push(link);
+            }
+
+            saida.replaceChildren.apply(saida, itens);
+        }).catch(function (erro) {
+            saida.replaceChildren(paragrafo(erro.message));
+        });
+    });
+});
+</code></pre></div>
+<p>Respostas que a tela espera:</p>
+<div class="codigo"><div class="titulo-codigo">Passo 1: prévia (POST com a planilha)</div><pre><code data-lang="js">{
+    "mensagem": "Confira a prévia e confirme a importação.",
+    "colunas": ["nome", "email", "cpf", "cidade", "limite_credito"],
+    "previa": [
+        { "linha": 2, "dados": { "nome": "Ana Souza", "email": "ana@exemplo.com", "cpf": "29141777638", "cidade": "Curitiba", "limite_credito": "1500.5" } }
+    ]
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Passo 2: confirmação (planilha de 5 linhas, 3 com erro)</div><pre><code data-lang="js">{
+    "mensagem": "CSV processado com erros em algumas linhas.",
+    "linhas": 5,
+    "gravadas": 2,                     // no Joomla: "novos": 2, "atualizados": 0
+    "rejeitadas": 3,
+    "erros": [
+        { "line": 3, "message": "O campo E-mail deve conter um e-mail válido.", "data": { ... } },
+        { "line": 4, "message": "O campo CPF deve conter um CPF válido.", "data": { ... } },
+        { "line": 6, "message": "O campo Nome deve ter pelo menos 3 caracteres.", "data": { ... } }
+    ],
+    "download_rejeitados": "/clientes/rejeitados.php"
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">CSV de rejeitados (reimportable: as colunas originais + linha e erro)</div><pre><code data-lang="bash">nome;email;cpf;cidade;limite_credito;linha;erro
+"Bruno Lima";bruno-email-invalido;01152449303;"São Paulo";800;3;"O campo E-mail deve conter um e-mail válido."
+"Carla Dias";carla@exemplo.com;111.111.111-11;Curitiba;0;4;"O campo CPF deve conter um CPF válido."
+Ed;ed@exemplo.com;34167211017;Recife;10;6;"O campo Nome deve ter pelo menos 3 caracteres."
+</code></pre></div>
+<div class="nota dica"><p>A planilha pode ter cabeçalhos diferentes ("Nome completo", "E-mail", "Município", "Limite de crédito"), vir do Excel com BOM ou com <code>;</code>: o <code>CsvHelper</code> casa as colunas pelos apelidos de <code>columns</code> e detecta codificação e delimitador sozinho.</p></div>
+<h2 id="joomla" data-titulo="Joomla 3, 4, 5 e 6">Joomla 3, 4, 5 e 6</h2>
+<p>Um componente de administrador <code>com_clientes</code>. As classes usam só APIs com namespace que existem do Joomla 3.8 ao 6 (<code>Factory</code>, <code>BaseController</code>, <code>Session</code>, <code>Uri</code>), então o mesmo código roda nas quatro versões. A gravação da planilha usa o <code>CsvHelper::import()</code>, que grava direto na tabela pelo <code>OrmTables</code> (inserindo ou atualizando pelo CPF).</p>
+<div class="codigo"><div class="titulo-codigo">Estrutura</div><pre><code data-lang="bash">site/
+├── administrator/components/com_clientes/
+│   ├── helpers/                      ← os helpers (instalar.sh)
+│   ├── src/Service/ClientesArquivos.php
+│   ├── src/Controller/ArquivosController.php
+│   └── tmpl/importacao/default.php
+├── media/com_clientes/js/clientes-importacao.js
+├── images/clientes/{id}/             ← fotos (públicas)
+├── arquivos/                         ← privado: .htaccess "Require all denied"
+│   └── com_clientes/
+│       ├── importacoes/AAAA-MM/      ← planilhas recebidas
+│       ├── rejeitados/AAAA-MM/       ← CSV das linhas recusadas
+│       ├── documentos/AAAA/          ← PDFs dos clientes
+│       ├── checkpoints/              ← retomada da importação grande
+│       └── exportacoes/  backups/
+└── cli/
+    ├── clientes-bootstrap.php
+    ├── clientes-importar-grande.php
+    └── clientes-manutencao.php
+</code></pre></div>
+<h3>Tabela e pasta privada</h3>
+<div class="codigo"><div class="titulo-codigo">install.mysql.utf8.sql</div><pre><code data-lang="sql">CREATE TABLE `#__clientes` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(150) NOT NULL,
+    `email` VARCHAR(150) NOT NULL,
+    `cpf` CHAR(11) NOT NULL,
+    `cidade` VARCHAR(100) NULL,
+    `limite_credito` DECIMAL(10,2) NOT NULL DEFAULT 0,
+    `foto` VARCHAR(255) NULL,
+    `foto_miniatura` VARCHAR(255) NULL,
+    `documento` VARCHAR(255) NULL,
+    `criado_em` DATETIME NULL,
+    `atualizado_em` DATETIME NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_clientes_cpf` (`cpf`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+</code></pre></div>
+<p>A pasta privada fica dentro do site (os helpers só aceitam caminhos dentro de <code>JPATH_SITE</code>), por isso precisa ser bloqueada no servidor web:</p>
+<div class="codigo"><div class="titulo-codigo">Apache</div><pre><code data-lang="bash"># arquivos/.htaccess (Apache 2.4): nada desta pasta sai pela URL
+Require all denied
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Nginx</div><pre><code data-lang="bash"># Nginx: bloqueie a pasta privada no server {} do site
+location ^~ /arquivos/ {
+    deny all;
+}
+</code></pre></div>
+<div class="nota aviso"><p>Sem esse bloqueio, planilhas e documentos ficam acessíveis por quem souber o nome do arquivo. Os nomes são gerados com 32 caracteres aleatórios, mas isso não substitui o bloqueio.</p></div>
+<h3>Regras da planilha</h3>
+<p>Um serviço com as regras usadas pelo controller e pela linha de comando: pasta privada, colunas aceitas, validação e as opções do <code>import()</code>. Ele também carrega os helpers pelo <code>IncludeHelper</code>.</p>
+<div class="codigo"><div class="titulo-codigo">administrator/<wbr>components/<wbr>com_<wbr>clientes/<wbr>src/<wbr>Service/<wbr>ClientesArquivos.php</div><pre><code data-lang="php">&lt;?php
+// administrator/components/com_clientes/src/Service/ClientesArquivos.php
+// Regras da planilha de clientes; usadas pelo controller e pela CLI.
+
+namespace Acme\Component\Clientes\Administrator\Service;
+
+\defined('_JEXEC') or die;
+
+require_once JPATH_ADMINISTRATOR . '/components/com_clientes/helpers/IncludeHelper.php';
+
+\IncludeHelper::load(array('UploadMaster', 'CsvHelper', 'ExportHelper', 'FileHelper', 'ChunkUploadHelper', 'LogHelper'));
+
+class ClientesArquivos
+{
+    // Pasta privada: na raiz do site, bloqueada no .htaccess ("Require all denied").
+    const PRIVADO = 'arquivos/com_clientes';
+
+    // destino =&gt; apelidos aceitos no cabeçalho
+    const COLUNAS = array(
+        'nome' =&gt; array('nome', 'nome completo', 'cliente', 'razao social'),
+        'email' =&gt; array('email', 'e-mail', 'correio'),
+        'cpf' =&gt; array('cpf', 'documento', 'cpf/cnpj'),
+        'cidade' =&gt; array('cidade', 'municipio'),
+        'limite_credito' =&gt; array('limite', 'limite de credito', 'credito')
+    );
+
+    const OBRIGATORIAS = array('nome', 'email', 'cpf');
+
+    const REGRAS = array(
+        'nome' =&gt; 'required|min_length:3|max_length:150',
+        'email' =&gt; 'required|email',
+        'cpf' =&gt; 'required|cpf',
+        'cidade' =&gt; 'max_length:100',
+        'limite_credito' =&gt; 'numeric|min:0'
+    );
+
+    const LABELS = array('email' =&gt; 'E-mail', 'cpf' =&gt; 'CPF', 'limite_credito' =&gt; 'Limite de crédito');
+
+    // A tabela usa criado_em/atualizado_em no lugar de created_at/updated_at.
+    const ORM = array('createdAtColumn' =&gt; 'criado_em', 'updatedAtColumn' =&gt; 'atualizado_em');
+
+    public static function tabela()
+    {
+        return \OrmTables::table('#__clientes', self::ORM);
+    }
+
+    public static function configurar()
+    {
+        \CsvHelper::setBaseDirectory(self::PRIVADO);
+        \ChunkHelper::setBaseDirectory(self::PRIVADO);
+    }
+
+    // Opções do CsvHelper::import() para a tabela #__clientes.
+    public static function opcoesImportacao()
+    {
+        return array(
+            'columns' =&gt; self::COLUNAS,
+            'required_columns' =&gt; self::OBRIGATORIAS,
+            'types' =&gt; array('cpf' =&gt; 'string', 'limite_credito' =&gt; 'decimal'),
+            'rules' =&gt; self::REGRAS,
+            'labels' =&gt; self::LABELS,
+            'transform' =&gt; function (array $linha) {
+                $linha['cpf'] = preg_replace('/\D/', '', $linha['cpf']);   // grava só os dígitos
+
+                return $linha;
+            },
+            'mode' =&gt; 'upsert',
+            'unique_by' =&gt; 'cpf',
+            'orm' =&gt; self::ORM,                // preenche criado_em e atualizado_em
+            'chunk_size' =&gt; 500
+        );
+    }
+}
+</code></pre></div>
+<h3>Controller</h3>
+<p>Uma task por passo. Escritas exigem token (<code>Session::checkToken</code>) e permissão no componente; as respostas são JSON e terminam com <code>$app-&gt;close()</code>, para o Joomla não acrescentar o HTML do template.</p>
+<div class="codigo"><div class="titulo-codigo">administrator/<wbr>components/<wbr>com_<wbr>clientes/<wbr>src/<wbr>Controller/<wbr>ArquivosController.php</div><pre><code data-lang="php">&lt;?php
+// administrator/components/com_clientes/src/Controller/ArquivosController.php
+// Tarefas: index.php?option=com_clientes&amp;task=arquivos.importar (e as demais abaixo)
+
+namespace Acme\Component\Clientes\Administrator\Controller;
+
+\defined('_JEXEC') or die;
+
+use Acme\Component\Clientes\Administrator\Service\ClientesArquivos;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Controller\BaseController;
+use Joomla\CMS\Session\Session;
+
+class ArquivosController extends BaseController
+{
+    // Passo 1: recebe a planilha e devolve a prévia.
+    public function importar()
+    {
+        $this-&gt;exigir('core.create', 'post');
+        ClientesArquivos::configurar();
+
+        $arquivo = \UploadMaster::getFileFromInput('planilha');
+
+        if ($arquivo === null) {
+            $this-&gt;json(422, array('mensagem' =&gt; 'Escolha a planilha.'));
+        }
+
+        $envio = \UploadMaster::upload($arquivo, ClientesArquivos::PRIVADO . '/importacoes/' . date('Y-m'), null, array(
+            'allowed_extensions' =&gt; array('csv', 'txt'),
+            'max_size' =&gt; 20 * 1024 * 1024,
+            'prefix' =&gt; 'clientes'
+        ));
+
+        if (!$envio['success']) {
+            $this-&gt;json(422, array('mensagem' =&gt; $envio['mensagem']));
+        }
+
+        // Relativo à pasta privada (base do CsvHelper).
+        $planilha = substr($envio['data']['relative_path'], strlen(ClientesArquivos::PRIVADO) + 1);
+        $previa = \CsvHelper::preview($planilha, null, 5, array('columns' =&gt; ClientesArquivos::COLUNAS));
+        $faltando = $previa['success']
+            ? array_intersect(ClientesArquivos::OBRIGATORIAS, $previa['data']['missing_columns'])
+            : array();
+
+        if (!$previa['success'] || !empty($faltando)) {
+            \UploadMaster::delete($envio['data']['relative_path']);
+            $this-&gt;json(422, array(
+                'mensagem' =&gt; $previa['success'] ? 'Faltam colunas na planilha: ' . implode(', ', $faltando) . '.' : $previa['mensagem']
+            ));
+        }
+
+        // O passo 2 usa o arquivo guardado na sessão, nunca um caminho vindo do navegador.
+        Factory::getApplication()-&gt;setUserState('com_clientes.importacao', $planilha);
+
+        \LogHelper::upload('Planilha de clientes recebida.', array(
+            'arquivo' =&gt; $planilha,
+            'tamanho' =&gt; $envio['data']['size_formatted']
+        ));
+
+        $linhas = array();
+
+        foreach ($previa['data']['rows'] as $linha) {
+            $linhas[] = array('linha' =&gt; $linha['line'], 'dados' =&gt; $linha['converted']);
+        }
+
+        $this-&gt;json(200, array(
+            'mensagem' =&gt; 'Confira a prévia e confirme a importação.',
+            'colunas' =&gt; array_keys($previa['data']['matches']),
+            'previa' =&gt; $linhas
+        ));
+    }
+
+    // Passo 2: grava direto em #__clientes (insere ou atualiza pelo CPF).
+    public function confirmar()
+    {
+        $this-&gt;exigir('core.create', 'post');
+        ClientesArquivos::configurar();
+
+        $app = Factory::getApplication();
+        $planilha = $app-&gt;getUserState('com_clientes.importacao');
+        $app-&gt;setUserState('com_clientes.importacao', null);
+
+        if (!$planilha) {
+            $this-&gt;json(409, array('mensagem' =&gt; 'Envie a planilha antes de confirmar.'));
+        }
+
+        $resultado = \CsvHelper::import($planilha, '#__clientes', null, ClientesArquivos::opcoesImportacao());
+        $relatorio = $resultado['data'];
+
+        if (empty($relatorio['total_rows']) &amp;&amp; !$resultado['success']) {
+            $this-&gt;json(422, array('mensagem' =&gt; $resultado['mensagem']));
+        }
+
+        $resposta = array(
+            'mensagem' =&gt; $resultado['mensagem'],
+            'linhas' =&gt; $relatorio['total_rows'],
+            'novos' =&gt; $relatorio['inserted_rows'],
+            'atualizados' =&gt; $relatorio['updated_rows'],
+            'rejeitadas' =&gt; $relatorio['errors_count'],
+            'erros' =&gt; array_slice($relatorio['errors'], 0, 20)
+        );
+
+        if ($relatorio['errors_count'] &gt; 0) {
+            $rejeitados = \CsvHelper::writeRejectedCsv(
+                'rejeitados/' . date('Y-m') . '/' . \ExportHelper::temporaryFileName('clientes-rejeitados'),
+                $relatorio['errors'],
+                null,
+                array('reimportable' =&gt; true)
+            );
+
+            if ($rejeitados['success']) {
+                $app-&gt;setUserState('com_clientes.rejeitados', ClientesArquivos::PRIVADO . '/' . $rejeitados['data']['relative_path']);
+                $resposta['download_rejeitados'] = 'index.php?option=com_clientes&amp;task=arquivos.rejeitados';
+            }
+        }
+
+        \LogHelper::info('Importação de clientes concluída.', 'clientes', array(
+            'arquivo' =&gt; $planilha,
+            'novos' =&gt; $relatorio['inserted_rows'],
+            'atualizados' =&gt; $relatorio['updated_rows'],
+            'rejeitadas' =&gt; $relatorio['errors_count']
+        ));
+
+        $this-&gt;json(200, $resposta);
+    }
+
+    // Passo 3: baixa o CSV das linhas recusadas.
+    public function rejeitados()
+    {
+        $this-&gt;exigir('core.create');
+
+        $arquivo = Factory::getApplication()-&gt;getUserState('com_clientes.rejeitados');
+
+        if (!$arquivo || !\UploadMaster::exists($arquivo)) {
+            $this-&gt;json(404, array('mensagem' =&gt; 'Nenhuma planilha de rejeitados disponível.'));
+        }
+
+        \UploadMaster::stream($arquivo, 'clientes-para-corrigir.csv');   // encerra com $app-&gt;close()
+    }
+
+    // index.php?option=com_clientes&amp;task=arquivos.exportar&amp;cidade=Curitiba
+    public function exportar()
+    {
+        $this-&gt;exigir('core.manage');
+
+        $app = Factory::getApplication();
+        $db = method_exists('Joomla\\CMS\\Factory', 'getContainer')
+            ? Factory::getContainer()-&gt;get('Joomla\\Database\\DatabaseInterface')
+            : Factory::getDbo();
+
+        $query = $db-&gt;getQuery(true)
+            -&gt;select($db-&gt;quoteName(array('id', 'nome', 'email', 'cpf', 'cidade', 'limite_credito', 'criado_em')))
+            -&gt;from($db-&gt;quoteName('#__clientes'))
+            -&gt;order($db-&gt;quoteName('id'));   // ordem estável: o gerador lê em lotes
+
+        $cidade = $this-&gt;input-&gt;getString('cidade');
+
+        if ($cidade !== '') {
+            $query-&gt;where($db-&gt;quoteName('cidade') . ' = ' . $db-&gt;quote($cidade));
+        }
+
+        \LogHelper::info('Exportação de clientes.', 'clientes', array('cidade' =&gt; $cidade));
+
+        \ExportHelper::download('clientes-' . date('Y-m-d') . '.csv', \ExportHelper::generatorFromQuery($query), array(
+            'id' =&gt; 'Código',
+            'nome' =&gt; 'Nome',
+            'email' =&gt; 'E-mail',
+            'cpf' =&gt; array('label' =&gt; 'CPF', 'callback' =&gt; function ($linha) {
+                return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $linha['cpf']);
+            }),
+            'cidade' =&gt; 'Cidade',
+            'limite_credito' =&gt; array('label' =&gt; 'Limite (R$)', 'callback' =&gt; function ($linha) {
+                return number_format((float) $linha['limite_credito'], 2, ',', '.');
+            }),
+            'criado_em' =&gt; 'Cadastrado em (UTC)'
+        ), array('utf8_bom' =&gt; true));
+
+        $app-&gt;close();   // sem isto, o Joomla acrescenta o HTML do template ao arquivo
+    }
+
+    // Foto pública em images/clientes/{id}, com miniatura.
+    public function foto()
+    {
+        $this-&gt;exigir('core.edit', 'post');
+
+        $id = $this-&gt;input-&gt;getInt('id');
+        $cliente = ClientesArquivos::tabela()-&gt;find($id);
+
+        if (!$cliente) {
+            $this-&gt;json(404, array('mensagem' =&gt; 'Cliente não encontrado.'));
+        }
+
+        $arquivo = \UploadMaster::getFileFromInput('foto');
+
+        if ($arquivo === null) {
+            $this-&gt;json(422, array('mensagem' =&gt; 'Escolha a foto.'));
+        }
+
+        $pasta = 'images/clientes/' . $id;
+
+        $foto = \UploadMaster::upload($arquivo, $pasta, null, array(
+            'allowed_extensions' =&gt; array('jpg', 'jpeg', 'png', 'webp'),
+            'max_size' =&gt; 5 * 1024 * 1024,
+            'prefix' =&gt; 'foto',
+            'reencode_images' =&gt; true    // tira EXIF/GPS e corrige a rotação
+        ));
+
+        if (!$foto['success']) {
+            $this-&gt;json(422, array('mensagem' =&gt; $foto['mensagem']));
+        }
+
+        $miniatura = \UploadMaster::thumbnail($foto['data']['relative_path'], $pasta . '/miniaturas', 300, 300, array(
+            'crop' =&gt; true,
+            'format' =&gt; 'webp',
+            'quality' =&gt; 85
+        ));
+
+        if (!$miniatura['success']) {
+            \UploadMaster::delete($foto['data']['relative_path']);
+            $this-&gt;json(422, array('mensagem' =&gt; $miniatura['mensagem']));
+        }
+
+        ClientesArquivos::tabela()-&gt;update($id, array(
+            'foto' =&gt; $foto['data']['relative_path'],
+            'foto_miniatura' =&gt; $miniatura['data']['relative_path']
+        ));
+
+        foreach (array($cliente-&gt;foto, $cliente-&gt;foto_miniatura) as $antiga) {
+            if ($antiga) {
+                \UploadMaster::delete($antiga);
+            }
+        }
+
+        \LogHelper::upload('Foto do cliente atualizada.', array('cliente_id' =&gt; $id));
+
+        $this-&gt;json(200, array(
+            'mensagem' =&gt; 'Foto atualizada.',
+            'foto' =&gt; \UploadMaster::publicData($foto['data']),
+            'miniatura' =&gt; $miniatura['data']['url']
+        ));
+    }
+
+    // POST: salva o PDF na pasta privada · GET: entrega o PDF (só por aqui).
+    public function documento()
+    {
+        $app = Factory::getApplication();
+        $id = $this-&gt;input-&gt;getInt('id');
+        $cliente = ClientesArquivos::tabela()-&gt;find($id);
+
+        if ($this-&gt;input-&gt;getMethod() === 'GET') {
+            $this-&gt;exigir('core.manage');
+
+            if (!$cliente || !$cliente-&gt;documento || !\UploadMaster::exists($cliente-&gt;documento)) {
+                $this-&gt;json(404, array('mensagem' =&gt; 'Este cliente não tem documento.'));
+            }
+
+            \LogHelper::audit('Documento do cliente baixado.', array('cliente_id' =&gt; $id));
+            \UploadMaster::stream($cliente-&gt;documento, 'documento-cliente-' . $id . '.pdf', array('inline' =&gt; true));
+        }
+
+        $this-&gt;exigir('core.edit', 'post');
+
+        if (!$cliente) {
+            $this-&gt;json(404, array('mensagem' =&gt; 'Cliente não encontrado.'));
+        }
+
+        $arquivo = \UploadMaster::getFileFromInput('documento');
+
+        if ($arquivo === null) {
+            $this-&gt;json(422, array('mensagem' =&gt; 'Escolha o documento em PDF.'));
+        }
+
+        $documento = \UploadMaster::upload($arquivo, ClientesArquivos::PRIVADO . '/documentos/' . date('Y'), null, array(
+            'allowed_extensions' =&gt; array('pdf'),
+            'max_size' =&gt; 10 * 1024 * 1024,
+            'prefix' =&gt; 'cliente-' . $id
+        ));
+
+        if (!$documento['success']) {
+            $this-&gt;json(422, array('mensagem' =&gt; $documento['mensagem']));
+        }
+
+        ClientesArquivos::tabela()-&gt;update($id, array('documento' =&gt; $documento['data']['relative_path']));
+
+        if ($cliente-&gt;documento) {
+            \UploadMaster::delete($cliente-&gt;documento);
+        }
+
+        $this-&gt;json(200, array(
+            'mensagem' =&gt; 'Documento salvo.',
+            'download' =&gt; 'index.php?option=com_clientes&amp;task=arquivos.documento&amp;id=' . $id
+        ));
+    }
+
+    // Token CSRF (POST) e permissão do usuário no componente.
+    private function exigir($acao, $metodo = null)
+    {
+        $app = Factory::getApplication();
+
+        if ($metodo === 'post' &amp;&amp; !Session::checkToken('post')) {
+            \LogHelper::security('Requisição sem token CSRF válido.', array('task' =&gt; $this-&gt;input-&gt;get('task')));
+            $this-&gt;json(403, array('mensagem' =&gt; 'Sessão expirada. Recarregue a página.'));
+        }
+
+        $usuario = method_exists($app, 'getIdentity') &amp;&amp; $app-&gt;getIdentity() ? $app-&gt;getIdentity() : Factory::getUser();
+
+        if (!$usuario-&gt;authorise($acao, 'com_clientes')) {
+            $this-&gt;json(403, array('mensagem' =&gt; 'Você não tem permissão para esta ação.'));
+        }
+    }
+
+    private function json($status, array $dados)
+    {
+        $app = Factory::getApplication();
+        $app-&gt;setHeader('status', $status, true);
+        $app-&gt;setHeader('Content-Type', 'application/json; charset=utf-8', true);
+        $app-&gt;sendHeaders();
+        echo json_encode($dados, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $app-&gt;close();
+    }
+}
+</code></pre></div>
+<h3>Tela</h3>
+<div class="codigo"><div class="titulo-codigo">administrator/<wbr>components/<wbr>com_<wbr>clientes/<wbr>tmpl/<wbr>importacao/<wbr>default.php</div><pre><code data-lang="php">&lt;?php
+// administrator/components/com_clientes/tmpl/importacao/default.php (Joomla 3: views/importacao/tmpl/default.php)
+\defined('_JEXEC') or die;
+
+use Joomla\CMS\Session\Session;
+use Joomla\CMS\Uri\Uri;
+?&gt;
+&lt;script src="&lt;?php echo Uri::root(true); ?&gt;/media/com_clientes/js/clientes-importacao.js" defer&gt;&lt;/script&gt;
+
+&lt;h1&gt;Importar clientes&lt;/h1&gt;
+
+&lt;form id="form-importacao"
+      data-previa="index.php?option=com_clientes&amp;amp;task=arquivos.importar"
+      data-confirmar="index.php?option=com_clientes&amp;amp;task=arquivos.confirmar"&gt;
+    &lt;input type="hidden" name="&lt;?php echo Session::getFormToken(); ?&gt;" value="1"&gt;
+    &lt;input type="file" name="planilha" accept=".csv,.txt" required&gt;
+    &lt;button type="submit" class="btn btn-primary"&gt;Ver prévia&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;div id="resultado-importacao" aria-live="polite"&gt;&lt;/div&gt;
+&lt;button type="button" id="confirmar-importacao" class="btn btn-success" hidden&gt;Confirmar importação&lt;/button&gt;
+
+&lt;p&gt;&lt;a href="index.php?option=com_clientes&amp;amp;task=arquivos.exportar"&gt;Exportar todos os clientes (CSV)&lt;/a&gt;&lt;/p&gt;
+</code></pre></div>
+<h3>Linha de comando</h3>
+<p>Os scripts ligam o Joomla do mesmo jeito que o <code>cli/joomla.php</code> oficial (no Joomla 3, com <code>JApplicationCli</code>) e depois usam os helpers normalmente.</p>
+<div class="codigo"><div class="titulo-codigo">cli/<wbr>clientes-bootstrap.php</div><pre><code data-lang="php">&lt;?php
+// cli/clientes-bootstrap.php: liga o Joomla (3, 4, 5 ou 6) para os scripts de linha de comando.
+
+if (PHP_SAPI !== 'cli') {
+    exit(1);
+}
+
+define('_JEXEC', 1);
+define('JPATH_BASE', dirname(__DIR__));
+
+require_once JPATH_BASE . '/includes/defines.php';
+require_once JPATH_BASE . '/includes/framework.php';
+
+if (class_exists('Joomla\\Console\\Application')) {
+    // Joomla 4, 5 e 6: o mesmo que o cli/joomla.php faz.
+    $container = Joomla\CMS\Factory::getContainer();
+    $container-&gt;alias('session', 'session.cli')
+        -&gt;alias('JSession', 'session.cli')
+        -&gt;alias('Joomla\\CMS\\Session\\Session', 'session.cli')
+        -&gt;alias('Joomla\\Session\\Session', 'session.cli')
+        -&gt;alias('Joomla\\Session\\SessionInterface', 'session.cli');
+    Joomla\CMS\Factory::$application = $container-&gt;get('Joomla\\Console\\Application');
+} else {
+    // Joomla 3
+    class ClientesCli extends JApplicationCli
+    {
+        public function doExecute()
+        {
+        }
+    }
+
+    JFactory::$application = JApplicationCli::getInstance('ClientesCli');
+}
+
+require_once JPATH_ADMINISTRATOR . '/components/com_clientes/src/Service/ClientesArquivos.php';
+
+Acme\Component\Clientes\Administrator\Service\ClientesArquivos::configurar();
+</code></pre></div>
+<p><strong>Planilha gigante.</strong> O <code>ChunkHelper</code> lê o arquivo em lotes de 1.000 linhas e grava a posição exata num checkpoint depois de cada lote. O callback devolve <code>stop =&gt; true</code> perto de 50 s; o próximo cron chama <code>resumeLines()</code> e continua da linha seguinte, sem repetir nem pular nenhuma.</p>
+<div class="codigo"><div class="titulo-codigo">cli/<wbr>clientes-importar-grande.php</div><pre><code data-lang="php">&lt;?php
+// cli/clientes-importar-grande.php importacoes/base-completa.csv [segundos]
+// Planilhas de milhões de linhas: fatias de até 50 s, continuando de onde parou.
+// Cron: * * * * * php /var/www/site/cli/clientes-importar-grande.php importacoes/base-completa.csv
+require __DIR__ . '/clientes-bootstrap.php';
+
+use Acme\Component\Clientes\Administrator\Service\ClientesArquivos;
+
+$arquivo = isset($argv[1]) ? $argv[1] : '';                   // relativo a arquivos/com_clientes
+$segundos = isset($argv[2]) ? (int) $argv[2] : 50;
+$checkpoint = 'checkpoints/' . md5($arquivo) . '.json';
+$inicio = microtime(true);
+$colunas = array('nome', 'email', 'cpf', 'cidade', 'limite_credito');   // ordem das colunas no arquivo
+
+$info = ChunkHelper::info($arquivo);
+
+if (!$info['success']) {
+    fwrite(STDERR, $info['mensagem'] . PHP_EOL);
+    exit(1);
+}
+
+$processar = function (array $linhas, array $status) use ($colunas, $inicio, $segundos) {
+    $validas = array();
+
+    foreach ($linhas as $linha) {
+        if ($linha['line'] === 1 || trim($linha['value']) === '') {
+            continue;                                              // cabeçalho e linhas vazias
+        }
+
+        $valores = array_pad(array_slice(str_getcsv($linha['value'], ';'), 0, 5), 5, null);
+        $dados = array_combine($colunas, $valores);
+        $dados['limite_credito'] = str_replace(array('.', ','), array('', '.'), (string) $dados['limite_credito']);
+        $dados['cpf'] = preg_replace('/\D/', '', (string) $dados['cpf']);
+
+        $validacao = ValidationHelper::validate($dados, ClientesArquivos::REGRAS, array(), ClientesArquivos::LABELS);
+
+        if (!$validacao['valid']) {
+            LogHelper::warning('Linha recusada na importação grande.', 'clientes', array(
+                'linha' =&gt; $linha['line'],
+                'erro' =&gt; $validacao['first_error']
+            ));
+
+            continue;
+        }
+
+        $validas[] = $dados;
+    }
+
+    // Um lote por transação; erro de banco desfaz só este lote.
+    try {
+        DbTransactionHelper::run(function () use ($validas) {
+            foreach ($validas as $dados) {
+                ClientesArquivos::tabela()-&gt;updateOrCreate(array('cpf' =&gt; $dados['cpf']), $dados);
+            }
+        });
+    } catch (Throwable $erro) {
+        LogHelper::exception($erro, 'clientes');
+
+        return array('stop' =&gt; true);                              // tenta de novo no próximo cron
+    }
+
+    echo sprintf("linha %d · %s%%\n", $status['line_number'], $status['percentual']);
+
+    return array('stop' =&gt; microtime(true) - $inicio &gt; $segundos);
+};
+
+$opcoes = array('rows_per_chunk' =&gt; 1000, 'checkpoint_path' =&gt; $checkpoint);
+
+$resultado = FileHelper::exists(ClientesArquivos::PRIVADO . '/' . $checkpoint)
+    ? ChunkHelper::resumeLines($arquivo, $checkpoint, $processar, null, $opcoes)
+    : ChunkHelper::readLines($arquivo, $processar, null, $opcoes);
+
+if (!$resultado['success']) {
+    LogHelper::error('Importação grande falhou.', 'clientes', array('arquivo' =&gt; $arquivo, 'erro' =&gt; $resultado['mensagem']));
+    fwrite(STDERR, $resultado['mensagem'] . PHP_EOL);
+    exit(1);
+}
+
+if (!$resultado['data']['completed']) {
+    echo "Pausada em {$resultado['data']['percentual']}%: o próximo cron continua.\n";
+    exit(0);
+}
+
+ChunkHelper::deleteCheckpoint($checkpoint);
+LogHelper::info('Importação grande concluída.', 'clientes', array(
+    'arquivo' =&gt; $arquivo,
+    'linhas' =&gt; $resultado['data']['line_number'],
+    'tamanho' =&gt; $info['data']['size_formatted']
+));
+echo "Concluída.\n";
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Saída (planilha de 25.002 linhas)</div><pre><code data-lang="bash"># Com 0 segundos, pausa a cada lote: útil para ver a retomada funcionando.
+$ php cli/clientes-importar-grande.php importacoes/base-completa.csv 0
+linha 1000 · 3.7933%
+Pausada em 3.7933%: o próximo cron continua.
+$ php cli/clientes-importar-grande.php importacoes/base-completa.csv 0
+linha 2000 · 7.7274%
+Pausada em 7.7274%: o próximo cron continua.
+
+# No cron (50 s por execução), estas 25 mil linhas terminam numa execução só:
+$ php cli/clientes-importar-grande.php importacoes/base-completa.csv
+linha 3000 · 11.6615%
+...
+linha 25002 · 100%
+Concluída.
+</code></pre></div>
+<p><strong>Manutenção diária.</strong> Fotografia da tabela em CSV, backup em ZIP com os documentos do ano e limpeza do que venceu.</p>
+<div class="codigo"><div class="titulo-codigo">cli/<wbr>clientes-manutencao.php</div><pre><code data-lang="php">&lt;?php
+// cli/clientes-manutencao.php: todo dia às 3h. Fotografa a tabela em CSV, compacta e limpa o que venceu.
+// Cron: 0 3 * * * php /var/www/site/cli/clientes-manutencao.php
+require __DIR__ . '/clientes-bootstrap.php';
+
+use Acme\Component\Clientes\Administrator\Service\ClientesArquivos;
+
+$base = ClientesArquivos::PRIVADO;
+$dia = date('Y-m-d');
+
+// 1. Fotografia diária da tabela (consulta em texto ou objeto de query do Joomla).
+$exportacao = ExportHelper::fromQuery(
+    'exportacoes/clientes-' . $dia . '.csv',
+    'SELECT id, nome, email, cpf, cidade, limite_credito, criado_em FROM #__clientes ORDER BY id',
+    array('id', 'nome', 'email', 'cpf', 'cidade', 'limite_credito', 'criado_em'),
+    $base
+);
+
+// 2. Backup: o CSV do dia e os documentos do ano num ZIP só.
+$arquivos = $exportacao['success'] ? array($exportacao['data']['file']['relative_path']) : array();
+$documentos = FileHelper::listFiles('documentos/' . date('Y'), $base, array('recursive' =&gt; true, 'filter' =&gt; '\.pdf$'));
+
+foreach ($documentos['success'] ? $documentos['data']['files'] : array() as $documento) {
+    $arquivos[] = $documento['relative_path'];
+}
+
+$zip = FileHelper::createZip('backups/backup-' . $dia . '.zip', $arquivos, $base, array('overwrite' =&gt; true));
+
+// 3. Limpeza: planilhas &gt; 30 dias, rejeitados &gt; 7, exportações e backups &gt; 15.
+$removidos = 0;
+$regras = array(
+    array('importacoes', 30, array('recursive' =&gt; true)),
+    array('rejeitados', 7, array('recursive' =&gt; true)),
+    array('exportacoes', 15, array()),
+    array('backups', 15, array('filter' =&gt; '\.zip$'))
+);
+
+foreach ($regras as $regra) {
+    $limpeza = FileHelper::cleanOlderThan($regra[0], $regra[1], $base, $regra[2]);
+    $removidos += $limpeza['success'] ? $limpeza['data']['deleted_count'] : 0;
+}
+
+// Pastas de mês que ficaram vazias (o index.html criado pelos helpers não conta).
+foreach (array('importacoes', 'rejeitados') as $pasta) {
+    $meses = FileHelper::listDirectories($pasta, $base);
+
+    foreach ($meses['success'] ? $meses['data']['directories'] : array() as $mes) {
+        UploadMaster::removeEmptyDirectories($base . '/' . $mes['relative_path'], array('stop_at_directory' =&gt; $base . '/' . $pasta));
+    }
+}
+
+LogHelper::info('Manutenção diária concluída.', 'manutencao', array(
+    'exportacao' =&gt; $exportacao['success'] ? $exportacao['data']['export']['rows_written'] . ' linhas' : $exportacao['mensagem'],
+    'backup' =&gt; $zip['success'] ? $zip['data']['added_count'] . ' arquivos' : $zip['mensagem'],
+    'arquivos_removidos' =&gt; $removidos
+));
+
+echo ($zip['success'] ? 'Backup: ' . $zip['data']['added_count'] . ' arquivos' : 'Falha no backup: ' . $zip['mensagem']) .
+    " · removidos: {$removidos}\n";
+
+exit($exportacao['success'] &amp;&amp; $zip['success'] ? 0 : 1);
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Agendamento</div><pre><code data-lang="bash"># crontab -e (usuário do servidor web)
+* * * * * php /var/www/site/cli/clientes-importar-grande.php importacoes/base-completa.csv &gt;&gt; /var/www/site/administrator/logs/cron.log 2&gt;&amp;1
+0 3 * * * php /var/www/site/cli/clientes-manutencao.php
+</code></pre></div>
+<h3>Joomla 3</h3>
+<p>No Joomla 3, o componente não usa namespace nem <code>src/</code>: o controller fica em <code>controllers/arquivos.php</code> e a tela em <code>views/importacao/tmpl/default.php</code>. O corpo dos métodos é o mesmo.</p>
+<div class="codigo"><div class="titulo-codigo">administrator/<wbr>components/<wbr>com_<wbr>clientes/<wbr>controllers/<wbr>arquivos.php</div><pre><code data-lang="php">&lt;?php
+// Joomla 3: administrator/components/com_clientes/controllers/arquivos.php
+// Mesmo corpo do ArquivosController acima; muda só o nome da classe e o carregamento.
+defined('_JEXEC') or die;
+
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/src/Service/ClientesArquivos.php';
+
+use Acme\Component\Clientes\Administrator\Service\ClientesArquivos;
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Controller\BaseController;   // existe desde o Joomla 3.8
+use Joomla\CMS\Session\Session;
+
+class ClientesControllerArquivos extends BaseController
+{
+    // importar(), confirmar(), rejeitados(), exportar(), foto(), documento(),
+    // exigir() e json(): copie do ArquivosController sem mudar nada.
+}
+</code></pre></div>
+<h2 id="laravel" data-titulo="Laravel">Laravel</h2>
+<p>Os helpers entram pelo <code>composer.json</code> e chamam a raiz de <code>base_path()</code>, os logs de <code>storage/logs</code> e o usuário de <code>auth()</code> sem configuração. A planilha é gravada pelo <code>CsvHelper::process()</code> com <code>upsert</code> do Query Builder, e os downloads usam as respostas do próprio Laravel (<code>response()-&gt;download()</code> e <code>response()-&gt;file()</code>), que respeitam sessão e middlewares.</p>
+<div class="codigo"><div class="titulo-codigo">Estrutura</div><pre><code data-lang="bash">app/
+├── Console/Commands/ImportarClientesGrande.php
+├── Console/Commands/ManutencaoArquivos.php
+├── Http/Controllers/ClienteArquivosController.php
+├── Models/Cliente.php
+├── Providers/AppServiceProvider.php
+└── Services/ImportadorClientes.php
+helpers/                              ← os helpers (instalar.sh), carregados pelo composer.json
+public/js/clientes-importacao.js
+resources/views/clientes/importacao.blade.php
+routes/web.php  routes/console.php
+storage/app/private/                  ← disco "local": planilhas, rejeitados, documentos, checkpoints, backups
+storage/app/public/clientes/{id}/     ← fotos (URL /storage/... depois do storage:link)
+</code></pre></div>
+<h3>Instalação</h3>
+<div class="codigo"><div class="titulo-codigo">composer.json (trecho)</div><pre><code data-lang="js">{
+    "autoload": {
+        "files": [
+            "helpers/LogHelper.php",
+            "helpers/FileHelper.php",
+            "helpers/UploadMaster.php",
+            "helpers/CsvHelper.php",
+            "helpers/ExportHelper.php",
+            "helpers/ChunkUploadHelper.php",
+            "helpers/ValidationHelper.php"
+        ]
+    }
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Terminal</div><pre><code data-lang="bash">composer dump-autoload        # depois de incluir os helpers em "autoload.files"
+php artisan migrate
+php artisan storage:link      # /storage → storage/app/public (fotos com URL)
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Providers/<wbr>AppServiceProvider.php</div><pre><code data-lang="php">&lt;?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        //
+    }
+
+    public function boot(): void
+    {
+        // Planilhas, rejeitados e checkpoints ficam no disco "local" (fora da web).
+        \CsvHelper::setBaseDirectory('storage/app/private');
+        \ChunkHelper::setBaseDirectory('storage/app/private');
+
+        // O LogHelper já grava em storage/logs e pega o usuário de auth()-&gt;id().
+    }
+}
+</code></pre></div>
+<h3>Tabela e model</h3>
+<div class="codigo"><div class="titulo-codigo">database/<wbr>migrations/<wbr>2026_<wbr>10_<wbr>25_<wbr>000000_<wbr>create_<wbr>clientes_<wbr>table.php</div><pre><code data-lang="php">&lt;?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('clientes', function (Blueprint $table) {
+            $table-&gt;id();
+            $table-&gt;string('nome', 150);
+            $table-&gt;string('email', 150);
+            $table-&gt;string('cpf', 11)-&gt;unique();
+            $table-&gt;string('cidade', 100)-&gt;nullable();
+            $table-&gt;decimal('limite_credito', 10, 2)-&gt;default(0);
+            $table-&gt;string('foto')-&gt;nullable();
+            $table-&gt;string('foto_miniatura')-&gt;nullable();
+            $table-&gt;string('documento')-&gt;nullable();
+            $table-&gt;timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('clientes');
+    }
+};
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Models/<wbr>Cliente.php</div><pre><code data-lang="php">&lt;?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Cliente extends Model
+{
+    protected $fillable = ['nome', 'email', 'cpf', 'cidade', 'limite_credito', 'foto', 'foto_miniatura', 'documento'];
+
+    protected $hidden = ['documento'];
+
+    protected function casts(): array
+    {
+        return ['limite_credito' =&gt; 'decimal:2'];
+    }
+}
+</code></pre></div>
+<h3>Regras da planilha</h3>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Services/<wbr>ImportadorClientes.php</div><pre><code data-lang="php">&lt;?php
+
+namespace App\Services;
+
+use Illuminate\Support\Facades\DB;
+
+// Regras da planilha de clientes e gravação em lote; usado pelo controller e pelo comando Artisan.
+class ImportadorClientes
+{
+    // destino =&gt; apelidos aceitos no cabeçalho (o CsvHelper casa por aproximação)
+    public const COLUNAS = [
+        'nome' =&gt; ['nome', 'nome completo', 'cliente', 'razao social'],
+        'email' =&gt; ['email', 'e-mail', 'correio'],
+        'cpf' =&gt; ['cpf', 'documento', 'cpf/cnpj'],
+        'cidade' =&gt; ['cidade', 'municipio'],
+        'limite_credito' =&gt; ['limite', 'limite de credito', 'credito'],
+    ];
+
+    public const OBRIGATORIAS = ['nome', 'email', 'cpf'];
+
+    // Mesmas regras do ValidationHelper (iguais às do Vigia.js no navegador)
+    public const REGRAS = [
+        'nome' =&gt; 'required|min_length:3|max_length:150',
+        'email' =&gt; 'required|email',
+        'cpf' =&gt; 'required|cpf',
+        'cidade' =&gt; 'max_length:100',
+        'limite_credito' =&gt; 'numeric|min:0',
+    ];
+
+    public const LABELS = ['email' =&gt; 'E-mail', 'cpf' =&gt; 'CPF', 'limite_credito' =&gt; 'Limite de crédito'];
+
+    public function opcoes(): array
+    {
+        return [
+            'columns' =&gt; self::COLUNAS,
+            'required_columns' =&gt; self::OBRIGATORIAS,
+            'types' =&gt; ['cpf' =&gt; 'string', 'limite_credito' =&gt; 'decimal'],
+            'convert' =&gt; true,
+            'rules' =&gt; self::REGRAS,
+            'labels' =&gt; self::LABELS,
+            'chunk_size' =&gt; 500,
+        ];
+    }
+
+    /*
+     * Grava um lote do CsvHelper::process(): insere ou atualiza pelo CPF
+     * numa transação. Devolver false marca as linhas do lote como erro
+     * no relatório (e no CSV de rejeitados).
+     */
+    public function salvarLote(array $lote): array|false
+    {
+        $agora = now();
+
+        $linhas = array_map(fn (array $item) =&gt; [
+            'nome' =&gt; $item['data']['nome'],
+            'email' =&gt; $item['data']['email'],
+            'cpf' =&gt; preg_replace('/\D/', '', $item['data']['cpf']),
+            'cidade' =&gt; $item['data']['cidade'] ?? null,
+            'limite_credito' =&gt; $item['data']['limite_credito'] ?? 0,
+            'created_at' =&gt; $agora,
+            'updated_at' =&gt; $agora,
+        ], $lote);
+
+        try {
+            DB::transaction(fn () =&gt; DB::table('clientes')-&gt;upsert(
+                $linhas,
+                ['cpf'],
+                ['nome', 'email', 'cidade', 'limite_credito', 'updated_at']
+            ));
+        } catch (\Throwable $erro) {
+            \LogHelper::database($erro, null, ['linhas' =&gt; count($linhas)]);
+
+            return false;
+        }
+
+        return ['success_rows' =&gt; count($linhas)];
+    }
+}
+</code></pre></div>
+<h3>Controller e rotas</h3>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Http/<wbr>Controllers/<wbr>ClienteArquivosController.php</div><pre><code data-lang="php">&lt;?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Cliente;
+use App\Services\ImportadorClientes;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+class ClienteArquivosController extends Controller
+{
+    // POST /clientes/importacao: recebe a planilha e devolve a prévia.
+    public function importar(Request $request): JsonResponse
+    {
+        $request-&gt;validate(['planilha' =&gt; ['required', 'file', 'max:20480']]);
+
+        $envio = \UploadMaster::upload(\UploadMaster::getFileFromInput('planilha'), 'storage/app/private/importacoes/' . date('Y-m'), null, [
+            'allowed_extensions' =&gt; ['csv', 'txt'],
+            'max_size' =&gt; 20 * 1024 * 1024,
+            'prefix' =&gt; 'clientes',
+        ]);
+
+        if (!$envio['success']) {
+            return response()-&gt;json(['message' =&gt; $envio['mensagem']], 422);
+        }
+
+        // Relativo a storage/app/private, a base do CsvHelper (AppServiceProvider).
+        $planilha = substr($envio['data']['relative_path'], strlen('storage/app/private/'));
+        $previa = \CsvHelper::preview($planilha, null, 5, ['columns' =&gt; ImportadorClientes::COLUNAS]);
+
+        $faltando = $previa['success']
+            ? array_intersect(ImportadorClientes::OBRIGATORIAS, $previa['data']['missing_columns'])
+            : [];
+
+        if (!$previa['success'] || $faltando) {
+            \UploadMaster::delete($envio['data']['relative_path']);
+
+            return response()-&gt;json([
+                'message' =&gt; $previa['success'] ? 'Faltam colunas na planilha: ' . implode(', ', $faltando) . '.' : $previa['mensagem'],
+            ], 422);
+        }
+
+        // O passo seguinte usa o arquivo da sessão, nunca um caminho vindo do navegador.
+        $request-&gt;session()-&gt;put('importacao_clientes', $planilha);
+
+        \LogHelper::upload('Planilha de clientes recebida.', [
+            'arquivo' =&gt; $planilha,
+            'tamanho' =&gt; $envio['data']['size_formatted'],
+        ]);
+
+        return response()-&gt;json([
+            'message' =&gt; 'Confira a prévia e confirme a importação.',
+            'colunas' =&gt; array_keys($previa['data']['matches']),
+            'previa' =&gt; collect($previa['data']['rows'])-&gt;map(fn ($linha) =&gt; [
+                'linha' =&gt; $linha['line'],
+                'dados' =&gt; $linha['converted'],
+            ]),
+        ]);
+    }
+
+    // POST /clientes/importacao/confirmar: grava as linhas válidas e separa as recusadas.
+    public function confirmar(Request $request, ImportadorClientes $importador): JsonResponse
+    {
+        $planilha = $request-&gt;session()-&gt;pull('importacao_clientes');
+
+        abort_if(!$planilha, 409, 'Envie a planilha antes de confirmar.');
+
+        $resultado = \CsvHelper::process($planilha, [$importador, 'salvarLote'], null, $importador-&gt;opcoes());
+        $relatorio = $resultado['data'];
+
+        if ($relatorio['total_rows'] === 0 &amp;&amp; !$resultado['success']) {
+            return response()-&gt;json(['message' =&gt; $resultado['mensagem']], 422);
+        }
+
+        $resposta = [
+            'message' =&gt; $resultado['mensagem'],
+            'linhas' =&gt; $relatorio['total_rows'],
+            'gravadas' =&gt; $relatorio['success_rows'],
+            'rejeitadas' =&gt; $relatorio['errors_count'],
+            'erros' =&gt; array_slice($relatorio['errors'], 0, 20),
+        ];
+
+        if ($relatorio['errors_count'] &gt; 0) {
+            $rejeitados = \CsvHelper::writeRejectedCsv(
+                'rejeitados/' . date('Y-m') . '/' . \ExportHelper::temporaryFileName('clientes-rejeitados'),
+                $relatorio['errors'],
+                null,
+                ['reimportable' =&gt; true]
+            );
+
+            if ($rejeitados['success']) {
+                $request-&gt;session()-&gt;put('rejeitados_clientes', $rejeitados['data']['path']);
+                $resposta['download_rejeitados'] = route('clientes.importacao.rejeitados');
+            }
+        }
+
+        \LogHelper::info('Importação de clientes concluída.', 'clientes', [
+            'arquivo' =&gt; $planilha,
+            'gravadas' =&gt; $relatorio['success_rows'],
+            'rejeitadas' =&gt; $relatorio['errors_count'],
+        ]);
+
+        return response()-&gt;json($resposta);
+    }
+
+    // GET /clientes/importacao/rejeitados
+    public function rejeitados(Request $request): BinaryFileResponse
+    {
+        $arquivo = $request-&gt;session()-&gt;get('rejeitados_clientes');
+
+        abort_if(!$arquivo || !is_file($arquivo), 404);
+
+        return response()-&gt;download($arquivo, 'clientes-para-corrigir.csv');
+    }
+
+    // GET /clientes/exportar?cidade=Curitiba
+    public function exportar(Request $request): BinaryFileResponse|JsonResponse
+    {
+        $consulta = Cliente::query()
+            -&gt;select('id', 'nome', 'email', 'cpf', 'cidade', 'limite_credito', 'created_at')
+            -&gt;when($request-&gt;filled('cidade'), fn ($q) =&gt; $q-&gt;where('cidade', $request-&gt;string('cidade')))
+            -&gt;orderBy('id');   // ordem estável: o gerador lê em lotes
+
+        // Gera o arquivo lendo em lotes de 1000 (não carrega a tabela na memória).
+        $exportacao = \ExportHelper::csv(
+            'exportacoes/' . \ExportHelper::temporaryFileName('clientes'),
+            \ExportHelper::generatorFromQuery($consulta, 1000),
+            [
+                'id' =&gt; 'Código',
+                'nome' =&gt; 'Nome',
+                'email' =&gt; 'E-mail',
+                'cpf' =&gt; ['label' =&gt; 'CPF', 'callback' =&gt; fn ($l) =&gt; preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $l['cpf'])],
+                'cidade' =&gt; 'Cidade',
+                'limite_credito' =&gt; ['label' =&gt; 'Limite (R$)', 'callback' =&gt; fn ($l) =&gt; number_format((float) $l['limite_credito'], 2, ',', '.')],
+                'created_at' =&gt; 'Cadastrado em (UTC)',
+            ],
+            'storage/app/private',
+            ['utf8_bom' =&gt; true]
+        );
+
+        if (!$exportacao['success']) {
+            return response()-&gt;json(['message' =&gt; $exportacao['mensagem']], 500);
+        }
+
+        \LogHelper::info('Exportação de clientes.', 'clientes', [
+            'filtros' =&gt; $request-&gt;only('cidade'),
+            'linhas' =&gt; $exportacao['data']['export']['rows_written'],
+        ]);
+
+        return response()
+            -&gt;download($exportacao['data']['file']['path'], 'clientes-' . date('Y-m-d') . '.csv', ['Content-Type' =&gt; 'text/csv; charset=UTF-8'])
+            -&gt;deleteFileAfterSend();
+    }
+
+    // POST /clientes/{cliente}/foto: foto pública (storage/app/public → /storage) com miniatura.
+    public function foto(Request $request, Cliente $cliente): JsonResponse
+    {
+        $request-&gt;validate(['foto' =&gt; ['required', 'file', 'max:5120']]);
+
+        $pasta = 'storage/app/public/clientes/' . $cliente-&gt;id;
+
+        $foto = \UploadMaster::upload(\UploadMaster::getFileFromInput('foto'), $pasta, null, [
+            'allowed_extensions' =&gt; ['jpg', 'jpeg', 'png', 'webp'],
+            'max_size' =&gt; 5 * 1024 * 1024,
+            'prefix' =&gt; 'foto',
+            'reencode_images' =&gt; true,   // tira EXIF/GPS e corrige a rotação
+        ]);
+
+        if (!$foto['success']) {
+            return response()-&gt;json(['message' =&gt; $foto['mensagem']], 422);
+        }
+
+        $miniatura = \UploadMaster::thumbnail($foto['data']['relative_path'], $pasta . '/miniaturas', 300, 300, [
+            'crop' =&gt; true,
+            'format' =&gt; 'webp',
+            'quality' =&gt; 85,
+        ]);
+
+        if (!$miniatura['success']) {
+            \UploadMaster::delete($foto['data']['relative_path']);
+
+            return response()-&gt;json(['message' =&gt; $miniatura['mensagem']], 422);
+        }
+
+        $antigas = array_filter([$cliente-&gt;foto, $cliente-&gt;foto_miniatura]);
+
+        $cliente-&gt;update([
+            'foto' =&gt; $foto['data']['relative_path'],
+            'foto_miniatura' =&gt; $miniatura['data']['relative_path'],
+        ]);
+
+        foreach ($antigas as $antiga) {
+            \UploadMaster::delete($antiga);
+        }
+
+        \LogHelper::upload('Foto do cliente atualizada.', ['cliente_id' =&gt; $cliente-&gt;id]);
+
+        return response()-&gt;json([
+            'message' =&gt; 'Foto atualizada.',
+            'foto' =&gt; \UploadMaster::publicData($foto['data']),   // url = APP_URL/storage/clientes/...
+            'miniatura' =&gt; $miniatura['data']['url'],
+        ]);
+    }
+
+    // POST /clientes/{cliente}/documento: PDF privado (sem URL).
+    public function salvarDocumento(Request $request, Cliente $cliente): JsonResponse
+    {
+        $request-&gt;validate(['documento' =&gt; ['required', 'file', 'max:10240']]);
+
+        $documento = \UploadMaster::upload(\UploadMaster::getFileFromInput('documento'), 'storage/app/private/documentos/' . date('Y'), null, [
+            'allowed_extensions' =&gt; ['pdf'],
+            'max_size' =&gt; 10 * 1024 * 1024,
+            'prefix' =&gt; 'cliente-' . $cliente-&gt;id,
+        ]);
+
+        if (!$documento['success']) {
+            return response()-&gt;json(['message' =&gt; $documento['mensagem']], 422);
+        }
+
+        $antigo = $cliente-&gt;documento;
+        $cliente-&gt;update(['documento' =&gt; $documento['data']['relative_path']]);
+
+        if ($antigo) {
+            \UploadMaster::delete($antigo);
+        }
+
+        return response()-&gt;json([
+            'message' =&gt; 'Documento salvo.',
+            'download' =&gt; route('clientes.documento', $cliente),
+        ]);
+    }
+
+    // GET /clientes/{cliente}/documento: só sai por aqui, depois do login.
+    public function documento(Cliente $cliente): BinaryFileResponse
+    {
+        $info = $cliente-&gt;documento ? \UploadMaster::info($cliente-&gt;documento) : null;
+
+        abort_if(!$info || !$info['success'], 404, 'Este cliente não tem documento.');
+
+        \LogHelper::audit('Documento do cliente baixado.', ['cliente_id' =&gt; $cliente-&gt;id]);
+
+        return response()-&gt;file($info['data']['path'], [
+            'Content-Type' =&gt; $info['data']['mime'],
+            'Content-Disposition' =&gt; 'inline; filename="documento-cliente-' . $cliente-&gt;id . '.pdf"',
+        ]);
+    }
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">routes/<wbr>web.php</div><pre><code data-lang="php">&lt;?php
+
+use App\Http\Controllers\ClienteArquivosController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware(['auth', 'throttle:30,1'])-&gt;prefix('clientes')-&gt;name('clientes.')-&gt;controller(ClienteArquivosController::class)-&gt;group(function () {
+    Route::view('importacao', 'clientes.importacao')-&gt;name('importacao.tela');
+    Route::post('importacao', 'importar')-&gt;name('importacao');
+    Route::post('importacao/confirmar', 'confirmar')-&gt;name('importacao.confirmar');
+    Route::get('importacao/rejeitados', 'rejeitados')-&gt;name('importacao.rejeitados');
+    Route::get('exportar', 'exportar')-&gt;name('exportar');
+    Route::post('{cliente}/foto', 'foto')-&gt;name('foto');
+    Route::post('{cliente}/documento', 'salvarDocumento')-&gt;name('documento.salvar');
+    Route::get('{cliente}/documento', 'documento')-&gt;name('documento');
+});
+</code></pre></div>
+<div class="nota aviso"><p>No Laravel, não use <code>ExportHelper::download()</code> nem <code>UploadMaster::stream()</code> no controller: eles escrevem direto na saída e terminam com <code>exit</code>, o que pula a gravação da sessão e os middlewares. Gere o arquivo com <code>ExportHelper::csv()</code> e devolva <code>response()-&gt;download()</code>, como acima.</p></div>
+<h3>Tela</h3>
+<div class="codigo"><div class="titulo-codigo">resources/<wbr>views/<wbr>clientes/<wbr>importacao.blade.php</div><pre><code data-lang="html">{{-- resources/views/clientes/importacao.blade.php --}}
+&lt;!doctype html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Importar clientes&lt;/title&gt;
+    &lt;script src="{{ asset('js/clientes-importacao.js') }}" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Importar clientes&lt;/h1&gt;
+
+    &lt;form id="form-importacao" data-previa="{{ route('clientes.importacao') }}" data-confirmar="{{ route('clientes.importacao.confirmar') }}"&gt;
+        @csrf
+        &lt;input type="file" name="planilha" accept=".csv,.txt" required&gt;
+        &lt;button type="submit"&gt;Ver prévia&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;div id="resultado-importacao" aria-live="polite"&gt;&lt;/div&gt;
+    &lt;button type="button" id="confirmar-importacao" hidden&gt;Confirmar importação&lt;/button&gt;
+
+    &lt;p&gt;&lt;a href="{{ route('clientes.exportar') }}"&gt;Exportar todos os clientes (CSV)&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div>
+<h3>Comandos e agendamento</h3>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Console/<wbr>Commands/<wbr>ImportarClientesGrande.php</div><pre><code data-lang="php">&lt;?php
+
+namespace App\Console\Commands;
+
+use App\Services\ImportadorClientes;
+use Illuminate\Console\Command;
+
+// php artisan clientes:importar-grande importacoes/base-completa.csv
+// Planilhas de milhões de linhas: roda em fatias e continua de onde parou (agendado a cada minuto).
+class ImportarClientesGrande extends Command
+{
+    protected $signature = 'clientes:importar-grande {arquivo : relativo a storage/app/private} {--segundos=50}';
+
+    protected $description = 'Importa uma planilha gigante de clientes em fatias, com retomada';
+
+    private const COLUNAS = ['nome', 'email', 'cpf', 'cidade', 'limite_credito'];
+
+    public function handle(ImportadorClientes $importador): int
+    {
+        $arquivo = $this-&gt;argument('arquivo');
+        $checkpoint = 'checkpoints/' . md5($arquivo) . '.json';
+        $inicio = microtime(true);
+        $limite = (int) $this-&gt;option('segundos');
+
+        $info = \ChunkHelper::info($arquivo);
+
+        if (!$info['success']) {
+            $this-&gt;error($info['mensagem']);
+
+            return self::FAILURE;
+        }
+
+        $processar = function (array $linhas, array $status) use ($importador, $inicio, $limite) {
+            $lote = [];
+
+            foreach ($linhas as $linha) {
+                if ($linha['line'] === 1 || trim($linha['value']) === '') {
+                    continue;   // cabeçalho e linhas vazias
+                }
+
+                $valores = array_pad(array_slice(str_getcsv($linha['value'], ';'), 0, 5), 5, null);
+                $dados = array_combine(self::COLUNAS, $valores);
+                $dados['limite_credito'] = str_replace(['.', ','], ['', '.'], (string) $dados['limite_credito']);
+
+                $validacao = \ValidationHelper::validate($dados, ImportadorClientes::REGRAS, [], ImportadorClientes::LABELS);
+
+                if (!$validacao['valid']) {
+                    \LogHelper::warning('Linha recusada na importação grande.', 'clientes', [
+                        'linha' =&gt; $linha['line'],
+                        'erro' =&gt; $validacao['first_error'],
+                    ]);
+
+                    continue;
+                }
+
+                $lote[] = ['line' =&gt; $linha['line'], 'data' =&gt; $dados];
+            }
+
+            if ($lote &amp;&amp; $importador-&gt;salvarLote($lote) === false) {
+                return ['stop' =&gt; true];   // erro de banco: para e tenta de novo no próximo minuto
+            }
+
+            $this-&gt;line(sprintf('linha %d · %s%%', $status['line_number'], $status['percentual']));
+
+            // Para antes do próximo agendamento; o checkpoint guarda a posição exata.
+            return ['stop' =&gt; microtime(true) - $inicio &gt; $limite];
+        };
+
+        $opcoes = ['rows_per_chunk' =&gt; 1000, 'checkpoint_path' =&gt; $checkpoint];
+
+        $resultado = \FileHelper::exists('storage/app/private/' . $checkpoint)
+            ? \ChunkHelper::resumeLines($arquivo, $checkpoint, $processar, null, $opcoes)
+            : \ChunkHelper::readLines($arquivo, $processar, null, $opcoes);
+
+        if (!$resultado['success']) {
+            \LogHelper::error('Importação grande falhou.', 'clientes', ['arquivo' =&gt; $arquivo, 'erro' =&gt; $resultado['mensagem']]);
+            $this-&gt;error($resultado['mensagem']);
+
+            return self::FAILURE;
+        }
+
+        if (!$resultado['data']['completed']) {
+            $this-&gt;info("Pausada em {$resultado['data']['percentual']}%: o próximo agendamento continua.");
+
+            return self::SUCCESS;
+        }
+
+        \ChunkHelper::deleteCheckpoint($checkpoint);
+        \LogHelper::info('Importação grande concluída.', 'clientes', [
+            'arquivo' =&gt; $arquivo,
+            'linhas' =&gt; $resultado['data']['line_number'],
+            'tamanho' =&gt; $info['data']['size_formatted'],
+        ]);
+        $this-&gt;info('Concluída.');
+
+        return self::SUCCESS;
+    }
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Console/<wbr>Commands/<wbr>ManutencaoArquivos.php</div><pre><code data-lang="php">&lt;?php
+
+namespace App\Console\Commands;
+
+use App\Models\Cliente;
+use Illuminate\Console\Command;
+
+// php artisan arquivos:manutencao (agendado todo dia às 3h)
+class ManutencaoArquivos extends Command
+{
+    protected $signature = 'arquivos:manutencao';
+
+    protected $description = 'Fotografa os clientes em CSV, faz o backup em ZIP e limpa arquivos vencidos';
+
+    public function handle(): int
+    {
+        $base = 'storage/app/private';
+        $dia = date('Y-m-d');
+
+        // 1. Fotografia diária da tabela.
+        $exportacao = \ExportHelper::csv(
+            'exportacoes/clientes-' . $dia . '.csv',
+            \ExportHelper::generatorFromQuery(Cliente::query()-&gt;orderBy('id'), 2000),
+            ['id', 'nome', 'email', 'cpf', 'cidade', 'limite_credito', 'created_at'],
+            $base
+        );
+
+        // 2. Backup: o CSV do dia e os documentos do ano num ZIP só.
+        $arquivos = $exportacao['success'] ? [$exportacao['data']['file']['relative_path']] : [];
+        $documentos = \FileHelper::listFiles('documentos/' . date('Y'), $base, ['recursive' =&gt; true, 'filter' =&gt; '\.pdf$']);
+
+        foreach ($documentos['success'] ? $documentos['data']['files'] : [] as $documento) {
+            $arquivos[] = $documento['relative_path'];
+        }
+
+        $zip = \FileHelper::createZip('backups/backup-' . $dia . '.zip', $arquivos, $base, ['overwrite' =&gt; true]);
+
+        // 3. Limpeza do que venceu.
+        $removidos = collect([
+            ['importacoes', 30, ['recursive' =&gt; true]],
+            ['rejeitados', 7, ['recursive' =&gt; true]],
+            ['exportacoes', 15, []],
+            ['backups', 15, ['filter' =&gt; '\.zip$']],
+        ])-&gt;sum(function ($regra) use ($base) {
+            $r = \FileHelper::cleanOlderThan($regra[0], $regra[1], $base, $regra[2]);
+
+            return $r['success'] ? $r['data']['deleted_count'] : 0;
+        });
+
+        // Pastas de mês que ficaram vazias (o index.html criado pelos helpers não conta).
+        foreach (['importacoes', 'rejeitados'] as $pasta) {
+            $meses = \FileHelper::listDirectories($pasta, $base);
+
+            foreach ($meses['success'] ? $meses['data']['directories'] : [] as $mes) {
+                \UploadMaster::removeEmptyDirectories($base . '/' . $mes['relative_path'], ['stop_at_directory' =&gt; $base . '/' . $pasta]);
+            }
+        }
+
+        \LogHelper::info('Manutenção diária concluída.', 'manutencao', [
+            'exportacao' =&gt; $exportacao['success'] ? $exportacao['data']['export']['rows_written'] . ' linhas' : $exportacao['mensagem'],
+            'backup' =&gt; $zip['success'] ? $zip['data']['added_count'] . ' arquivos' : $zip['mensagem'],
+            'arquivos_removidos' =&gt; $removidos,
+        ]);
+
+        $this-&gt;info(($zip['success'] ? "Backup: {$zip['data']['added_count']} arquivos" : "Falha no backup: {$zip['mensagem']}") . " · removidos: {$removidos}");
+
+        return $exportacao['success'] &amp;&amp; $zip['success'] ? self::SUCCESS : self::FAILURE;
+    }
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">routes/<wbr>console.php</div><pre><code data-lang="php">&lt;?php
+
+use Illuminate\Support\Facades\Schedule;
+
+// Planilha gigante: uma fatia por minuto até terminar (o comando sai em ~50 s).
+Schedule::command('clientes:importar-grande importacoes/base-completa.csv')
+    -&gt;everyMinute()
+    -&gt;withoutOverlapping();
+
+Schedule::command('arquivos:manutencao')-&gt;dailyAt('03:00');
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Agendamento</div><pre><code data-lang="bash"># crontab -e: o agendador do Laravel cuida do resto (routes/console.php)
+* * * * * cd /var/www/app &amp;&amp; php artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Saída</div><pre><code data-lang="bash">$ php artisan clientes:importar-grande importacoes/base-completa.csv --segundos=0
+linha 1000 · 3.7933%
+Pausada em 3.7933%: o próximo agendamento continua.
+$ php artisan clientes:importar-grande importacoes/base-completa.csv
+...
+Concluída.
+$ php artisan arquivos:manutencao
+Backup: 2 arquivos · removidos: 0
+</code></pre></div>
+<h2 id="php-puro" data-titulo="PHP puro">PHP puro</h2>
+<p>Sem framework: um <code>bootstrap.php</code> carrega os helpers e configura o <code>PlatformHelper</code>; cada endpoint é um arquivo em <code>public/</code>. A raiz permitida é a pasta do projeto (para alcançar <code>storage/</code>), mas só <code>public/</code> gera URL.</p>
+<div class="codigo"><div class="titulo-codigo">Estrutura</div><pre><code data-lang="bash">app/
+├── bootstrap.php                     ← carrega os helpers e configura o PlatformHelper
+├── helpers/                          ← os helpers (instalar.sh)
+├── src/ClienteRepositorio.php
+├── public/                           ← única pasta servida na web (root do Nginx/Apache)
+│   ├── clientes/index.php  importar.php  confirmar.php  rejeitados.php
+│   ├── clientes/exportar.php  foto.php  documento.php
+│   ├── js/clientes-importacao.js
+│   └── uploads/clientes/{id}/        ← fotos (públicas)
+├── storage/                          ← privado: importacoes, rejeitados, documentos, checkpoints, logs, backups
+└── cli/importar-grande.php  cli/manutencao.php
+</code></pre></div>
+<h3>Bootstrap e tabela</h3>
+<div class="codigo"><div class="titulo-codigo">bootstrap.php</div><pre><code data-lang="php">&lt;?php
+// bootstrap.php: incluído no topo de todo script, da web e da linha de comando.
+
+require_once __DIR__ . '/helpers/LogHelper.php';
+require_once __DIR__ . '/helpers/FileHelper.php';
+require_once __DIR__ . '/helpers/UploadMaster.php';
+require_once __DIR__ . '/helpers/CsvHelper.php';
+require_once __DIR__ . '/helpers/ExportHelper.php';
+require_once __DIR__ . '/helpers/ChunkUploadHelper.php';
+require_once __DIR__ . '/helpers/ValidationHelper.php';
+require_once __DIR__ . '/src/ClienteRepositorio.php';
+
+// Os helpers só leem e gravam dentro da pasta do projeto...
+PlatformHelper::setRootPath(__DIR__);
+// ...e só public/ é servida na web: só arquivos dali ganham URL.
+PlatformHelper::addPublicPath(__DIR__ . '/public', getenv('APP_URL') ?: 'http://localhost:8080');
+PlatformHelper::setLogPath(__DIR__ . '/storage/logs');
+
+$pdo = new PDO(
+    getenv('DB_DSN') ?: 'sqlite:' . __DIR__ . '/database/app.sqlite',
+    getenv('DB_USER') ?: null,
+    getenv('DB_PASS') ?: null,
+    array(PDO::ATTR_ERRMODE =&gt; PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE =&gt; PDO::FETCH_ASSOC)
+);
+PlatformHelper::setPdo($pdo);   // usado pelo ExportHelper::*FromQuery
+
+// Planilhas e rejeitados ficam fora da web.
+CsvHelper::setBaseDirectory('storage');
+
+if (PHP_SAPI !== 'cli') {
+    session_start();
+
+    // Id do usuário logado no contexto de todo log.
+    PlatformHelper::setUserResolver(function () {
+        return isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : null;
+    });
+}
+
+function responderJson($status, array $dados)
+{
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($dados, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+function exigirLogin()
+{
+    if (empty($_SESSION['usuario_id'])) {
+        responderJson(401, array('mensagem' =&gt; 'Faça login para continuar.'));
+    }
+}
+
+function tokenCsrf()
+{
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    }
+
+    return $_SESSION['csrf'];
+}
+
+function exigirPostComToken()
+{
+    $token = isset($_POST['_token']) ? $_POST['_token'] : (isset($_SERVER['HTTP_X_CSRF_TOKEN']) ? $_SERVER['HTTP_X_CSRF_TOKEN'] : '');
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !hash_equals(tokenCsrf(), (string) $token)) {
+        LogHelper::security('Requisição sem token CSRF válido.', array('uri' =&gt; $_SERVER['REQUEST_URI']));
+        responderJson(419, array('mensagem' =&gt; 'Sessão expirada. Recarregue a página.'));
+    }
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">database/<wbr>schema.sql (MySQL; em SQLite use INTEGER PRIMARY KEY AUTOINCREMENT)</div><pre><code data-lang="sql">CREATE TABLE clientes (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    cpf CHAR(11) NOT NULL,
+    cidade VARCHAR(100) NULL,
+    limite_credito DECIMAL(10,2) NOT NULL DEFAULT 0,
+    foto VARCHAR(255) NULL,
+    foto_miniatura VARCHAR(255) NULL,
+    documento VARCHAR(255) NULL,
+    criado_em DATETIME NOT NULL,
+    atualizado_em DATETIME NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_clientes_cpf (cpf)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+</code></pre></div>
+<h3>Regras e gravação</h3>
+<p>O repositório grava os lotes que o <code>CsvHelper::process()</code> entrega, numa transação por lote, e devolve as linhas que falharam no formato que o <code>CsvHelper</code> inclui no relatório e no CSV de rejeitados.</p>
+<div class="codigo"><div class="titulo-codigo">src/<wbr>ClienteRepositorio.php</div><pre><code data-lang="php">&lt;?php
+// src/ClienteRepositorio.php: grava clientes; usado pela importação web e pela CLI.
+
+class ClienteRepositorio
+{
+    // Colunas aceitas da planilha: destino =&gt; apelidos que o CsvHelper reconhece no cabeçalho.
+    const COLUNAS = array(
+        'nome' =&gt; array('nome', 'nome completo', 'cliente', 'razao social'),
+        'email' =&gt; array('email', 'e-mail', 'correio'),
+        'cpf' =&gt; array('cpf', 'documento', 'cpf/cnpj'),
+        'cidade' =&gt; array('cidade', 'municipio'),
+        'limite_credito' =&gt; array('limite', 'limite de credito', 'credito')
+    );
+
+    const OBRIGATORIAS = array('nome', 'email', 'cpf');
+
+    const REGRAS = array(
+        'nome' =&gt; 'required|min_length:3|max_length:150',
+        'email' =&gt; 'required|email',
+        'cpf' =&gt; 'required|cpf',
+        'cidade' =&gt; 'max_length:100',
+        'limite_credito' =&gt; 'numeric|min:0'
+    );
+
+    const LABELS = array('email' =&gt; 'E-mail', 'cpf' =&gt; 'CPF', 'limite_credito' =&gt; 'Limite de crédito');
+
+    private $pdo;
+
+    public function __construct(PDO $pdo)
+    {
+        $this-&gt;pdo = $pdo;
+    }
+
+    /*
+     * Grava um lote do CsvHelper::process() numa transação. Insere ou
+     * atualiza pelo CPF. Devolve o formato que o CsvHelper entende:
+     * linhas gravadas e erros por linha (que viram o CSV de rejeitados).
+     */
+    public function salvarLote(array $lote)
+    {
+        $agora = gmdate('Y-m-d H:i:s');
+        $busca = $this-&gt;pdo-&gt;prepare('SELECT id FROM clientes WHERE cpf = ?');
+        $insere = $this-&gt;pdo-&gt;prepare(
+            'INSERT INTO clientes (nome, email, cpf, cidade, limite_credito, criado_em) VALUES (?, ?, ?, ?, ?, ?)'
+        );
+        $atualiza = $this-&gt;pdo-&gt;prepare(
+            'UPDATE clientes SET nome = ?, email = ?, cidade = ?, limite_credito = ?, atualizado_em = ? WHERE id = ?'
+        );
+
+        $gravadas = 0;
+        $erros = array();
+
+        $this-&gt;pdo-&gt;beginTransaction();
+
+        try {
+            foreach ($lote as $item) {
+                $c = $item['data'];
+                $cpf = preg_replace('/\D/', '', $c['cpf']);
+                $limite = isset($c['limite_credito']) &amp;&amp; $c['limite_credito'] !== null ? $c['limite_credito'] : 0;
+                $cidade = isset($c['cidade']) ? $c['cidade'] : null;
+
+                try {
+                    $busca-&gt;execute(array($cpf));
+                    $id = $busca-&gt;fetchColumn();
+
+                    if ($id) {
+                        $atualiza-&gt;execute(array($c['nome'], $c['email'], $cidade, $limite, $agora, $id));
+                    } else {
+                        $insere-&gt;execute(array($c['nome'], $c['email'], $cpf, $cidade, $limite, $agora));
+                    }
+
+                    $gravadas++;
+                } catch (PDOException $erro) {
+                    $erros[] = array('line' =&gt; $item['line'], 'message' =&gt; 'Não foi possível gravar o cliente.', 'data' =&gt; array('row' =&gt; $c));
+                    LogHelper::database($erro, null, array('linha' =&gt; $item['line']));
+                }
+            }
+
+            $this-&gt;pdo-&gt;commit();
+        } catch (Throwable $erro) {
+            $this-&gt;pdo-&gt;rollBack();
+            throw $erro;
+        }
+
+        return array('success_rows' =&gt; $gravadas, 'skipped_rows' =&gt; count($erros), 'errors' =&gt; $erros);
+    }
+
+    public function buscar($id)
+    {
+        $stmt = $this-&gt;pdo-&gt;prepare('SELECT * FROM clientes WHERE id = ?');
+        $stmt-&gt;execute(array((int) $id));
+
+        return $stmt-&gt;fetch() ?: null;
+    }
+
+    public function atualizarArquivos($id, array $campos)
+    {
+        // Só as colunas de arquivo: o nome da coluna nunca vem do usuário.
+        $campos = array_intersect_key($campos, array_flip(array('foto', 'foto_miniatura', 'documento')));
+        $sets = array();
+
+        foreach (array_keys($campos) as $campo) {
+            $sets[] = $campo . ' = ?';
+        }
+
+        $stmt = $this-&gt;pdo-&gt;prepare('UPDATE clientes SET ' . implode(', ', $sets) . ', atualizado_em = ? WHERE id = ?');
+        $stmt-&gt;execute(array_merge(array_values($campos), array(gmdate('Y-m-d H:i:s'), (int) $id)));
+    }
+}
+</code></pre></div>
+<h3>Importação</h3>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>importar.php (passo 1)</div><pre><code data-lang="php">&lt;?php
+// public/clientes/importar.php: passo 1, recebe a planilha e devolve a prévia.
+require __DIR__ . '/../../bootstrap.php';
+
+exigirLogin();
+exigirPostComToken();
+
+$arquivo = UploadMaster::getFileFromInput('planilha');
+
+if ($arquivo === null) {
+    responderJson(422, array('mensagem' =&gt; 'Escolha a planilha.'));
+}
+
+// Fora da web (storage/), com nome gerado pelo helper e tipo real conferido.
+$envio = UploadMaster::upload($arquivo, 'storage/importacoes/' . date('Y-m'), null, array(
+    'allowed_extensions' =&gt; array('csv', 'txt'),
+    'max_size' =&gt; 20 * 1024 * 1024,
+    'prefix' =&gt; 'clientes'
+));
+
+if (!$envio['success']) {
+    responderJson(422, array('mensagem' =&gt; $envio['mensagem']));
+}
+
+// Caminho relativo a storage/ (base do CsvHelper no bootstrap).
+$planilha = substr($envio['data']['relative_path'], strlen('storage/'));
+
+$previa = CsvHelper::preview($planilha, null, 5, array(
+    'columns' =&gt; ClienteRepositorio::COLUNAS
+));
+
+if (!$previa['success']) {
+    UploadMaster::delete($envio['data']['relative_path']);
+    responderJson(422, array('mensagem' =&gt; $previa['mensagem']));
+}
+
+$faltando = array_intersect(ClienteRepositorio::OBRIGATORIAS, $previa['data']['missing_columns']);
+
+if (!empty($faltando)) {
+    UploadMaster::delete($envio['data']['relative_path']);
+    responderJson(422, array('mensagem' =&gt; 'Faltam colunas na planilha: ' . implode(', ', $faltando) . '.'));
+}
+
+// O passo 2 usa o arquivo guardado na sessão, nunca um caminho vindo do navegador.
+$_SESSION['importacao_clientes'] = $planilha;
+
+LogHelper::upload('Planilha de clientes recebida.', array(
+    'arquivo' =&gt; $planilha,
+    'tamanho' =&gt; $envio['data']['size_formatted'],
+    'colunas' =&gt; $previa['data']['matches']
+));
+
+responderJson(200, array(
+    'mensagem' =&gt; 'Confira a prévia e confirme a importação.',
+    'colunas' =&gt; array_keys($previa['data']['matches']),
+    'previa' =&gt; array_map(function ($linha) {
+        return array('linha' =&gt; $linha['line'], 'dados' =&gt; $linha['converted'], 'erros' =&gt; $linha['errors']);
+    }, $previa['data']['rows'])
+));
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>confirmar.php (passo 2)</div><pre><code data-lang="php">&lt;?php
+// public/clientes/confirmar.php: passo 2, importa a planilha que o passo 1 guardou na sessão.
+require __DIR__ . '/../../bootstrap.php';
+
+exigirLogin();
+exigirPostComToken();
+
+if (empty($_SESSION['importacao_clientes'])) {
+    responderJson(409, array('mensagem' =&gt; 'Envie a planilha antes de confirmar.'));
+}
+
+$planilha = $_SESSION['importacao_clientes'];
+$repositorio = new ClienteRepositorio($pdo);
+set_time_limit(300);
+
+$resultado = CsvHelper::process($planilha, function (array $lote) use ($repositorio) {
+    return $repositorio-&gt;salvarLote($lote);
+}, null, array(
+    'columns' =&gt; ClienteRepositorio::COLUNAS,
+    'required_columns' =&gt; ClienteRepositorio::OBRIGATORIAS,
+    'types' =&gt; array('cpf' =&gt; 'string', 'limite_credito' =&gt; 'decimal'),
+    'convert' =&gt; true,
+    'rules' =&gt; ClienteRepositorio::REGRAS,
+    'labels' =&gt; ClienteRepositorio::LABELS,
+    'chunk_size' =&gt; 500
+));
+
+$relatorio = $resultado['data'];
+unset($_SESSION['importacao_clientes']);
+
+if ($relatorio['total_rows'] === 0 &amp;&amp; !$resultado['success']) {
+    responderJson(422, array('mensagem' =&gt; $resultado['mensagem']));
+}
+
+$resposta = array(
+    'mensagem' =&gt; $resultado['mensagem'],
+    'linhas' =&gt; $relatorio['total_rows'],
+    'gravadas' =&gt; $relatorio['success_rows'],
+    'rejeitadas' =&gt; $relatorio['errors_count'],
+    'erros' =&gt; array_slice($relatorio['errors'], 0, 20)
+);
+
+// Linhas com erro viram um CSV que o usuário corrige e importa de novo.
+if ($relatorio['errors_count'] &gt; 0) {
+    $rejeitados = CsvHelper::writeRejectedCsv(
+        'rejeitados/' . date('Y-m') . '/' . ExportHelper::temporaryFileName('clientes-rejeitados'),
+        $relatorio['errors'],
+        null,
+        array('reimportable' =&gt; true)
+    );
+
+    if ($rejeitados['success']) {
+        $_SESSION['rejeitados_clientes'] = 'storage/' . $rejeitados['data']['relative_path'];
+        $resposta['download_rejeitados'] = '/clientes/rejeitados.php';
+    }
+}
+
+LogHelper::info('Importação de clientes concluída.', 'clientes', array(
+    'arquivo' =&gt; $planilha,
+    'linhas' =&gt; $relatorio['total_rows'],
+    'gravadas' =&gt; $relatorio['success_rows'],
+    'rejeitadas' =&gt; $relatorio['errors_count']
+));
+
+responderJson(200, $resposta);
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>rejeitados.php (passo 3)</div><pre><code data-lang="php">&lt;?php
+// public/clientes/rejeitados.php: passo 3, baixa o CSV das linhas recusadas.
+require __DIR__ . '/../../bootstrap.php';
+
+exigirLogin();
+
+if (empty($_SESSION['rejeitados_clientes'])) {
+    responderJson(404, array('mensagem' =&gt; 'Nenhuma planilha de rejeitados disponível.'));
+}
+
+// Download com Content-Disposition, Range e cache; encerra o script ao terminar.
+UploadMaster::stream($_SESSION['rejeitados_clientes'], 'clientes-para-corrigir.csv');
+</code></pre></div>
+<h3>Exportação</h3>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>exportar.php</div><pre><code data-lang="php">&lt;?php
+// public/clientes/exportar.php?cidade=Curitiba: baixa os clientes em CSV (abre certo no Excel).
+require __DIR__ . '/../../bootstrap.php';
+
+exigirLogin();
+
+$sql = 'SELECT id, nome, email, cpf, cidade, limite_credito, criado_em FROM clientes';
+$parametros = array();
+
+if (!empty($_GET['cidade'])) {
+    $sql .= ' WHERE cidade = ?';
+    $parametros[] = (string) $_GET['cidade'];
+}
+
+$sql .= ' ORDER BY id';   // ordem estável: o gerador lê em lotes de 1000
+
+LogHelper::info('Exportação de clientes.', 'clientes', array('filtros' =&gt; $_GET));
+
+// Lê em lotes e escreve direto na resposta: não carrega a tabela inteira na memória.
+$ok = ExportHelper::download('clientes-' . date('Y-m-d') . '.csv', ExportHelper::generatorFromQuery(array($sql, $parametros)), array(
+    'id' =&gt; 'Código',
+    'nome' =&gt; 'Nome',
+    'email' =&gt; 'E-mail',
+    'cpf' =&gt; array('label' =&gt; 'CPF', 'callback' =&gt; function ($linha) {
+        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $linha['cpf']);
+    }),
+    'cidade' =&gt; 'Cidade',
+    'limite_credito' =&gt; array('label' =&gt; 'Limite (R$)', 'callback' =&gt; function ($linha) {
+        return number_format((float) $linha['limite_credito'], 2, ',', '.');
+    }),
+    'criado_em' =&gt; 'Cadastrado em (UTC)'
+), array('utf8_bom' =&gt; true));
+
+if (!$ok) {
+    responderJson(500, array('mensagem' =&gt; 'Não foi possível gerar a exportação.'));
+}
+
+exit;
+</code></pre></div>
+<h3>Foto e documento</h3>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>foto.php</div><pre><code data-lang="php">&lt;?php
+// public/clientes/foto.php: POST id + foto. Foto pública em public/uploads, com miniatura.
+require __DIR__ . '/../../bootstrap.php';
+
+exigirLogin();
+exigirPostComToken();
+
+$repositorio = new ClienteRepositorio($pdo);
+$cliente = $repositorio-&gt;buscar(isset($_POST['id']) ? $_POST['id'] : 0);
+
+if ($cliente === null) {
+    responderJson(404, array('mensagem' =&gt; 'Cliente não encontrado.'));
+}
+
+$pasta = 'public/uploads/clientes/' . (int) $cliente['id'];
+
+$arquivo = UploadMaster::getFileFromInput('foto');
+
+if ($arquivo === null) {
+    responderJson(422, array('mensagem' =&gt; 'Escolha a foto.'));
+}
+
+$foto = UploadMaster::upload($arquivo, $pasta, null, array(
+    'allowed_extensions' =&gt; array('jpg', 'jpeg', 'png', 'webp'),
+    'max_size' =&gt; 5 * 1024 * 1024,
+    'prefix' =&gt; 'foto',
+    'reencode_images' =&gt; true          // tira EXIF/GPS e corrige a rotação
+));
+
+if (!$foto['success']) {
+    responderJson(422, array('mensagem' =&gt; $foto['mensagem']));
+}
+
+$miniatura = UploadMaster::thumbnail($foto['data']['relative_path'], $pasta . '/miniaturas', 300, 300, array(
+    'crop' =&gt; true,
+    'format' =&gt; 'webp',
+    'quality' =&gt; 85
+));
+
+if (!$miniatura['success']) {
+    UploadMaster::delete($foto['data']['relative_path']);
+    responderJson(422, array('mensagem' =&gt; $miniatura['mensagem']));
+}
+
+// Troca a foto e apaga a anterior só depois que a nova está gravada.
+$repositorio-&gt;atualizarArquivos($cliente['id'], array(
+    'foto' =&gt; $foto['data']['relative_path'],
+    'foto_miniatura' =&gt; $miniatura['data']['relative_path']
+));
+
+foreach (array($cliente['foto'], $cliente['foto_miniatura']) as $antiga) {
+    if ($antiga) {
+        UploadMaster::delete($antiga);
+    }
+}
+
+LogHelper::upload('Foto do cliente atualizada.', array('cliente_id' =&gt; $cliente['id'], 'arquivo' =&gt; $foto['data']['file_name']));
+
+responderJson(200, array(
+    'mensagem' =&gt; 'Foto atualizada.',
+    'foto' =&gt; UploadMaster::publicData($foto['data']),          // sem o caminho absoluto do servidor
+    'miniatura' =&gt; $miniatura['data']['url']
+));
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>documento.php</div><pre><code data-lang="php">&lt;?php
+// public/clientes/documento.php: POST id + documento (PDF privado) · GET ?id=  baixa o documento.
+require __DIR__ . '/../../bootstrap.php';
+
+exigirLogin();
+
+$repositorio = new ClienteRepositorio($pdo);
+$id = isset($_REQUEST['id']) ? (int) $_REQUEST['id'] : 0;
+$cliente = $repositorio-&gt;buscar($id);
+
+if ($cliente === null) {
+    responderJson(404, array('mensagem' =&gt; 'Cliente não encontrado.'));
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (!$cliente['documento'] || !UploadMaster::exists($cliente['documento'])) {
+        responderJson(404, array('mensagem' =&gt; 'Este cliente não tem documento.'));
+    }
+
+    LogHelper::audit('Documento do cliente baixado.', array('cliente_id' =&gt; $id));
+
+    // storage/ não tem URL: o arquivo só sai por aqui, depois do login.
+    UploadMaster::stream($cliente['documento'], 'documento-cliente-' . $id . '.pdf', array('inline' =&gt; true));
+}
+
+exigirPostComToken();
+
+$arquivo = UploadMaster::getFileFromInput('documento');
+
+if ($arquivo === null) {
+    responderJson(422, array('mensagem' =&gt; 'Escolha o documento em PDF.'));
+}
+
+$documento = UploadMaster::upload($arquivo, 'storage/documentos/' . date('Y'), null, array(
+    'allowed_extensions' =&gt; array('pdf'),
+    'max_size' =&gt; 10 * 1024 * 1024,
+    'prefix' =&gt; 'cliente-' . $id
+));
+
+if (!$documento['success']) {
+    responderJson(422, array('mensagem' =&gt; $documento['mensagem']));
+}
+
+$repositorio-&gt;atualizarArquivos($id, array('documento' =&gt; $documento['data']['relative_path']));
+
+if ($cliente['documento']) {
+    UploadMaster::delete($cliente['documento']);
+}
+
+responderJson(200, array(
+    'mensagem' =&gt; 'Documento salvo.',
+    'url' =&gt; $documento['data']['url'],     // null: fora da web
+    'download' =&gt; '/clientes/documento.php?id=' . $id
+));
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Resposta da foto (publicData: sem o caminho absoluto do servidor)</div><pre><code data-lang="js">{
+    "mensagem": "Foto atualizada.",
+    "foto": {
+        "relative_path": "public/uploads/clientes/1/foto_20261025150759_a5a1f3af38522ea08f15938b6c47a8aa.jpg",
+        "url": "https://app.exemplo.com.br/uploads/clientes/1/foto_20261025150759_a5a1f3af38522ea08f15938b6c47a8aa.jpg",
+        "mime": "image/jpeg", "size_formatted": "13.49 KB", "width": 800, "height": 600,
+        "original_name": "foto.jpg"
+    },
+    "miniatura": "https://app.exemplo.com.br/uploads/clientes/1/miniaturas/thumb_20261025150759_df34a7778cb08c9e37c7b275b9f83af5.webp"
+}
+</code></pre></div>
+<h3>Tela</h3>
+<div class="codigo"><div class="titulo-codigo">public/<wbr>clientes/<wbr>index.php</div><pre><code data-lang="html">&lt;?php
+// public/clientes/index.php: tela de importação.
+require __DIR__ . '/../../bootstrap.php';
+
+if (empty($_SESSION['usuario_id'])) {
+    header('Location: /login.php');
+    exit;
+}
+?&gt;
+&lt;!doctype html&gt;
+&lt;html lang="pt-BR"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Importar clientes&lt;/title&gt;
+    &lt;script src="/js/clientes-importacao.js" defer&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Importar clientes&lt;/h1&gt;
+
+    &lt;form id="form-importacao" data-previa="/clientes/importar.php" data-confirmar="/clientes/confirmar.php"&gt;
+        &lt;input type="hidden" name="_token" value="&lt;?= htmlspecialchars(tokenCsrf()) ?&gt;"&gt;
+        &lt;input type="file" name="planilha" accept=".csv,.txt" required&gt;
+        &lt;button type="submit"&gt;Ver prévia&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;div id="resultado-importacao" aria-live="polite"&gt;&lt;/div&gt;
+    &lt;button type="button" id="confirmar-importacao" hidden&gt;Confirmar importação&lt;/button&gt;
+
+    &lt;p&gt;&lt;a href="/clientes/exportar.php"&gt;Exportar todos os clientes (CSV)&lt;/a&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre></div>
+<h3>Linha de comando</h3>
+<div class="codigo"><div class="titulo-codigo">cli/<wbr>importar-grande.php</div><pre><code data-lang="php">&lt;?php
+// cli/importar-grande.php importacoes/base-completa.csv [segundos]
+// Planilhas de milhões de linhas: roda em fatias de até 50 s e continua de onde parou.
+// Cron: * * * * * php /var/www/app/cli/importar-grande.php importacoes/base-completa.csv
+require __DIR__ . '/../bootstrap.php';
+
+$arquivo = isset($argv[1]) ? $argv[1] : '';                       // relativo a storage/
+$segundos = isset($argv[2]) ? (int) $argv[2] : 50;
+$checkpoint = 'checkpoints/' . md5($arquivo) . '.json';
+$base = 'storage';
+$inicio = microtime(true);
+$repositorio = new ClienteRepositorio($pdo);
+$colunas = array('nome', 'email', 'cpf', 'cidade', 'limite_credito');   // ordem das colunas no arquivo
+
+$info = ChunkHelper::info($arquivo, $base);
+
+if (!$info['success']) {
+    fwrite(STDERR, $info['mensagem'] . PHP_EOL);
+    exit(1);
+}
+
+$processar = function (array $linhas, array $status) use ($repositorio, $colunas, $inicio, $segundos) {
+    $lote = array();
+    $erros = 0;
+
+    foreach ($linhas as $linha) {
+        if ($linha['line'] === 1 || trim($linha['value']) === '') {
+            continue;                                                  // cabeçalho e linhas vazias
+        }
+
+        $valores = str_getcsv($linha['value'], ';');
+        $dados = array_combine($colunas, array_pad(array_slice($valores, 0, count($colunas)), count($colunas), null));
+        $dados['limite_credito'] = str_replace(array('.', ','), array('', '.'), (string) $dados['limite_credito']);   // 1.500,50 → 1500.50
+        $validacao = ValidationHelper::validate($dados, ClienteRepositorio::REGRAS, array(), ClienteRepositorio::LABELS);
+
+        if (!$validacao['valid']) {
+            $erros++;
+            LogHelper::warning('Linha recusada na importação grande.', 'clientes', array(
+                'linha' =&gt; $linha['line'],
+                'erro' =&gt; $validacao['first_error']
+            ));
+
+            continue;
+        }
+
+        $dados['limite_credito'] = (float) $dados['limite_credito'];
+        $lote[] = array('line' =&gt; $linha['line'], 'data' =&gt; $dados);
+    }
+
+    if (!empty($lote)) {
+        $repositorio-&gt;salvarLote($lote);
+    }
+
+    echo sprintf("linha %d · %s%%\n", $status['line_number'], $status['percentual']);
+
+    // Para antes do próximo cron; o checkpoint guarda a posição exata.
+    return array('stop' =&gt; microtime(true) - $inicio &gt; $segundos, 'recusadas' =&gt; $erros);
+};
+
+$opcoes = array(
+    'rows_per_chunk' =&gt; 1000,
+    'checkpoint_path' =&gt; $checkpoint,
+    'checkpoint_base_directory' =&gt; $base
+);
+
+$resultado = FileHelper::exists($base . '/' . $checkpoint)
+    ? ChunkHelper::resumeLines($arquivo, $checkpoint, $processar, $base, $opcoes)
+    : ChunkHelper::readLines($arquivo, $processar, $base, $opcoes);
+
+if (!$resultado['success']) {
+    LogHelper::error('Importação grande falhou.', 'clientes', array('arquivo' =&gt; $arquivo, 'erro' =&gt; $resultado['mensagem']));
+    fwrite(STDERR, $resultado['mensagem'] . PHP_EOL);
+    exit(1);
+}
+
+if ($resultado['data']['completed']) {
+    ChunkHelper::deleteCheckpoint($checkpoint, $base);
+    LogHelper::info('Importação grande concluída.', 'clientes', array(
+        'arquivo' =&gt; $arquivo,
+        'linhas' =&gt; $resultado['data']['line_number'],
+        'tamanho' =&gt; $info['data']['size_formatted']
+    ));
+    echo "Concluída.\n";
+} else {
+    echo "Pausada em {$resultado['data']['percentual']}%: o próximo cron continua.\n";
+}
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">cli/<wbr>manutencao.php</div><pre><code data-lang="php">&lt;?php
+// cli/manutencao.php: todo dia às 3h. Fotografa a base em CSV, compacta e limpa o que venceu.
+// Cron: 0 3 * * * php /var/www/app/cli/manutencao.php
+require __DIR__ . '/../bootstrap.php';
+
+$dia = date('Y-m-d');
+
+// 1. Fotografia diária da tabela em storage/exportacoes.
+$exportacao = ExportHelper::fromQuery(
+    'exportacoes/clientes-' . $dia . '.csv',
+    'SELECT id, nome, email, cpf, cidade, limite_credito, criado_em FROM clientes ORDER BY id',
+    array('id', 'nome', 'email', 'cpf', 'cidade', 'limite_credito', 'criado_em'),
+    'storage'
+);
+
+// 2. Backup: o CSV do dia e os documentos do ano num ZIP só.
+$arquivos = array($exportacao['data']['file']['relative_path']);
+$documentos = FileHelper::listFiles('documentos/' . date('Y'), 'storage', array('recursive' =&gt; true, 'filter' =&gt; '\.pdf$'));
+
+if ($documentos['success']) {
+    foreach ($documentos['data']['files'] as $documento) {
+        $arquivos[] = $documento['relative_path'];
+    }
+}
+
+$zip = FileHelper::createZip('backups/backup-' . $dia . '.zip', $arquivos, 'storage', array('overwrite' =&gt; true));
+
+// 3. Limpeza: planilhas com mais de 30 dias, rejeitados com mais de 7, backups com mais de 15.
+$limpeza = array(
+    'importacoes' =&gt; FileHelper::cleanOlderThan('importacoes', 30, 'storage', array('recursive' =&gt; true)),
+    'rejeitados' =&gt; FileHelper::cleanOlderThan('rejeitados', 7, 'storage', array('recursive' =&gt; true)),
+    'exportacoes' =&gt; FileHelper::cleanOlderThan('exportacoes', 15, 'storage'),
+    'backups' =&gt; FileHelper::cleanOlderThan('backups', 15, 'storage', array('filter' =&gt; '\.zip$'))
+);
+
+$removidos = 0;
+
+foreach ($limpeza as $resultado) {
+    $removidos += $resultado['success'] ? $resultado['data']['deleted_count'] : 0;
+}
+
+// Pastas de mês que ficaram vazias (o index.html criado pelos helpers não conta).
+foreach (array('importacoes', 'rejeitados') as $pasta) {
+    $meses = FileHelper::listDirectories($pasta, 'storage');
+
+    foreach ($meses['success'] ? $meses['data']['directories'] : array() as $mes) {
+        UploadMaster::removeEmptyDirectories('storage/' . $mes['relative_path'], array('stop_at_directory' =&gt; 'storage/' . $pasta));
+    }
+}
+
+$espaco = FileHelper::info('backups/backup-' . $dia . '.zip', 'storage');
+
+LogHelper::info('Manutenção diária concluída.', 'manutencao', array(
+    'exportacao' =&gt; $exportacao['success'] ? $exportacao['data']['export']['rows_written'] . ' linhas' : $exportacao['mensagem'],
+    'backup' =&gt; $zip['success'] ? $espaco['data']['size'] . ' bytes, ' . $zip['data']['added_count'] . ' arquivos' : $zip['mensagem'],
+    'arquivos_removidos' =&gt; $removidos
+));
+
+echo ($zip['success'] ? 'Backup: ' . $zip['data']['added_count'] . ' arquivos' : 'Falha no backup: ' . $zip['mensagem']) .
+    " · removidos: {$removidos}\n";
+
+exit($exportacao['success'] &amp;&amp; $zip['success'] ? 0 : 1);
+</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">Agendamento</div><pre><code data-lang="bash"># crontab -e
+* * * * * php /var/www/app/cli/importar-grande.php importacoes/base-completa.csv &gt;&gt; /var/www/app/storage/logs/cron.log 2&gt;&amp;1
+0 3 * * * php /var/www/app/cli/manutencao.php
+</code></pre></div>
+<h3>Servidor</h3>
+<div class="codigo"><div class="titulo-codigo">Nginx + PHP-FPM</div><pre><code data-lang="bash">server {
+    server_name app.exemplo.com.br;
+    root /var/www/app/public;          # só public/ na web: storage/, src/ e helpers/ ficam de fora
+    index index.php;
+    client_max_body_size 25m;          # maior que o limite do upload (20 MB)
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param APP_URL https://app.exemplo.com.br;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+    }
+}
+
+# php.ini (ou pool do FPM): upload_max_filesize = 20M · post_max_size = 25M
+</code></pre></div>
+<h2 id="configuracao" data-titulo="Configuração">Configuração do PlatformHelper</h2>
+<p>No Joomla e no Laravel nada precisa ser configurado. Em PHP puro, configure no bootstrap o que não servir no padrão.</p>
+<div class="tabela"><table><thead><tr><th>Método</th><th>O que faz</th></tr></thead><tbody><tr><td><code id="setPlatform">setPlatform($platform)</code></td><td>Força <code>'joomla'</code>, <code>'laravel'</code> ou <code>'php'</code>.</td></tr><tr><td><code id="setRootPath">setRootPath($path)</code></td><td>Raiz onde os helpers podem ler e gravar. Caminhos relativos partem dela e nada fora dela é aceito (vale também para <code>../</code> e links simbólicos).</td></tr><tr><td><code id="setRootUrl">setRootUrl($url)</code></td><td>URL pública da raiz inteira. Use só quando a raiz toda é servida na web; senão, prefira <code>addPublicPath()</code>.</td></tr><tr><td><code id="addPublicPath">addPublicPath($path, $url)</code></td><td>Pasta servida na web e a URL dela. Em PHP puro, só as pastas informadas aqui geram URL (o resto devolve <code>url = null</code>); no Joomla e no Laravel elas se somam às do framework.</td></tr><tr><td><code id="setLogPath">setLogPath($path)</code></td><td>Pasta padrão dos logs. Precisa estar dentro da raiz.</td></tr><tr><td><code id="setPdo">setPdo(PDO $pdo)</code></td><td>Conexão das consultas do <code>ExportHelper</code> em PHP puro.</td></tr><tr><td><code id="setUserResolver">setUserResolver(callable $fn)</code></td><td>Função que devolve o id do usuário logado, gravado no contexto dos logs. Vale em qualquer plataforma.</td></tr></tbody></table></div>
+<p><code>ExportHelper::fromQuery()</code>, <code>downloadFromQuery()</code> e <code>generatorFromQuery()</code> aceitam SQL em texto e o objeto de query do Joomla; no Laravel, também Query/Eloquent Builder e <code>array($sql, $bindings)</code>; em PHP puro, <code>array($sql, $bindings)</code>. Fora do Joomla, o gerador pagina com <code>LIMIT ... OFFSET ...</code> (MySQL, PostgreSQL e SQLite).</p>
+<h2 id="diferencas" data-titulo="Diferenças entre as plataformas">Diferenças entre as plataformas</h2>
+<div class="tabela"><table><thead><tr><th></th><th>Joomla</th><th>Laravel</th><th>PHP puro</th></tr></thead><tbody><tr><td>Pasta privada</td><td><code>arquivos/com_clientes</code> + bloqueio no servidor</td><td><code>storage/app/private</code></td><td><code>storage/</code> (fora de <code>public/</code>)</td></tr><tr><td>Pasta pública</td><td><code>images/clientes</code></td><td><code>storage/app/public</code> + <code>storage:link</code></td><td><code>public/uploads</code></td></tr><tr><td>Token CSRF</td><td><code>Session::getFormToken()</code> / <code>checkToken()</code></td><td><code>@csrf</code> (middleware)</td><td><code>tokenCsrf()</code> / <code>exigirPostComToken()</code></td></tr><tr><td>Gravar a planilha</td><td><code>CsvHelper::import()</code></td><td><code>process()</code> + <code>upsert()</code></td><td><code>process()</code> + PDO</td></tr><tr><td>Downloads</td><td><code>ExportHelper::download()</code> / <code>UploadMaster::stream()</code> + <code>close()</code></td><td><code>response()-&gt;download()</code> / <code>file()</code></td><td><code>ExportHelper::download()</code> / <code>UploadMaster::stream()</code></td></tr><tr><td>Rotinas</td><td><code>cli/*.php</code> + cron</td><td>Artisan + <code>Schedule</code></td><td><code>cli/*.php</code> + cron</td></tr><tr><td>Logs</td><td><code>administrator/logs</code></td><td><code>storage/logs</code></td><td><code>storage/logs</code> (<code>setLogPath</code>)</td></tr></tbody></table></div>
+<h2 id="limites" data-titulo="O que continua só no Joomla">O que continua só no Joomla</h2>
+<ul><li><code>CsvHelper::import()</code> grava pelo <code>OrmTables</code> e pelo <code>DbTransactionHelper</code>, que usam a conexão do Joomla (3 a 6). Fora dele, use <code>CsvHelper::process()</code> e grave com o banco do projeto, como nos exemplos de Laravel e PHP puro.</li><li><code>ApiResponseHelper</code>, <code>PermissionHelper</code>, <code>InputHelper</code>, <code>QueueHelper</code> e os demais continuam feitos para o Joomla. Os arquivos de dependência (<code>OrmTables</code>, <code>OrmBase</code>, <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>DateHelper</code>, <code>ValidationHelper</code>) carregam fora do Joomla sem derrubar o script; o <code>ValidationHelper</code> funciona em qualquer lugar.</li></ul>
+<h2 id="problemas" data-titulo="Problemas comuns">Problemas comuns</h2>
+<div class="tabela"><table><thead><tr><th>Sintoma</th><th>Causa e solução</th></tr></thead><tbody><tr><td>"O diretório base deve estar dentro de JPATH_SITE."</td><td>O caminho está fora da raiz permitida. Fora do Joomla, a raiz é a do <code>PlatformHelper</code>: ajuste com <code>setRootPath()</code>.</td></tr><tr><td><code>url</code> vem <code>null</code></td><td>O arquivo não está numa pasta servida na web (o esperado para privados). Para fotos: no Laravel, <code>php artisan storage:link</code>; em PHP puro, <code>addPublicPath()</code>.</td></tr><tr><td>"A extensão do arquivo não corresponde ao seu tipo real."</td><td>O conteúdo não é do tipo da extensão (ex.: imagem renomeada para <code>.pdf</code>). É a proteção funcionando.</td></tr><tr><td>CSV baixado com HTML no fim (Joomla)</td><td>Faltou <code>$app-&gt;close()</code> depois do <code>ExportHelper::download()</code>.</td></tr><tr><td>Download sem sessão ou com "headers already sent" (Laravel)</td><td>Use <code>response()-&gt;download()</code>/<code>file()</code> em vez de <code>ExportHelper::download()</code>/<code>UploadMaster::stream()</code>.</td></tr><tr><td>"O arquivo foi alterado desde a criação do checkpoint."</td><td>A planilha mudou no meio da importação. Apague o checkpoint com <code>ChunkHelper::deleteCheckpoint()</code> e comece de novo.</td></tr><tr><td>"Sem conexão: chame PlatformHelper::setPdo($pdo)"</td><td>Em PHP puro, o <code>ExportHelper::*FromQuery</code> precisa do PDO configurado no bootstrap.</td></tr><tr><td>Upload falha só com arquivos grandes</td><td>Limites do PHP e do servidor: <code>upload_max_filesize</code>, <code>post_max_size</code> e <code>client_max_body_size</code> (Nginx) maiores que o <code>max_size</code> do helper.</td></tr></tbody></table></div>
+<h2 id="como-foi-testado" data-titulo="Como foi testado">Como foi testado</h2>
+<p>Todo o código desta página foi executado no PHP 8.4, por HTTP real (uploads de verdade) e pela tela no Google Chrome headless, com uma planilha de 5 linhas (3 com erro) e outra de 25.002 linhas:</p>
+<div class="tabela"><table><thead><tr><th>Ambiente</th><th>O que passou</th></tr></thead><tbody><tr><td>Joomla 3.10.12, 4.4.14, 5.4.10 e 6.2.0</td><td>Tela, prévia, confirmação (2 novos, 3 recusados), CSV de rejeitados, exportação, foto com troca da anterior, PDF falso recusado, documento privado, CLI com pausa e retomada (25.000 clientes) e manutenção com backup.</td></tr><tr><td>Laravel 13</td><td>O mesmo, com login, CSRF do Laravel, <code>storage:link</code> e os comandos Artisan.</td></tr><tr><td>PHP puro</td><td>O mesmo, com sessão, token próprio e acesso sem login recusado.</td></tr></tbody></table></div>
+<div class="nota"><p>Os testes do Joomla usaram SQLite (não havia MySQL no ambiente). O <code>CsvHelper::import()</code> e o ORM usam o driver do site, e as consultas dos exemplos são SQL padrão.</p></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="upload-master.html">UploadMaster</a>: todas as opções de upload, miniatura e download.</li><li><a href="csv-helper.html">CsvHelper</a>: detecção de colunas, tipos, validação e importação.</li><li><a href="export-helper.html">ExportHelper</a>, <a href="file-helper.html">FileHelper</a>, <a href="chunk-upload-helper.html">ChunkHelper</a>, <a href="log-helper.html">LogHelper</a>.</li><li><a href="include-helper.html">IncludeHelper</a>: carrega cada helper com as dependências.</li></ul>
+
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="include-helper.html"><small>← Anterior</small>IncludeHelper</a><a class="proxima" href="chunk-upload-helper.html"><small>Próxima →</small>ChunkHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>PlatformHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

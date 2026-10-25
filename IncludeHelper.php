@@ -1,6 +1,9 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
 /**
  * IncludeHelper
@@ -18,7 +21,8 @@ class IncludeHelper
      * @var array
      */
     private static $dependencies = array(
-        'LogHelper'           => array(),
+        'PlatformHelper'      => array(),
+        'LogHelper'           => array('PlatformHelper'),
         'DateHelper'          => array(),
         'InputHelper'         => array(),
         'ValidationHelper'    => array(),
@@ -28,13 +32,13 @@ class IncludeHelper
         'OrmTables'           => array('OrmBase'),
         'ApiResponseHelper'   => array('LogHelper'),
         'PermissionHelper'    => array('LogHelper', 'ApiResponseHelper'),
-        'FileHelper'          => array('LogHelper'),
+        'FileHelper'          => array('PlatformHelper', 'LogHelper'),
         'AuditHelper'         => array('OrmTables', 'LogHelper'),
-        'CsvHelper'           => array('OrmTables', 'DbTransactionHelper', 'ValidationHelper', 'LogHelper'),
-        'ChunkUploadHelper'   => array('LogHelper', 'DateHelper'),
-        'ExportHelper'        => array('LogHelper'),
+        'CsvHelper'           => array('PlatformHelper', 'OrmTables', 'DbTransactionHelper', 'ValidationHelper', 'LogHelper'),
+        'ChunkUploadHelper'   => array('PlatformHelper', 'LogHelper', 'DateHelper'),
+        'ExportHelper'        => array('PlatformHelper', 'LogHelper'),
         'QueueHelper'         => array('LogHelper', 'DateHelper'),
-        'UploadMaster'        => array(),
+        'UploadMaster'        => array('PlatformHelper'),
         'HttpHelper'          => array('LogHelper'),
         'LockHelper'          => array('LogHelper', 'DbConnectionHelper'),
         'CacheHelper'         => array('LogHelper', 'LockHelper'),

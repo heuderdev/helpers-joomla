@@ -1,10 +1,13 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
-jimport('joomla.filesystem.path');
+if (!class_exists('PlatformHelper', false)) {
+    require_once __DIR__ . '/PlatformHelper.php';
+}
 
 class FileHelper
 {
@@ -39,12 +42,12 @@ class FileHelper
                 return;
             }
 
-            JLog::add(
+            PlatformHelper::log(
                 '[' . $method . '] ' .
                     $error->getMessage() .
                     ' | Arquivo: ' . $error->getFile() .
                     ' | Linha: ' . $error->getLine(),
-                JLog::ERROR,
+                PlatformHelper::LOG_ERROR,
                 self::$logCategory
             );
         } catch (Throwable $logError) {
@@ -86,7 +89,7 @@ class FileHelper
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(JPATH_SITE);
+        $siteRoot = realpath(PlatformHelper::rootPath());
 
         if ($siteRoot === false) {
             throw new RuntimeException(
@@ -162,8 +165,8 @@ class FileHelper
             );
         }
 
-        if (!JFolder::exists($baseDirectory)) {
-            if (!JFolder::create(
+        if (!PlatformHelper::folderExists($baseDirectory)) {
+            if (!PlatformHelper::folderCreate(
                 $baseDirectory,
                 self::$directoryPermission
             )) {
@@ -219,7 +222,7 @@ class FileHelper
                 );
             }
 
-            $safePart = JFile::makeSafe($part);
+            $safePart = PlatformHelper::makeSafe($part);
 
             if ($safePart === '') {
                 throw new RuntimeException(
@@ -260,7 +263,7 @@ class FileHelper
                 );
             }
 
-            $safePart = JFolder::makeSafe($part);
+            $safePart = PlatformHelper::folderMakeSafe($part);
 
             if ($safePart === '') {
                 throw new RuntimeException(
@@ -304,14 +307,14 @@ class FileHelper
             );
         }
 
-        if (!JFolder::exists($directory)) {
+        if (!PlatformHelper::folderExists($directory)) {
             if (!$create) {
                 throw new RuntimeException(
                     'Diretório não encontrado.'
                 );
             }
 
-            if (!JFolder::create(
+            if (!PlatformHelper::folderCreate(
                 $directory,
                 self::$directoryPermission
             )) {
@@ -365,7 +368,7 @@ class FileHelper
         }
 
         if ($mustExist) {
-            if (!JFile::exists($filePath)) {
+            if (!PlatformHelper::fileExists($filePath)) {
                 throw new RuntimeException(
                     'Arquivo não encontrado.'
                 );
@@ -444,19 +447,7 @@ class FileHelper
 
     private static function buildUrl($absolutePath)
     {
-        $relativePath = self::siteRelativePath($absolutePath);
-
-        if ($relativePath === null) {
-            return null;
-        }
-
-        return rtrim(JUri::root(), '/') .
-            '/' .
-            str_replace(
-                '%2F',
-                '/',
-                rawurlencode($relativePath)
-            );
+        return PlatformHelper::url($absolutePath);
     }
 
     private static function fileInfo($filePath, $baseDirectory = null)
@@ -484,7 +475,7 @@ class FileHelper
             ),
             'file_name' => basename($filePath),
             'extension' => strtolower(
-                JFile::getExt(basename($filePath))
+                PlatformHelper::getExt(basename($filePath))
             ),
             'size' => $size !== false ? (int) $size : 0,
             'modified_at' => date(
@@ -504,7 +495,7 @@ class FileHelper
             str_replace('\\', '/', (string) $fileName)
         );
 
-        $fileName = JFile::makeSafe($fileName);
+        $fileName = PlatformHelper::makeSafe($fileName);
 
         if ($fileName === '') {
             throw new InvalidArgumentException(
@@ -825,7 +816,7 @@ class FileHelper
                 : true;
 
             if (
-                JFile::exists($filePath) &&
+                PlatformHelper::fileExists($filePath) &&
                 !$overwrite &&
                 !$append
             ) {
@@ -954,7 +945,7 @@ class FileHelper
             $overwrite = !empty($options['overwrite']);
 
             if (
-                JFile::exists($destination) &&
+                PlatformHelper::fileExists($destination) &&
                 !$overwrite
             ) {
                 throw new RuntimeException(
@@ -964,15 +955,15 @@ class FileHelper
 
             if (
                 $overwrite &&
-                JFile::exists($destination) &&
-                !JFile::delete($destination)
+                PlatformHelper::fileExists($destination) &&
+                !PlatformHelper::fileDelete($destination)
             ) {
                 throw new RuntimeException(
                     'Não foi possível substituir o arquivo de destino.'
                 );
             }
 
-            if (!JFile::copy($source, $destination)) {
+            if (!PlatformHelper::fileCopy($source, $destination)) {
                 throw new RuntimeException(
                     'Não foi possível copiar o arquivo.'
                 );
@@ -1024,7 +1015,7 @@ class FileHelper
             $overwrite = !empty($options['overwrite']);
 
             if (
-                JFile::exists($destination) &&
+                PlatformHelper::fileExists($destination) &&
                 !$overwrite
             ) {
                 throw new RuntimeException(
@@ -1034,15 +1025,15 @@ class FileHelper
 
             if (
                 $overwrite &&
-                JFile::exists($destination) &&
-                !JFile::delete($destination)
+                PlatformHelper::fileExists($destination) &&
+                !PlatformHelper::fileDelete($destination)
             ) {
                 throw new RuntimeException(
                     'Não foi possível substituir o arquivo de destino.'
                 );
             }
 
-            if (!JFile::move($source, $destination)) {
+            if (!PlatformHelper::fileMove($source, $destination)) {
                 throw new RuntimeException(
                     'Não foi possível mover o arquivo.'
                 );
@@ -1087,7 +1078,7 @@ class FileHelper
                 $baseDirectory
             );
 
-            if (!JFile::delete($filePath)) {
+            if (!PlatformHelper::fileDelete($filePath)) {
                 throw new RuntimeException(
                     'Não foi possível excluir o arquivo.'
                 );
@@ -1131,7 +1122,7 @@ class FileHelper
                 );
             }
 
-            if (!JFolder::delete($directoryPath)) {
+            if (!PlatformHelper::folderDelete($directoryPath)) {
                 throw new RuntimeException(
                     'Não foi possível excluir o diretório.'
                 );
@@ -1184,11 +1175,11 @@ class FileHelper
             $excludeFilter = isset($options['exclude_filter'])
                 ? $options['exclude_filter']
                 : array(
-                    '^..*',
+                    '^\..*',
                     '.*~'
                 );
 
-            $files = JFolder::files(
+            $files = PlatformHelper::files(
                 $directoryPath,
                 $filter,
                 $recursive,
@@ -1262,11 +1253,11 @@ class FileHelper
             $excludeFilter = isset($options['exclude_filter'])
                 ? $options['exclude_filter']
                 : array(
-                    '^..*',
+                    '^\..*',
                     '.*~'
                 );
 
-            $directories = JFolder::folders(
+            $directories = PlatformHelper::folders(
                 $directoryPath,
                 $filter,
                 $recursive,
@@ -1337,7 +1328,7 @@ class FileHelper
 
             $timestamp = time() - ($days * 86400);
 
-            $files = JFolder::files(
+            $files = PlatformHelper::files(
                 $directoryPath,
                 $filter,
                 $recursive,
@@ -1368,7 +1359,7 @@ class FileHelper
                         $baseDirectory
                     );
 
-                    if (!JFile::delete($filePath)) {
+                    if (!PlatformHelper::fileDelete($filePath)) {
                         $failed[] = $data;
 
                         continue;
@@ -1424,7 +1415,7 @@ class FileHelper
                 : true;
 
             if (
-                JFile::exists($zipAbsolutePath) &&
+                PlatformHelper::fileExists($zipAbsolutePath) &&
                 !$overwrite
             ) {
                 throw new RuntimeException(
@@ -1434,9 +1425,9 @@ class FileHelper
 
             if (
                 $overwrite &&
-                JFile::exists($zipAbsolutePath)
+                PlatformHelper::fileExists($zipAbsolutePath)
             ) {
-                JFile::delete($zipAbsolutePath);
+                PlatformHelper::fileDelete($zipAbsolutePath);
             }
 
             $zip = new ZipArchive();
@@ -1499,8 +1490,8 @@ class FileHelper
             $zip->close();
 
             if ($added === 0) {
-                if (JFile::exists($zipAbsolutePath)) {
-                    JFile::delete($zipAbsolutePath);
+                if (PlatformHelper::fileExists($zipAbsolutePath)) {
+                    PlatformHelper::fileDelete($zipAbsolutePath);
                 }
 
                 throw new RuntimeException(

@@ -1,6 +1,9 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; carrega no Joomla, Laravel ou PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
 if (!class_exists('DbConnectionHelper')) {
     require_once __DIR__ . '/DbConnectionHelper.php';
@@ -88,18 +91,21 @@ class DbTransactionHelper
                 return;
             }
 
+            // Joomla 4+ (com namespace) ou Joomla 3 (JLog).
+            $log = class_exists('Joomla\\CMS\\Log\\Log') ? 'Joomla\\CMS\\Log\\Log' : 'JLog';
+
             $priorities = array(
-                'debug' => JLog::DEBUG,
-                'warning' => JLog::WARNING,
-                'error' => JLog::ERROR,
-                'critical' => JLog::CRITICAL
+                'debug' => $log::DEBUG,
+                'warning' => $log::WARNING,
+                'error' => $log::ERROR,
+                'critical' => $log::CRITICAL
             );
 
             $priority = isset($priorities[$level])
                 ? $priorities[$level]
-                : JLog::INFO;
+                : $log::INFO;
 
-            JLog::add(
+            $log::add(
                 $message,
                 $priority,
                 self::$logCategory

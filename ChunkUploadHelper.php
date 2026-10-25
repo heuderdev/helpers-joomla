@@ -1,11 +1,13 @@
 <?php
 
-if (!defined('_JEXEC') && PHP_SAPI !== 'cli' && !defined('DECOUPLED_RUN')) {
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
     die('Acesso restrito.');
 }
 
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
+if (!class_exists('PlatformHelper', false)) {
+    require_once __DIR__ . '/PlatformHelper.php';
+}
 
 class ChunkHelper
 {
@@ -34,27 +36,27 @@ class ChunkHelper
     private static function log($level, $message, array $context = array())
     {
         try {
-            $priority = JLog::INFO;
+            $priority = PlatformHelper::LOG_INFO;
 
             switch (strtolower((string) $level)) {
                 case 'debug':
-                    $priority = JLog::DEBUG;
+                    $priority = PlatformHelper::LOG_DEBUG;
                     break;
 
                 case 'notice':
-                    $priority = JLog::NOTICE;
+                    $priority = PlatformHelper::LOG_NOTICE;
                     break;
 
                 case 'warning':
-                    $priority = JLog::WARNING;
+                    $priority = PlatformHelper::LOG_WARNING;
                     break;
 
                 case 'error':
-                    $priority = JLog::ERROR;
+                    $priority = PlatformHelper::LOG_ERROR;
                     break;
 
                 case 'critical':
-                    $priority = JLog::CRITICAL;
+                    $priority = PlatformHelper::LOG_CRITICAL;
                     break;
             }
 
@@ -80,7 +82,7 @@ class ChunkHelper
                     self::$logDirectory
                 );
 
-                JLog::addLogger(
+                PlatformHelper::addLogger(
                     array(
                         'text_file' => self::$logCategory . '.php',
                         'text_file_path' => $directory,
@@ -91,7 +93,7 @@ class ChunkHelper
                 );
             }
 
-            JLog::add(
+            PlatformHelper::log(
                 self::limitText(
                     (string) $message . $contextText,
                     20000
@@ -136,7 +138,7 @@ class ChunkHelper
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(defined('JPATH_SITE') ? JPATH_SITE : getcwd());
+        $siteRoot = realpath(PlatformHelper::rootPath());
 
         if ($siteRoot === false) {
             throw new RuntimeException(
@@ -1171,6 +1173,9 @@ class ChunkHelper
             $stopped = false;
             $lastResult = null;
             $firstLine = true;
+            // Posição logo após a última linha lida: é o que vai para o checkpoint
+            // (o buffer pode já ter lido linhas que ainda não foram entregues).
+            $consumedOffset = $offset;
 
             while (!feof($handle)) {
                 $data = fread($handle, $readSize);
@@ -1204,6 +1209,7 @@ class ChunkHelper
 
                 foreach ($split['parts'] as $line) {
                     $lineNumber++;
+                    $consumedOffset += strlen($line) + ($keepDelimiter ? 0 : strlen($delimiter));
 
                     if (
                         $normalizeLineEndings &&
@@ -1237,17 +1243,9 @@ class ChunkHelper
                         );
                     }
 
-                    $currentOffset = ftell($handle);
-
-                    if ($currentOffset === false) {
-                        throw new RuntimeException(
-                            'Não foi possível identificar o offset do arquivo.'
-                        );
-                    }
-
                     $metadata = self::buildProgress(
                         $filePath,
-                        $currentOffset - strlen($buffer),
+                        $consumedOffset,
                         $chunkIndex,
                         $startedAt,
                         array(
@@ -1397,7 +1395,7 @@ class ChunkHelper
                 }
             }
 
-            $finalOffset = ftell($handle);
+            $finalOffset = $stopped ? $consumedOffset : ftell($handle);
 
             fclose($handle);
             $handle = null;
@@ -1942,71 +1940,42 @@ class ChunkHelper
             return DateHelper::nowSql();
         }
 
-        if (class_exists('JFactory')) {
-            return JFactory::getDate()->toSql();
-        }
-
-        return gmdate('Y-m-d H:i:s');
+        return PlatformHelper::nowSql();
     }
 
     private static function folderExists($path)
     {
-        if (class_exists('JFolder')) {
-            return JFolder::exists($path);
-        }
-        return is_dir($path);
+        return PlatformHelper::folderExists($path);
     }
 
     private static function folderCreate($path, $permissions = 0755)
     {
-        if (class_exists('JFolder')) {
-            return JFolder::create($path, $permissions);
-        }
-        return mkdir($path, $permissions, true);
+        return PlatformHelper::folderCreate($path, $permissions);
     }
 
     private static function fileExists($path)
     {
-        if (class_exists('JFile')) {
-            return JFile::exists($path);
-        }
-        return is_file($path);
+        return PlatformHelper::fileExists($path);
     }
 
     private static function fileDelete($path)
     {
-        if (class_exists('JFile')) {
-            return JFile::delete($path);
-        }
-        if (is_file($path)) {
-            return unlink($path);
-        }
-        return false;
+        return PlatformHelper::fileDelete($path);
     }
 
     private static function fileMove($src, $dest)
     {
-        if (class_exists('JFile')) {
-            return JFile::move($src, $dest);
-        }
-        return rename($src, $dest);
+        return PlatformHelper::fileMove($src, $dest);
     }
 
     private static function fileGetExt($path)
     {
-        if (class_exists('JFile')) {
-            return JFile::getExt($path);
-        }
-        return pathinfo($path, PATHINFO_EXTENSION);
+        return PlatformHelper::getExt($path);
     }
 
     private static function fileMakeSafe($name)
     {
-        if (class_exists('JFile')) {
-            return JFile::makeSafe($name);
-        }
-        $name = str_replace(array('/', '\\', "\0"), '', $name);
-        return preg_replace('/[^a-zA-Z0-9_\.-]/', '', $name);
+        return PlatformHelper::makeSafe($name);
     }
 
     public static function formatBytes($bytes, $precision = 2)

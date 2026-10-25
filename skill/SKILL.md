@@ -61,7 +61,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 
 ## Regras de ouro (o código gerado deve respeitar)
 
-- **Compatibilidade:** Joomla 3.4.5+, 4 e 5; PHP **7.0**. Proibido: tipos anuláveis `?int`, `void`, `fn()`, `match`, `??=`, `?->`, propriedades tipadas, desestruturação `[$a, $b] =`, `catch (A | B)`, `str_contains`. Use `JFactory`, `JText`, `JSession` (funcionam nas três versões; no 5 com o plugin de compatibilidade ativo, que é o padrão).
+- **Compatibilidade:** Joomla 3.4.5+, 4 e 5; PHP **7.0**. Proibido: tipos anuláveis `?int`, `void`, `fn()`, `match`, `??=`, `?->`, propriedades tipadas, desestruturação `[$a, $b] =`, `catch (A | B)`, `str_contains`. Use `JFactory`, `JText`, `JSession` (funcionam nas três versões; no 5 com o plugin de compatibilidade ativo, que é o padrão). LogHelper, FileHelper, ExportHelper, CsvHelper, ChunkHelper e UploadMaster rodam também no Joomla 6, no Laravel e em PHP puro via `PlatformHelper.php` (referencias/arquivos.md).
 - **Carregamento:** `require_once JPATH_COMPONENT . '/helpers/<Helper>.php';` (os arquivos ficam juntos em `helpers/`). Ou `IncludeHelper::load([...])`, que resolve as dependências.
 - **Tabelas:** sempre `#__nome` (prefixo do Joomla). Nunca concatene entrada do usuário em SQL: use `where()`/`whereIn()`; `whereRaw()` só com valores já passados por `$db->quote()`.
 - **Toda escrita via POST** confere o token: `JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));` (em API JSON: `if (!PermissionHelper::requireToken()) return;`, que aceita também o cabeçalho `X-CSRF-Token` do Vigia.js/fetch).

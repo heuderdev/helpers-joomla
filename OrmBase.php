@@ -1,6 +1,9 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; carrega no Joomla, Laravel ou PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
 if (!class_exists('DbConnectionHelper')) {
     require_once __DIR__ . '/DbConnectionHelper.php';

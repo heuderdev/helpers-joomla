@@ -1,6 +1,6 @@
 # Arquivos: UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper
 
-Todos devolvem `['success', 'status', 'mensagem', 'data', 'errors']`, não lançam exceção e só operam dentro de um **diretório base** (padrão `JPATH_SITE`). Caminhos são relativos à base; `../` é recusado.
+Todos devolvem `['success', 'status', 'mensagem', 'data', 'errors']`, não lançam exceção e só operam dentro de um **diretório base** (padrão `JPATH_SITE`; fora do Joomla, a raiz do `PlatformHelper`). Caminhos são relativos à base; `../` é recusado.
 
 ## UploadMaster (receber e entregar arquivos)
 
@@ -86,3 +86,20 @@ ExportHelper::downloadFromQuery('pedidos.csv', $q, $colunas);           // lê e
 ExportHelper::fromQuery('exportacoes/p.csv', $q, $colunas, $base);
 ```
 Opções: `delimiter`, `enclosure`, `headers` (true), `overwrite`, `max_rows`, `protect_csv_injection` (ativo: neutraliza `=`, `+`, `-`, `@` no início), `on_row`, `on_progress`, `progress_every`. `generatorFromQuery($q, 1000)` itera linhas; `temporaryFileName('exportacao')`.
+
+## Joomla 6, Laravel e PHP puro (PlatformHelper)
+
+`LogHelper`, `FileHelper`, `ExportHelper`, `CsvHelper`, `ChunkHelper` e `UploadMaster` não chamam mais `JFile`/`JFolder`/`JLog`/`JFactory`/`JUri` direto: passam pelo `PlatformHelper.php` (tem que estar na mesma pasta; `instalar.sh` e `IncludeHelper` já copiam/carregam). No Joomla 3, 4, 5 e 6 usa as classes do próprio Joomla (comportamento de sempre); no Laravel usa `base_path()`, `storage/logs`, `url()`, `DB`, `auth()` e `request()->file()`; em PHP puro, funções nativas.
+
+```php
+// Só fora do Joomla, e só se os padrões não servirem:
+PlatformHelper::setRootPath(__DIR__);                // raiz permitida (padrão: DOCUMENT_ROOT / base_path())
+PlatformHelper::addPublicPath(__DIR__ . '/public', 'https://site.com');  // só esta pasta gera URL (storage/ privado: url = null)
+PlatformHelper::setLogPath(__DIR__ . '/logs');       // padrão: <raiz>/logs, storage/logs no Laravel
+PlatformHelper::setPdo($pdo);                        // ExportHelper::*FromQuery em PHP puro
+PlatformHelper::setUserResolver(function () { return $_SESSION['uid'] ?? null; });
+```
+- `ExportHelper::*FromQuery` aceita SQL, query do Joomla, `array($sql, $bindings)` (Laravel/PHP) e Query/Eloquent Builder (Laravel).
+- Fora do Joomla, `CsvHelper::import()` não funciona (usa OrmTables/conexão do Joomla): leia/valide com o CsvHelper e grave com o banco do projeto.
+- No Laravel, não use `ExportHelper::download()`/`UploadMaster::stream()` no controller (escrevem na saída e dão `exit`): gere com `ExportHelper::csv()` e devolva `response()->download()`; documento privado: `UploadMaster::info()` + `response()->file()`.
+- Sistemas completos testados (importação com prévia e rejeitados, exportação, foto/documento, CLI com retomada, backup) nas três plataformas: `docs/platform-helper.html`.

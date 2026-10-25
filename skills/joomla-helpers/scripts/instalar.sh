@@ -9,25 +9,28 @@ ORIGEM="$(bash "$(dirname "$0")/_repo.sh" --fonte)"
 DESTINO="${1:?uso: instalar.sh <destino> Helper... | --todos [--forcar]}"; shift
 
 declare -A DEP=(
+    [LogHelper]="PlatformHelper"
     [OrmTables]="OrmBase"
     [OrmBase]="DbConnectionHelper DbTransactionHelper DateHelper"
     [DbTransactionHelper]="DbConnectionHelper LogHelper"
     [AuditHelper]="OrmTables LogHelper"
-    [CsvHelper]="OrmTables DbTransactionHelper ValidationHelper LogHelper"
+    [CsvHelper]="PlatformHelper OrmTables DbTransactionHelper ValidationHelper LogHelper"
     [ApiResponseHelper]="LogHelper"
     [PermissionHelper]="ApiResponseHelper LogHelper"
-    [FileHelper]="LogHelper"
+    [FileHelper]="PlatformHelper LogHelper"
     [QueueHelper]="DateHelper"
-    [ChunkUploadHelper]="LogHelper DateHelper"
+    [ChunkUploadHelper]="PlatformHelper LogHelper DateHelper"
     [HttpHelper]="LogHelper"
     [LockHelper]="LogHelper DbConnectionHelper"
     [CacheHelper]="LogHelper LockHelper"
     [MailHelper]="LogHelper"
     [RateLimitHelper]="LogHelper ApiResponseHelper DbConnectionHelper"
     [CryptoHelper]="LogHelper"
+    [ExportHelper]="PlatformHelper LogHelper"
+    [UploadMaster]="PlatformHelper"
     [WebhookHelper]="LogHelper ApiResponseHelper CryptoHelper DbConnectionHelper"
 )
-TODOS="LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper SettingsHelper IncludeHelper"
+TODOS="PlatformHelper LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper SettingsHelper IncludeHelper"
 
 FORCAR=0; PEDIDOS=()
 for a in "$@"; do

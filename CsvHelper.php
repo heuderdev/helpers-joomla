@@ -1,9 +1,13 @@
 <?php
 
-defined('_JEXEC') or die;
+// Bloqueia só o acesso direto pela URL; funciona no Joomla 3 a 6, no Laravel e em PHP puro.
+if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVER['SCRIPT_FILENAME']) === __FILE__) {
+    die('Acesso restrito.');
+}
 
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
+if (!class_exists('PlatformHelper', false)) {
+    require_once __DIR__ . '/PlatformHelper.php';
+}
 
 /*
  * Erro com mensagem segura para mostrar ao usuário ("O CSV está vazio",
@@ -91,27 +95,27 @@ class CsvHelper
     private static function log($level, $message, array $context = array())
     {
         try {
-            $priority = JLog::INFO;
+            $priority = PlatformHelper::LOG_INFO;
 
             switch (strtolower((string) $level)) {
                 case 'debug':
-                    $priority = JLog::DEBUG;
+                    $priority = PlatformHelper::LOG_DEBUG;
                     break;
 
                 case 'notice':
-                    $priority = JLog::NOTICE;
+                    $priority = PlatformHelper::LOG_NOTICE;
                     break;
 
                 case 'warning':
-                    $priority = JLog::WARNING;
+                    $priority = PlatformHelper::LOG_WARNING;
                     break;
 
                 case 'error':
-                    $priority = JLog::ERROR;
+                    $priority = PlatformHelper::LOG_ERROR;
                     break;
 
                 case 'critical':
-                    $priority = JLog::CRITICAL;
+                    $priority = PlatformHelper::LOG_CRITICAL;
                     break;
             }
 
@@ -137,7 +141,7 @@ class CsvHelper
                     self::$logDirectory
                 );
 
-                JLog::addLogger(
+                PlatformHelper::addLogger(
                     array(
                         'text_file' => self::$logCategory . '.php',
                         'text_file_path' => $directory,
@@ -148,7 +152,7 @@ class CsvHelper
                 );
             }
 
-            JLog::add(
+            PlatformHelper::log(
                 self::limitText(
                     (string) $message . $contextText,
                     20000
@@ -198,8 +202,8 @@ class CsvHelper
             );
         }
 
-        if (!JFolder::exists($directory)) {
-            if (!JFolder::create($directory, 0755)) {
+        if (!PlatformHelper::folderExists($directory)) {
+            if (!PlatformHelper::folderCreate($directory, 0755)) {
                 throw new RuntimeException(
                     'Não foi possível criar o diretório de logs.'
                 );
@@ -268,7 +272,7 @@ class CsvHelper
 
     private static function siteRoot()
     {
-        $siteRoot = realpath(JPATH_SITE);
+        $siteRoot = realpath(PlatformHelper::rootPath());
 
         if ($siteRoot === false) {
             throw new RuntimeException(
@@ -345,8 +349,8 @@ class CsvHelper
             );
         }
 
-        if (!JFolder::exists($baseDirectory)) {
-            if (!JFolder::create($baseDirectory, 0755)) {
+        if (!PlatformHelper::folderExists($baseDirectory)) {
+            if (!PlatformHelper::folderCreate($baseDirectory, 0755)) {
                 throw new RuntimeException(
                     'Não foi possível criar o diretório base.'
                 );
@@ -399,7 +403,7 @@ class CsvHelper
                 );
             }
 
-            $safePart = JFile::makeSafe($part);
+            $safePart = PlatformHelper::makeSafe($part);
 
             if ($safePart === '') {
                 throw new RuntimeException(
@@ -454,8 +458,8 @@ class CsvHelper
         if (!$mustExist) {
             $directory = dirname($filePath);
 
-            if (!JFolder::exists($directory)) {
-                if (!JFolder::create($directory, 0755)) {
+            if (!PlatformHelper::folderExists($directory)) {
+                if (!PlatformHelper::folderCreate($directory, 0755)) {
                     throw new RuntimeException(
                         'Não foi possível criar o diretório de destino.'
                     );
@@ -465,7 +469,7 @@ class CsvHelper
             return $filePath;
         }
 
-        if (!JFile::exists($filePath)) {
+        if (!PlatformHelper::fileExists($filePath)) {
             throw new CsvHelperException(
                 'Arquivo CSV não encontrado.'
             );
@@ -2998,7 +3002,7 @@ class CsvHelper
             'max_errors' => isset($options['max_errors'])
                 ? max(1, (int) $options['max_errors'])
                 : 1000,
-            'started_at' => JFactory::getDate()->toSql(),
+            'started_at' => PlatformHelper::nowSql(),
             'finished_at' => null
         );
 
@@ -3193,7 +3197,7 @@ class CsvHelper
                 $dispatch($chunk);
             }
 
-            $report['finished_at'] = JFactory::getDate()->toSql();
+            $report['finished_at'] = PlatformHelper::nowSql();
 
             self::log(
                 'info',
@@ -3216,7 +3220,7 @@ class CsvHelper
                 $report['errors']
             );
         } catch (Throwable $error) {
-            $report['finished_at'] = JFactory::getDate()->toSql();
+            $report['finished_at'] = PlatformHelper::nowSql();
 
             self::log(
                 'error',
@@ -3375,10 +3379,13 @@ class CsvHelper
                 throw new CsvHelperException('A tabela ' . $table . ' não foi encontrada.');
             }
 
-            // Datas automáticas só se a tabela tiver as colunas.
+            // Datas automáticas só se a tabela tiver as colunas (com os nomes do ORM, se informados).
             if (!array_key_exists('timestamps', $ormOptions)) {
-                $ormOptions['timestamps'] = in_array('created_at', $tableColumns, true)
-                    && in_array('updated_at', $tableColumns, true);
+                $createdColumn = isset($ormOptions['createdAtColumn']) ? $ormOptions['createdAtColumn'] : 'created_at';
+                $updatedColumn = isset($ormOptions['updatedAtColumn']) ? $ormOptions['updatedAtColumn'] : 'updated_at';
+
+                $ormOptions['timestamps'] = in_array($createdColumn, $tableColumns, true)
+                    && in_array($updatedColumn, $tableColumns, true);
 
                 $orm = OrmTables::table($table, $ormOptions);
             }
