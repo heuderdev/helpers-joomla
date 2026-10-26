@@ -6,6 +6,7 @@ Todos devolvem `['success', 'status', 'mensagem', 'data', 'errors']`, não lanç
 
 ```php
 $arquivo = UploadMaster::getFileFromInput('documento');            // <input type="file" name="documento">
+$pacote = UploadMaster::getFileFromInput('pacote', null, true);     // ZIP/RAR/GZ: $raw = true, senão o isSafeFile do Joomla descarta em silêncio; e passe 'raw' => true no upload(), que repete a checagem ao mover
 $r = UploadMaster::upload($arquivo, 'contratos/' . date('Y'), null, [
     'allowed_extensions' => ['pdf', 'jpg', 'png'],
     'max_size' => 5 * 1024 * 1024,

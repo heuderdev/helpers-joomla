@@ -1656,9 +1656,15 @@ class UploadMaster
         $units[$power];
     }
 
-    public static function getFileFromInput($fieldName, $index = null)
+    /*
+     * $raw = true pula o isSafeFile() do Joomla, necessário para ZIP/RAR/GZ
+     * (ver InputHelper::file()). Seguro aqui porque upload() sempre recusa
+     * extensões executáveis e valida extensão, MIME e tamanho; restrinja
+     * allowed_extensions/allowed_mimes ao que o formulário precisa.
+     */
+    public static function getFileFromInput($fieldName, $index = null, $raw = false)
     {
-        $files = PlatformHelper::uploadedFiles($fieldName);
+        $files = PlatformHelper::uploadedFiles($fieldName, $raw);
 
         if (empty($files)) {
             return null;
@@ -1766,9 +1772,15 @@ class UploadMaster
                 }
             }
 
+            /*
+             * 'raw' => true: o File::upload() do Joomla não repete o
+             * isSafeFile() ao mover (ver getFileFromInput()). As checagens
+             * acima (extensões perigosas, MIME, tamanho) continuam valendo.
+             */
             if (!PlatformHelper::fileUpload(
                 $file['tmp_name'],
-                $destinationPath
+                $destinationPath,
+                !empty($options['raw'])
             )) {
                 throw new UploadMasterException(
                     'Não foi possível salvar o arquivo enviado.'

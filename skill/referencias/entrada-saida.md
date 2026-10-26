@@ -17,7 +17,7 @@ Assinatura comum: `metodo($campo, $padrao, $fonte = 'request')`. Fonte: `'get'`,
 | `filters($mapa)` | como `map`, sem os vazios (filtros de tela) |
 | `pagination(20, 100)` | `['page','limit','offset']` |
 | `sorting(['nome','criado_em'], 'nome', 'ASC')` | `['field','direction']` só de colunas permitidas |
-| `json($campo = null)` · `file($campo)` · `files($campo)` | corpo JSON · arquivo(s) enviado(s) |
+| `json($campo = null)` · `file($campo, null, $raw = false)` · `files($campo, [], $raw = false)` | corpo JSON · arquivo(s) enviado(s). **ZIP/RAR/GZ: use `$raw = true`**, senão o `isSafeFile` do Joomla descarta o arquivo em silêncio (vira `null`) ao achar `.pl`/`.py`/`.php` nos bytes comprimidos; valide em seguida com `UploadMaster::upload()` (extensões/MIMEs, nome gerado) passando também `'raw' => true`, porque o Joomla repete a checagem ao mover o arquivo |
 | `has` · `method` · `isPost` · `isGet` · `isAjax` · `expectsJson` · `ip` · `userAgent` · `referer` · `server($nome)` | |
 
 ## ValidationHelper

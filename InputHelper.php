@@ -908,7 +908,18 @@ class InputHelper
         return self::server('HTTP_REFERER', '');
     }
 
-    public static function file($name, $default = null)
+    /*
+     * Por padrão o Joomla passa o upload pelo InputFilter::isSafeFile() e,
+     * se achar "inseguro", devolve $default sem erro. Em .zip/.rar/.gz ele
+     * procura textos como ".pl", ".py" e ".php" nos bytes do arquivo, o que
+     * aparece por acaso em dados comprimidos: ZIPs legítimos (quase todos
+     * acima de alguns MB) somem do upload.
+     *
+     * $raw = true pula essa checagem. Use só quando o arquivo for validado
+     * em seguida (UploadMaster::upload com allowed_extensions/allowed_mimes)
+     * e gravado com nome gerado e extensão fixa, nunca com o nome original.
+     */
+    public static function file($name, $default = null, $raw = false)
     {
         try {
             $name = self::normalizeName($name);
@@ -916,7 +927,7 @@ class InputHelper
             $file = self::source('files')->get(
                 $name,
                 $default,
-                'array'
+                $raw ? 'raw' : 'array'
             );
 
             if (!is_array($file) || self::isEmptyUpload($file)) {
@@ -931,7 +942,8 @@ class InputHelper
         }
     }
 
-    public static function files($name, array $default = array())
+    // $raw: ver file(). Sem ele, um único arquivo "inseguro" descarta a lista toda.
+    public static function files($name, array $default = array(), $raw = false)
     {
         try {
             $name = self::normalizeName($name);
@@ -939,7 +951,7 @@ class InputHelper
             $files = self::source('files')->get(
                 $name,
                 $default,
-                'array'
+                $raw ? 'raw' : 'array'
             );
 
             if (!is_array($files)) {

@@ -474,15 +474,19 @@ class PlatformHelper
      * Requisição
      * ================================================================= */
 
-    // Arquivo(s) enviados num campo, no formato do $_FILES (lista quando o campo é múltiplo).
-    public static function uploadedFiles($fieldName)
+    /*
+     * Arquivo(s) enviados num campo, no formato do $_FILES (lista quando o campo é múltiplo).
+     * No Joomla, $raw = true pula o InputFilter::isSafeFile(), que descarta em silêncio
+     * ZIP/RAR/GZ legítimos (ver InputHelper::file()). Fora do Joomla não há esse filtro.
+     */
+    public static function uploadedFiles($fieldName, $raw = false)
     {
         if (self::isJoomla()) {
             $factory = self::joomlaMethod('factory', 'getApplication');
             $app = $factory::getApplication();
             $input = method_exists($app, 'getInput') ? $app->getInput() : $app->input;
 
-            return $input->files->get($fieldName, null, 'array');
+            return $input->files->get($fieldName, null, $raw ? 'raw' : 'array');
         }
 
         if (self::isLaravel() && function_exists('request')) {
@@ -810,16 +814,22 @@ class PlatformHelper
     }
 
     // Move o arquivo recebido por upload (sem as checagens extras do Joomla, que o helper já faz).
-    public static function fileUpload($source, $destination)
+    /*
+     * $allowUnsafe = true pula o InputFilter::isSafeFile() que o File::upload()
+     * do CMS roda de novo ao mover (o mesmo que descarta ZIP/RAR/GZ legítimos).
+     * Só para arquivos já validados pelo UploadMaster.
+     */
+    public static function fileUpload($source, $destination, $allowUnsafe = false)
     {
         $class = self::joomlaMethod('file', 'upload');
 
+        // O File do framework não tem a checagem.
         if ($class === 'Joomla\\Filesystem\\File') {
             return $class::upload($source, $destination, false);
         }
 
         if ($class !== null) {
-            return $class::upload($source, $destination, false, false);
+            return $class::upload($source, $destination, false, (bool) $allowUnsafe);
         }
 
         if (!self::folderCreate(dirname((string) $destination))) {
