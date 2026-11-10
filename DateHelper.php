@@ -28,7 +28,7 @@ if (!defined('_JEXEC') && isset($_SERVER['SCRIPT_FILENAME']) && realpath($_SERVE
  * Fusos: 'UTC', 'user' (fuso do usuário logado), um nome como
  * 'America/Sao_Paulo' ou um DateTimeZone.
  *
- * Funciona no Joomla 3.4.5 ou superior, 4 e 5, em PHP 7.0 ou superior.
+ * Funciona no Joomla 4.4 e 5, em PHP 8.2 ou superior.
  */
 class DateHelper
 {

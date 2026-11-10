@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Confere código PHP gerado/refatorado: sintaxe, PHP 7.0 e padrões que os helpers substituem.
+# Confere código PHP gerado/refatorado: sintaxe, PHP 8.2+ e padrões que os helpers substituem.
 #   checar.sh arquivo.php [pasta ...]
 # Saída: ERRO (precisa corrigir) e AVISO (revise). Código de saída 1 se houver ERRO.
 set -uo pipefail
@@ -13,19 +13,26 @@ erros=0; avisos=0
 erro()  { echo "ERRO  $1:$2  $3"; erros=$((erros + 1)); }
 aviso() { echo "AVISO $1:$2  $3"; avisos=$((avisos + 1)); }
 
-# padrão§mensagem  (PHP 7.1+ não roda no PHP 7.0 dos servidores Joomla 3)
-PHP71=(
-    '\?(int|string|bool|float|array|self|callable|iterable|object|[A-Z][A-Za-z_]+) \$§tipo anulável (?tipo) exige PHP 7.1'
-    'function\b[^;{]*\)\s*:\s*\??[A-Za-z_\\]+§tipo de retorno declarado: evite (void e ?tipo exigem 7.1; os helpers não usam)'
-    '\bfn\s*\(§arrow function exige PHP 7.4'
-    '\?\?=§??= exige PHP 7.4'
-    '\?->§nullsafe ?-> exige PHP 8'
-    '\bmatch\s*\(§match exige PHP 8'
-    '^\s*\[[^]=]*\]\s*=[^=>]§desestruturação [$a, $b] = exige PHP 7.1 (use list())'
-    'catch\s*\([^)]*\|§catch múltiplo (A | B) exige PHP 7.1'
-    '(private|protected|public)\s+const\b§visibilidade em constante exige PHP 7.1'
-    '(private|protected|public)\s+(static\s+)?(int|string|bool|float|array|\?[a-z]+)\s+\$§propriedade tipada exige PHP 7.4'
-    'str_contains|str_starts_with|str_ends_with|array_key_first|array_key_last§função de PHP 7.3+/8'
+# padrão§mensagem  (recursos do PHP 8.3+ não rodam no mínimo do projeto, PHP 8.2)
+PHP83=(
+    '\bconst\s+(int|string|bool|float|array|mixed|object|iterable|\?[a-z]+|[A-Z][A-Za-z_\\]+)\s+[A-Za-z_][A-Za-z0-9_]*\s*=§constante de classe tipada exige PHP 8.3'
+    '#\[\\?Override\b§atributo #[Override] exige PHP 8.3'
+    '::\{\$§acesso dinâmico a constante (Classe::{$x}) exige PHP 8.3'
+    '\b(json_validate|mb_str_pad|str_increment|str_decrement)\s*\(§função de PHP 8.3'
+    '(public|protected)\s+(private|protected)\(set\)§visibilidade assimétrica exige PHP 8.4'
+    '\bnew\s+[A-Za-z_\\]+\([^()]*\)\s*->§new Classe()->metodo() sem parênteses em volta exige PHP 8.4: use (new Classe())->metodo()'
+    '\b(array_find|array_find_key|array_any|array_all|mb_trim|mb_ltrim|mb_rtrim|mb_ucfirst|mb_lcfirst|bcround|bcfloor|bcceil|request_parse_body)\s*\(§função de PHP 8.4'
+    '#\[\\?Deprecated\b§atributo #[Deprecated] exige PHP 8.4'
+    '\|>§operador pipe |> exige PHP 8.5'
+    '\b(array_first|array_last)\s*\(§função de PHP 8.5'
+    '#\[\\?NoDiscard\b§atributo #[NoDiscard] exige PHP 8.5'
+)
+
+# padrão§mensagem  (obsoletos no PHP 8.2+: funcionam, mas geram aviso)
+OBSOLETOS=(
+    '\b(utf8_encode|utf8_decode)\s*\(§utf8_encode/utf8_decode obsoletos no PHP 8.2: use mb_convert_encoding($v, "UTF-8", "ISO-8859-1")'
+    '"[^"]*\$\{[A-Za-z_]§interpolação "${var}" obsoleta no PHP 8.2: use "{$var}"'
+    '[(,]\s*[A-Za-z_\\][A-Za-z0-9_\\]*\s+&?\$[A-Za-z_][A-Za-z0-9_]*\s*=\s*null\b§parâmetro tipado com = null sem ? é obsoleto no PHP 8.4: use ?Tipo $x = null'
 )
 
 # padrão§mensagem  (oportunidades de usar os helpers / riscos)
@@ -40,7 +47,7 @@ HELPERS=(
     'LogHelper::write§LogHelper::write é privado: use LogHelper::info/error/exception'
     'set_time_limit\(0\)§tarefa longa: considere a fila (QueueHelper)'
     "date\\(\\s*['\"]Y-m-d H:i(:s)?['\"]\\s*\\)§date() usa o fuso do servidor: para gravar no banco use DateHelper::nowSql() (UTC); para mostrar, DateHelper::toUser()"
-    'catch\s*\(\s*Exception\b§capture Throwable (pega também Error do PHP 7)'
+    'catch\s*\(\s*Exception\b§capture Throwable (pega também Error: TypeError, ValueError...)'
 )
 
 for f in "${ARQS[@]}"; do
@@ -48,9 +55,13 @@ for f in "${ARQS[@]}"; do
     if ! saida=$(php -l "$f" 2>&1); then
         erro "$f" 0 "$(echo "$saida" | grep -m1 -i error)"; continue
     fi
-    for regra in "${PHP71[@]}"; do
+    for regra in "${PHP83[@]}"; do
         while IFS=: read -r n _; do [ -n "$n" ] && erro "$f" "$n" "${regra#*§}"; done \
-            < <(grep -nE -- "${regra%%§*}" "$f" | grep -vE '^\s*[0-9]+:\s*(\*|//|#)')
+            < <(grep -nE -- "${regra%%§*}" "$f" | grep -vE '^[0-9]+:\s*(\*|//|# )')
+    done
+    for regra in "${OBSOLETOS[@]}"; do
+        while IFS=: read -r n _; do [ -n "$n" ] && aviso "$f" "$n" "${regra#*§}"; done \
+            < <(grep -nE -- "${regra%%§*}" "$f" | grep -vE '^[0-9]+:\s*(\*|//|# )')
     done
     for regra in "${HELPERS[@]}"; do
         while IFS=: read -r n _; do [ -n "$n" ] && aviso "$f" "$n" "${regra#*§}"; done \

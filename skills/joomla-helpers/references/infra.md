@@ -1,4 +1,4 @@
-# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper
+# Infra: LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper, ArrayHelper
 
 ## LogHelper (log técnico em arquivo)
 
@@ -39,7 +39,7 @@ IncludeHelper::load(['OrmTables', 'ApiResponseHelper', 'CsvHelper']);   // ou ca
 IncludeHelper::loadAll();
 IncludeHelper::getDependencies('CsvHelper');
 ```
-Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, DateHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster, HttpHelper, LockHelper, CacheHelper, MailHelper, RateLimitHelper, CryptoHelper, FormatHelper, WebhookHelper, SettingsHelper. O autoloader também resolve `CsvHelperException`, `UploadMasterException`, `HttpClient`, `HttpHelperException` e `LockHelperException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.
+Procura os arquivos na mesma pasta do `IncludeHelper.php`. Conhece: LogHelper, DateHelper, InputHelper, ValidationHelper, DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, ApiResponseHelper, PermissionHelper, FileHelper, AuditHelper, CsvHelper, ChunkUploadHelper (classe `ChunkHelper`), ExportHelper, QueueHelper, UploadMaster, HttpHelper, LockHelper, CacheHelper, MailHelper, RateLimitHelper, CryptoHelper, FormatHelper, WebhookHelper, SettingsHelper, ArrayHelper. O autoloader também resolve `CsvHelperException`, `UploadMasterException`, `HttpClient`, `HttpHelperException` e `LockHelperException`. **Não** conhece os arquivos de `fila/`: carregue-os com `require_once`.
 
 ## DateHelper (datas e fuso horário)
 
@@ -129,3 +129,21 @@ SettingsHelper::set('erp_token', $novo, true);           // grava em #__extensio
 SettingsHelper::setComponent('com_x');                   // CLI/plugin; padrão = option da requisição
 ```
 - `bool` entende '1'/'0', sim/não; `array` aceita campo múltiplo, JSON ou texto por vírgula/linha; `'smtp.host'` lê subform. Repita no código o default do config.xml (só vale após salvar as Opções).
+
+## ArrayHelper (arrays, objetos e coleções na memória)
+
+```php
+ArrayHelper::get($r['json'], 'data.0.endereco.cidade', '-');   // array, stdClass, JTable, Registry; padrão pode ser Closure
+ArrayHelper::get($pedido, 'itens.*.preco');                    // [100, 50] (curinga só em get/has)
+ArrayHelper::set($corpo, 'cliente.nome', $nome);               // por referência, cria níveis · forget/pull/add · has/hasAny/hasAll
+ArrayHelper::pluck($rows, 'nome', 'id'); keyBy($rows, 'id'); groupBy($rows, 'status'); countBy($rows, 'status');
+ArrayHelper::where($rows, 'status', 'pago');                   // ESTRITO: '7' !== 7 (banco devolve texto) → passe '7' ou $estrito=false
+ArrayHelper::whereIn/whereNotIn/whereNull/whereNotNull; whereCompare($rows, 'total', '>=', 100)   // < between in like contains 'starts with'
+ArrayHelper::sortBy($rows, 'total', true); sortByMany($rows, ['status' => 'asc', 'total' => 'desc']);   // estável, null primeiro
+ArrayHelper::sum/avg/min/max($rows, 'total');                  // ignora não numéricos; dinheiro: sum com Closure de FormatHelper::toCents
+ArrayHelper::toTree($categorias, 'id', 'parent_id', 'children');   // pai ausente → raiz; copia objetos
+ArrayHelper::only/except($d, ['senha']); select($rows, ['id', 'nome']); merge($padrao, $opcoes); renameKeys($d, ['COD' => 'codigo'], false);
+ArrayHelper::dot/undot/flatten/collapse/clean/changeKeyCase/map/mapWithKeys/first/last/partition/unique/toArray/toObject/toObjects/wrap
+```
+- Sem dependências; roda no Joomla 3–6, Laravel e PHP puro. Para dado no banco, filtre/some no SQL (ORM); ArrayHelper é para o que já está na memória (JSON de API/webhook, linhas de formulário, juntar resultado de duas consultas sem N+1).
+- Lança `InvalidArgumentException` em uso errado (caminho de tipo inválido, operador desconhecido, agrupar por valor array); dado ausente devolve o padrão. `get($d, null)` devolve `$d` inteiro.

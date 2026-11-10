@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ArrayHelper · helpers-joomla</title>
+<meta name="description" content="ArrayHelper: arrays e objetos com caminho em notação de ponto (get, set, has, curinga *) e coleções de registros: filtrar, agrupar, indexar, ordenar, somar, montar árvore, mesclar e renomear chaves.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › ArrayHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação zip rar compactado raw issafefile">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="platform-helper.html" data-busca="plataforma laravel php puro joomla 6 compatibilidade jfile jfolder jlog">PlatformHelper<span class="arquivo">PlatformHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><a href="array-helper.html" class="ativo" aria-current="page" data-busca="array arrays objeto notação de ponto get set pluck groupby keyby where filtrar agrupar ordenar sortby somar sum árvore totree dot merge coleção lista registros">ArrayHelper<span class="arquivo">ArrayHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>ArrayHelper</h1><p class="lead">Arrays e objetos com caminho em notação de ponto (<code>cliente.endereco.cidade</code>, <code>itens.*.preco</code>) e operações de coleção sobre listas de registros: filtrar, agrupar, indexar, ordenar, somar, montar árvore e reorganizar chaves. Funciona igual com o <code>stdClass[]</code> do ORM, o array do <code>json_decode</code> e objetos do Joomla.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/ArrayHelper.php&#x27;;
+
+$pedidos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;criado_em&#x27;, &#x27;&gt;=&#x27;, $inicio)-&gt;get();   // stdClass[]
+
+$ids       = ArrayHelper::pluck($pedidos, &#x27;id&#x27;);                       // [&#x27;12&#x27;, &#x27;13&#x27;, &#x27;14&#x27;]
+$porStatus = ArrayHelper::groupBy($pedidos, &#x27;status&#x27;);                 // [&#x27;pago&#x27; =&gt; [...], &#x27;pendente&#x27; =&gt; [...]]
+$grandes   = ArrayHelper::whereCompare($pedidos, &#x27;total&#x27;, &#x27;&gt;=&#x27;, 500);
+$total     = ArrayHelper::sum($pedidos, &#x27;total&#x27;);
+$cidade    = ArrayHelper::get($cliente, &#x27;endereco.cidade&#x27;, &#x27;Não informada&#x27;);
+$precos    = ArrayHelper::get($pedido, &#x27;itens.*.preco&#x27;);               // [100, 50]</code></pre></div>
+<ul>
+<li><strong>Sem dependências.</strong> PHP 8.2 ou superior; Joomla 4.4, 5 e 6, Laravel e PHP puro (bloqueia só o acesso direto pela URL, como o <a href="platform-helper.html">PlatformHelper</a>).</li>
+<li><strong>Aceita qualquer estrutura</strong>: arrays, <code>stdClass</code>, objetos com propriedades públicas, objetos com <code>__get</code>/<code>__isset</code> (<code>JTable</code>, <code>JObject</code>/<code>CMSObject</code>) e <code>ArrayAccess</code> (<code>Registry</code>, <code>ArrayObject</code>). Pode misturar: array de objetos com arrays dentro.</li>
+<li><strong>Não altera o que você passa</strong>, exceto <code>set()</code>, <code>forget()</code>, <code>pull()</code> e <code>add()</code>, que recebem a variável por referência (e também a devolvem).</li>
+<li><strong>Erros de uso lançam</strong> <code>InvalidArgumentException</code> (caminho de tipo inválido, operador desconhecido, gravar dentro de um texto). Dado ausente nunca lança: devolve o padrão.</li>
+</ul>
+<div class="nota dica"><p><strong class="rotulo">SQL primeiro</strong> Se o filtro, a soma ou o agrupamento cabem na consulta (<code>where()</code>, <code>sum()</code>, <code>groupBy()</code>, <code>pluck()</code> do <a href="orm-base-leitura.html">OrmBase</a>), faça no banco: trafega menos e usa índice. O ArrayHelper é para o que <strong>já está na memória</strong>: o JSON de uma API (<a href="http-helper.html">HttpHelper</a>), o payload de um <a href="webhook-helper.html">webhook</a>, as linhas de um formulário, o resultado de uma consulta que você precisa em vários formatos, ou dados de dois bancos diferentes que o SQL não junta.</p></div>
+
+<h2 id="caminho" data-titulo="Caminho em notação de ponto">Caminho em notação de ponto</h2>
+<p>Todo método que recebe <code>$caminho</code> aceita as mesmas formas:</p>
+<div class="tabela"><table><thead><tr><th>Forma</th><th>Exemplo</th><th>Lê</th></tr></thead><tbody>
+<tr><td>Texto com pontos</td><td><code>'cliente.endereco.cidade'</code></td><td><code>$d['cliente']['endereco']['cidade']</code> (ou <code>->cliente->endereco->cidade</code>)</td></tr>
+<tr><td>Índice de lista</td><td><code>'contatos.0.email'</code>, <code>3</code></td><td>primeiro contato; item 3</td></tr>
+<tr><td>Lista de segmentos</td><td><code>['config', 'smtp.host']</code></td><td>chave que tem ponto no nome</td></tr>
+<tr><td>Chave literal</td><td><code>'smtp.host'</code> quando existe <code>$d['smtp.host']</code></td><td>a chave literal vence o caminho</td></tr>
+<tr><td>Curinga (<code>get</code>/<code>has</code>)</td><td><code>'itens.*.preco'</code>, <code>'*.itens.*.sku'</code></td><td>lista com o valor de cada item; <code>*</code> aninhado já sai achatado</td></tr>
+<tr><td>Closure (métodos de coleção)</td><td><code>function ($registro, $chave) { ... }</code></td><td>valor calculado por registro</td></tr>
+</tbody></table></div>
+
+<h2 id="get-has" data-titulo="get, has, set, forget">Ler, conferir, gravar e remover</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>get($dados, $caminho, $padrao = null)</code></td><td><code>mixed</code></td><td>Valor no caminho; <code>$padrao</code> se não existir (Closure: chamada só quando precisa). Com <code>*</code>, devolve lista.</td></tr>
+<tr><td><code>has($dados, $caminho)</code></td><td><code>bool</code></td><td>Existe, mesmo valendo <code>null</code>. Com <code>*</code>, todos os itens precisam ter o restante.</td></tr>
+<tr><td><code>hasAny($dados, $caminhos)</code> / <code>hasAll($dados, $caminhos)</code></td><td><code>bool</code></td><td>Algum / todos existem (<code>hasAll</code> com lista vazia é <code>false</code>).</td></tr>
+<tr><td><code>set(&amp;$dados, $caminho, $valor)</code></td><td>os dados</td><td>Grava criando os níveis que faltam (array em array, <code>stdClass</code> em objeto).</td></tr>
+<tr><td><code>add(&amp;$dados, $caminho, $valor)</code></td><td>os dados</td><td>Grava só se o caminho ainda não existe.</td></tr>
+<tr><td><code>forget(&amp;$dados, $caminho)</code></td><td>os dados</td><td>Remove, se existir.</td></tr>
+<tr><td><code>pull(&amp;$dados, $caminho, $padrao = null)</code></td><td><code>mixed</code></td><td>Lê e remove.</td></tr>
+</tbody></table></div>
+<p>Resposta de uma API externa: sem <code>isset()</code> encadeado nem aviso de índice indefinido quando o campo não vem.</p>
+<div class="codigo"><pre><code data-lang="php">$erp = HttpHelper::client([&#x27;base_url&#x27; =&gt; SettingsHelper::string(&#x27;erp_url&#x27;), &#x27;bearer&#x27; =&gt; SettingsHelper::secret(&#x27;erp_token&#x27;)]);
+$r = $erp-&gt;get(&#x27;/clientes&#x27;, [&#x27;documento&#x27; =&gt; FormatHelper::onlyDigits($cpf)]);
+
+if (!$r[&#x27;ok&#x27;]) {
+    return ApiResponseHelper::serviceUnavailable(HttpHelper::errorMessage($r));
+}
+
+$cliente = ArrayHelper::get($r[&#x27;json&#x27;], &#x27;data.0&#x27;);                       // primeiro resultado ou null
+
+if ($cliente === null) {
+    return ApiResponseHelper::notFound(&#x27;Cliente não encontrado no ERP.&#x27;);
+}
+
+$cidade   = ArrayHelper::get($cliente, &#x27;endereco.cidade&#x27;, &#x27;Não informada&#x27;);
+$email    = ArrayHelper::get($cliente, &#x27;contatos.0.email&#x27;);
+$telefones = ArrayHelper::get($cliente, &#x27;contatos.*.telefone&#x27;);           // [&#x27;11987654321&#x27;, &#x27;1133334444&#x27;]
+$limite   = ArrayHelper::get($cliente, &#x27;credito.limite&#x27;, function () {
+    return SettingsHelper::float(&#x27;limite_padrao&#x27;, 0);                     // só consulta se o ERP não mandar
+});</code></pre></div>
+<p>Montar o corpo de uma requisição sem criar cada nível à mão:</p>
+<div class="codigo"><pre><code data-lang="php">$corpo = [];
+ArrayHelper::set($corpo, &#x27;cliente.nome&#x27;, $pedido-&gt;nome);
+ArrayHelper::set($corpo, &#x27;cliente.documento&#x27;, FormatHelper::onlyDigits($pedido-&gt;cpf));
+ArrayHelper::set($corpo, &#x27;entrega.cep&#x27;, FormatHelper::onlyDigits($pedido-&gt;cep));
+ArrayHelper::set($corpo, &#x27;valor&#x27;, FormatHelper::toCents($pedido-&gt;total));
+// [&#x27;cliente&#x27; =&gt; [&#x27;nome&#x27; =&gt; &#x27;Ana&#x27;, &#x27;documento&#x27; =&gt; &#x27;12345678909&#x27;], &#x27;entrega&#x27; =&gt; [&#x27;cep&#x27; =&gt; &#x27;01310100&#x27;], &#x27;valor&#x27; =&gt; 15000]
+
+$r = $erp-&gt;post(&#x27;/pedidos&#x27;, $corpo);</code></pre></div>
+<div class="nota aviso"><p><strong class="rotulo"><code>null</code> existe</strong> Se o campo existe valendo <code>null</code>, <code>get()</code> devolve <code>null</code>, não o padrão, e <code>has()</code> devolve <code>true</code>. Para "vazio ou ausente", use <code>ArrayHelper::get($d, 'campo') ?: $padrao</code>.</p></div>
+
+<h2 id="selecionar" data-titulo="only, except, select">Escolher campos: <code>only</code>, <code>except</code>, <code>select</code></h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>only($dados, $chaves)</code></td><td><code>array</code></td><td>Só as chaves pedidas (aceita caminho; monta os níveis).</td></tr>
+<tr><td><code>except($dados, $chaves)</code></td><td>mesmo tipo</td><td>Tudo menos as chaves; objeto volta como cópia.</td></tr>
+<tr><td><code>select($registros, $campos)</code></td><td><code>array[]</code></td><td><code>only()</code> em cada registro, mantendo as chaves da lista.</td></tr>
+</tbody></table></div>
+<p>Responder sem vazar campos internos, e mandar para a API externa só o que ela aceita:</p>
+<div class="codigo"><pre><code data-lang="php">$cliente = OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;findOrFail($id);
+
+return ApiResponseHelper::success(&#x27;Cliente.&#x27;, ArrayHelper::except($cliente, [&#x27;senha_hash&#x27;, &#x27;token_api&#x27;, &#x27;observacao_interna&#x27;]));</code></pre></div>
+<div class="codigo"><pre><code data-lang="php">$clientes = OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;where(&#x27;sincronizar&#x27;, 1)-&gt;get();
+
+$lote = ArrayHelper::select($clientes, [&#x27;id&#x27;, &#x27;nome&#x27;, &#x27;email&#x27;]);
+// [[&#x27;id&#x27; =&gt; &#x27;7&#x27;, &#x27;nome&#x27; =&gt; &#x27;Ana&#x27;, &#x27;email&#x27; =&gt; &#x27;ana@x.com&#x27;], ...]</code></pre></div>
+
+<h2 id="filtrar" data-titulo="Filtrar registros">Filtrar registros</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Mantém o registro quando</th></tr></thead><tbody>
+<tr><td><code>where($r, $caminho, $valor, $preservarChaves = false, $estrito = true)</code></td><td>campo <code>===</code> valor (<code>==</code> com <code>$estrito = false</code>)</td></tr>
+<tr><td><code>whereIn($r, $caminho, $valores, $preservarChaves = false, $estrito = false)</code></td><td>campo está na lista</td></tr>
+<tr><td><code>whereNotIn(...)</code></td><td>campo não está na lista, ou não existe</td></tr>
+<tr><td><code>whereNull($r, $caminho)</code> / <code>whereNotNull($r, $caminho)</code></td><td>campo é <code>null</code> ou não existe / campo existe e não é <code>null</code></td></tr>
+<tr><td><code>whereCompare($r, $caminho, $operador, $valor, $preservarChaves = false)</code></td><td>a comparação é verdadeira (tabela abaixo)</td></tr>
+<tr><td><code>first($dados, $filtro = null, $padrao = null)</code> / <code>last(...)</code></td><td>primeiro / último item (que passa no filtro <code>function ($valor, $chave)</code>)</td></tr>
+<tr><td><code>partition($dados, $filtro)</code></td><td>devolve <code>[$passam, $naoPassam]</code>, com as chaves</td></tr>
+</tbody></table></div>
+<p>Por padrão o resultado é reindexado (<code>0, 1, 2…</code>); <code>$preservarChaves = true</code> mantém as chaves originais. Registros sem o campo ficam de fora, exceto em <code>whereNotIn</code> e <code>whereNull</code>. Em todos, <code>$caminho</code> pode ser uma Closure.</p>
+<div class="tabela"><table><thead><tr><th>Operador de <code>whereCompare</code></th><th>Exemplo</th></tr></thead><tbody>
+<tr><td><code>=</code> <code>==</code> <code>===</code> <code>!=</code> <code>&lt;&gt;</code> <code>!==</code></td><td><code>whereCompare($r, 'status', '!=', 'cancelado')</code></td></tr>
+<tr><td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td><td><code>whereCompare($r, 'total', '&gt;=', 100)</code> (texto numérico compara como número; <code>null</code> nunca passa)</td></tr>
+<tr><td><code>between</code> <code>not between</code></td><td><code>whereCompare($r, 'total', 'between', [40, 100])</code> (inclusivo)</td></tr>
+<tr><td><code>in</code> <code>not in</code></td><td><code>whereCompare($r, 'status', 'in', ['pago', 'enviado'])</code></td></tr>
+<tr><td><code>like</code> <code>not like</code></td><td><code>whereCompare($r, 'nome', 'like', 'ana%')</code> (<code>%</code> e <code>_</code> como no SQL, sem diferenciar maiúsculas, com acentos)</td></tr>
+<tr><td><code>contains</code> <code>starts with</code> <code>ends with</code></td><td><code>whereCompare($r, 'cidade', 'starts with', 'são')</code> (sem diferenciar maiúsculas; texto vazio não casa)</td></tr>
+</tbody></table></div>
+<p>Títulos do financeiro do ERP (não estão no seu banco, então não há SQL para filtrar):</p>
+<div class="codigo"><pre><code data-lang="php">$titulos = ArrayHelper::get($erp-&gt;get(&#x27;/financeiro/titulos&#x27;, [&#x27;cliente&#x27; =&gt; $codigo])[&#x27;json&#x27;], &#x27;data&#x27;, []);
+
+$abertos  = ArrayHelper::where($titulos, &#x27;situacao&#x27;, &#x27;ABERTO&#x27;);
+$vencidos = ArrayHelper::whereCompare($abertos, &#x27;vencimento&#x27;, &#x27;&lt;&#x27;, DateHelper::today());   // &#x27;Y-m-d&#x27; compara certo como texto
+$boletos  = ArrayHelper::whereIn($abertos, &#x27;forma&#x27;, [&#x27;BOLETO&#x27;, &#x27;PIX&#x27;]);
+$semNota  = ArrayHelper::whereNull($titulos, &#x27;nota_fiscal&#x27;);
+$proximo  = ArrayHelper::first(ArrayHelper::sortBy($abertos, &#x27;vencimento&#x27;));
+
+list($emDia, $atrasados) = ArrayHelper::partition($abertos, function ($t) {
+    return $t[&#x27;vencimento&#x27;] &gt;= DateHelper::today();
+});</code></pre></div>
+<div class="nota aviso"><p><strong class="rotulo">O banco devolve texto</strong> Sem <code>casts</code>, o Joomla devolve todo número como texto (<code>$p-&gt;id === '7'</code>). Por isso <code>where()</code>, que é estrito, não acha <code>where($pedidos, 'cliente_id', 7)</code>. Passe o valor como texto (<code>'7'</code>), use <code>$estrito = false</code>, ou declare <code>casts</code> no <a href="orm-base-configuracao.html">OrmBase</a>. <code>whereIn</code>/<code>whereNotIn</code> já comparam sem tipo.</p></div>
+
+<h2 id="agrupar" data-titulo="Indexar, agrupar e contar">Indexar, agrupar e contar</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Exemplo de retorno</th></tr></thead><tbody>
+<tr><td><code>pluck($r, $caminho, $chavePor = null)</code></td><td><code>['Ana', 'Bruno']</code> ou, com <code>$chavePor = 'id'</code>, <code>[7 =&gt; 'Ana', 9 =&gt; 'Bruno']</code></td></tr>
+<tr><td><code>keyBy($r, $caminho)</code></td><td><code>[7 =&gt; {registro}, 9 =&gt; {registro}]</code> (repetido: o último vence)</td></tr>
+<tr><td><code>groupBy($r, $caminho, $preservarChaves = false)</code></td><td><code>['pago' =&gt; [{...}, {...}], 'pendente' =&gt; [{...}]]</code></td></tr>
+<tr><td><code>countBy($r, $caminho = null)</code></td><td><code>['pago' =&gt; 2, 'pendente' =&gt; 1]</code></td></tr>
+<tr><td><code>unique($dados, $caminho = null, $estrito = false)</code></td><td>sem repetidos, mantém o primeiro e as chaves</td></tr>
+<tr><td><code>map($dados, $callback)</code></td><td>como <code>array_map</code>, mas mantém as chaves e passa <code>($valor, $chave)</code></td></tr>
+<tr><td><code>mapWithKeys($dados, $callback)</code></td><td>o callback devolve <code>[chave =&gt; valor]</code>; os pares são juntados</td></tr>
+</tbody></table></div>
+<p>O valor do campo vira chave assim: <code>null</code> → <code>''</code>, <code>true</code>/<code>false</code> → <code>1</code>/<code>0</code>, data → <code>'Y-m-d H:i:s'</code>, enum → valor. Texto numérico vira chave inteira (regra do PHP). Um array como valor lança exceção.</p>
+<p>Evitar N+1: uma consulta para os clientes de todos os pedidos, depois juntar na memória.</p>
+<div class="codigo"><pre><code data-lang="php">$pedidos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;where(&#x27;status&#x27;, &#x27;pago&#x27;)-&gt;orderBy(&#x27;id&#x27;, &#x27;DESC&#x27;)-&gt;limit(50)-&gt;get();
+
+$clienteIds = array_values(ArrayHelper::unique(ArrayHelper::pluck($pedidos, &#x27;cliente_id&#x27;)));
+$clientes = $clienteIds === [] ? [] : ArrayHelper::keyBy(
+    OrmTables::table(&#x27;#__loja_clientes&#x27;)-&gt;select(&#x27;id, nome, email&#x27;)-&gt;whereIn(&#x27;id&#x27;, $clienteIds)-&gt;get(),
+    &#x27;id&#x27;
+);
+
+foreach ($pedidos as $pedido) {
+    $pedido-&gt;cliente = isset($clientes[$pedido-&gt;cliente_id]) ? $clientes[$pedido-&gt;cliente_id] : null;
+}</code></pre></div>
+<p>Opções de um <code>&lt;select&gt;</code> e lista agrupada por status:</p>
+<div class="codigo"><pre><code data-lang="php">$opcoes = ArrayHelper::pluck($produtos, &#x27;nome&#x27;, &#x27;id&#x27;);                    // [7 =&gt; &#x27;Camiseta&#x27;, 9 =&gt; &#x27;Boné&#x27;]
+
+$colunas = ArrayHelper::groupBy($tarefas, &#x27;status&#x27;);                      // quadro kanban
+$totais  = ArrayHelper::countBy($tarefas, &#x27;status&#x27;);                      // [&#x27;aberta&#x27; =&gt; 4, &#x27;feita&#x27; =&gt; 9]
+
+$porMes = ArrayHelper::groupBy($pedidos, function ($p) {
+    return substr(DateHelper::format($p-&gt;criado_em, &#x27;Y-m-d&#x27;), 0, 7);      // &#x27;2026-11&#x27;, no fuso do usuário
+});</code></pre></div>
+
+<h2 id="ordenar" data-titulo="Ordenar">Ordenar: <code>sortBy</code>, <code>sortByMany</code></h2>
+<div class="codigo"><pre><code data-lang="php">$porTotal = ArrayHelper::sortBy($pedidos, &#x27;total&#x27;, true);                 // maior total primeiro
+$fila     = ArrayHelper::sortByMany($pedidos, [&#x27;prioridade&#x27; =&gt; &#x27;desc&#x27;, &#x27;criado_em&#x27; =&gt; &#x27;asc&#x27;]);
+$porNome  = ArrayHelper::sortBy($clientes, function ($c) {
+    return FormatHelper::removeAccents($c-&gt;nome);                         // &#x27;Ágata&#x27; junto do &#x27;A&#x27;
+});</code></pre></div>
+<ul>
+<li><strong>Estável</strong>: empate mantém a ordem original (ordenar duas vezes funciona como "por A, depois B").</li>
+<li>Texto compara em ordem natural sem diferenciar maiúsculas (<code>item2</code> antes de <code>item10</code>); texto numérico (<code>'80.50'</code>) compara como número; datas (<code>DateTime</code>) por instante.</li>
+<li><code>null</code> fica antes de tudo no crescente (e por último no decrescente).</li>
+<li>Os dois devolvem lista reindexada; o último parâmetro (<code>$preservarChaves</code>) mantém as chaves. Em <code>sortByMany</code>, critério com Closure: <code>[[function ($r) { ... }, 'desc']]</code>.</li>
+</ul>
+
+<h2 id="somar" data-titulo="Somar e médias">Somar, média, mínimo e máximo</h2>
+<p><code>sum($r, $caminho = null)</code>, <code>avg</code>, <code>min</code>, <code>max</code>: aceitam caminho, Closure ou, sem caminho, os próprios valores. Ignoram o que não é número (<code>null</code>, <code>''</code>, <code>'abc'</code>) e aceitam texto numérico do banco. <code>avg</code>, <code>min</code> e <code>max</code> devolvem <code>null</code> sem valores.</p>
+<div class="codigo"><pre><code data-lang="php">$pagos = ArrayHelper::where($pedidos, &#x27;status&#x27;, &#x27;pago&#x27;);
+
+echo FormatHelper::money(ArrayHelper::sum($pagos, &#x27;total&#x27;));             // faturamento
+echo FormatHelper::money(ArrayHelper::avg($pagos, &#x27;total&#x27;));             // ticket médio
+echo ArrayHelper::sum(ArrayHelper::get($pedido, &#x27;itens.*.quantidade&#x27;, []));   // peças no pedido</code></pre></div>
+<div class="nota dica"><p><strong class="rotulo">Dinheiro em centavos</strong> Para valor que será cobrado ou gravado, some inteiros: <code>ArrayHelper::sum($itens, function ($i) { return FormatHelper::toCents($i['preco']) * (int) $i['qtd']; })</code> e mostre com <code>FormatHelper::moneyFromCents()</code>. Veja <a href="format-helper.html#dinheiro">FormatHelper</a>.</p></div>
+
+<h2 id="arvore" data-titulo="Árvore (toTree)">Árvore: <code>toTree</code></h2>
+<p><code>toTree($registros, $campoId = 'id', $campoPai = 'parent_id', $filhos = 'children', $raiz = null)</code> monta a hierarquia de registros com id/pai (categorias, menus, comentários, plano de contas). Cada nó ganha <code>children</code> (chave em array, propriedade em objeto). Registro cujo pai não está na lista, ou que é pai de si mesmo, fica na raiz. Os objetos são copiados: os originais não ganham <code>children</code>.</p>
+<div class="codigo"><pre><code data-lang="php">$categorias = OrmTables::table(&#x27;#__categories&#x27;)
+    -&gt;select(&#x27;id, parent_id, title&#x27;)
+    -&gt;where(&#x27;extension&#x27;, &#x27;com_loja&#x27;)
+    -&gt;where(&#x27;published&#x27;, 1)
+    -&gt;orderBy(&#x27;lft&#x27;)
+    -&gt;get();
+
+$arvore = ArrayHelper::toTree($categorias);
+// A raiz do Joomla (id 1, extension &#x27;system&#x27;) não vem na consulta,
+// então as categorias de primeiro nível (parent_id = 1) ficam na raiz.
+
+function opcoesCategoria(array $nos, $nivel = 0)
+{
+    $html = &#x27;&#x27;;
+
+    foreach ($nos as $no) {
+        $html .= &#x27;&lt;option value=&quot;&#x27; . (int) $no-&gt;id . &#x27;&quot;&gt;&#x27;
+            . str_repeat(&#x27;— &#x27;, $nivel) . htmlspecialchars($no-&gt;title, ENT_QUOTES, &#x27;UTF-8&#x27;)
+            . &#x27;&lt;/option&gt;&#x27;;
+        $html .= opcoesCategoria($no-&gt;children, $nivel + 1);
+    }
+
+    return $html;
+}</code></pre></div>
+<p>Para um menu em JavaScript, devolva a árvore direto: <code>ApiResponseHelper::success('Categorias.', $arvore)</code>. Comentários de um artigo: <code>toTree($comentarios, 'id', 'resposta_de')</code>.</p>
+<div class="nota aviso"><p><strong class="rotulo">Ciclos somem</strong> Se A é pai de B e B é pai de A, nenhum dos dois chega à raiz e os dois ficam fora do resultado. Isso só acontece com dado corrompido; para conferir, compare <code>count($registros)</code> com o total de nós da árvore.</p></div>
+
+<h2 id="estrutura" data-titulo="Reorganizar a estrutura">Reorganizar a estrutura</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Exemplo</th></tr></thead><tbody>
+<tr><td><code>merge($base, ...$outros)</code></td><td>mescla recursiva em que o último vence: <code>['timeout' =&gt; 5]</code> (o <code>array_merge_recursive</code> daria <code>['timeout' =&gt; [10, 5]]</code>); chaves numéricas são acrescentadas</td></tr>
+<tr><td><code>dot($dados, $prefixo = '')</code></td><td><code>['smtp' =&gt; ['host' =&gt; 'x']]</code> → <code>['smtp.host' =&gt; 'x']</code>; array vazio fica <code>[]</code></td></tr>
+<tr><td><code>undot($dados)</code></td><td>o inverso</td></tr>
+<tr><td><code>flatten($dados, $profundidade = INF)</code></td><td><code>[1, [2, [3]]]</code> → <code>[1, 2, 3]</code></td></tr>
+<tr><td><code>collapse($dados)</code></td><td><code>[[1, 2], [3]]</code> → <code>[1, 2, 3]</code> (um nível)</td></tr>
+<tr><td><code>clean($dados, $removerArraysVazios = false, $recursivo = true)</code></td><td>tira <code>null</code> e <code>''</code> (mantém <code>0</code>, <code>'0'</code> e <code>false</code>); listas são reindexadas</td></tr>
+<tr><td><code>renameKeys($dados, $mapa, $manterOutras = true)</code></td><td><code>['NUM_COOP' =&gt; 'num_coop']</code>; com <code>false</code>, só as mapeadas ficam</td></tr>
+<tr><td><code>changeKeyCase($dados, CASE_LOWER, $recursivo = false)</code></td><td>chaves em minúsculas/maiúsculas, com acentos</td></tr>
+</tbody></table></div>
+<p>Opções com padrão, sem perder os níveis internos:</p>
+<div class="codigo"><pre><code data-lang="php">$padrao = [
+    &#x27;timeout&#x27; =&gt; 10,
+    &#x27;headers&#x27; =&gt; [&#x27;Accept&#x27; =&gt; &#x27;application/json&#x27;],
+    &#x27;retries&#x27; =&gt; 1,
+];
+
+$opcoes = ArrayHelper::merge($padrao, [&#x27;timeout&#x27; =&gt; 5, &#x27;headers&#x27; =&gt; [&#x27;X-Loja&#x27; =&gt; &#x27;centro&#x27;]]);
+// [&#x27;timeout&#x27; =&gt; 5, &#x27;headers&#x27; =&gt; [&#x27;Accept&#x27; =&gt; &#x27;application/json&#x27;, &#x27;X-Loja&#x27; =&gt; &#x27;centro&#x27;], &#x27;retries&#x27; =&gt; 1]</code></pre></div>
+<p>Dados de ERP (colunas em maiúsculas, nomes próprios) no formato da sua tabela, só com os campos que interessam:</p>
+<div class="codigo"><pre><code data-lang="php">$produtos = ArrayHelper::map(ArrayHelper::get($r[&#x27;json&#x27;], &#x27;data&#x27;, []), function ($p) {
+    return ArrayHelper::renameKeys(ArrayHelper::changeKeyCase($p), [
+        &#x27;cod_produto&#x27; =&gt; &#x27;codigo_erp&#x27;,
+        &#x27;descricao&#x27;   =&gt; &#x27;nome&#x27;,
+        &#x27;preco_venda&#x27; =&gt; &#x27;preco&#x27;,
+    ], false);
+});
+// [[&#x27;codigo_erp&#x27; =&gt; &#x27;P-100&#x27;, &#x27;nome&#x27; =&gt; &#x27;Camiseta&#x27;, &#x27;preco&#x27; =&gt; &#x27;59.90&#x27;], ...]</code></pre></div>
+<p>Payload de webhook na tela de detalhes do admin, em pares chave/valor:</p>
+<div class="codigo"><pre><code data-lang="php">foreach (ArrayHelper::dot(WebhookHelper::payload($id)) as $chave =&gt; $valor) {
+    echo &#x27;&lt;tr&gt;&lt;th&gt;&#x27; . htmlspecialchars($chave, ENT_QUOTES, &#x27;UTF-8&#x27;) . &#x27;&lt;/th&gt;&lt;td&gt;&#x27;
+        . htmlspecialchars(is_array($valor) ? &#x27;[]&#x27; : var_export($valor, true), ENT_QUOTES, &#x27;UTF-8&#x27;)
+        . &#x27;&lt;/td&gt;&lt;/tr&gt;&#x27;;
+}
+// evento | &#x27;pagamento.aprovado&#x27;
+// pagamento.id | &#x27;pay_123&#x27;
+// pagamento.valor | 199.9</code></pre></div>
+<p>Tirar campos opcionais vazios antes de chamar uma API que rejeita <code>null</code>; juntar as tags de todos os produtos:</p>
+<div class="codigo"><pre><code data-lang="php">$r = HttpHelper::post($url, ArrayHelper::clean($corpo, true));
+
+$tags = array_values(ArrayHelper::unique(ArrayHelper::flatten(ArrayHelper::pluck($produtos, &#x27;tags&#x27;))));
+// com &#x27;casts&#x27; =&gt; [&#x27;tags&#x27; =&gt; &#x27;json&#x27;]: [&#x27;algodão&#x27;, &#x27;verão&#x27;, &#x27;promoção&#x27;]</code></pre></div>
+
+<h2 id="conversao" data-titulo="Conversão">Conversão entre array e objeto</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>toArray($dados, $recursivo = false)</code></td><td>Qualquer objeto vira array: <code>stdClass</code>, objeto com <code>toArray()</code> (<code>Registry</code>), <code>Traversable</code>, <code>JsonSerializable</code>, propriedades públicas. Datas, enums e closures ficam como estão; referência circular não entra em loop.</td></tr>
+<tr><td><code>toObject($dados, $recursivo = false, $preservarListas = true)</code></td><td>Array vira <code>stdClass</code>; com <code>$recursivo</code>, os níveis internos também (listas continuam arrays).</td></tr>
+<tr><td><code>toObjects($registros, $recursivo = false)</code></td><td>Lista de arrays vira lista de objetos (mesmo formato do <code>get()</code> do ORM).</td></tr>
+<tr><td><code>isList($a)</code> / <code>isAssoc($a)</code></td><td>Chaves <code>0, 1, 2…</code> em sequência / qualquer outra coisa.</td></tr>
+<tr><td><code>wrap($v)</code></td><td><code>null</code> → <code>[]</code>, valor → <code>[valor]</code>, array como está.</td></tr>
+<tr><td><code>accessible($v)</code></td><td><code>true</code> para array ou objeto.</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Mesma view para o banco (stdClass) e para a API (array): $item-&gt;nome nos dois
+$itens = $origem === &#x27;erp&#x27; ? ArrayHelper::toObjects($produtosDoErp) : $produtosDoBanco;
+
+// Parâmetro que aceita um id ou vários
+foreach (ArrayHelper::wrap($ids) as $id) { ... }
+
+// Registry do Joomla para array simples (ex.: guardar no cache)
+$params = ArrayHelper::toArray(JComponentHelper::getParams(&#x27;com_loja&#x27;));</code></pre></div>
+
+<h2 id="receitas" data-titulo="Receitas">Receitas com outros helpers</h2>
+<h3 id="receita-carrinho">Itens de pedido vindos do formulário</h3>
+<div class="codigo"><div class="titulo-codigo">controllers/pedido.php</div><pre><code data-lang="php">public function salvar()
+{
+    if (!PermissionHelper::requireToken()) {
+        return;
+    }
+
+    try {
+        // itens[0][produto_id]=7&amp;itens[0][qtd]=2&amp;itens[1][produto_id]=9&amp;itens[1][qtd]=1
+        $itens = array_values(InputHelper::array(&#x27;itens&#x27;, [], &#x27;post&#x27;));
+
+        $v = ValidationHelper::validate([&#x27;itens&#x27; =&gt; $itens], [
+            &#x27;itens&#x27;              =&gt; &#x27;required|array&#x27;,
+            &#x27;itens.*.produto_id&#x27; =&gt; &#x27;required|int|min:1&#x27;,
+            &#x27;itens.*.qtd&#x27;        =&gt; &#x27;required|int|min:1|max:99&#x27;,
+        ]);
+
+        if (!$v[&#x27;valid&#x27;]) {
+            return ApiResponseHelper::fromValidation($v);
+        }
+
+        $ids = array_values(ArrayHelper::unique(ArrayHelper::pluck($itens, &#x27;produto_id&#x27;)));
+        $produtos = ArrayHelper::keyBy(
+            OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;whereIn(&#x27;id&#x27;, $ids)-&gt;where(&#x27;ativo&#x27;, 1)-&gt;get(),
+            &#x27;id&#x27;
+        );
+
+        $faltando = ArrayHelper::whereNotIn($itens, &#x27;produto_id&#x27;, array_keys($produtos));
+
+        if ($faltando !== []) {
+            return ApiResponseHelper::conflict(
+                &#x27;Produto indisponível: &#x27; . implode(&#x27;, &#x27;, ArrayHelper::pluck($faltando, &#x27;produto_id&#x27;)) . &#x27;.&#x27;
+            );
+        }
+
+        $totalCentavos = ArrayHelper::sum($itens, function ($item) use ($produtos) {
+            return FormatHelper::toCents($produtos[$item[&#x27;produto_id&#x27;]]-&gt;preco) * (int) $item[&#x27;qtd&#x27;];
+        });
+
+        $pedido = DbTransactionHelper::run(function () use ($itens, $produtos, $totalCentavos) {
+            $pedido = OrmTables::table(&#x27;#__loja_pedidos&#x27;)-&gt;create([
+                &#x27;cliente_id&#x27; =&gt; PermissionHelper::userId(),
+                &#x27;total&#x27;      =&gt; $totalCentavos / 100,
+                &#x27;status&#x27;     =&gt; &#x27;aberto&#x27;,
+            ]);
+
+            OrmTables::table(&#x27;#__loja_pedido_itens&#x27;)-&gt;createMany(ArrayHelper::map($itens, function ($item) use ($pedido, $produtos) {
+                return [
+                    &#x27;pedido_id&#x27;  =&gt; $pedido-&gt;id,
+                    &#x27;produto_id&#x27; =&gt; $item[&#x27;produto_id&#x27;],
+                    &#x27;quantidade&#x27; =&gt; (int) $item[&#x27;qtd&#x27;],
+                    &#x27;preco&#x27;      =&gt; $produtos[$item[&#x27;produto_id&#x27;]]-&gt;preco,
+                ];
+            }));
+
+            return $pedido;
+        });
+
+        return ApiResponseHelper::created(&#x27;Pedido criado. Total: &#x27; . FormatHelper::moneyFromCents($totalCentavos) . &#x27;.&#x27;, [&#x27;id&#x27; =&gt; $pedido-&gt;id]);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<h3 id="receita-dashboard">Painel do mês com uma consulta</h3>
+<p>Uma consulta, vários números, guardados por 5 minutos. Para tabelas grandes (centenas de milhares de linhas), troque por <code>count()</code>/<code>sum()</code> do ORM ou SQL com <code>GROUP BY</code>.</p>
+<div class="codigo"><pre><code data-lang="php">$painel = CacheHelper::remember(&#x27;dashboard:pedidos-mes&#x27;, 300, function () {
+    $mes = DateHelper::range(&#x27;month&#x27;);
+
+    $pedidos = OrmTables::table(&#x27;#__loja_pedidos&#x27;)
+        -&gt;select(&#x27;id, status, total, cidade&#x27;)
+        -&gt;whereBetween(&#x27;criado_em&#x27;, $mes[&#x27;start&#x27;], $mes[&#x27;end&#x27;])
+        -&gt;get();
+
+    $pagos = ArrayHelper::where($pedidos, &#x27;status&#x27;, &#x27;pago&#x27;);
+    $porCidade = ArrayHelper::map(ArrayHelper::groupBy($pagos, &#x27;cidade&#x27;), function ($lista) {
+        return ArrayHelper::sum($lista, &#x27;total&#x27;);
+    });
+    arsort($porCidade);
+
+    return [
+        &#x27;por_status&#x27;   =&gt; ArrayHelper::countBy($pedidos, &#x27;status&#x27;),      // [&#x27;pago&#x27; =&gt; 41, &#x27;pendente&#x27; =&gt; 7]
+        &#x27;faturamento&#x27;  =&gt; ArrayHelper::sum($pagos, &#x27;total&#x27;),
+        &#x27;ticket_medio&#x27; =&gt; ArrayHelper::avg($pagos, &#x27;total&#x27;),
+        &#x27;top_cidades&#x27;  =&gt; array_slice($porCidade, 0, 5, true),           // [&#x27;São Paulo&#x27; =&gt; 9120.5, ...]
+    ];
+});
+
+echo FormatHelper::money($painel[&#x27;faturamento&#x27;]);</code></pre></div>
+<h3 id="receita-sincronizar">Sincronizar produtos do ERP</h3>
+<div class="codigo"><pre><code data-lang="php">$r = $erp-&gt;get(&#x27;/produtos&#x27;, [&#x27;atualizados_desde&#x27; =&gt; $ultimaSincronizacao]);
+
+if (!$r[&#x27;ok&#x27;]) {
+    LogHelper::error(&#x27;Falha ao buscar produtos do ERP.&#x27;, &#x27;erp&#x27;, [&#x27;erro&#x27; =&gt; HttpHelper::errorMessage($r)]);
+    return;
+}
+
+$remotos = ArrayHelper::map(ArrayHelper::get($r[&#x27;json&#x27;], &#x27;data&#x27;, []), function ($p) {
+    return ArrayHelper::renameKeys(ArrayHelper::changeKeyCase($p), [
+        &#x27;cod_produto&#x27; =&gt; &#x27;codigo_erp&#x27;, &#x27;descricao&#x27; =&gt; &#x27;nome&#x27;, &#x27;preco_venda&#x27; =&gt; &#x27;preco&#x27;,
+    ], false);
+});
+
+if ($remotos === []) {
+    return;
+}
+
+$locais = ArrayHelper::keyBy(
+    OrmTables::table(&#x27;#__loja_produtos&#x27;)-&gt;select(&#x27;id, codigo_erp&#x27;)-&gt;whereIn(&#x27;codigo_erp&#x27;, ArrayHelper::pluck($remotos, &#x27;codigo_erp&#x27;))-&gt;get(),
+    &#x27;codigo_erp&#x27;
+);
+
+list($existentes, $novos) = ArrayHelper::partition($remotos, function ($p) use ($locais) {
+    return isset($locais[$p[&#x27;codigo_erp&#x27;]]);
+});
+
+DbTransactionHelper::run(function () use ($existentes, $novos, $locais) {
+    $tabela = OrmTables::table(&#x27;#__loja_produtos&#x27;, [&#x27;fillable&#x27; =&gt; [&#x27;codigo_erp&#x27;, &#x27;nome&#x27;, &#x27;preco&#x27;]]);
+
+    foreach ($novos as $p) {
+        $tabela-&gt;create($p);
+    }
+
+    foreach ($existentes as $p) {
+        $tabela-&gt;update($locais[$p[&#x27;codigo_erp&#x27;]]-&gt;id, $p);
+    }
+});
+
+LogHelper::info(&#x27;Produtos sincronizados.&#x27;, &#x27;erp&#x27;, [&#x27;novos&#x27; =&gt; count($novos), &#x27;atualizados&#x27; =&gt; count($existentes)]);</code></pre></div>
+
+<h2 id="limites" data-titulo="Comportamentos e limites">Comportamentos e limites</h2>
+<ul>
+<li><strong>Tudo na memória.</strong> Para milhares de linhas, filtre e some no banco; para processar tabelas grandes, <code>chunk()</code> do ORM ou a <a href="guia-fila.html">fila</a>.</li>
+<li><code>except()</code> copia os objetos do caminho removido: <code>except($cliente, ['endereco.referencia'])</code> não mexe no <code>$cliente</code> original, mesmo com <code>endereco</code> sendo objeto. <code>forget()</code> e <code>set()</code>, ao contrário, alteram a variável recebida.</li>
+<li><code>get($d, null)</code> devolve <code>$d</code> inteiro (o mesmo em <code>has</code>: <code>false</code>). Cuidado ao usar um campo que pode ser <code>null</code> como caminho.</li>
+<li><code>set()</code> num caminho que passa por um valor que não é array nem objeto substitui esse valor por um nível novo; gravar em <code>null</code> começa um array.</li>
+<li><code>pluck($r, $campo)</code> sem <code>$chavePor</code> devolve <code>null</code> para registro sem o campo; <code>keyBy</code>, <code>groupBy</code> e <code>pluck</code> com <code>$chavePor</code> pulam esse registro.</li>
+<li><code>first()</code>/<code>last()</code> aceitam qualquer <code>callable</code> como filtro; outro tipo lança <code>TypeError</code>.</li>
+<li>Lançam <code>InvalidArgumentException</code>: caminho que não é texto, inteiro ou array; <code>toObject()</code>/<code>set()</code> em valor escalar; operador desconhecido; <code>between</code> sem <code>[mín, máx]</code>; agrupar por um campo cujo valor é array.</li>
+</ul>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="orm-base-leitura.html">OrmBase — leitura</a>: <code>pluck()</code>, <code>sum()</code> e agregações direto no banco.</li><li><a href="format-helper.html">FormatHelper</a>: mostrar os totais (<code>money()</code>, <code>plural()</code>).</li><li><a href="http-helper.html">HttpHelper</a> e <a href="webhook-helper.html">WebhookHelper</a>: de onde vem o JSON que você navega com <code>get()</code>.</li><li><a href="validation-helper.html">ValidationHelper</a>: regras com <code>itens.*.campo</code> para listas.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="settings-helper.html"><small>← Anterior</small>SettingsHelper</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>PlatformHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>ArrayHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -31,8 +31,8 @@ if (PHP_SAPI !== 'cli') {
     exit('Somente pela linha de comando.');
 }
 
-if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-    fwrite(STDERR, "O worker precisa de PHP 7.0 ou superior.\n");
+if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+    fwrite(STDERR, "O worker precisa de PHP 8.2 ou superior.\n");
     exit(1);
 }
 

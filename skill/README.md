@@ -28,7 +28,7 @@ cd <pasta-do-clone> && zip -r helpers-joomla-perplexity.zip skill
 
 ## Mantendo atualizada
 
-Quando um helper mudar (método novo, opção nova, correção), atualize a ficha da área e, se mudar o uso comum, o `SKILL.md`. As assinaturas foram extraídas do código em 04/10/2026 (commit `f5fe591`). Os blocos de PHP das fichas passam no `php -l` e no PHPCompatibility para PHP 7.0.
+Quando um helper mudar (método novo, opção nova, correção), atualize a ficha da área e, se mudar o uso comum, o `SKILL.md`. As assinaturas foram extraídas do código em 04/10/2026 (commit `f5fe591`). Os blocos de PHP das fichas passam no `php -l`; o mínimo do projeto é PHP 8.2 (desde 2026-11-10; antes era 7.0).
 
 ## Teste rápido depois de instalar
 

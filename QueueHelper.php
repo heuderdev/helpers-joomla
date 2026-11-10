@@ -31,8 +31,8 @@ defined('_JEXEC') or die;
  *
  * Todas as datas são gravadas em UTC, como o restante do Joomla.
  *
- * Funciona no Joomla 3.4.5 ou superior, 4 e 5 (com ou sem o plugin de
- * compatibilidade), em PHP 7.0 ou superior.
+ * Funciona no Joomla 4.4 e 5 (com ou sem o plugin de
+ * compatibilidade), em PHP 8.2 ou superior.
  *
  * Métodos de ação devolvem true/false (ou null) e nunca lançam exceção:
  * o motivo da última falha fica em QueueHelper::lastError().

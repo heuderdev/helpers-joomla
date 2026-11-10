@@ -1,6 +1,6 @@
 ---
 name: joomla-helpers
-description: Cria, refatora e revisa código de componentes Joomla 3.4.5+, 4 e 5 (PHP 7.0+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, Vigia.js, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper, HttpHelper, LockHelper, CacheHelper, MailHelper, RateLimitHelper, CryptoHelper, Vitrine.js, FormatHelper, WebhookHelper, SettingsHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
+description: Cria, refatora e revisa código de componentes Joomla 4.4, 5 e 6 (PHP 8.2+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, Vigia.js, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper, HttpHelper, LockHelper, CacheHelper, MailHelper, RateLimitHelper, CryptoHelper, Vitrine.js, FormatHelper, WebhookHelper, SettingsHelper, ArrayHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
 ---
 
 # Joomla com os helpers
@@ -11,7 +11,7 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 
 1. **API real, nunca inventada.** Na dúvida, `scripts/api.sh <Helper> [metodo]` (~20 linhas). Nunca leia um helper inteiro (6 a 120 KB).
 2. **Carregue só a ficha da área.** Este arquivo + 1 ficha resolvem quase tudo.
-3. **PHP 7.0 e Joomla 3/4/5.** Sem `?tipo`, `void`, tipos de retorno, `fn`, `match`, `??=`, `?->`, propriedades tipadas, `[$a] =`, `catch (A | B)`. `JFactory`/`JText`/`JSession` funcionam nas três versões. LogHelper, FileHelper, ExportHelper, CsvHelper, ChunkHelper e UploadMaster rodam também no Joomla 6, no Laravel e em PHP puro via `PlatformHelper.php` (references/arquivos.md); dentro desses helpers não use `JFile`/`JFolder`/`JLog` direto, use `PlatformHelper::*`.
+3. **PHP 8.2+ e Joomla 4.4/5.** Pode usar tipos (`?int`, união, retorno, `never`), `readonly`, enums, `match`, `fn`, `?->`, `??=`, promoção no construtor e `str_contains`. **Não** use o que é do 8.3+ (constante tipada, `#[\Override]`, `json_validate`, `new X()->m()` sem parênteses, `array_find`, pipe `|>`, `array_first`): `checar.sh` acusa. Parâmetro com `= null` precisa de `?Tipo` (aviso no 8.4). `JFactory`/`JText`/`JSession` funcionam no 4 e no 5 (no 5 com o plugin de compatibilidade ativo, o padrão); o Joomla 3 não roda no PHP 8.2. LogHelper, FileHelper, ExportHelper, CsvHelper, ChunkHelper e UploadMaster rodam também no Joomla 6, no Laravel e em PHP puro via `PlatformHelper.php` (references/arquivos.md); dentro desses helpers não use `JFile`/`JFolder`/`JLog` direto, use `PlatformHelper::*`.
 4. **Segurança não é opcional:** token em toda escrita (`PermissionHelper::requireToken()`, que também aceita `X-CSRF-Token`; ou `JSession::checkToken()`); permissão antes da ação; nada de SQL com variável concatenada; `catch (Throwable $e)` → `ApiResponseHelper::exception($e)`; recurso de usuário confere o dono.
 5. **Validar antes de entregar:** `scripts/checar.sh <arquivos>` sem ERROS.
 6. **Refatorar = mesmo comportamento.** Mantenha tasks, rotas, assinaturas públicas e formato de resposta, salvo pedido explícito.
@@ -25,7 +25,7 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 | `references/entrada-saida.md` | InputHelper, regras do ValidationHelper, respostas, permissões, Vigia.js (formulário no navegador), Vitrine.js |
 | `references/arquivos.md` | upload, download, arquivos, importar/exportar CSV, arquivos gigantes |
 | `references/fila.md` | tarefas demoradas, jobs, worker, cron |
-| `references/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper (datas e fuso), LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper |
+| `references/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper (datas e fuso), LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper, ArrayHelper |
 | `references/integracao.md` | HttpHelper, MailHelper, WebhookHelper |
 | `references/receitas.md` | pedido que combina vários helpers (exclusão auditada, CSV em fila, exportação, download privado, sincronizar bancos) |
 | `references/refatoracao.md` | **sempre** ao refatorar ou revisar código existente |
@@ -37,7 +37,7 @@ Caminhos são relativos à pasta **desta skill** (onde está este SKILL.md), nã
 | `scripts/onde.sh` | mapa do projeto atual: raiz do Joomla e versão, seus componentes, onde já há helpers e quais diferem da versão oficial. **Rode primeiro** num projeto novo |
 | `scripts/api.sh` | lista helpers · `api.sh OrmBase` assinaturas · `api.sh OrmBase paginate` doc + início · `--corpo` inteiro · `api.sh CsvHelper --busca upsert` |
 | `scripts/instalar.sh <comp>/helpers Helper...` | copia helpers + dependências para o componente (`--todos`, `--forcar`); não sobrescreve arquivo alterado |
-| `scripts/checar.sh <arquivo/pasta>` | `php -l`, PHP 7.0, SQL concatenado, falta de token e trechos que os helpers substituem |
+| `scripts/checar.sh <arquivo/pasta>` | `php -l`, recursos acima do PHP 8.2 e obsoletos, SQL concatenado, falta de token e trechos que os helpers substituem |
 
 Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOMLA_DIR` → cópia dentro do projeto atual (para consultar a API) → repositório onde a skill está → clone automático em `~/.cache/helpers-joomla`.
 **Sem a pasta `scripts/`** (ferramenta que copiou só o SKILL.md): assinaturas com `grep -n "public .*function" <helpers>/<Helper>.php`; fichas em `https://raw.githubusercontent.com/heuderdev/helpers-joomla/main/skills/joomla-helpers/references/<ficha>.md`; sintaxe com `php -l`.
@@ -46,7 +46,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 
 **Criar:** `onde.sh` (onde fica o componente e os helpers) → identifique a área → ficha (ou receita) → `instalar.sh` se o componente ainda não tem os helpers → escreva → `checar.sh` → entregue.
 **Refatorar:** `onde.sh` → `references/refatoracao.md` → `checar.sh` no original (os avisos são o mapa) → reescreva por task → `checar.sh` até zerar erros → diff + "mudou / igual / testar".
-**Revisar:** `checar.sh` + leitura → achados por gravidade (segurança > bug > PHP 7.0 > troca por helper), cada um com arquivo:linha e a correção em código.
+**Revisar:** `checar.sh` + leitura → achados por gravidade (segurança > bug > compatibilidade com PHP 8.2 > troca por helper), cada um com arquivo:linha e a correção em código.
 
 ## Mapa pedido → helper
 
@@ -69,6 +69,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 | Ler opção do componente | `SettingsHelper::int("chave", $padrao)` · `secret("token")` |
 | Receber webhook (pagamento, ERP) | `WebhookHelper::handle(["provider"=>..., "secret"=>..., "signature_header"=>..., "job"=>...])` |
 | Formatar dinheiro, CPF, telefone, slug | `FormatHelper::money($v)` · `toCents($v)` · `cpfCnpj($v)` · `slug($t)` |
+| Filtrar/agrupar/somar dados já na memória (JSON de API, payload, linhas) | `ArrayHelper::get($d, "a.b", $padrao)` · `pluck` · `groupBy` · `where` · `sortBy` · `sum` · `toTree` |
 | Tela de listagem (paginação, filtros, lote) | `js/vitrine.js`: `<div data-vitrine="url">` + `ApiResponseHelper::paginated()` |
 | Guardar token de API / conferir webhook | `CryptoHelper::encrypt($v, "contexto")` / `verifySignature(...)` |
 | Limitar tentativas (login, SMS, contato) | `if (!RateLimitHelper::enforce("chave:" . $ip, 5, 3600)) return;` |

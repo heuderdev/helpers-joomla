@@ -1,6 +1,6 @@
 # Roadmap de helpers
 
-Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Joomla. Cada novo helper segue o padrão do repositório: Joomla 3.4.5+/4/5, PHP 7.0+, registrado no `IncludeHelper` e no `instalar.sh` da skill, página em `docs/`, ficha nas duas skills (`skills/joomla-helpers` e `skill/`).
+Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Joomla. Cada novo helper segue o padrão do repositório: Joomla 4.4/5/6, PHP 8.2+ (até 2026-11-10 era PHP 7.0 e Joomla 3), registrado no `IncludeHelper` e no `instalar.sh` da skill, página em `docs/`, ficha nas duas skills (`skills/joomla-helpers` e `skill/`).
 
 ## Feitos
 
@@ -11,6 +11,7 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 | `PermissionHelper::requireToken()` | Token CSRF do campo, do cabeçalho `X-CSRF-Token` ou do JSON, no Joomla 3, 4 e 5. |
 | `Vitrine.js` (`js/`) | Listagens com paginação, ordenação e filtros na URL, busca com espera e cancelamento, ações por linha e em lote. |
 | `FormatHelper` | Dinheiro (e centavos inteiros), números, CPF/CNPJ, CEP, telefone, slug, resumo, plural, nomes. |
+| `ArrayHelper` | Arrays e objetos com notação de ponto (`get`/`set`, curinga `*`) e coleções na memória: filtrar, agrupar, indexar, ordenar, somar, árvore. Trazido do pacote `helpers-joomla-vendor` em 2026-11-10, com 3 correções (`toTree` perdia registro pai de si mesmo com id em texto; `except` alterava objetos aninhados do original; `where` não aceitava Closure). |
 | Docs | Páginas do `LogHelper`, `PermissionHelper` e `ExportHelper`. |
 | `PlatformHelper` | `LogHelper`, `FileHelper`, `ExportHelper`, `CsvHelper`, `ChunkHelper` e `UploadMaster` rodam no Joomla 3 a 6, no Laravel e em PHP puro (Joomla continua o padrão). Testado em 2026-10-25 com Joomla 3.10.12, 4.4.14, 5.4.10, 6.2.0 e Laravel 13 no PHP 8.4. |
 | Docs do `PlatformHelper` | Sistemas completos (importação com prévia e rejeitados, exportação, foto/documento, CLI com retomada, backup) em Joomla, Laravel e PHP puro, executados de ponta a ponta. Corrigidos no caminho: `ChunkHelper::readLines()` gravava no checkpoint o fim do buffer (a retomada pulava linhas); `CsvHelper::import()` ignorava `createdAtColumn`/`updatedAtColumn`; `DbConnectionHelper` e `DbTransactionHelper` usavam `JFactory`/`JLog` (quebravam o `import()` e o ORM no Joomla 6). |
@@ -19,7 +20,7 @@ Helpers que ainda faltam para cobrir os problemas do dia a dia em componentes Jo
 
 Fila de trabalho em ordem. Quem retomar (sessão nova ou depois do limite de uso): pegue o **primeiro item não marcado**, leia "Notas de retomada" e continue. Ao terminar um item: marque `[x]`, faça um commit local só daquele item (`[main]: feat/docs/fix: ...`) e siga para o próximo. Não fazer `git push` (o Eduardo/Heuder revisa de manhã).
 
-Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$dependencies` (e `$autoloadMap`); `skills/joomla-helpers/scripts/instalar.sh` (`DEP` e `TODOS`); `docs/<helper>.html`; link no nav e no rodapé de **todos** os `docs/*.html`; anterior/próxima dos vizinhos; card em `docs/index.html`; seção em `docs/referencia-rapida.html`; `index.html` da raiz; ficha nas duas skills (`skills/joomla-helpers/` e `skill/`). Código PHP 7.0+ e passar em `skills/joomla-helpers/scripts/checar.sh`; `php -l` em tudo.
+Checklist de cada helper novo (memória `helper-checklist`): `IncludeHelper::$dependencies` (e `$autoloadMap`); `skills/joomla-helpers/scripts/instalar.sh` (`DEP` e `TODOS`); `docs/<helper>.html`; link no nav e no rodapé de **todos** os `docs/*.html`; anterior/próxima dos vizinhos; card em `docs/index.html`; seção em `docs/referencia-rapida.html`; `index.html` da raiz; ficha nas duas skills (`skills/joomla-helpers/` e `skill/`). Código PHP 8.2+ e passar em `skills/joomla-helpers/scripts/checar.sh`; `php -l` em tudo.
 
 - [x] 1. Vigia.js: corrigir erro sem campo que trava o envio em silêncio (vai para a mensagem geral) e `min`/`max` em listas indexadas (objetos contam chaves); atualizar `docs/vigia-js.html` (remover os avisos de limitação) e testar no jsdom.
 - [x] 2. Documentar helpers sem página: `LogHelper`, `PermissionHelper`, `ExportHelper` (página, nav, index, referência rápida, skills se faltar).

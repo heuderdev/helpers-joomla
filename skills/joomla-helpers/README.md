@@ -46,7 +46,7 @@ references/          fichas por área + receitas + refatoração (carregadas só
 scripts/onde.sh      mapa do projeto atual
 scripts/api.sh       API real de um helper sem ler o arquivo inteiro
 scripts/instalar.sh  copia helpers + dependências para o componente (não sobrescreve alterados)
-scripts/checar.sh    php -l, PHP 7.0, SQL concatenado, token, trechos que os helpers substituem
+scripts/checar.sh    php -l, recursos acima do PHP 8.2, obsoletos, SQL concatenado, token, trechos que os helpers substituem
 scripts/_repo.sh     localiza os helpers (tabela acima)
 ```
 

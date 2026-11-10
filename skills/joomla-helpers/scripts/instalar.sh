@@ -30,7 +30,7 @@ declare -A DEP=(
     [UploadMaster]="PlatformHelper"
     [WebhookHelper]="LogHelper ApiResponseHelper CryptoHelper DbConnectionHelper"
 )
-TODOS="PlatformHelper LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper SettingsHelper IncludeHelper"
+TODOS="PlatformHelper LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper SettingsHelper ArrayHelper IncludeHelper"
 
 FORCAR=0; PEDIDOS=()
 for a in "$@"; do
