@@ -48,7 +48,8 @@ class IncludeHelper
         'FormatHelper'        => array(),
         'WebhookHelper'       => array('LogHelper', 'ApiResponseHelper', 'CryptoHelper', 'DbConnectionHelper'),
         'SettingsHelper'      => array(),
-        'ArrayHelper'         => array()
+        'ArrayHelper'         => array(),
+        'BackupDatabaseHelper' => array('PlatformHelper', 'DbConnectionHelper')
     );
 
     /**

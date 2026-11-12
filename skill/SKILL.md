@@ -17,7 +17,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 
 | Área | Ficha | Helpers |
 |---|---|---|
-| Banco | `referencias/banco.md` | DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables |
+| Banco | `referencias/banco.md` | DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, BackupDatabaseHelper |
 | Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Vitrine.js |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
@@ -51,6 +51,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Receber webhook (pagamento, ERP) | `WebhookHelper::handle(["provider"=>..., "secret"=>..., "signature_header"=>..., "job"=>...])` |
 | Formatar dinheiro, CPF, telefone, slug | `FormatHelper::money($v)` · `toCents($v)` · `cpfCnpj($v)` · `slug($t)` |
 | Filtrar/agrupar/somar dados já na memória (JSON de API, payload, linhas) | `ArrayHelper::get($d, "a.b", $padrao)` · `pluck` · `groupBy` · `where` · `sortBy` · `sum` · `toTree` |
+| Backup do banco (.sql / .sql.gz, estrutura ou completo) | `BackupDatabaseHelper::full(["gzip" => true])` · `schema()` · `downloadFull()` + `PlatformHelper::close()` |
 | Tela de listagem (paginação, filtros, lote) | `js/vitrine.js`: `<div data-vitrine="url">` + `ApiResponseHelper::paginated()` |
 | Guardar token de API / conferir webhook | `CryptoHelper::encrypt($v, "contexto")` / `verifySignature(...)` |
 | Limitar tentativas (login, SMS, contato) | `if (!RateLimitHelper::enforce("chave:" . $ip, 5, 3600)) return;` |

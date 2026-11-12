@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BackupDatabaseHelper · helpers-joomla</title>
+<meta name="description" content="BackupDatabaseHelper: backup do banco MySQL/MariaDB ou PostgreSQL em .sql ou .sql.gz, em PHP puro, só a estrutura ou estrutura + dados, salvando no servidor ou baixando pelo navegador, sem nunca apagar nada.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › BackupDatabaseHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação zip rar compactado raw issafefile">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="platform-helper.html" data-busca="plataforma laravel php puro joomla 6 compatibilidade jfile jfolder jlog">PlatformHelper<span class="arquivo">PlatformHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><a href="array-helper.html" data-busca="array arrays objeto notação de ponto get set pluck groupby keyby where filtrar agrupar ordenar sortby somar sum árvore totree dot merge coleção lista registros">ArrayHelper<span class="arquivo">ArrayHelper.php</span></a><a href="backup-database-helper.html" class="ativo" aria-current="page" data-busca="backup cópia de segurança dump exportar banco sql mysqldump pg_dump estrutura schema dados restaurar gzip download tabelas views triggers">BackupDatabaseHelper<span class="arquivo">BackupDatabaseHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>BackupDatabaseHelper</h1><p class="lead">Backup do banco <strong>MySQL/MariaDB</strong> ou <strong>PostgreSQL 10+</strong> em um arquivo <code>.sql</code> (ou <code>.sql.gz</code>), em PHP puro, sem <code>mysqldump</code> nem <code>pg_dump</code> no servidor. Dois modos: <strong>só a estrutura</strong> (tabelas vazias, views e triggers) ou <strong>estrutura + dados</strong>. Salva numa pasta protegida do servidor ou envia direto para o navegador. Nunca apaga nada: nem no banco ao gerar, nem no banco de destino ao restaurar.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . '/helpers/BackupDatabaseHelper.php';   // puxa PlatformHelper e DbConnectionHelper
+
+$r = BackupDatabaseHelper::full();                       // estrutura + dados do banco do Joomla
+$r = BackupDatabaseHelper::schema();                     // só a estrutura
+$r = BackupDatabaseHelper::full(['connection' =&gt; 'erp', 'gzip' =&gt; true]);   // outro banco, compactado
+
+if ($r['success']) {
+    echo $r['data']['caminho'];   // /var/www/site/backups/database/meusite_completo_20261112_101500_a1b2c3.sql
+}</code></pre></div>
+<ul>
+<li><strong>Depende de</strong> <a href="platform-helper.html">PlatformHelper</a> (pasta raiz, log, nome seguro) e <a href="db-connection-helper.html">DbConnectionHelper</a> (qual banco). Os dois são carregados sozinhos se estiverem na mesma pasta.</li>
+<li><strong>PHP 8.2+</strong>; Joomla 4.4, 5 e 6. Fora do Joomla (PHP puro, script CLI) funciona registrando a conexão no <code>DbConnectionHelper</code>, que usa o pacote <code>joomla/database</code> (Composer).</li>
+<li><strong>Bancos:</strong> MySQL 5.7+/8.x e MariaDB (driver <code>mysqli</code> ou <code>pdomysql</code>), PostgreSQL 10 ou mais novo (driver <code>pgsql</code>). Outro banco devolve erro sem gerar arquivo.</li>
+<li><strong>Não guarda o banco na memória:</strong> lê as tabelas em blocos e grava o arquivo (ou a resposta) enquanto lê. Serve para bancos grandes; o limite de tempo do PHP é desligado durante o backup.</li>
+<li><strong>Nunca lança exceção</strong> em <code>schema()</code>, <code>full()</code> e <code>download*()</code>: o erro volta em <code>$r['success'] === false</code> com a mensagem, e é registrado no log.</li>
+</ul>
+<div class="nota aviso"><p><strong class="rotulo">Dados sensíveis</strong> Um backup completo tem senhas (hash), e-mails, sessões e tokens. Antes de chamar, confira a permissão (<a href="permission-helper.html">PermissionHelper</a>) e o token CSRF; prefira guardar os arquivos fora da pasta pública com <code>setBaseDirectory()</code>.</p></div>
+
+<h2 id="salvar" data-titulo="Salvar no servidor">Salvar no servidor: <code>schema</code>, <code>full</code>, <code>save</code></h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>schema(array $opcoes = [])</code></td><td>resultado</td><td>Só a estrutura: tabelas <strong>vazias</strong> (no MySQL, sem o <code>AUTO_INCREMENT</code> acumulado: o contador recomeça do 1), views e triggers.</td></tr>
+<tr><td><code>full(array $opcoes = [])</code></td><td>resultado</td><td>Estrutura + todos os dados (e, no PostgreSQL, o valor atual das sequências).</td></tr>
+<tr><td><code>save($modo, array $opcoes = [])</code></td><td>resultado</td><td>O mesmo, com o modo em variável: <code>BackupDatabaseHelper::SCHEMA</code> (<code>'schema'</code>, <code>'estrutura'</code>, <code>'structure'</code>) ou <code>::FULL</code> (<code>'full'</code>, <code>'completo'</code>, <code>'data'</code>). Outro valor devolve erro.</td></tr>
+</tbody></table></div>
+<p>O arquivo é gravado primeiro como <code>nome.sql.parcial</code> e só ganha o nome final quando termina. Se o banco ou o disco falharem no meio, o <code>.parcial</code> fica na pasta com o aviso <code>BACKUP INCOMPLETO</code> no fim, para análise, e o caminho volta em <code>$r['data']['arquivo_parcial']</code>.</p>
+<div class="codigo"><pre><code data-lang="php">$r = BackupDatabaseHelper::full([
+    'gzip'         =&gt; true,
+    'exclude_data' =&gt; ['#__session'],      // sessões: só a estrutura
+    'directory'    =&gt; 'diario',             // backups/database/diario/
+]);
+
+if (!$r['success']) {
+    LogHelper::error('Backup diário falhou: ' . $r['mensagem']);
+    return;
+}
+
+// $r['data']
+// [
+//   'modo' =&gt; 'full', 'banco' =&gt; 'meusite',
+//   'tabelas' =&gt; 87, 'views' =&gt; 2, 'triggers' =&gt; 1, 'linhas' =&gt; 154320,
+//   'snapshot' =&gt; true, 'segundos' =&gt; 4.81,
+//   'arquivo' =&gt; 'meusite_completo_20261112_031500_9f2c1a.sql.gz',
+//   'caminho' =&gt; '/var/www/site/backups/database/diario/meusite_completo_20261112_031500_9f2c1a.sql.gz',
+//   'bytes'   =&gt; 18234411,
+// ]</code></pre></div>
+
+<h2 id="download" data-titulo="Baixar pelo navegador">Baixar pelo navegador: <code>downloadSchema</code>, <code>downloadFull</code>, <code>download</code></h2>
+<p>Gera o backup enquanto envia: nada fica guardado na memória, e o navegador começa a receber logo. Com <code>'save_copy' =&gt; true</code>, grava ao mesmo tempo uma cópia no servidor (o caminho volta em <code>$r['data']['copia']</code>).</p>
+<div class="codigo"><div class="titulo-codigo">controllers/backup.php (administrador)</div><pre><code data-lang="php">public function baixar()
+{
+    if (!PermissionHelper::requireToken('Sua sessão expirou. Recarregue a página.', 'get') || !PermissionHelper::require('core.admin', 'com_loja')) {
+        return;
+    }
+
+    $modo = InputHelper::string('modo', 'full', 'get') === 'schema'
+        ? BackupDatabaseHelper::SCHEMA
+        : BackupDatabaseHelper::FULL;
+
+    $r = BackupDatabaseHelper::download($modo, ['gzip' =&gt; true, 'save_copy' =&gt; true]);
+
+    if (!$r['success'] &amp;&amp; !headers_sent()) {
+        // erro antes de começar o envio: tabela inexistente, banco não suportado, pasta sem permissão
+        return ApiResponseHelper::error($r['mensagem']);
+    }
+
+    PlatformHelper::close();   // encerra aqui: o Joomla não manda o template junto com o arquivo
+}</code></pre></div>
+<ul>
+<li>Erros de <strong>validação</strong> (tabela ou schema inexistente, banco não suportado, subpasta inválida) voltam no resultado <strong>antes</strong> de qualquer cabeçalho, então dá para responder com uma mensagem normal.</li>
+<li>Se o banco falhar <strong>no meio do envio</strong>, o arquivo baixado termina com <code>-- ATENÇÃO: BACKUP INCOMPLETO</code>. Não use esse arquivo para restaurar.</li>
+<li>Os buffers de saída abertos (template, <code>ob_start()</code>) são descartados antes do envio, para o arquivo não sair com HTML no começo.</li>
+<li>Cabeçalhos: <code>application/sql</code> ou <code>application/gzip</code>, <code>Content-Disposition: attachment</code>, <code>no-store</code> (navegador e proxy não guardam cópia).</li>
+</ul>
+
+<h2 id="opcoes" data-titulo="Opções">Opções</h2>
+<p>Todas opcionais, aceitas por todos os métodos de backup.</p>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>connection</code></td><td>banco do Joomla</td><td>Nome registrado no <a href="db-connection-helper.html">DbConnectionHelper</a> ou um driver pronto.</td></tr>
+<tr><td><code>tables</code></td><td>todas</td><td>Só estas tabelas/views (texto ou lista; aceita <code>#__</code>). Nome que não existe devolve erro. No PostgreSQL aceita <code>'schema.tabela'</code>; tabela particionada leva junto as partições.</td></tr>
+<tr><td><code>schemas</code></td><td>todos, menos os do sistema</td><td>(PostgreSQL) Só estes schemas. Schema que não existe devolve erro.</td></tr>
+<tr><td><code>exclude</code></td><td>nenhuma</td><td>Tabelas/views que ficam de fora (aceita <code>#__</code>).</td></tr>
+<tr><td><code>exclude_data</code></td><td>nenhuma</td><td>Tabelas que entram só com a estrutura, sem as linhas: sessões, cache, logs volumosos.</td></tr>
+<tr><td><code>prefix_only</code></td><td><code>false</code></td><td><code>true</code>: só tabelas com o prefixo da conexão (ex.: <code>jos_</code>). Útil quando o banco é dividido com outro sistema.</td></tr>
+<tr><td><code>views</code></td><td><code>true</code></td><td><code>false</code> deixa as views de fora.</td></tr>
+<tr><td><code>triggers</code></td><td><code>true</code></td><td><code>false</code> deixa os triggers de fora.</td></tr>
+<tr><td><code>gzip</code></td><td><code>false</code></td><td>Compacta em <code>.sql.gz</code> (precisa da extensão <code>zlib</code>). Costuma reduzir o arquivo para 10–20%.</td></tr>
+<tr><td><code>consistent</code></td><td><code>true</code></td><td>Lê tudo num <strong>retrato único</strong> do banco, sem travar tabelas: um pedido gravado durante o backup não aparece pela metade. Veja <a href="#consistencia">Consistência</a>.</td></tr>
+<tr><td><code>directory</code></td><td>pasta base</td><td>Subpasta dentro do diretório base (<code>'diario'</code>, <code>'antes-da-migracao/v2'</code>). <code>..</code> devolve erro.</td></tr>
+<tr><td><code>file_name</code></td><td>automático</td><td>Nome do arquivo; a extensão é ajustada ao <code>gzip</code> e caminhos são descartados. Padrão: <code>{banco}_{completo|estrutura}_{AAAAMMDD_HHMMSS}_{aleatório}.sql</code>.</td></tr>
+<tr><td><code>save_copy</code></td><td><code>false</code></td><td>Só no download: também grava uma cópia no servidor.</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Só as tabelas do componente, sem a de logs, compactado
+$r = BackupDatabaseHelper::full([
+    'tables'  =&gt; ['#__loja_pedidos', '#__loja_itens', '#__loja_clientes', '#__loja_log'],
+    'exclude' =&gt; '#__loja_log',
+    'gzip'    =&gt; true,
+]);
+
+// PostgreSQL: dois schemas e uma tabela de outro
+$r = BackupDatabaseHelper::schema([
+    'connection' =&gt; 'erp',
+    'schemas'    =&gt; ['public', 'vendas'],
+]);</code></pre></div>
+
+<h2 id="configuracao" data-titulo="Configuração">Configuração</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setBaseDirectory($pasta)</code></td><td>Pasta onde os backups ficam. Caminho absoluto ou relativo à raiz do site; é criada se não existir. Padrão: <code>{raiz do site}/backups/database</code>.</td></tr>
+<tr><td><code>getBaseDirectory()</code></td><td>Caminho absoluto em uso (cria a pasta padrão se preciso).</td></tr>
+<tr><td><code>setChunkSize($linhas)</code></td><td>Quantas linhas são lidas do banco por vez (padrão 1000). Diminua para tabelas com BLOBs grandes.</td></tr>
+<tr><td><code>setRowsPerInsert($linhas)</code></td><td>Quantas linhas vão em cada <code>INSERT</code> do arquivo (padrão 100). Cada <code>INSERT</code> também é limitado a ~1 MB, para caber no <code>max_allowed_packet</code> na restauração.</td></tr>
+<tr><td><code>setLogCategory($categoria)</code></td><td>Categoria dos registros de log (padrão <code>backup_database_helper</code>).</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Fora da pasta pública: o servidor web não consegue entregar o arquivo nem por engano
+BackupDatabaseHelper::setBaseDirectory('/home/meusite/backups-banco');</code></pre></div>
+<p>Toda pasta usada recebe <code>.htaccess</code> (Apache), <code>web.config</code> (IIS) e <code>index.html</code> bloqueando o acesso pela web. Os arquivos são criados com permissão <code>0640</code> e as pastas com <code>0750</code>. No Nginx, que ignora o <code>.htaccess</code>, a pasta padrão fica acessível se estiver dentro do site: use <code>setBaseDirectory()</code> fora dele ou bloqueie com <code>location ^~ /backups/ { deny all; }</code>.</p>
+
+<h2 id="tabelas" data-titulo="Listar tabelas">Listar tabelas: <code>tables</code></h2>
+<p><code>tables(array $opcoes = [])</code> devolve as tabelas e views do banco, para montar a tela de escolha do que entra no backup. Aceita <code>connection</code> e, no PostgreSQL, <code>schemas</code>.</p>
+<div class="codigo"><pre><code data-lang="php">foreach (BackupDatabaseHelper::tables() as $t) {
+    echo $t['nome'], ' (', $t['tipo'], ') ', FormatHelper::bytes($t['tamanho_bytes']), ' · ~', $t['linhas_aprox'], ' linhas';
+}
+// [
+//   ['nome' =&gt; 'jos_content', 'tipo' =&gt; 'tabela', 'engine' =&gt; 'InnoDB', 'linhas_aprox' =&gt; 1520, 'tamanho_bytes' =&gt; 4210688],
+//   ['nome' =&gt; 'jos_v_vendas', 'tipo' =&gt; 'view', 'engine' =&gt; null, 'linhas_aprox' =&gt; null, 'tamanho_bytes' =&gt; 0],
+// ]</code></pre></div>
+<p><code>linhas_aprox</code> é a estimativa do banco (no InnoDB pode errar bastante; o número exato vem em <code>$r['data']['linhas']</code> depois do backup). No PostgreSQL, tabelas fora do schema <code>public</code> aparecem como <code>schema.tabela</code>, e <code>engine</code> é sempre <code>null</code>. Diferente dos métodos de backup, <code>tables()</code> lança exceção se a conexão falhar.</p>
+
+<h2 id="nunca-apaga" data-titulo="Nunca apaga nada">Nunca apaga nada</h2>
+<p>A regra do helper é que um backup não pode piorar a situação de ninguém, nem a do banco de origem, nem a do banco onde ele for restaurado.</p>
+<div class="tabela"><table><thead><tr><th>Onde</th><th>Garantia</th></tr></thead><tbody>
+<tr><td>Banco de origem (MySQL)</td><td>Só executa <code>SELECT</code> e <code>SHOW</code>, mais o fuso/charset da sessão (restaurados no final) e a transação de leitura (terminada em <code>ROLLBACK</code>). Qualquer outro comando é recusado <strong>antes</strong> de chegar ao banco.</td></tr>
+<tr><td>Banco de origem (PostgreSQL)</td><td>Além disso, tudo roda numa transação <code>READ ONLY</code>: o próprio servidor recusa qualquer escrita. As configurações usam <code>SET LOCAL</code> e somem no <code>ROLLBACK</code> final.</td></tr>
+<tr><td>Arquivo gerado</td><td>Sem <code>DROP</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REPLACE</code> nem <code>UPDATE</code>. Cada comando passa por uma lista do que é permitido antes de ir para o arquivo.</td></tr>
+<tr><td>Restauração (MySQL)</td><td><code>CREATE TABLE IF NOT EXISTS</code> e <code>INSERT IGNORE</code>: tabela que já existe fica como está, registro com a mesma chave não é sobrescrito.</td></tr>
+<tr><td>Restauração (PostgreSQL)</td><td><code>IF NOT EXISTS</code>; tipos, funções, views, triggers e chaves estrangeiras em blocos <code>DO</code> que ignoram o objeto se ele já existir; dados com <code>ON CONFLICT DO NOTHING</code>; nada usa <code>OR REPLACE</code>; o único <code>ALTER</code> é <code>ADD CONSTRAINT</code>; sequências só avançam (<code>setval</code> nunca volta o contador).</td></tr>
+<tr><td>Arquivos de backup</td><td>Nunca sobrescreve nem remove: cada backup ganha um nome único, e o arquivo é aberto em modo exclusivo. Não existe método de limpeza de backups antigos, de propósito.</td></tr>
+</tbody></table></div>
+<div class="nota aviso"><p><strong class="rotulo">Tabela sem chave</strong> <code>INSERT IGNORE</code>/<code>ON CONFLICT</code> só reconhecem "mesmo registro" pela chave primária ou única. Tabela sem nenhuma das duas recebe as linhas <strong>de novo</strong> se o arquivo for restaurado duas vezes no mesmo banco.</p></div>
+<div class="nota"><p><strong class="rotulo">Restaurar não é sincronizar</strong> Como nada é sobrescrito, restaurar sobre um banco que já tem os registros <strong>não volta</strong> os valores antigos: o registro alterado depois do backup continua alterado. Para voltar um banco ao estado do backup, restaure num banco vazio (ou novo) e troque.</p></div>
+
+<h2 id="arquivo" data-titulo="O que vai no arquivo">O que vai no arquivo</h2>
+<div class="tabela"><table><thead><tr><th>Banco</th><th>Ordem</th></tr></thead><tbody>
+<tr><td>MySQL / MariaDB</td><td>Cabeçalho (charset <code>utf8mb4</code>, fuso UTC, checagem de chave estrangeira desligada durante a carga) → para cada tabela, <code>CREATE TABLE</code> e os dados → triggers → views (na ordem de dependência) → rodapé que restaura as variáveis da sessão.</td></tr>
+<tr><td>PostgreSQL</td><td>Schemas → extensões → tipos (enum, domínio, composto) → funções e procedures → sequências → tabelas (identity, colunas geradas, partições, herança, <code>UNLOGGED</code>) → dados → valor das sequências → índices → chaves estrangeiras → triggers → views e views materializadas (na ordem de dependência).</td></tr>
+</tbody></table></div>
+<ul>
+<li><strong>Triggers depois dos dados:</strong> não disparam durante a restauração (um trigger que grava log não duplica o log).</li>
+<li><strong>Datas:</strong> lidas e gravadas em UTC; <code>TIMESTAMP</code>/<code>timestamptz</code> voltam iguais em servidor com outro fuso.</li>
+<li><strong>Texto:</strong> <code>utf8mb4</code>/<code>UTF8</code>; emojis e acentos não viram <code>?</code>.</li>
+<li><strong>Binários</strong> (<code>BLOB</code>, <code>VARBINARY</code>, geometria) saem em hexadecimal, <code>BIT</code> como número e <code>bytea</code> em hex: o arquivo é texto puro, seguro para abrir e transferir.</li>
+<li><strong>Colunas geradas</strong> (<code>VIRTUAL</code>/<code>STORED</code>) entram na estrutura, mas não nos <code>INSERT</code>s: o banco recalcula.</li>
+<li><strong>MySQL:</strong> o <code>DEFINER</code> de views e triggers é removido (o usuário que restaura vira o dono; o do servidor original pode não existir no destino).</li>
+<li><strong>PostgreSQL:</strong> chave estrangeira para uma tabela que ficou fora do backup vira só um comentário no arquivo. Permissões (<code>GRANT</code>), donos, políticas de linha (RLS), estatísticas e objetos de extensões não entram.</li>
+<li><strong>Não entram</strong> procedures/functions/eventos do MySQL, nem usuários do banco.</li>
+</ul>
+
+<h2 id="consistencia" data-titulo="Consistência">Consistência (<code>consistent</code>)</h2>
+<p>Com <code>'consistent' =&gt; true</code> (padrão), o MySQL abre <code>START TRANSACTION WITH CONSISTENT SNAPSHOT, READ ONLY</code> e o PostgreSQL <code>REPEATABLE READ, READ ONLY</code>: todas as tabelas são lidas como estavam no mesmo instante, sem travar ninguém. Vale para tabelas transacionais (InnoDB); tabelas MyISAM continuam sendo lidas como estão no momento da leitura.</p>
+<div class="tabela"><table><thead><tr><th>Situação</th><th>O que acontece</th></tr></thead><tbody>
+<tr><td>MySQL, conexão já dentro de uma transação (<code>DbTransactionHelper::run</code>)</td><td>O backup roda <strong>sem</strong> snapshot (abrir outra transação confirmaria a sua) e devolve <code>'snapshot' =&gt; false</code>.</td></tr>
+<tr><td>PostgreSQL, conexão já dentro de uma transação</td><td>Devolve erro <em>"Há uma transação aberta nesta conexão"</em>: não dá para garantir o modo somente leitura, e encerrar a transação de outra rotina não é papel do backup.</td></tr>
+<tr><td>MySQL antigo sem <code>READ ONLY</code></td><td>Segue sem snapshot.</td></tr>
+</tbody></table></div>
+<p>Chame o backup <strong>fora</strong> de transações. Em rotinas que gravam e depois fazem backup, registre uma segunda conexão para o mesmo banco no <code>DbConnectionHelper</code> e passe-a em <code>connection</code>.</p>
+
+<h2 id="restaurar" data-titulo="Restaurar">Restaurar</h2>
+<div class="codigo"><pre><code data-lang="sql">-- MySQL / MariaDB
+mysql -u usuario -p banco_destino &lt; meusite_completo_20261112_031500_9f2c1a.sql
+gunzip -c meusite_completo_20261112_031500_9f2c1a.sql.gz | mysql -u usuario -p banco_destino
+
+-- PostgreSQL
+psql -d banco_destino -f erp_completo_20261112_031500_4b7e10.sql
+gunzip -c erp_completo_20261112_031500_4b7e10.sql.gz | psql -d banco_destino</code></pre></div>
+<ul>
+<li>O arquivo usa <code>DELIMITER</code> nos triggers do MySQL: restaure pelo cliente <code>mysql</code> (ou phpMyAdmin/Adminer/HeidiSQL, que entendem <code>DELIMITER</code>), não com um <code>$db-&gt;execute()</code> do arquivo inteiro.</li>
+<li><strong>MySQL, segunda restauração no mesmo banco:</strong> o MySQL não tem <code>CREATE VIEW IF NOT EXISTS</code> (o MariaDB tem), então a primeira view já existente dá erro <em>"Table '...' already exists"</em>. Como as views ficam no fim do arquivo, as tabelas, os dados e os triggers já foram restaurados nesse ponto; use <code>mysql --force</code> para seguir até o fim.</li>
+<li>Restaurar no banco de origem também é seguro: nada é apagado ou sobrescrito, apenas o que falta é criado.</li>
+</ul>
+
+<h2 id="receitas" data-titulo="Receitas">Receitas</h2>
+<h3 id="receita-cron">Backup diário pelo cron</h3>
+<p>Um script CLI chamado pelo cron, com <a href="lock-helper.html">LockHelper</a> para não rodar dois ao mesmo tempo:</p>
+<div class="codigo"><div class="titulo-codigo">cli/backup-diario.php</div><pre><code data-lang="php">// carregue o Joomla em modo CLI como os outros scripts do componente (veja fila/cli/queue-worker.php)
+require_once JPATH_ADMINISTRATOR . '/components/com_loja/helpers/BackupDatabaseHelper.php';
+require_once JPATH_ADMINISTRATOR . '/components/com_loja/helpers/LockHelper.php';
+
+BackupDatabaseHelper::setBaseDirectory('/home/meusite/backups-banco');
+
+$execucao = LockHelper::run('backup-diario', function () {
+    return BackupDatabaseHelper::full([
+        'gzip'         =&gt; true,
+        'directory'    =&gt; 'diario',
+        'exclude_data' =&gt; ['#__session', '#__action_logs'],
+    ]);
+});
+
+if (!$execucao['acquired']) {
+    fwrite(STDERR, "Outro backup ainda está rodando.\n");
+    exit(1);
+}
+
+$r = $execucao['result'];
+echo $r['mensagem'], PHP_EOL;
+exit($r['success'] ? 0 : 1);</code></pre></div>
+<div class="codigo"><pre><code data-lang="sql"># crontab: todo dia às 3h15
+15 3 * * * php /var/www/site/administrator/components/com_loja/cli/backup-diario.php &gt;&gt; /var/log/backup-loja.log 2&gt;&amp;1</code></pre></div>
+<p>Os backups antigos não são apagados pelo helper. Para manter só os últimos dias, use a rotação do próprio servidor (por exemplo, <code>find /home/meusite/backups-banco/diario -name '*.sql.gz' -mtime +14 -delete</code> no cron), onde fica claro o que está sendo removido.</p>
+
+<h3 id="receita-migracao">Antes de uma atualização do componente</h3>
+<div class="codigo"><pre><code data-lang="php">// script de instalação/atualização: só a estrutura e os dados das tabelas do componente
+$r = BackupDatabaseHelper::full([
+    'tables'    =&gt; ['#__loja_pedidos', '#__loja_itens', '#__loja_clientes'],
+    'directory' =&gt; 'antes-da-atualizacao',
+    'file_name' =&gt; 'loja_antes_v' . $versaoNova,
+    'gzip'      =&gt; true,
+]);
+
+if (!$r['success']) {
+    throw new RuntimeException('Atualização cancelada: o backup falhou (' . $r['mensagem'] . ').');
+}</code></pre></div>
+
+<h3 id="receita-tela">Tela de backup no administrador</h3>
+<div class="codigo"><div class="titulo-codigo">tmpl/default.php</div><pre><code data-lang="php">&lt;?php $token = JSession::getFormToken(); ?&gt;
+&lt;table class="table"&gt;
+  &lt;?php foreach (BackupDatabaseHelper::tables() as $t): ?&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;?php echo htmlspecialchars($t['nome']) ?&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;?php echo FormatHelper::bytes($t['tamanho_bytes']) ?&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;?php endforeach ?&gt;
+&lt;/table&gt;
+&lt;a class="btn btn-primary" href="index.php?option=com_loja&amp;task=backup.baixar&amp;modo=full&amp;&lt;?php echo $token ?&gt;=1"&gt;Baixar completo (.sql.gz)&lt;/a&gt;
+&lt;a class="btn btn-secondary" href="index.php?option=com_loja&amp;task=backup.baixar&amp;modo=schema&amp;&lt;?php echo $token ?&gt;=1"&gt;Baixar só a estrutura&lt;/a&gt;</code></pre></div>
+<p>O controller é o do exemplo de <a href="#download">download</a>.</p>
+
+<h3 id="receita-fora-joomla">PHP puro ou script fora do Joomla</h3>
+<div class="codigo"><pre><code data-lang="php">require __DIR__ . '/vendor/autoload.php';            // joomla/database
+require __DIR__ . '/helpers/BackupDatabaseHelper.php';
+
+PlatformHelper::setPlatform('php');
+BackupDatabaseHelper::setBaseDirectory(__DIR__ . '/backups');
+
+DbConnectionHelper::register('loja', [
+    'driver'   =&gt; 'mysqli',           // ou 'pgsql'
+    'host'     =&gt; '127.0.0.1',
+    'user'     =&gt; getenv('DB_USER'),
+    'password' =&gt; getenv('DB_PASS'),
+    'database' =&gt; 'loja',
+    'prefix'   =&gt; 'jos_',
+]);
+
+$r = BackupDatabaseHelper::full(['connection' =&gt; 'loja', 'gzip' =&gt; true]);</code></pre></div>
+
+<h2 id="erros" data-titulo="Erros e limitações">Erros e limitações</h2>
+<div class="tabela"><table><thead><tr><th>Mensagem</th><th>Causa</th></tr></thead><tbody>
+<tr><td><code>Tabela não encontrada: jos_x</code></td><td>Nome em <code>tables</code> que não existe (confira o prefixo; use <code>#__</code>).</td></tr>
+<tr><td><code>Nenhuma tabela para o backup.</code></td><td>Os filtros (<code>tables</code>, <code>exclude</code>, <code>prefix_only</code>, <code>views</code>) não deixaram nada.</td></tr>
+<tr><td><code>Schema(s) não encontrado(s): x</code></td><td>(PostgreSQL) schema inexistente em <code>schemas</code>.</td></tr>
+<tr><td><code>BackupDatabaseHelper suporta MySQL/MariaDB e PostgreSQL.</code></td><td>Conexão SQLite, SQL Server ou outra.</td></tr>
+<tr><td><code>BackupDatabaseHelper precisa do PostgreSQL 10 ou mais novo.</code></td><td>Servidor 9.x.</td></tr>
+<tr><td><code>Há uma transação aberta nesta conexão...</code></td><td>(PostgreSQL) backup chamado dentro de <code>DbTransactionHelper::run</code>. Veja <a href="#consistencia">Consistência</a>.</td></tr>
+<tr><td><code>Subpasta de backup inválida.</code> / <code>Diretório de backup inválido.</code></td><td><code>directory</code> ou <code>setBaseDirectory()</code> com <code>..</code> ou vazio.</td></tr>
+<tr><td><code>Sem permissão de escrita na pasta de backup</code></td><td>O usuário do PHP não grava na pasta. <code>setBaseDirectory()</code> lança essa exceção na hora; nos métodos de backup ela vem no resultado.</td></tr>
+<tr><td><code>A extensão zlib é necessária para gerar .sql.gz.</code></td><td><code>'gzip' =&gt; true</code> sem a extensão <code>zlib</code>.</td></tr>
+<tr><td><code>Falha ao gravar o backup (disco cheio ou conexão encerrada?).</code></td><td>Disco cheio, ou o navegador cancelou o download.</td></tr>
+</tbody></table></div>
+<ul>
+<li>É um backup <strong>lógico</strong> (comandos SQL). Para bancos de dezenas de GB, ou quando precisa de recuperação até o minuto, use as ferramentas do servidor (<code>mysqldump --single-transaction</code>, <code>pg_dump</code>, backups físicos do provedor).</li>
+<li>Pela web, o tempo máximo é o do servidor web/proxy (o do PHP é desligado). Backups grandes: cron/CLI ou <a href="guia-fila.html">fila</a>.</li>
+<li>O helper não envia o arquivo para outro lugar (S3, FTP, e-mail). Um backup que fica só no mesmo servidor do banco não protege contra a perda do servidor.</li>
+</ul>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="db-connection-helper.html">DbConnectionHelper</a>: registrar o banco de outro sistema para fazer backup dele.</li><li><a href="permission-helper.html">PermissionHelper</a>: <code>require()</code> e <code>requireToken()</code> antes do download.</li><li><a href="lock-helper.html">LockHelper</a>: um backup por vez.</li><li><a href="platform-helper.html">PlatformHelper</a>: <code>close()</code> depois do download e uso fora do Joomla.</li><li><a href="guia-mysql-postgresql.html">MySQL e PostgreSQL</a>: diferenças entre os bancos.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="array-helper.html"><small>← Anterior</small>ArrayHelper</a><a class="proxima" href="vigia-js.html"><small>Próxima →</small>Vigia.js</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>PlatformHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>ArrayHelper</code>, <code>BackupDatabaseHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

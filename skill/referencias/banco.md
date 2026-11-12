@@ -1,4 +1,4 @@
-# Banco: DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables
+# Banco: DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, BackupDatabaseHelper
 
 Carregue `OrmTables.php` (ele puxa `OrmBase`, `DbConnectionHelper` e `DbTransactionHelper`). Funciona em MySQL e PostgreSQL.
 
@@ -103,3 +103,20 @@ DbConnectionHelper::get('erp');               // driver; sem nome = banco do Joo
 // has, forget, all, resolve($nomeOuDriverOuNull), serverType, isPostgres, isMysql
 ```
 A conexão abre no primeiro uso. Credenciais: leia de `JFactory::getConfig()`/parâmetros do componente, nunca fixas no código.
+
+## BackupDatabaseHelper (backup do banco em .sql)
+
+```php
+require_once JPATH_COMPONENT . '/helpers/BackupDatabaseHelper.php';   // puxa PlatformHelper e DbConnectionHelper
+BackupDatabaseHelper::setBaseDirectory('/home/site/backups-banco');   // padrão: {raiz}/backups/database (fora da pasta pública é melhor)
+$r = BackupDatabaseHelper::full(['gzip' => true, 'exclude_data' => ['#__session']]);   // estrutura + dados
+$r = BackupDatabaseHelper::schema(['connection' => 'erp']);           // só estrutura (tabelas vazias, views, triggers)
+// $r['success'], $r['mensagem'], $r['data'] = modo, banco, tabelas, views, triggers, linhas, snapshot, segundos, arquivo, caminho, bytes
+// opções: connection, tables, exclude, exclude_data, prefix_only, schemas (pg), views, triggers, gzip, consistent, directory, file_name, save_copy
+BackupDatabaseHelper::downloadFull(['gzip' => true, 'save_copy' => true]); PlatformHelper::close();   // download; checar PermissionHelper::require + requireToken antes
+BackupDatabaseHelper::tables();   // [['nome', 'tipo' => 'tabela'|'view', 'engine', 'linhas_aprox', 'tamanho_bytes'], ...]
+```
+- MySQL/MariaDB e PostgreSQL 10+, em PHP puro (sem mysqldump/pg_dump); lê em blocos, não guarda na memória. Não lança: erro volta em `success = false`.
+- Nunca apaga: na origem só SELECT/SHOW (PostgreSQL em transação READ ONLY); o arquivo não tem DROP/DELETE/TRUNCATE/REPLACE/UPDATE (MySQL: `CREATE TABLE IF NOT EXISTS` + `INSERT IGNORE`; PostgreSQL: `IF NOT EXISTS`, blocos DO, `ON CONFLICT DO NOTHING`). Restaurar sobre banco existente não sobrescreve registros; tabela sem chave duplica linhas se restaurada duas vezes.
+- Chame **fora** de transação: no PostgreSQL devolve erro; no MySQL roda sem snapshot (`snapshot => false`). Backup grande: cron/CLI ou fila, com `LockHelper::run`.
+- Restaurar: `mysql banco < arquivo.sql` (usa DELIMITER; 2ª restauração no MySQL para na primeira view já existente → `mysql --force`) · `psql -d banco -f arquivo.sql`.
