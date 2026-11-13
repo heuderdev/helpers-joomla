@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EmailSendHelper · helpers-joomla</title>
+<meta name="description" content="EmailSendHelper: envio de e-mails sem dependências por SMTP (Gmail, Outlook, Office 365, SendGrid, Brevo, Locaweb, Hostinger), API da ElasticEmail, mail() e .eml, com failover, views, anexos, imagens embutidas e modo de teste.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › EmailSendHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação zip rar compactado raw issafefile">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="platform-helper.html" data-busca="plataforma laravel php puro joomla 6 compatibilidade jfile jfolder jlog">PlatformHelper<span class="arquivo">PlatformHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="email-send-helper.html" class="ativo" aria-current="page" data-busca="email e-mail enviar smtp gmail outlook hotmail office365 yahoo zoho sendgrid brevo mailgun mailtrap mailpit locaweb hostinger elasticemail api anexo imagem embutida cid failover várias contas senha de app eml teste fake">EmailSendHelper<span class="arquivo">EmailSendHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><a href="array-helper.html" data-busca="array arrays objeto notação de ponto get set pluck groupby keyby where filtrar agrupar ordenar sortby somar sum árvore totree dot merge coleção lista registros">ArrayHelper<span class="arquivo">ArrayHelper.php</span></a><a href="backup-database-helper.html" data-busca="backup cópia de segurança dump exportar banco sql mysqldump pg_dump estrutura schema dados restaurar gzip download tabelas views triggers">BackupDatabaseHelper<span class="arquivo">BackupDatabaseHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>EmailSendHelper</h1><p class="lead">Envio de e-mails <strong>sem dependências</strong> e sem o mailer do Joomla: cliente <strong>SMTP</strong> próprio (Gmail, Outlook/Hotmail, Office 365, Yahoo, Zoho, SendGrid, Brevo, Mailgun, Locaweb, Hostinger ou qualquer servidor), <strong>API HTTP da ElasticEmail</strong>, <code>mail()</code> do PHP, gravação em arquivo <code>.eml</code> e modo de teste. Várias contas registradas por nome, failover entre elas, views e layouts, anexos, imagens embutidas e diagnóstico da conversa com o servidor.</p><div id="nesta-pagina"></div>
+
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/EmailSendHelper.php&#x27;;
+
+// 1) Uma vez, no carregamento do componente (credenciais fora do código: veja &quot;Onde guardar as senhas&quot;)
+EmailSendHelper::register(&#x27;gmail&#x27;, [
+    &#x27;username&#x27;  =&gt; &#x27;contato@gmail.com&#x27;,
+    &#x27;password&#x27;  =&gt; &#x27;abcd efgh ijkl mnop&#x27;,   // senha de app, não a senha da conta
+    &#x27;from_name&#x27; =&gt; &#x27;Loja Exemplo&#x27;,
+]);
+
+// 2) Em qualquer lugar
+$r = EmailSendHelper::make()
+    -&gt;to($cliente-&gt;email, $cliente-&gt;nome)
+    -&gt;subject(&#x27;Pedido {{ pedido.numero }} confirmado&#x27;)
+    -&gt;view(&#x27;pedido-confirmado&#x27;, [&#x27;cliente&#x27; =&gt; $cliente, &#x27;pedido&#x27; =&gt; $pedido])
+    -&gt;attach(&#x27;/caminho/boleto.pdf&#x27;)
+    -&gt;send();
+
+if (!$r[&#x27;success&#x27;]) {
+    echo $r[&#x27;mensagem&#x27;];        // &quot;Não foi possível enviar o e-mail.&quot;
+    print_r($r[&#x27;errors&#x27;]);      // [&#x27;gmail&#x27; =&gt; [&#x27;Falha na autenticação SMTP: ...&#x27;]]
+}</code></pre></div>
+<ul>
+<li><strong>Sem dependências:</strong> um arquivo só. Não usa PHPMailer, Symfony Mailer nem o <code>JMail</code> do Joomla. Precisa de <strong>PHP 8.2+</strong> com <code>openssl</code> (TLS/SSL) e <code>mbstring</code>; usa <code>curl</code> e <code>fileinfo</code> se existirem.</li>
+<li><strong>Roda no Joomla, no Laravel e em PHP puro.</strong> O arquivo só bloqueia o acesso direto pela URL; não exige <code>_JEXEC</code>.</li>
+<li><strong>Nunca lança exceção</strong> em <code>send()</code>: o resultado volta no formato padrão dos helpers, <code>['success', 'status', 'mensagem', 'data', 'errors']</code>. Se preferir exceção, use <a href="#sendOrFail"><code>sendOrFail()</code></a>.</li>
+<li><strong>Log automático:</strong> se o <a href="log-helper.html">LogHelper</a> estiver carregado, cada envio e cada falha vai para a categoria <code>mail</code> (conexão, driver, destinatários, assunto e número de anexos; nunca a senha nem o corpo). Carregando pelo <a href="include-helper.html">IncludeHelper</a> (<code>IncludeHelper::load('EmailSendHelper')</code>), o LogHelper vem junto.</li>
+</ul>
+
+<h3 id="quando-usar">EmailSendHelper ou MailHelper?</h3>
+<p>Os dois enviam e-mails transacionais com templates. A diferença é <strong>quem entrega</strong>:</p>
+<div class="tabela"><table><thead><tr><th></th><th><a href="mail-helper.html">MailHelper</a></th><th>EmailSendHelper</th></tr></thead><tbody>
+<tr><td>Entrega</td><td>Mailer do Joomla (configuração global: PHP mail, Sendmail ou SMTP)</td><td>Cliente SMTP próprio, API da ElasticEmail, <code>mail()</code> ou arquivo</td></tr>
+<tr><td>Contas</td><td>Uma (a do Joomla)</td><td>Quantas quiser, por nome, com failover</td></tr>
+<tr><td>Fora do Joomla</td><td>Não</td><td>Sim (Laravel, PHP puro, CLI)</td></tr>
+<tr><td>Envio pela fila</td><td>Sim (<code>MailHelper::queue()</code>)</td><td>Não embutido (veja <a href="#receita-fila">a receita</a>)</td></tr>
+<tr><td>Imagens embutidas (<code>cid:</code>)</td><td>Não</td><td>Sim</td></tr>
+<tr><td>Diagnóstico</td><td>Log</td><td>Log, <code>testConnection()</code> e conversa SMTP completa (<code>debug</code>)</td></tr>
+</tbody></table></div>
+<p>Use o <strong>MailHelper</strong> quando o e-mail do Joomla já está configurado e basta. Use o <strong>EmailSendHelper</strong> quando precisa de outra conta (Gmail do cliente, ElasticEmail, SendGrid), de mais de uma conta, de failover, ou de enviar fora do Joomla.</p>
+
+<h2 id="conexoes" data-titulo="Conexões">Conexões</h2>
+<p>Uma conexão é uma conta de envio com nome. Registre todas uma vez, no carregamento do componente (ou no bootstrap do script), e escolha pelo nome ao enviar.</p>
+
+<div class="metodo"><h3 id="register"><code>register()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::register(string $name, array $config = []): void</div>
+<p>Registra (ou substitui) uma conexão. O <strong>nome</strong> também escolhe o provedor pronto: <code>register('gmail', [...])</code> já sabe o host, a porta e a criptografia do Gmail. Para usar outro nome, informe <code>provider</code>. O que você passar no <code>$config</code> sempre vence o provedor pronto. A <strong>primeira</strong> conexão registrada vira a padrão.</p>
+<div class="codigo"><pre><code data-lang="php">EmailSendHelper::register(&#x27;gmail&#x27;, [&#x27;username&#x27; =&gt; &#x27;conta@gmail.com&#x27;, &#x27;password&#x27; =&gt; &#x27;senha-de-app&#x27;]);
+
+EmailSendHelper::register(&#x27;vendas&#x27;, [          // nome livre + provider
+    &#x27;provider&#x27;  =&gt; &#x27;office365&#x27;,
+    &#x27;username&#x27;  =&gt; &#x27;vendas@empresa.com.br&#x27;,
+    &#x27;password&#x27;  =&gt; &#x27;...&#x27;,
+    &#x27;from_name&#x27; =&gt; &#x27;Comercial&#x27;,
+]);
+
+EmailSendHelper::register(&#x27;elasticemail&#x27;, [&#x27;api_key&#x27; =&gt; &#x27;...&#x27;, &#x27;from&#x27; =&gt; &#x27;nao-responda@empresa.com.br&#x27;]);
+
+EmailSendHelper::register(&#x27;servidor&#x27;, [        // qualquer servidor SMTP
+    &#x27;host&#x27;       =&gt; &#x27;smtp.empresa.com.br&#x27;,
+    &#x27;port&#x27;       =&gt; 587,
+    &#x27;encryption&#x27; =&gt; &#x27;tls&#x27;,
+    &#x27;username&#x27;   =&gt; &#x27;sistema@empresa.com.br&#x27;,
+    &#x27;password&#x27;   =&gt; &#x27;...&#x27;,
+]);</code></pre></div>
+<p>Sem <code>driver</code> nem provedor conhecido, ele deduz: com <code>host</code> vira <code>smtp</code>; com <code>api_key</code> vira <code>elasticemail</code>. Lança <code>InvalidArgumentException</code> se o nome for vazio, se não der para descobrir o driver, se faltar o <code>host</code> no SMTP ou a <code>api_key</code> na ElasticEmail.</p></div>
+
+<h3 id="chaves">Chaves da configuração</h3>
+<div class="tabela"><table><thead><tr><th>Chave (apelidos)</th><th>Padrão</th><th>Para que serve</th></tr></thead><tbody>
+<tr><td><code>driver</code></td><td>pelo provedor</td><td><code>smtp</code>, <code>elasticemail</code>, <code>mail</code> ou <code>log</code>. Veja <a href="#drivers">Drivers</a>.</td></tr>
+<tr><td><code>provider</code></td><td>o nome da conexão</td><td>Provedor pronto a usar como base (lista em <a href="#provedores">Provedores prontos</a>).</td></tr>
+<tr><td><code>host</code> (<code>smtp_host</code>)</td><td>pelo provedor</td><td>Servidor SMTP.</td></tr>
+<tr><td><code>port</code> (<code>smtp_port</code>)</td><td><code>587</code></td><td>Porta SMTP.</td></tr>
+<tr><td><code>encryption</code> (<code>secure</code>)</td><td><code>tls</code></td><td><code>tls</code> (STARTTLS, porta 587), <code>ssl</code> (conexão já cifrada, porta 465) ou <code>none</code>. Aceita também <code>starttls</code>, <code>smtps</code>, <code>false</code> e <code>0</code>.</td></tr>
+<tr><td><code>username</code> (<code>user</code>, <code>login</code>)</td><td>vazio</td><td>Login SMTP. Sem login (e sem <code>oauth_token</code>), não autentica.</td></tr>
+<tr><td><code>password</code> (<code>pass</code>, <code>senha</code>)</td><td>vazio</td><td>Senha SMTP (no Gmail, senha de app).</td></tr>
+<tr><td><code>oauth_token</code></td><td>vazio</td><td>Token OAuth2 para <code>AUTH XOAUTH2</code> (Gmail/Microsoft sem senha). Você obtém e renova o token; o helper só o usa.</td></tr>
+<tr><td><code>api_key</code> (<code>apikey</code>, <code>key</code>)</td><td>vazio</td><td>Chave da API da ElasticEmail (obrigatória no driver <code>elasticemail</code>).</td></tr>
+<tr><td><code>api_url</code></td><td>API v4 da ElasticEmail</td><td>Endpoint da API (para testes ou proxy).</td></tr>
+<tr><td><code>from_email</code> (<code>from</code>)</td><td>o <code>username</code>, se for e-mail</td><td>Remetente padrão da conexão.</td></tr>
+<tr><td><code>from_name</code></td><td>vazio</td><td>Nome do remetente.</td></tr>
+<tr><td><code>reply_to</code></td><td>nenhum</td><td>Responder-para padrão (vale quando a mensagem não define <code>replyTo()</code>).</td></tr>
+<tr><td><code>envelope_from</code></td><td>o remetente</td><td>Endereço do envelope (<code>MAIL FROM</code>/Return-Path), para onde voltam os e-mails devolvidos.</td></tr>
+<tr><td><code>timeout</code></td><td><code>30</code></td><td>Segundos para conectar e esperar cada resposta.</td></tr>
+<tr><td><code>verify_peer</code></td><td><code>true</code></td><td>Confere o certificado TLS. Desligue só em ambiente local com certificado próprio.</td></tr>
+<tr><td><code>helo</code></td><td>nome do servidor</td><td>Nome usado no <code>EHLO</code> (<code>$_SERVER['SERVER_NAME']</code> ou o nome da máquina; se não for um domínio válido, <code>localhost.localdomain</code>).</td></tr>
+<tr><td><code>directory</code></td><td><code>{pasta atual}/logs/emails</code></td><td>Pasta dos <code>.eml</code> do driver <code>log</code>.</td></tr>
+<tr><td><code>max_size</code></td><td><code>25 MB</code></td><td>Limite da soma de anexos e imagens embutidas, em bytes. <code>0</code> desliga o limite.</td></tr>
+<tr><td><code>debug</code></td><td><code>false</code></td><td>Com <code>true</code>, a conversa SMTP vai em <code>$r['data']['transcript']</code> também quando dá certo.</td></tr>
+</tbody></table></div>
+<p>As chaves não diferenciam maiúsculas de minúsculas (<code>SMTP_HOST</code> funciona), o que permite passar direto um bloco do seu arquivo de configuração.</p>
+
+<h3 id="provedores">Provedores prontos</h3>
+<p>Use o nome como nome da conexão ou em <code>provider</code>. <code>EmailSendHelper::providers()</code> devolve a lista.</p>
+<div class="tabela"><table><thead><tr><th>Nome</th><th>Servidor</th><th>Porta / criptografia</th><th>Observação</th></tr></thead><tbody>
+<tr><td><code>gmail</code>, <code>google_workspace</code></td><td><code>smtp.gmail.com</code></td><td>587 / tls</td><td>Senha de app (exige verificação em 2 etapas) ou <code>oauth_token</code>.</td></tr>
+<tr><td><code>outlook</code>, <code>hotmail</code>, <code>live</code></td><td><code>smtp-mail.outlook.com</code></td><td>587 / tls</td><td>A conta precisa permitir SMTP AUTH; senão, <code>oauth_token</code>.</td></tr>
+<tr><td><code>office365</code></td><td><code>smtp.office365.com</code></td><td>587 / tls</td><td>SMTP AUTH liberado para a caixa no admin do Microsoft 365.</td></tr>
+<tr><td><code>yahoo</code></td><td><code>smtp.mail.yahoo.com</code></td><td>465 / ssl</td><td>Senha de app.</td></tr>
+<tr><td><code>icloud</code></td><td><code>smtp.mail.me.com</code></td><td>587 / tls</td><td>Senha de app.</td></tr>
+<tr><td><code>zoho</code></td><td><code>smtp.zoho.com</code></td><td>465 / ssl</td><td>Contas da região EU/IN usam outro host: informe <code>host</code>.</td></tr>
+<tr><td><code>sendgrid</code></td><td><code>smtp.sendgrid.net</code></td><td>587 / tls</td><td><code>username</code> já vem <code>apikey</code>; a <code>password</code> é a API key.</td></tr>
+<tr><td><code>brevo</code></td><td><code>smtp-relay.brevo.com</code></td><td>587 / tls</td><td>Login e chave SMTP do painel.</td></tr>
+<tr><td><code>mailgun</code></td><td><code>smtp.mailgun.org</code></td><td>587 / tls</td><td>Domínio da UE usa <code>smtp.eu.mailgun.org</code>.</td></tr>
+<tr><td><code>mailtrap</code></td><td><code>sandbox.smtp.mailtrap.io</code></td><td>2525 / tls</td><td>Caixa de testes: nada chega ao destinatário real.</td></tr>
+<tr><td><code>locaweb</code></td><td><code>email-ssl.com.br</code></td><td>465 / ssl</td><td></td></tr>
+<tr><td><code>hostinger</code></td><td><code>smtp.hostinger.com</code></td><td>465 / ssl</td><td></td></tr>
+<tr><td><code>elasticemail_smtp</code></td><td><code>smtp.elasticemail.com</code></td><td>2525 / tls</td><td>ElasticEmail por SMTP (aceita imagens embutidas).</td></tr>
+<tr><td><code>elasticemail</code>, <code>elastic</code></td><td>API HTTP v4</td><td>HTTPS</td><td>Driver <code>elasticemail</code>; só precisa de <code>api_key</code>.</td></tr>
+<tr><td><code>mailpit</code>, <code>mailhog</code></td><td><code>127.0.0.1</code></td><td>1025 / none</td><td>Caixa local de desenvolvimento (interface em <code>http://localhost:8025</code>).</td></tr>
+<tr><td><code>mail</code></td><td colspan="2">driver <code>mail</code></td><td><code>mail()</code> do PHP.</td></tr>
+<tr><td><code>log</code></td><td colspan="2">driver <code>log</code></td><td>Grava <code>.eml</code> em vez de enviar.</td></tr>
+</tbody></table></div>
+<div class="nota aviso"><p><strong class="rotulo">Remetente no Gmail e no Outlook</strong> Esses provedores só enviam com o endereço da própria conta (ou um alias configurado nela). Com outro <code>from</code>, o provedor troca o remetente ou recusa. Para enviar com o domínio da empresa, use o SMTP do domínio ou um serviço como ElasticEmail, SendGrid ou Brevo, com SPF e DKIM configurados no DNS.</p></div>
+
+<h3 id="gerenciar">Gerenciar as conexões</h3>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Retorno</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code id="registerMany">registerMany(array $conexoes)</code></td><td><code>void</code></td><td>Várias de uma vez: <code>['gmail' =&gt; [...], 'elasticemail' =&gt; [...]]</code>.</td></tr>
+<tr><td><code id="setDefault">setDefault(string $nome)</code></td><td><code>void</code></td><td>Escolhe a conexão padrão. Nome não registrado lança <code>InvalidArgumentException</code>.</td></tr>
+<tr><td><code>getDefault()</code></td><td><code>string|null</code></td><td>Nome da conexão padrão.</td></tr>
+<tr><td><code>has(string $nome)</code></td><td><code>bool</code></td><td>A conexão existe? Não diferencia maiúsculas.</td></tr>
+<tr><td><code>forget(string $nome)</code></td><td><code>void</code></td><td>Remove. Se era a padrão, a primeira restante vira a padrão.</td></tr>
+<tr><td><code id="connections">connections()</code></td><td><code>array</code></td><td><code>['gmail' =&gt; ['driver' =&gt; 'smtp', 'host' =&gt; 'smtp.gmail.com', 'default' =&gt; true], ...]</code>, <strong>sem</strong> credenciais (pode ir para uma tela de diagnóstico).</td></tr>
+<tr><td><code>providers()</code></td><td><code>array</code></td><td>Os provedores prontos com host, porta e criptografia.</td></tr>
+</tbody></table></div>
+<p>As conexões ficam em memória e duram <strong>um request</strong> (ou uma execução de script). Registre no carregamento do componente, antes de qualquer envio.</p>
+
+<h3 id="credenciais">Onde guardar as senhas</h3>
+<p>Nunca deixe senha ou API key no código versionado. Leia de um arquivo de configuração fora da pasta pública e fora do git, das variáveis de ambiente, ou dos parâmetros do componente com o <a href="settings-helper.html">SettingsHelper</a>:</p>
+<div class="codigo"><pre><code data-lang="php">// config.php fora do public_html e no .gitignore
+return [
+    &#x27;EMAIL&#x27; =&gt; [
+        &#x27;elasticemail&#x27; =&gt; [&#x27;api_key&#x27; =&gt; getenv(&#x27;ELASTICEMAIL_API_KEY&#x27;), &#x27;from&#x27; =&gt; &#x27;nao-responda@empresa.com.br&#x27;, &#x27;from_name&#x27; =&gt; &#x27;Empresa&#x27;],
+        &#x27;gmail&#x27;        =&gt; [&#x27;username&#x27; =&gt; &#x27;contato@gmail.com&#x27;, &#x27;password&#x27; =&gt; getenv(&#x27;GMAIL_APP_PASSWORD&#x27;)],
+    ],
+];
+
+// no carregamento do componente
+$config = require &#x27;/home/empresa/config/config.php&#x27;;
+EmailSendHelper::registerMany($config[&#x27;EMAIL&#x27;]);
+EmailSendHelper::setDefault(&#x27;elasticemail&#x27;);</code></pre></div>
+
+<h2 id="mensagem" data-titulo="Montar a mensagem">Montar a mensagem</h2>
+<div class="metodo"><h3 id="make"><code>make()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::make(string|array|null $connection = null, array $mail = []): EmailSendHelper</div>
+<p>Cria uma mensagem nova. Cada chamada é independente: nada passa de um e-mail para o outro. <code>$connection</code> aceita:</p>
+<ul>
+<li><code>null</code>: a conexão padrão;</li>
+<li><code>'gmail'</code>: uma conexão registrada;</li>
+<li><code>['elasticemail', 'gmail']</code>: <a href="#failover">failover</a>, tenta na ordem;</li>
+<li><code>['host' =&gt; ..., 'username' =&gt; ...]</code>: configuração avulsa, usada só neste envio, sem registrar.</li>
+</ul>
+<p><code>$mail</code> é opcional e aceita as mesmas chaves de <a href="#fill"><code>fill()</code></a>. Para trocar a conexão depois, use <code>-&gt;via($connection)</code>.</p></div>
+
+<div class="metodo"><h3 id="destinatarios"><code>to() / cc() / bcc() / replyTo()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;to(string|array $address, ?string $name = null): $this</div>
+<p>Podem ser chamados várias vezes; os endereços se somam (o mesmo e-mail aparece uma vez só). Formatos aceitos:</p>
+<div class="codigo"><pre><code data-lang="php">-&gt;to(&#x27;ana@x.com&#x27;)
+-&gt;to(&#x27;ana@x.com&#x27;, &#x27;Ana Silva&#x27;)
+-&gt;to(&#x27;ana@x.com, bruno@x.com; carla@x.com&#x27;)          // separados por vírgula ou ponto e vírgula
+-&gt;to(&#x27;Ana Silva &lt;ana@x.com&gt;&#x27;)
+-&gt;to(&#x27;&quot;Silva, Ana&quot; &lt;ana@x.com&gt;&#x27;)                      // vírgula dentro de aspas não divide
+-&gt;to([&#x27;ana@x.com&#x27;, &#x27;bruno@x.com&#x27;])
+-&gt;to([&#x27;ana@x.com&#x27; =&gt; &#x27;Ana&#x27;, &#x27;bruno@x.com&#x27; =&gt; &#x27;Bruno&#x27;])
+-&gt;to([[&#x27;email&#x27; =&gt; &#x27;ana@x.com&#x27;, &#x27;name&#x27; =&gt; &#x27;Ana&#x27;]])     // lista de linhas do banco, por exemplo</code></pre></div>
+<p>Um endereço inválido <strong>não quebra a cadeia</strong>: o erro fica guardado e o <code>send()</code> devolve <code>success = false</code> com <code>E-mail inválido em "to": ...</code>, sem tentar enviar. Valores vazios (<code>''</code>, <code>null</code>, <code>[]</code>) são ignorados. É preciso ao menos um destinatário em <code>to</code>, <code>cc</code> ou <code>bcc</code>.</p>
+<div class="nota"><p><code>bcc</code> nunca aparece no cabeçalho do e-mail no SMTP: os endereços vão só no envelope. Use <code>bcc</code> para enviar a muitas pessoas sem expor a lista.</p></div></div>
+
+<div class="metodo"><h3 id="from"><code>from()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;from(string $email, ?string $name = null): $this</div>
+<p>Remetente desta mensagem. Se não for chamado, vale nesta ordem: <code>from_email</code> (+ <code>from_name</code>) da conexão; depois o <code>username</code>, se for um e-mail. Sem nenhum deles, o envio falha com <code>Remetente inválido ou ausente</code>.</p></div>
+
+<div class="metodo"><h3 id="subject"><code>subject() / html() / text()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;subject(string $subject): $this
+$mail-&gt;html(string $html): $this
+$mail-&gt;text(string $text): $this</div>
+<p>Assunto (obrigatório), corpo HTML e corpo em texto puro. Os três aceitam <code>{{ variavel }}</code> com os dados de <code>with()</code>/<code>view()</code>. No HTML o valor é escapado; no assunto e no texto, não (não há HTML ali).</p>
+<ul>
+<li>Só <code>html()</code> (ou <code>view()</code>): a versão em texto é <strong>gerada automaticamente</strong> do HTML (<a href="#htmlToText"><code>htmlToText()</code></a>). Clientes sem HTML e filtros anti-spam gostam disso.</li>
+<li>Só <code>text()</code>: e-mail em texto puro.</li>
+<li>Os dois: cada um vai como você escreveu.</li>
+</ul>
+<p>Quebras de linha no assunto viram espaço, o que impede injeção de cabeçalhos.</p></div>
+
+<div class="metodo"><h3 id="with"><code>with()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;with(string|array $key, mixed $value = null): $this</div>
+<p>Dados para o assunto, o HTML, o texto, a view e o layout. Aceita uma chave e um valor ou um array; chamadas seguidas se somam.</p>
+<div class="codigo"><pre><code data-lang="php">-&gt;with(&#x27;pedido&#x27;, $pedido)
+-&gt;with([&#x27;cliente&#x27; =&gt; $cliente, &#x27;link&#x27; =&gt; $urlRastreio])</code></pre></div></div>
+
+<div class="metodo"><h3 id="extras"><code>priority() / header() / unsubscribe()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;priority(int $priority): $this          // 1 alta · 3 normal · 5 baixa
+$mail-&gt;header(string $name, string $value): $this
+$mail-&gt;unsubscribe(string $urlOrMailto): $this</div>
+<ul>
+<li><code>priority(1)</code> e <code>priority(2)</code> marcam como alta (<code>X-Priority</code> e <code>Importance: High</code>); 4 e 5, baixa; 3 não muda nada. Valores fora de 1 a 5 são ajustados.</li>
+<li><code>header('X-Pedido', '42')</code> adiciona um cabeçalho. O nome só pode ter letras, números e hífen (senão o envio falha com <code>Cabeçalho inválido</code>); quebras de linha no valor viram espaço.</li>
+<li><code>unsubscribe('https://empresa.com/sair?t=...')</code> gera <code>List-Unsubscribe</code> e, para HTTPS, <code>List-Unsubscribe-Post: List-Unsubscribe=One-Click</code> (descadastro em um clique). Aceita também um e-mail (<code>sair@empresa.com</code> vira <code>mailto:</code>). O Gmail e o Yahoo exigem isso em envios em massa.</li>
+</ul></div>
+
+<h2 id="corpo" data-titulo="Views, layouts e variáveis">Views, layouts e variáveis</h2>
+<div class="metodo"><h3 id="view"><code>view()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;view(string $file, array $data = []): $this</div>
+<p>Corpo HTML a partir de um arquivo. Tem prioridade sobre <code>html()</code>. O tipo do arquivo decide como ele é lido:</p>
+<div class="tabela"><table><thead><tr><th>Arquivo</th><th>Como funciona</th></tr></thead><tbody>
+<tr><td><code>.php</code></td><td>PHP normal. Cada chave dos dados vira uma variável (<code>$cliente</code>, <code>$pedido</code>) e <code>$e()</code> escapa um valor para HTML. Você controla tudo: <code>if</code>, <code>foreach</code>, funções.</td></tr>
+<tr><td><code>.html</code> (ou outro)</td><td>Texto com <code>{{ variavel }}</code> (escapada), <code>{!! variavel !!}</code> (sem escape) e <a href="#filtros">filtros</a>. Bom para quem edita o layout sem saber PHP.</td></tr>
+</tbody></table></div>
+<div class="codigo"><div class="titulo-codigo">emails/pedido-confirmado.php</div><pre><code data-lang="php">&lt;h1&gt;Olá, &lt;?= $e($cliente-&gt;nome) ?&gt;!&lt;/h1&gt;
+&lt;p&gt;Seu pedido &lt;strong&gt;#&lt;?= $e($pedido-&gt;numero) ?&gt;&lt;/strong&gt; foi confirmado.&lt;/p&gt;
+
+&lt;table&gt;
+    &lt;?php foreach ($pedido-&gt;itens as $item): ?&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;?= $e($item-&gt;nome) ?&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;?= $e(FormatHelper::money($item-&gt;total)) ?&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;?php endforeach; ?&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;a href=&quot;&lt;?= $e($link) ?&gt;&quot;&gt;Acompanhar pedido&lt;/a&gt;&lt;/p&gt;</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">emails/aviso.html</div><pre><code data-lang="html">&lt;p&gt;Olá, {{ cliente.nome }}!&lt;/p&gt;
+&lt;p&gt;Seu boleto de {{ valor | money }} vence em {{ vencimento | date }}.&lt;/p&gt;
+&lt;p&gt;{{ observacao | nl2br }}&lt;/p&gt;</code></pre></div>
+<p><strong>Onde o arquivo é procurado</strong>, nesta ordem: na pasta de <code>setViewDirectory()</code> (se definida) e depois no caminho como foi escrito (absoluto ou relativo à pasta atual). Sem extensão, tenta também <code>.php</code> e <code>.html</code>: <code>view('pedido-confirmado')</code> acha <code>pedido-confirmado.php</code>. Não achou: o envio falha com <code>View de e-mail não encontrada</code>.</p>
+<div class="nota perigo"><p>Em views <code>.php</code>, <strong>sempre</strong> escape com <code>$e()</code> o que veio do usuário ou do banco. <code>&lt;?= $cliente-&gt;nome ?&gt;</code> sem <code>$e()</code> permite injetar HTML (links falsos, phishing) no e-mail. Nunca monte o nome da view com dado da requisição: ela é um <code>include</code> de PHP.</p></div></div>
+
+<div class="metodo"><h3 id="layout"><code>layout()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;layout(string|false $file): $this</div>
+<p>Arquivo que "envolve" o HTML: cabeçalho com a logo, rodapé, estilos. Recebe os mesmos dados da view e mais <code>content</code> (ou <code>conteudo</code>), com o HTML já renderizado da view, e <code>subject</code> (ou <code>assunto</code>). <code>layout(false)</code> desliga o layout padrão só neste e-mail. Só se aplica quando há HTML.</p>
+<div class="codigo"><div class="titulo-codigo">emails/layout.php</div><pre><code data-lang="php">&lt;!doctype html&gt;
+&lt;html lang=&quot;pt-BR&quot;&gt;
+&lt;body style=&quot;margin:0;background:#f4f4f5;font-family:Arial,sans-serif&quot;&gt;
+    &lt;table width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot;&gt;&lt;tr&gt;&lt;td align=&quot;center&quot;&gt;
+        &lt;table width=&quot;600&quot; cellpadding=&quot;24&quot; style=&quot;background:#fff&quot;&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;img src=&quot;cid:logo&quot; alt=&quot;Loja Exemplo&quot; width=&quot;140&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;?= $content ?&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td style=&quot;font-size:12px;color:#71717a&quot;&gt;Você recebeu este e-mail porque comprou na Loja Exemplo.&lt;/td&gt;&lt;/tr&gt;
+        &lt;/table&gt;
+    &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre></div>
+<p>Num layout <code>.html</code>, use <code>{!! content !!}</code> (sem escape, porque já é HTML) e <code>{{ subject }}</code>.</p></div>
+
+<div class="metodo"><h3 id="setViewDirectory"><code>setViewDirectory() / setDefaultLayout()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::setViewDirectory(?string $directory): void
+EmailSendHelper::setDefaultLayout(string|null $file): void</div>
+<p>Configuração global, normalmente no carregamento do componente: a pasta base das views e o layout aplicado a todo e-mail HTML.</p>
+<div class="codigo"><pre><code data-lang="php">EmailSendHelper::setViewDirectory(JPATH_COMPONENT . &#x27;/emails&#x27;);
+EmailSendHelper::setDefaultLayout(&#x27;layout.php&#x27;);
+
+EmailSendHelper::make()-&gt;to($email)-&gt;subject(&#x27;Bem-vindo&#x27;)-&gt;view(&#x27;boas-vindas&#x27;)-&gt;embed(JPATH_COMPONENT . &#x27;/emails/logo.png&#x27;, &#x27;logo&#x27;)-&gt;send();
+EmailSendHelper::make()-&gt;to($email)-&gt;subject(&#x27;Código: {{ codigo }}&#x27;)-&gt;text(&#x27;Seu código é {{ codigo }}&#x27;)-&gt;with(&#x27;codigo&#x27;, $codigo)-&gt;send();   // texto: sem layout</code></pre></div></div>
+
+<h3 id="filtros">Variáveis e filtros (<code>{{ }}</code>)</h3>
+<p>Valem no assunto, em <code>html()</code>, em <code>text()</code> e nos arquivos que não são <code>.php</code>. O caminho usa ponto e entra em arrays, objetos e <code>ArrayAccess</code>: <code>{{ pedido.cliente.nome }}</code>. Variável que não existe vira texto vazio (sem erro).</p>
+<div class="tabela"><table><thead><tr><th>Escrita</th><th>Resultado</th></tr></thead><tbody>
+<tr><td><code>{{ nome }}</code></td><td>Valor escapado para HTML (<code>&lt;b&gt;</code> aparece como texto).</td></tr>
+<tr><td><code>{!! html !!}</code></td><td>Valor <strong>sem</strong> escape. Só para HTML gerado por você.</td></tr>
+<tr><td><code>{{ total | money }}</code></td><td><code>R$ 1.234,50</code></td></tr>
+<tr><td><code>{{ total | number }}</code></td><td><code>1.234,50</code></td></tr>
+<tr><td><code>{{ criado_em | date }}</code></td><td><code>13/11/2026</code></td></tr>
+<tr><td><code>{{ criado_em | datetime }}</code></td><td><code>13/11/2026 10:00</code></td></tr>
+<tr><td><code>{{ nome | upper }}</code> / <code>lower</code></td><td>Maiúsculas / minúsculas (com acento).</td></tr>
+<tr><td><code>{{ observacao | nl2br }}</code></td><td>Escapa e troca quebras de linha por <code>&lt;br&gt;</code>.</td></tr>
+<tr><td><code>true</code> / <code>false</code></td><td><code>Sim</code> / <code>Não</code></td></tr>
+</tbody></table></div>
+<ul>
+<li>Um filtro por variável. Arrays e objetos sem <code>__toString()</code> viram texto vazio.</li>
+<li>O valor inserido nunca é processado de novo: um cliente que se chama <code>{{ senha }}</code> não revela nada.</li>
+<li><code>date</code> e <code>datetime</code> usam o fuso do PHP. No Joomla ele é <strong>UTC</strong>: para mostrar a hora local do usuário, formate antes com o <a href="date-helper.html">DateHelper</a> e passe o texto pronto.</li>
+</ul>
+<div class="metodo"><h3 id="renderString"><code>renderString() / renderFile() / htmlToText()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::renderString(string $template, array $data = [], bool $html = true): string
+EmailSendHelper::renderFile(string $file, array $data = []): string
+EmailSendHelper::htmlToText(string $html): string</div>
+<p id="htmlToText">Os motores de template e de texto, avulsos. <code>htmlToText()</code> remove estilos e scripts, transforma links em <code>texto (url)</code>, itens de lista em <code>- item</code>, parágrafos e títulos em linhas em branco e células de tabela em tabulação.</p>
+<div class="codigo"><pre><code data-lang="php">EmailSendHelper::renderString(&#x27;Olá {{ nome }}, total {{ v | money }}&#x27;, [&#x27;nome&#x27; =&gt; &#x27;Ana&#x27;, &#x27;v&#x27; =&gt; 99.9]);
+// &quot;Olá Ana, total R$ 99,90&quot;
+
+EmailSendHelper::htmlToText(&#x27;&lt;p&gt;Olá &lt;a href=&quot;https://loja.com/p/1&quot;&gt;ver pedido&lt;/a&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;um&lt;/li&gt;&lt;li&gt;dois&lt;/li&gt;&lt;/ul&gt;&#x27;);
+// &quot;Olá ver pedido (https://loja.com/p/1)\n\n- um\n- dois&quot;</code></pre></div></div>
+
+<h2 id="anexos" data-titulo="Anexos e imagens">Anexos e imagens</h2>
+<div class="metodo"><h3 id="attach"><code>attach()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;attach(string $path, ?string $name = null, ?string $mime = null): $this</div>
+<p>Anexa um arquivo do disco. <code>$name</code> é o nome que o destinatário vê (padrão: o nome do arquivo; acentos funcionam em todos os clientes). O tipo é deduzido pela extensão (PDF, XML, XLSX, DOCX, ZIP, imagens, OFX, remessa/retorno...) ou pelo conteúdo. O arquivo é lido na hora do envio; se não existir, o envio falha com <code>Anexo não encontrado</code>.</p>
+<div class="codigo"><pre><code data-lang="php">-&gt;attach(JPATH_ROOT . &#x27;/tmp/boleto-123.pdf&#x27;)
+-&gt;attach($caminhoXml, &#x27;NF-e 4521.xml&#x27;)</code></pre></div>
+<div class="nota perigo"><p>Nunca passe a <code>attach()</code> um caminho vindo da requisição: <code>attach($_POST['arquivo'])</code> permite anexar <code>configuration.php</code> ou qualquer arquivo do servidor e enviar para fora. Busque o caminho no banco, pelo id, depois de conferir a permissão.</p></div></div>
+
+<div class="metodo"><h3 id="attachData"><code>attachData()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;attachData(string $content, string $name, ?string $mime = null): $this</div>
+<p>Anexo gerado em memória (CSV, PDF, XML, ICS), sem gravar arquivo.</p>
+<div class="codigo"><pre><code data-lang="php">$csv = &quot;pedido;total\n1;150,00\n2;89,90\n&quot;;
+-&gt;attachData(&quot;\xEF\xBB\xBF&quot; . $csv, &#x27;pedidos-novembro.csv&#x27;)        // BOM para o Excel abrir com acento
+-&gt;attachData($pdf, &#x27;contrato.pdf&#x27;, &#x27;application/pdf&#x27;)</code></pre></div></div>
+
+<div class="metodo"><h3 id="attachUpload"><code>attachUpload()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;attachUpload(array $file): $this</div>
+<p>Anexa direto o array de um upload (<code>$_FILES['campo']</code> ou <code>InputHelper::file()</code>), simples ou múltiplo (<code>name="anexos[]"</code>). Campo sem arquivo é ignorado; upload com erro (tamanho, parcial) faz o envio falhar com <code>Falha no upload do anexo "..." (código N)</code>.</p>
+<div class="nota aviso"><p>O helper não valida tipo nem conteúdo do upload. Antes, limite extensões e tamanho com o <a href="validation-helper.html">ValidationHelper</a> (<code>file_extension</code>, <code>file_size</code>), para o seu formulário não virar um disparador de arquivos maliciosos.</p></div></div>
+
+<div class="metodo"><h3 id="embed"><code>embed()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;embed(string $path, ?string $cid = null): $this</div>
+<p>Imagem embutida no corpo, que aparece sem o cliente de e-mail baixar nada da internet (logo, assinatura). No HTML, use <code>&lt;img src="cid:SEU_CID"&gt;</code>. Sem <code>$cid</code>, vale o nome do arquivo sem extensão: <code>embed('logo.png')</code> vira <code>cid:logo</code>.</p>
+<div class="codigo"><pre><code data-lang="php">-&gt;html(&#x27;&lt;p&gt;&lt;img src=&quot;cid:logo&quot; width=&quot;140&quot; alt=&quot;Loja&quot;&gt;&lt;/p&gt;&lt;p&gt;Olá!&lt;/p&gt;&#x27;)
+-&gt;embed(JPATH_ROOT . &#x27;/images/logo-email.png&#x27;, &#x27;logo&#x27;)</code></pre></div>
+<ul>
+<li>E-mail só em texto: a imagem vai como anexo comum.</li>
+<li>Driver <code>elasticemail</code> (API): a API não tem imagens embutidas, então elas vão como anexo e o <code>cid:</code> não aparece no corpo. Para logo embutida na ElasticEmail, use o provedor <code>elasticemail_smtp</code>.</li>
+</ul></div>
+
+<h3 id="limite">Limite de tamanho</h3>
+<p>A soma de anexos e imagens embutidas é limitada a <strong>25 MB</strong> por padrão (o Gmail recusa acima disso; com a codificação base64, o e-mail fica cerca de 33% maior que os arquivos). Passou: o envio falha antes de conectar, com <code>Anexos somam X MB; o limite é Y MB</code>. Ajuste por conexão com <code>max_size</code> (em bytes; <code>0</code> desliga). Para arquivos grandes, prefira mandar um link de download.</p>
+
+<h2 id="envio" data-titulo="Enviar">Enviar</h2>
+<div class="metodo"><h3 id="send"><code>send()</code><span class="tag final">envia</span></h3><div class="assinatura">$mail-&gt;send(): array</div>
+<p>Monta e envia. Nunca lança exceção.</p>
+<div class="codigo"><pre><code data-lang="php">// sucesso
+[
+    &#x27;success&#x27;  =&gt; true,
+    &#x27;status&#x27;   =&gt; &#x27;sucesso&#x27;,
+    &#x27;mensagem&#x27; =&gt; &#x27;E-mail enviado com sucesso.&#x27;,
+    &#x27;data&#x27;     =&gt; [
+        &#x27;connection&#x27;      =&gt; &#x27;gmail&#x27;,
+        &#x27;driver&#x27;          =&gt; &#x27;smtp&#x27;,
+        &#x27;message_id&#x27;      =&gt; &#x27;&lt;464a5714...@empresa.com&gt;&#x27;,   // guarde para rastrear
+        &#x27;to&#x27;              =&gt; [&#x27;ana@x.com&#x27;],
+        &#x27;server_response&#x27; =&gt; &#x27;250 2.0.0 OK ...&#x27;,             // smtp
+        // elasticemail: &#x27;transaction_id&#x27;, &#x27;provider_message_id&#x27; · log: &#x27;file&#x27; · fake: &#x27;fake&#x27; =&gt; true
+    ],
+    &#x27;errors&#x27; =&gt; [],
+]
+
+// falha de envio (todas as conexões tentadas falharam)
+[
+    &#x27;success&#x27;  =&gt; false,
+    &#x27;status&#x27;   =&gt; &#x27;erro&#x27;,
+    &#x27;mensagem&#x27; =&gt; &#x27;Não foi possível enviar o e-mail.&#x27;,
+    &#x27;data&#x27;     =&gt; [&#x27;tried&#x27; =&gt; [&#x27;elasticemail&#x27;, &#x27;gmail&#x27;], &#x27;transcript&#x27; =&gt; [...]],
+    &#x27;errors&#x27;   =&gt; [
+        &#x27;elasticemail&#x27; =&gt; [&#x27;ElasticEmail HTTP 401: API key inválida ou sem permissão de envio (...)&#x27;],
+        &#x27;gmail&#x27;        =&gt; [&#x27;Falha na autenticação SMTP: AUTH → 535 ... No Gmail use uma senha de app ...&#x27;],
+    ],
+]
+
+// mensagem inválida (destinatário, assunto, anexo, view): não tenta enviar
+[&#x27;success&#x27; =&gt; false, &#x27;mensagem&#x27; =&gt; &#x27;Informe o assunto do e-mail.&#x27;, &#x27;data&#x27; =&gt; [&#x27;connection&#x27; =&gt; &#x27;gmail&#x27;], &#x27;errors&#x27; =&gt; [&#x27;_system&#x27; =&gt; [&#x27;Informe o assunto do e-mail.&#x27;]]]</code></pre></div>
+<div class="nota"><p>Mostre ao usuário uma mensagem genérica ("Não conseguimos enviar o e-mail agora") e deixe o detalhe para o log: <code>errors</code> traz host, porta e respostas do servidor.</p></div></div>
+
+<div class="metodo"><h3 id="sendOrFail"><code>sendOrFail()</code><span class="tag final">envia</span></h3><div class="assinatura">$mail-&gt;sendOrFail(): array</div>
+<p>Igual a <code>send()</code>, mas lança <code>RuntimeException</code> na falha, com os motivos de cada conexão na mensagem. Útil dentro de uma <a href="db-transaction-helper.html">transação</a> ou de um job da <a href="queue-helper.html">fila</a>, onde a exceção desfaz a operação ou agenda nova tentativa.</p>
+<div class="codigo"><pre><code data-lang="php">try {
+    EmailSendHelper::make()-&gt;to($email)-&gt;subject(&#x27;Senha alterada&#x27;)-&gt;view(&#x27;senha-alterada&#x27;)-&gt;sendOrFail();
+} catch (RuntimeException $e) {
+    LogHelper::exception($e, &#x27;mail&#x27;);
+}</code></pre></div></div>
+
+<div class="metodo"><h3 id="sendMail"><code>sendMail()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::sendMail(array $mail, string|array|null $connection = null): array</div>
+<p>Envio em uma linha a partir de um array, útil quando os dados vêm de configuração, do banco ou de um job. A conexão pode vir no segundo parâmetro ou na chave <code>connection</code>.</p>
+<div class="codigo"><pre><code data-lang="php">$r = EmailSendHelper::sendMail([
+    &#x27;to&#x27;          =&gt; [&#x27;ana@x.com&#x27; =&gt; &#x27;Ana&#x27;],
+    &#x27;cc&#x27;          =&gt; &#x27;financeiro@empresa.com&#x27;,
+    &#x27;subject&#x27;     =&gt; &#x27;Fatura {{ numero }}&#x27;,
+    &#x27;view&#x27;        =&gt; &#x27;fatura&#x27;,
+    &#x27;data&#x27;        =&gt; [&#x27;numero&#x27; =&gt; 1520, &#x27;cliente&#x27; =&gt; $cliente],
+    &#x27;attachments&#x27; =&gt; [
+        &#x27;/caminho/fatura-1520.pdf&#x27;,
+        [&#x27;path&#x27; =&gt; &#x27;/caminho/nf.xml&#x27;, &#x27;name&#x27; =&gt; &#x27;NF-e 1520.xml&#x27;],
+        [&#x27;content&#x27; =&gt; $csv, &#x27;name&#x27; =&gt; &#x27;itens.csv&#x27;],
+    ],
+    &#x27;embeds&#x27;      =&gt; [[&#x27;path&#x27; =&gt; &#x27;/caminho/logo.png&#x27;, &#x27;cid&#x27; =&gt; &#x27;logo&#x27;]],
+    &#x27;priority&#x27;    =&gt; 1,
+], &#x27;elasticemail&#x27;);</code></pre></div></div>
+
+<div class="metodo"><h3 id="fill"><code>fill()</code><span class="tag">encadeável</span></h3><div class="assinatura">$mail-&gt;fill(array $mail): $this</div>
+<p>Preenche a mensagem a partir de um array (é o que <code>make()</code> e <code>sendMail()</code> usam).</p>
+<div class="tabela"><table><thead><tr><th>Chave</th><th>Equivale a</th></tr></thead><tbody>
+<tr><td><code>to</code>, <code>cc</code>, <code>bcc</code>, <code>reply_to</code></td><td><code>to()</code>, <code>cc()</code>, <code>bcc()</code>, <code>replyTo()</code> (mesmos formatos)</td></tr>
+<tr><td><code>from</code></td><td><code>'a@x.com'</code> ou <code>['a@x.com', 'Nome']</code> / <code>['email' =&gt; ..., 'name' =&gt; ...]</code></td></tr>
+<tr><td><code>subject</code>, <code>html</code>, <code>text</code></td><td>os métodos de mesmo nome</td></tr>
+<tr><td><code>view</code>, <code>layout</code>, <code>data</code></td><td><code>view()</code>, <code>layout()</code> (<code>false</code> desliga), <code>with()</code></td></tr>
+<tr><td><code>attachments</code></td><td>lista de caminhos, <code>['path', 'name', 'mime']</code> ou <code>['content', 'name', 'mime']</code></td></tr>
+<tr><td><code>embeds</code></td><td>lista de caminhos ou <code>['path', 'cid']</code></td></tr>
+<tr><td><code>headers</code>, <code>priority</code></td><td><code>['X-Nome' =&gt; 'valor']</code>, <code>1</code> a <code>5</code></td></tr>
+</tbody></table></div></div>
+
+<h3 id="failover">Failover: várias conexões em ordem</h3>
+<p>Com uma lista, o helper tenta a primeira; se ela falhar, tenta a próxima, e assim por diante. O resultado diz qual entregou (<code>data.connection</code>) ou, se todas falharam, o motivo de cada uma (<code>errors</code>).</p>
+<div class="codigo"><pre><code data-lang="php">$r = EmailSendHelper::make([&#x27;elasticemail&#x27;, &#x27;gmail&#x27;, &#x27;arquivo&#x27;])   // API → SMTP → grava .eml para reenviar depois
+    -&gt;to($cliente-&gt;email)
+    -&gt;subject(&#x27;Seu acesso&#x27;)
+    -&gt;view(&#x27;acesso&#x27;, [&#x27;cliente&#x27; =&gt; $cliente])
+    -&gt;send();</code></pre></div>
+<div class="tabela"><table><thead><tr><th>Tipo de erro</th><th>Tenta a próxima?</th><th>Exemplos</th></tr></thead><tbody>
+<tr><td>Entrega (servidor, rede, credencial)</td><td><strong>Sim</strong></td><td>conexão recusada, tempo esgotado, senha errada, API key inválida, servidor recusou o destinatário</td></tr>
+<tr><td>Mensagem (dados)</td><td><strong>Não</strong> (outra conta não resolveria)</td><td>e-mail inválido, sem assunto, sem corpo, sem remetente, anexo ou view não encontrados, anexos acima do limite</td></tr>
+</tbody></table></div>
+<div class="nota aviso"><p>Se o servidor recebeu a mensagem mas a conexão caiu antes da confirmação, o failover pode entregar o mesmo e-mail duas vezes. É raro; para e-mails em que duplicar é grave, envie por uma conexão só e trate a falha.</p></div>
+
+<h2 id="drivers" data-titulo="Drivers">Drivers</h2>
+<div class="tabela"><table><thead><tr><th>Driver</th><th>Como entrega</th><th>Bom para</th></tr></thead><tbody>
+<tr><td><code>smtp</code></td><td>Cliente SMTP próprio: STARTTLS (TLS 1.2/1.3) ou SSL, <code>AUTH PLAIN</code>, <code>LOGIN</code> ou <code>XOAUTH2</code>.</td><td>Gmail, Outlook, provedores de hospedagem, SendGrid, Brevo, Mailgun, servidor da empresa.</td></tr>
+<tr><td><code>elasticemail</code></td><td>API HTTP v4 da ElasticEmail (JSON, via <code>curl</code> ou streams).</td><td>Volume alto, rastreio por <code>transaction_id</code>, servidores que bloqueiam as portas SMTP.</td></tr>
+<tr><td><code>mail</code></td><td><code>mail()</code> do PHP (sendmail no Linux; no Windows, o SMTP do <code>php.ini</code>).</td><td>Hospedagens que só liberam <code>mail()</code>.</td></tr>
+<tr><td><code>log</code></td><td>Grava o e-mail completo num <code>.eml</code> (abre no Outlook/Thunderbird).</td><td>Desenvolvimento, homologação e último recurso do failover.</td></tr>
+</tbody></table></div>
+<h3 id="driver-smtp">Detalhes do SMTP</h3>
+<ul>
+<li><strong>Porta 587 com <code>tls</code></strong> (STARTTLS) ou <strong>465 com <code>ssl</code></strong>. Se o servidor não oferecer STARTTLS na 587, o erro sugere trocar para <code>ssl</code>/465.</li>
+<li>O certificado do servidor é conferido (<code>verify_peer</code>). Em ambiente local com certificado próprio, <code>'verify_peer' =&gt; false</code>; <strong>nunca</strong> em produção.</li>
+<li>Falha de login no Gmail ou no Outlook vem com a dica do que fazer (senha de app, SMTP AUTH).</li>
+<li>Cada envio abre e fecha uma conexão. Para centenas de e-mails, prefira a ElasticEmail (API) ou mande pela fila.</li>
+</ul>
+<h3 id="driver-elastic">Detalhes da ElasticEmail (API)</h3>
+<ul>
+<li>Só <code>api_key</code> e um remetente de domínio verificado na ElasticEmail.</li>
+<li><code>cc</code> e <code>bcc</code> são aceitos; do <code>reply_to</code>, vai só o primeiro endereço.</li>
+<li>Imagens embutidas viram anexos (veja <a href="#embed"><code>embed()</code></a>).</li>
+<li>Erro 401/403 vira <code>API key inválida ou sem permissão de envio</code>.</li>
+</ul>
+<h3 id="driver-mail-log">Detalhes de <code>mail</code> e <code>log</code></h3>
+<ul>
+<li><code>mail</code>: no Linux, o <code>envelope_from</code> vira o Return-Path (<code>-f</code>). Muitas hospedagens marcam <code>mail()</code> como spam; prefira SMTP autenticado.</li>
+<li><code>log</code>: arquivo <code>AAAA-MM-DD_HHMMSS_xxxxxxxx.eml</code>, caminho em <code>$r['data']['file']</code>. Inclui o Bcc, para conferência.</li>
+</ul>
+<div class="nota perigo"><p>O driver <code>log</code> grava por padrão em <code>logs/emails</code> <strong>da pasta atual</strong>, que no Joomla costuma ser a raiz pública do site. Os <code>.eml</code> têm dados pessoais e links de acesso: sempre informe <code>directory</code> fora da pasta pública, como <code>JPATH_ROOT . '/../emails'</code> ou a pasta de logs do Joomla protegida.</p></div>
+
+<h2 id="testes" data-titulo="Testes e diagnóstico">Testes e diagnóstico</h2>
+<div class="metodo"><h3 id="fake"><code>fake() / sent()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::fake(bool $fake = true): void
+EmailSendHelper::sent(): array</div>
+<p>Com <code>fake()</code>, nada sai: a mensagem é montada e validada normalmente (views, anexos, destinatários) e guardada em <code>sent()</code>. Ideal para testes automatizados e para homologação. Cada chamada a <code>fake()</code> limpa a lista. Ainda é preciso ter uma conexão registrada (ela define o remetente padrão).</p>
+<div class="codigo"><pre><code data-lang="php">EmailSendHelper::fake();
+
+(new CadastroService())-&gt;registrar($dados);      // código que envia o e-mail de boas-vindas
+
+$enviados = EmailSendHelper::sent();
+assert(count($enviados) === 1);
+assert(isset($enviados[0][&#x27;to&#x27;][&#x27;ana@x.com&#x27;]));
+assert($enviados[0][&#x27;subject&#x27;] === &#x27;Bem-vinda, Ana&#x27;);
+// chaves: from, to, cc, bcc, reply_to, subject, html, text, attachments, embeds, headers, message_id, connection, driver
+
+EmailSendHelper::fake(false);</code></pre></div></div>
+
+<div class="metodo"><h3 id="preview"><code>preview() / toMime() / build()</code><span class="tag final">não envia</span></h3><div class="assinatura">$mail-&gt;preview(): string
+$mail-&gt;toMime(): string
+$mail-&gt;build(array $config = []): array</div>
+<ul>
+<li><code>preview()</code>: o HTML final (view + layout) para abrir no navegador enquanto você desenha o e-mail. E-mail só texto volta dentro de <code>&lt;pre&gt;</code>.</li>
+<li><code>toMime()</code>: a mensagem inteira no formato <code>.eml</code>, com cabeçalhos e partes.</li>
+<li><code>build()</code>: a mensagem montada como array (as mesmas chaves de <code>sent()</code>).</li>
+</ul>
+<p>Os três validam como o envio e <strong>lançam</strong> <code>InvalidArgumentException</code> se faltar algo (inclusive o remetente: chame <code>from()</code> ou registre uma conexão com <code>from_email</code>).</p>
+<div class="codigo"><pre><code data-lang="php">// tela interna só para administradores: /index.php?option=com_loja&amp;task=emails.preview
+PermissionHelper::require(&#x27;core.admin&#x27;);
+
+echo EmailSendHelper::make()
+    -&gt;to(&#x27;teste@empresa.com&#x27;)
+    -&gt;subject(&#x27;Pedido {{ pedido.numero }} confirmado&#x27;)
+    -&gt;view(&#x27;pedido-confirmado&#x27;, [&#x27;cliente&#x27; =&gt; $clienteExemplo, &#x27;pedido&#x27; =&gt; $pedidoExemplo])
+    -&gt;preview();</code></pre></div></div>
+
+<div class="metodo"><h3 id="testConnection"><code>testConnection()</code><span class="tag estatico">estático</span></h3><div class="assinatura">EmailSendHelper::testConnection(?string $name = null): array</div>
+<p>Conecta, faz o TLS e o login SMTP, e sai, <strong>sem enviar nada</strong>. É o jeito rápido de conferir host, porta e senha de app. Nos outros drivers só confere a configuração.</p>
+<div class="codigo"><pre><code data-lang="php">$r = EmailSendHelper::testConnection(&#x27;gmail&#x27;);
+// [&#x27;success&#x27; =&gt; true, &#x27;mensagem&#x27; =&gt; &#x27;Conexão &quot;gmail&quot; OK.&#x27;, &#x27;data&#x27; =&gt; [&#x27;connection&#x27; =&gt; &#x27;gmail&#x27;, &#x27;driver&#x27; =&gt; &#x27;smtp&#x27;, &#x27;transcript&#x27; =&gt; [...]]]</code></pre></div></div>
+
+<h3 id="transcript">Conversa com o servidor (<code>transcript</code>)</h3>
+<p>Em falhas SMTP, <code>$r['data']['transcript']</code> traz a conversa com o servidor; com <code>'debug' =&gt; true</code> na conexão, também nos envios que deram certo. Login e senha nunca aparecem, e o corpo da mensagem vira só o tamanho:</p>
+<div class="codigo"><pre><code data-lang="text">S: 220 smtp.gmail.com ESMTP
+C: EHLO loja.com.br
+S: 250-smtp.gmail.com ... 250-STARTTLS
+C: STARTTLS
+S: 220 2.0.0 Ready to start TLS
+C: EHLO loja.com.br
+S: 250-smtp.gmail.com ... 250-AUTH LOGIN PLAIN XOAUTH2
+C: [credenciais ocultas]
+S: 535-5.7.8 Username and Password not accepted</code></pre></div>
+<p>Com failover, o <code>transcript</code> do resultado de falha é o da <strong>última</strong> conexão tentada; os motivos de todas estão em <code>errors</code>.</p>
+<h3 id="mailpit">Caixa de e-mail local (Mailpit)</h3>
+<p>No desenvolvimento, rode o <a href="https://mailpit.axllent.org/">Mailpit</a> e registre <code>EmailSendHelper::register('mailpit')</code>. Todo e-mail cai em <code>http://localhost:8025</code>, com HTML, texto, anexos e cabeçalhos, sem chegar a ninguém.</p>
+
+<h2 id="seguranca" data-titulo="Segurança">Segurança</h2>
+<ul>
+<li><strong>Credenciais fora do código</strong> e fora da pasta pública (<a href="#credenciais">como fazer</a>). <code>connections()</code>, o log e o <code>transcript</code> nunca mostram senha nem API key.</li>
+<li><strong>Injeção de cabeçalhos bloqueada:</strong> quebras de linha no assunto, nos nomes, nos nomes de anexo e nos valores de cabeçalho viram espaço; nomes de cabeçalho só aceitam letras, números e hífen; endereços passam por <code>FILTER_VALIDATE_EMAIL</code>.</li>
+<li><strong>Escape:</strong> <code>{{ }}</code> escapa; <code>{!! !!}</code> e <code>&lt;?= ?&gt;</code> sem <code>$e()</code>, não. Dado do usuário sempre com <code>{{ }}</code> ou <code>$e()</code>.</li>
+<li><strong>Caminhos:</strong> view, layout, <code>attach()</code> e <code>embed()</code> só com caminhos do seu código ou do banco, nunca da requisição.</li>
+<li><strong>Formulários públicos</strong> (contato, indicação) são usados por spammers para disparar e-mails: proteja com <a href="rate-limit-helper.html">RateLimitHelper</a>, token CSRF (<a href="permission-helper.html">PermissionHelper</a>) e não deixe o visitante escolher o destinatário.</li>
+<li><strong>TLS sempre</strong> em produção: <code>encryption</code> <code>none</code> e <code>verify_peer =&gt; false</code> só no ambiente local.</li>
+<li><strong>Entregabilidade:</strong> remetente do mesmo domínio da conta de envio, com SPF, DKIM e DMARC no DNS. Sem isso, os e-mails caem no spam ou são recusados (o helper não assina DKIM; quem assina é o provedor).</li>
+</ul>
+
+<h2 id="receitas" data-titulo="Receitas">Receitas</h2>
+<h3 id="receita-bootstrap">Registro no componente Joomla</h3>
+<div class="codigo"><div class="titulo-codigo">components/com_loja/loja.php</div><pre><code data-lang="php">require_once JPATH_COMPONENT . &#x27;/helpers/IncludeHelper.php&#x27;;
+IncludeHelper::load(&#x27;EmailSendHelper&#x27;);   // traz o LogHelper junto (logs dos envios)
+
+$params = JComponentHelper::getParams(&#x27;com_loja&#x27;);
+
+EmailSendHelper::registerMany([
+    &#x27;elasticemail&#x27; =&gt; [&#x27;api_key&#x27; =&gt; $params-&gt;get(&#x27;elastic_api_key&#x27;), &#x27;from&#x27; =&gt; &#x27;nao-responda@loja.com.br&#x27;, &#x27;from_name&#x27; =&gt; &#x27;Loja Exemplo&#x27;],
+    &#x27;loja&#x27;         =&gt; [&#x27;provider&#x27; =&gt; &#x27;hostinger&#x27;, &#x27;username&#x27; =&gt; &#x27;contato@loja.com.br&#x27;, &#x27;password&#x27; =&gt; $params-&gt;get(&#x27;smtp_senha&#x27;)],
+    &#x27;arquivo&#x27;      =&gt; [&#x27;driver&#x27; =&gt; &#x27;log&#x27;, &#x27;directory&#x27; =&gt; JPATH_ROOT . &#x27;/../emails-falhos&#x27;, &#x27;from&#x27; =&gt; &#x27;contato@loja.com.br&#x27;],
+]);
+
+EmailSendHelper::setViewDirectory(JPATH_COMPONENT . &#x27;/emails&#x27;);
+EmailSendHelper::setDefaultLayout(&#x27;layout.php&#x27;);</code></pre></div>
+
+<h3 id="receita-pedido">Confirmação de pedido com boleto e logo</h3>
+<div class="codigo"><pre><code data-lang="php">$pedido = PedidoModel::query()-&gt;findOrFail($pedidoId);
+$cliente = ClienteModel::query()-&gt;findOrFail($pedido-&gt;cliente_id);
+
+$r = EmailSendHelper::make([&#x27;elasticemail&#x27;, &#x27;loja&#x27;])
+    -&gt;to($cliente-&gt;email, $cliente-&gt;nome)
+    -&gt;replyTo(&#x27;atendimento@loja.com.br&#x27;, &#x27;Atendimento&#x27;)
+    -&gt;subject(&#x27;Pedido #{{ pedido.numero }} confirmado&#x27;)
+    -&gt;view(&#x27;pedido-confirmado&#x27;, [
+        &#x27;cliente&#x27; =&gt; $cliente,
+        &#x27;pedido&#x27;  =&gt; $pedido,
+        &#x27;itens&#x27;   =&gt; PedidoItemModel::query()-&gt;where(&#x27;pedido_id&#x27;, $pedido-&gt;id)-&gt;get(),
+        &#x27;link&#x27;    =&gt; JUri::root() . &#x27;index.php?option=com_loja&amp;view=pedido&amp;id=&#x27; . (int) $pedido-&gt;id,
+    ])
+    -&gt;attach(JPATH_ROOT . &#x27;/../boletos/&#x27; . $pedido-&gt;boleto_arquivo, &#x27;Boleto pedido &#x27; . $pedido-&gt;numero . &#x27;.pdf&#x27;)
+    -&gt;send();
+
+PedidoModel::query()-&gt;update($pedido-&gt;id, [
+    &#x27;email_enviado_em&#x27; =&gt; $r[&#x27;success&#x27;] ? DateHelper::nowSql() : null,
+    &#x27;email_message_id&#x27; =&gt; $r[&#x27;data&#x27;][&#x27;message_id&#x27;] ?? null,
+]);</code></pre></div>
+
+<h3 id="receita-senha">Recuperação de senha</h3>
+<div class="codigo"><pre><code data-lang="php">$token = CryptoHelper::token();
+TokenModel::query()-&gt;create([&#x27;user_id&#x27; =&gt; $user-&gt;id, &#x27;hash&#x27; =&gt; CryptoHelper::hashToken($token), &#x27;expira_em&#x27; =&gt; DateHelper::now()-&gt;modify(&#x27;+30 minutes&#x27;)-&gt;format(&#x27;Y-m-d H:i:s&#x27;)]);   // UTC
+
+$r = EmailSendHelper::make()
+    -&gt;to($user-&gt;email, $user-&gt;name)
+    -&gt;subject(&#x27;Redefinição de senha&#x27;)
+    -&gt;html(&#x27;&lt;p&gt;Olá, {{ nome }}.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;{{ link }}&quot;&gt;Clique aqui para criar uma nova senha&lt;/a&gt;. O link vale 30 minutos.&lt;/p&gt;&lt;p&gt;Se não foi você, ignore este e-mail.&lt;/p&gt;&#x27;)
+    -&gt;with([&#x27;nome&#x27; =&gt; $user-&gt;name, &#x27;link&#x27; =&gt; JUri::root() . &#x27;index.php?option=com_loja&amp;task=senha.nova&amp;t=&#x27; . $token])
+    -&gt;priority(1)
+    -&gt;send();
+
+// Mesma resposta exista ou não a conta (não revela quem é cliente)
+return ApiResponseHelper::success(&#x27;Se o e-mail estiver cadastrado, você receberá o link em instantes.&#x27;);</code></pre></div>
+
+<h3 id="receita-contato">Formulário de contato com anexo</h3>
+<div class="codigo"><pre><code data-lang="php">PermissionHelper::requireToken();
+
+$limite = RateLimitHelper::hit(&#x27;contato:&#x27; . RateLimitHelper::ip(), 5, 3600);   // 5 mensagens por hora por IP
+
+if (!$limite[&#x27;allowed&#x27;]) {
+    return ApiResponseHelper::tooManyRequests(&#x27;Muitas mensagens. Tente mais tarde.&#x27;);
+}
+
+$dados = [
+    &#x27;nome&#x27;     =&gt; InputHelper::string(&#x27;nome&#x27;, &#x27;&#x27;, &#x27;post&#x27;),
+    &#x27;email&#x27;    =&gt; InputHelper::string(&#x27;email&#x27;, &#x27;&#x27;, &#x27;post&#x27;),
+    &#x27;mensagem&#x27; =&gt; InputHelper::string(&#x27;mensagem&#x27;, &#x27;&#x27;, &#x27;post&#x27;),
+];
+$arquivo = InputHelper::file(&#x27;anexo&#x27;);
+
+$v = ValidationHelper::validate(array_merge($dados, [&#x27;anexo&#x27; =&gt; $arquivo]), [
+    &#x27;nome&#x27;     =&gt; &#x27;required|max_length:120&#x27;,
+    &#x27;email&#x27;    =&gt; &#x27;required|email&#x27;,
+    &#x27;mensagem&#x27; =&gt; &#x27;required|max_length:5000&#x27;,
+    &#x27;anexo&#x27;    =&gt; &#x27;nullable|file|file_extension:pdf,jpg,png|file_size:5MB&#x27;,
+]);
+
+if (!empty($v[&#x27;errors&#x27;])) {
+    return ApiResponseHelper::validationError($v[&#x27;errors&#x27;]);
+}
+
+$email = EmailSendHelper::make()
+    -&gt;to(&#x27;atendimento@loja.com.br&#x27;)                     // destino fixo: o visitante não escolhe
+    -&gt;replyTo($dados[&#x27;email&#x27;], $dados[&#x27;nome&#x27;])          // &quot;Responder&quot; vai para o visitante
+    -&gt;subject(&#x27;Contato pelo site: {{ nome }}&#x27;)
+    -&gt;text(&quot;Nome: {{ nome }}\nE-mail: {{ email }}\n\n{{ mensagem }}&quot;)
+    -&gt;with($dados);
+
+if ($arquivo !== null) {
+    $email-&gt;attachUpload($arquivo);
+}
+
+$r = $email-&gt;send();
+
+return $r[&#x27;success&#x27;]
+    ? ApiResponseHelper::success(&#x27;Mensagem enviada. Responderemos em breve.&#x27;)
+    : ApiResponseHelper::error(&#x27;Não foi possível enviar agora. Tente novamente em alguns minutos.&#x27;);</code></pre></div>
+
+<h3 id="receita-relatorio">Relatório CSV gerado na hora, para várias pessoas</h3>
+<div class="codigo"><pre><code data-lang="php">$linhas = OrmTables::raw(&#x27;SELECT status, COUNT(*) AS qtd, SUM(total) AS valor FROM #__loja_pedidos WHERE created_at &gt;= ? GROUP BY status&#x27;, [$inicioMes]);
+
+$csv = &quot;\xEF\xBB\xBFstatus;quantidade;valor\n&quot;;
+foreach ($linhas as $l) {
+    $csv .= $l-&gt;status . &#x27;;&#x27; . $l-&gt;qtd . &#x27;;&#x27; . number_format((float) $l-&gt;valor, 2, &#x27;,&#x27;, &#x27;&#x27;) . &quot;\n&quot;;
+}
+
+EmailSendHelper::make()
+    -&gt;to(&#x27;diretoria@loja.com.br&#x27;)
+    -&gt;bcc([&#x27;financeiro@loja.com.br&#x27;, &#x27;comercial@loja.com.br&#x27;])
+    -&gt;subject(&#x27;Resumo de pedidos de {{ mes }}&#x27;)
+    -&gt;html(&#x27;&lt;p&gt;Segue o resumo de pedidos de &lt;strong&gt;{{ mes }}&lt;/strong&gt;.&lt;/p&gt;&#x27;)
+    -&gt;with(&#x27;mes&#x27;, date(&#x27;m/Y&#x27;))
+    -&gt;attachData($csv, &#x27;pedidos-&#x27; . date(&#x27;Y-m&#x27;) . &#x27;.csv&#x27;)
+    -&gt;sendOrFail();</code></pre></div>
+
+<h3 id="receita-massa">Envio para uma lista (newsletter, aviso)</h3>
+<div class="codigo"><pre><code data-lang="php">$enviados = 0;
+$falhas = [];
+
+ClienteModel::query()-&gt;where(&#x27;aceita_email&#x27;, 1)-&gt;chunk(200, function ($lote) use (&amp;$enviados, &amp;$falhas) {
+    foreach ($lote as $cliente) {
+        $r = EmailSendHelper::make(&#x27;elasticemail&#x27;)
+            -&gt;to($cliente-&gt;email, $cliente-&gt;nome)            // um e-mail por pessoa: nunca a lista inteira no &quot;to&quot;
+            -&gt;subject(&#x27;{{ nome }}, novidades de novembro&#x27;)
+            -&gt;view(&#x27;newsletter&#x27;, [&#x27;nome&#x27; =&gt; $cliente-&gt;nome])
+            -&gt;unsubscribe(&#x27;https://loja.com.br/descadastrar?t=&#x27; . $cliente-&gt;token_descadastro)
+            -&gt;send();
+
+        $r[&#x27;success&#x27;] ? $enviados++ : $falhas[$cliente-&gt;id] = $r[&#x27;mensagem&#x27;];
+    }
+});</code></pre></div>
+<p>Para listas grandes, rode em script CLI ou na fila (não numa requisição da página) e respeite os limites do provedor: o Gmail pessoal aceita cerca de 500 destinatários por dia.</p>
+
+
+<h3 id="receita-fila">Enviar pela fila</h3>
+<p>O EmailSendHelper não tem fila própria. Para a página não esperar o servidor de e-mail, crie um job para o <a href="queue-helper.html">QueueHelper</a> (como o <code>MailJob</code> do MailHelper) e use <code>sendOrFail()</code>: a exceção faz o worker <a href="fila-worker.html">tentar de novo</a> mais tarde.</p>
+<div class="codigo"><div class="titulo-codigo">jobs/EmailSendJob.php</div><pre><code data-lang="php">class EmailSendJob extends AbstractJob
+{
+    public function handle()
+    {
+        // o worker precisa registrar as conexões no bootstrap, como o componente faz
+        $r = EmailSendHelper::make($this-&gt;getPayload(&#x27;connection&#x27;), $this-&gt;getPayload(&#x27;mail&#x27;, []))-&gt;sendOrFail();
+
+        return [&#x27;message_id&#x27; =&gt; $r[&#x27;data&#x27;][&#x27;message_id&#x27;], &#x27;connection&#x27; =&gt; $r[&#x27;data&#x27;][&#x27;connection&#x27;]];
+    }
+}</code></pre></div>
+<div class="codigo"><pre><code data-lang="php">// no arquivo de jobs do worker
+JobRegistry::register(&#x27;email_send&#x27;, $base . &#x27;/jobs/EmailSendJob.php&#x27;, &#x27;EmailSendJob&#x27;, &#x27;emails&#x27;);
+
+// no controller: enfileira e responde na hora
+QueueHelper::push(&#x27;email_send&#x27;, [
+    &#x27;connection&#x27; =&gt; [&#x27;elasticemail&#x27;, &#x27;loja&#x27;],
+    &#x27;mail&#x27; =&gt; [
+        &#x27;to&#x27;      =&gt; [$cliente-&gt;email =&gt; $cliente-&gt;nome],
+        &#x27;subject&#x27; =&gt; &#x27;Pedido #{{ numero }} enviado&#x27;,
+        &#x27;view&#x27;    =&gt; &#x27;pedido-enviado&#x27;,
+        &#x27;data&#x27;    =&gt; [&#x27;numero&#x27; =&gt; $pedido-&gt;numero, &#x27;rastreio&#x27; =&gt; $pedido-&gt;rastreio],
+    ],
+], [&#x27;max_tentativas&#x27; =&gt; 5]);</code></pre></div>
+<p>Guarde no payload só dados simples (endereços, números, textos): ele vai para o banco em JSON, e objetos viram arrays. Caminhos de anexo precisam existir quando o worker rodar; anexos gerados em memória, gere dentro do job.</p>
+
+<h3 id="receita-fora-joomla">Fora do Joomla (PHP puro ou Laravel)</h3>
+<div class="codigo"><pre><code data-lang="php">require __DIR__ . &#x27;/helpers/EmailSendHelper.php&#x27;;
+
+EmailSendHelper::register(&#x27;brevo&#x27;, [&#x27;username&#x27; =&gt; getenv(&#x27;BREVO_LOGIN&#x27;), &#x27;password&#x27; =&gt; getenv(&#x27;BREVO_SMTP_KEY&#x27;), &#x27;from&#x27; =&gt; &#x27;contato@empresa.com.br&#x27;]);
+EmailSendHelper::setViewDirectory(__DIR__ . &#x27;/emails&#x27;);
+
+$r = EmailSendHelper::make()-&gt;to(&#x27;cliente@x.com&#x27;)-&gt;subject(&#x27;Teste&#x27;)-&gt;view(&#x27;teste&#x27;, [&#x27;nome&#x27; =&gt; &#x27;Ana&#x27;])-&gt;send();
+echo $r[&#x27;success&#x27;] ? &quot;OK\n&quot; : $r[&#x27;mensagem&#x27;] . &quot;\n&quot; . print_r($r[&#x27;errors&#x27;], true);</code></pre></div>
+
+<h2 id="erros" data-titulo="Mensagens de erro">Mensagens de erro</h2>
+<div class="tabela"><table><thead><tr><th>Mensagem</th><th>Causa e solução</th></tr></thead><tbody>
+<tr><td><code>Nenhuma conexão de e-mail registrada</code></td><td>Envio antes do <code>register()</code>. Registre no carregamento do componente (no worker e no CLI também).</td></tr>
+<tr><td><code>Conexão de e-mail não registrada: X</code></td><td>Nome escrito diferente no <code>register()</code> e no <code>make()</code>.</td></tr>
+<tr><td><code>Conexão "X": informe driver (...) ou um provider conhecido.</code></td><td>Nome que não é provedor pronto e sem <code>host</code>, <code>api_key</code> ou <code>driver</code>.</td></tr>
+<tr><td><code>E-mail inválido em "to": ...</code></td><td>Endereço mal formado. Valide com o <a href="validation-helper.html">ValidationHelper</a> antes.</td></tr>
+<tr><td><code>Informe ao menos um destinatário.</code> / <code>o assunto</code> / <code>o conteúdo</code></td><td>Falta <code>to</code>/<code>cc</code>/<code>bcc</code>, <code>subject()</code> ou <code>html()</code>/<code>text()</code>/<code>view()</code>.</td></tr>
+<tr><td><code>Remetente inválido ou ausente</code></td><td>Sem <code>from()</code>, sem <code>from_email</code> e o <code>username</code> não é um e-mail (SendGrid, Brevo, ElasticEmail).</td></tr>
+<tr><td><code>Anexo não encontrado</code> / <code>Imagem embutida não encontrada</code> / <code>View de e-mail não encontrada</code></td><td>Caminho errado ou sem permissão de leitura. Use caminhos absolutos (<code>JPATH_ROOT</code>, <code>__DIR__</code>).</td></tr>
+<tr><td><code>Anexos somam X MB; o limite é Y MB.</code></td><td>Acima de <code>max_size</code>. Mande link ou aumente o limite (se o provedor aceitar). Em limites muito pequenos (testes), os números aparecem como <code>0.0</code>.</td></tr>
+<tr><td><code>Não foi possível conectar a host:porta (...)</code></td><td>Host ou porta errados, ou firewall da hospedagem bloqueando a saída (comum nas portas 25, 465 e 587). Teste outra porta ou use a API da ElasticEmail.</td></tr>
+<tr><td><code>não oferece STARTTLS (tente encryption "ssl" na porta 465)</code></td><td>Porta 465 com <code>tls</code>, ou servidor sem STARTTLS: use <code>ssl</code>/465.</td></tr>
+<tr><td><code>Falha ao iniciar TLS (certificado inválido?)</code></td><td>Certificado do servidor não confere com o host, ou CA desatualizada no PHP. Confira o <code>host</code>; em ambiente local, <code>verify_peer =&gt; false</code>.</td></tr>
+<tr><td><code>Falha na autenticação SMTP: AUTH → 535 ...</code></td><td>Usuário ou senha. No Gmail/Yahoo/iCloud, senha de app; no Outlook/Office 365, SMTP AUTH habilitado.</td></tr>
+<tr><td><code>O servidor não oferece autenticação (AUTH)</code></td><td>Login informado num servidor/porta sem AUTH (geralmente falta o TLS). Confira porta e <code>encryption</code>.</td></tr>
+<tr><td><code>RCPT → 550 ...</code> / <code>MAIL → 553 ...</code></td><td>O servidor recusou o destinatário ou o remetente (caixa inexistente, remetente que não pertence à conta, domínio sem SPF).</td></tr>
+<tr><td><code>Tempo esgotado aguardando o servidor SMTP.</code></td><td>Servidor lento ou anexo grande demais para o <code>timeout</code>. Aumente <code>timeout</code>.</td></tr>
+<tr><td><code>ElasticEmail HTTP 401: API key inválida ou sem permissão de envio</code></td><td>Chave errada, revogada ou sem a permissão "Send Email".</td></tr>
+<tr><td><code>ElasticEmail HTTP 400: ...</code></td><td>Remetente de domínio não verificado ou dados recusados pela API; o detalhe vem da ElasticEmail.</td></tr>
+<tr><td><code>mail() recusou o envio</code></td><td>Sendmail não configurado (Linux) ou SMTP do <code>php.ini</code> ausente (Windows). Prefira o driver <code>smtp</code>.</td></tr>
+</tbody></table></div>
+
+<h2 id="limitacoes" data-titulo="Limitações">Limitações</h2>
+<ul>
+<li><strong>Sem fila própria</strong> e sem nova tentativa na mesma conexão: use failover ou a <a href="#receita-fila">fila</a>.</li>
+<li><strong>Uma conexão por e-mail:</strong> no SMTP, cada envio abre e fecha a conexão. Para grandes volumes, API ou fila.</li>
+<li><strong>Sem assinatura DKIM</strong> e sem S/MIME: a assinatura fica com o provedor (Gmail, ElasticEmail, SendGrid...).</li>
+<li><strong>OAuth2:</strong> usa o <code>oauth_token</code> pronto; obter e renovar o token é com você.</li>
+<li><strong>ElasticEmail (API):</strong> sem imagens embutidas e só o primeiro <code>reply_to</code>.</li>
+<li><strong>Estado por requisição:</strong> conexões, pasta de views, layout padrão e <code>fake()</code> são estáticos e valem até o fim do request ou script.</li>
+<li><strong>Templates <code>{{ }}</code>:</strong> sem <code>if</code>/<code>foreach</code> e com um filtro por variável. Para lógica, use view <code>.php</code>.</li>
+<li><strong>Anexos inteiros na memória:</strong> cada arquivo é lido por completo; o limite de 25 MB existe também por isso.</li>
+</ul>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul>
+<li><a href="mail-helper.html">MailHelper</a>: e-mails pelo mailer do Joomla, com envio pela fila.</li>
+<li><a href="queue-helper.html">QueueHelper</a> e <a href="fila-worker.html">Jobs e worker</a>: enviar em segundo plano.</li>
+<li><a href="log-helper.html">LogHelper</a>: onde ficam os registros da categoria <code>mail</code>.</li>
+<li><a href="validation-helper.html">ValidationHelper</a> e <a href="rate-limit-helper.html">RateLimitHelper</a>: proteger formulários que enviam e-mail.</li>
+<li><a href="settings-helper.html">SettingsHelper</a>: guardar as credenciais nos parâmetros do componente.</li>
+<li><a href="include-helper.html">IncludeHelper</a>: carregar o helper pelo nome.</li>
+</ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="mail-helper.html"><small>← Anterior</small>MailHelper</a><a class="proxima" href="rate-limit-helper.html"><small>Próxima →</small>RateLimitHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>PlatformHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>EmailSendHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>ArrayHelper</code>, <code>BackupDatabaseHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Integrações: HttpHelper, MailHelper, WebhookHelper
+# Integrações: HttpHelper, MailHelper, EmailSendHelper, WebhookHelper
 
 
 ## HttpHelper (APIs externas)
@@ -32,6 +32,29 @@ MailHelper::fake(); ... MailHelper::sent();            // testes
 - Template: `{{ x }}` escapado, `{{ total | money }}`, `| date`, `| datetime`, `| nl2br`, `| upper`; `{!! html !!}` sem escapar (só HTML do seu código). Uma passada: valores inseridos não são reprocessados.
 - Config: `setTemplateDirectory()` (padrão `JPATH_COMPONENT/emails`), `setLayout('layout')` com `{!! conteudo !!}`, `setDefaultFrom()`. Remetente do próprio domínio (SPF/DKIM).
 - `queue()` monta na hora (erros de template aparecem já) e grava só o pronto; anexos precisam existir quando o worker rodar. Job: `fila/jobs/MailJob.php`.
+
+## EmailSendHelper (e-mail sem o mailer do Joomla: SMTP próprio, ElasticEmail, várias contas)
+
+```php
+IncludeHelper::load('EmailSendHelper');                                 // traz o LogHelper (log "mail")
+EmailSendHelper::register('gmail', ['username' => 'x@gmail.com', 'password' => $senhaDeApp]);   // nome = provedor pronto
+EmailSendHelper::register('vendas', ['provider' => 'office365', 'username' => ..., 'password' => ...]);
+EmailSendHelper::register('elasticemail', ['api_key' => $key, 'from' => 'nao-responda@dominio.com']);
+EmailSendHelper::setViewDirectory(JPATH_COMPONENT . '/emails'); EmailSendHelper::setDefaultLayout('layout.php');
+
+$r = EmailSendHelper::make(['elasticemail', 'gmail'])                    // lista = failover; null = padrão; array assoc = config avulsa
+    ->to($email, $nome)->cc(...)->bcc([...])->replyTo(...)             // 'a@x, b@x' · 'Ana <a@x>' · [email => nome]
+    ->subject('Pedido {{ pedido.numero }}')
+    ->view('pedido', ['pedido' => $pedido])                             // .php: variáveis + $e() escapa · .html: {{ }} / {!! !!} / | money | date
+    ->attach($pdf, 'Boleto.pdf')->attachData($csv, 'itens.csv')->attachUpload($arquivo)->embed($logo, 'logo')   // <img src="cid:logo">
+    ->send();                                                           // não lança; ->sendOrFail() lança RuntimeException
+EmailSendHelper::sendMail(['to' => ..., 'subject' => ..., 'html' => ..., 'attachments' => [...]], 'gmail');
+EmailSendHelper::fake(); ... EmailSendHelper::sent();  ->preview() · ->toMime() · EmailSendHelper::testConnection('gmail')
+```
+- Provedores prontos: gmail, google_workspace, outlook/hotmail/live, office365, yahoo, icloud, zoho, sendgrid, brevo, mailgun, mailtrap, locaweb, hostinger, elasticemail (API) / elasticemail_smtp, mailpit/mailhog, mail, log. Drivers: `smtp`, `elasticemail`, `mail`, `log` (.eml; informe `directory` fora da pasta pública).
+- Gmail/Yahoo/iCloud: senha de app; Outlook/Office 365: SMTP AUTH liberado ou `oauth_token`. Remetente = a conta (ou alias). Sem `from()`/`from_email`, usa o `username` se for e-mail.
+- Failover tenta a próxima só em erro de entrega (rede, login, servidor); erro da mensagem (e-mail inválido, sem assunto, anexo/view não encontrados, > `max_size` 25 MB) para na hora.
+- Credenciais fora do código (config fora do git, `getenv`, SettingsHelper). Nunca view/`attach()` com caminho da requisição. Sem fila própria: job com `sendOrFail()` (veja docs/email-send-helper.html#receita-fila). Use MailHelper quando o e-mail do Joomla basta.
 
 ## WebhookHelper (receber webhooks)
 
