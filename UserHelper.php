@@ -75,6 +75,20 @@ class UserHelper
 
     const NULL_DATE = '0000-00-00 00:00:00';
 
+    // Tipos de usuário pela posição na cooperativa (userType()).
+    const TYPE_CCS = 'CCS';
+
+    const TYPE_CENTRAL = 'CENTRAL';
+
+    const TYPE_SINGULAR = 'SINGULAR';
+
+    const TYPE_PA = 'PA';
+
+    const TYPE_OUTRO = 'OUTRO';
+
+    // Códigos de "singular" que identificam o CCS.
+    private static $ccsCodes = [6004, 300, 1, 9805, 310, 382, 9986, 309];
+
     private static $groupAliases = [];
 
     // null = conexão do Joomla; ou nome registrado no DbConnectionHelper.
@@ -1445,6 +1459,138 @@ class UserHelper
         return $uf !== null && in_array($uf, array_map('strtoupper', (array) $ufs), true);
     }
 
+    /* ---- Tipo do usuário (CCS / CENTRAL / SINGULAR / PA) ------------ */
+
+    /*
+     * Troca a lista de códigos que identificam o CCS.
+     *   UserHelper::setCcsCodes([6004, 300, 1, 9805, 310, 382, 9986, 309]);
+     */
+    public static function setCcsCodes(array $codes)
+    {
+        self::$ccsCodes = array_values(array_unique(array_map('intval', $codes)));
+    }
+
+    public static function ccsCodes()
+    {
+        return self::$ccsCodes;
+    }
+
+    /*
+     * Tipo do usuário pelo código da singular e do PA:
+     *
+     *   singular na lista do CCS        -> 'CCS'
+     *   singular entre 1001 e 2999      -> 'CENTRAL'
+     *   singular acima de 3000, PA > 0  -> 'PA'
+     *   singular acima de 3000, PA = 0  -> 'SINGULAR'
+     *   qualquer outro caso             -> 'OUTRO'
+     *
+     * Sem dados pessoais (visitante, cadastro incompleto) dá 'OUTRO'.
+     * Use as constantes: UserHelper::userType() === UserHelper::TYPE_PA.
+     */
+    public static function userType($user = null)
+    {
+        $coop = self::cooperativa($user);
+        $singular = (int) $coop['singular'];
+        $pa = (int) $coop['pa'];
+
+        if (in_array($singular, self::$ccsCodes, true)) {
+            return self::TYPE_CCS;
+        }
+
+        if ($singular > 1000 && $singular < 3000) {
+            return self::TYPE_CENTRAL;
+        }
+
+        if ($singular > 3000) {
+            return $pa > 0 ? self::TYPE_PA : self::TYPE_SINGULAR;
+        }
+
+        return self::TYPE_OUTRO;
+    }
+
+    // 'CCS' -> 'Centro Cooperativo Sicoob', 'PA' -> 'Posto de Atendimento'...
+    public static function userTypeLabel($user = null)
+    {
+        $labels = [
+            self::TYPE_CCS => 'Centro Cooperativo Sicoob',
+            self::TYPE_CENTRAL => 'Cooperativa Central',
+            self::TYPE_SINGULAR => 'Cooperativa Singular',
+            self::TYPE_PA => 'Posto de Atendimento',
+            self::TYPE_OUTRO => 'Outro',
+        ];
+
+        return $labels[self::userType($user)];
+    }
+
+    // O usuário é de algum desses tipos? isType(['CCS', 'CENTRAL']).
+    public static function isType($types, $user = null)
+    {
+        return in_array(self::userType($user), array_map('strtoupper', (array) $types), true);
+    }
+
+    public static function isCcs($user = null)
+    {
+        return self::userType($user) === self::TYPE_CCS;
+    }
+
+    public static function isCentral($user = null)
+    {
+        return self::userType($user) === self::TYPE_CENTRAL;
+    }
+
+    // Só quem está na sede da singular (PA = 0). Para incluir os PAs: isType(['SINGULAR', 'PA']).
+    public static function isSingular($user = null)
+    {
+        return self::userType($user) === self::TYPE_SINGULAR;
+    }
+
+    public static function isPa($user = null)
+    {
+        return self::userType($user) === self::TYPE_PA;
+    }
+
+    /*
+     * Barra quem não é de um dos tipos, no mesmo fluxo do requireGroup().
+     *   UserHelper::requireType(['CCS', 'CENTRAL']);
+     */
+    public static function requireType($types, $message = 'Você não possui permissão para esta operação.', $redirect = null, array $context = [])
+    {
+        $context = array_merge(['required_types' => (array) $types], $context);
+
+        if (self::hasHelper('PermissionHelper')) {
+            return PermissionHelper::requireCallback(function () use ($types) {
+                return UserHelper::isType($types);
+            }, $message, $redirect, $context);
+        }
+
+        if (!self::isType($types)) {
+            self::log('Acesso negado por tipo de usuário.', $context);
+
+            throw new RuntimeException($message, 403);
+        }
+
+        return true;
+    }
+
+    /*
+     * Tipo e códigos juntos, no formato do verificarTipoUsuario():
+     * ['ROLE' => 'PA', 'ROLE_LABEL' => 'Posto de Atendimento',
+     *  'CENTRAL' => 300, 'SINGULAR' => 3001, 'PA' => 2, 'NOME' => '...'].
+     */
+    public static function userTypeInfo($user = null)
+    {
+        $coop = self::cooperativa($user);
+
+        return [
+            'ROLE' => self::userType($user),
+            'ROLE_LABEL' => self::userTypeLabel($user),
+            'CENTRAL' => (int) $coop['central'],
+            'SINGULAR' => (int) $coop['singular'],
+            'PA' => (int) $coop['pa'],
+            'NOME' => self::name($user),
+        ];
+    }
+
     /*
      * Limita a consulta aos dados da cooperativa do usuário:
      *
@@ -1563,6 +1709,7 @@ class UserHelper
             'idade' => self::age($row),
             'aniversario_hoje' => self::isBirthdayToday($row),
             'cooperativa' => self::cooperativa($row),
+            'tipo' => self::userType($row),
             'bloqueado' => (int) $row->block === 1,
             'cadastrado_em' => self::dateOrNull($row->registerDate),
             'ultimo_acesso' => self::dateOrNull($row->lastvisitDate),
@@ -1601,6 +1748,7 @@ class UserHelper
             'username' => $userId ? self::username($userId) : null,
             'singular' => $userId ? self::singular($userId) : null,
             'pa' => $userId ? self::pa($userId) : null,
+            'tipo' => $userId ? self::userType($userId) : null,
             'ip' => self::ip(),
             'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? substr((string) $_SERVER['HTTP_USER_AGENT'], 0, 255) : null,
         ];
