@@ -1,6 +1,6 @@
 ---
 name: joomla-helpers
-description: Cria, refatora e revisa código de componentes Joomla 4.4, 5 e 6 (PHP 8.2+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, Vigia.js, ApiResponseHelper, PermissionHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper, HttpHelper, LockHelper, CacheHelper, MailHelper, EmailSendHelper, RateLimitHelper, CryptoHelper, Vitrine.js, FormatHelper, WebhookHelper, SettingsHelper, ArrayHelper, BackupDatabaseHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
+description: Cria, refatora e revisa código de componentes Joomla 4.4, 5 e 6 (PHP 8.2+, MySQL/PostgreSQL) usando os helpers de github.com/heuderdev/helpers-joomla (OrmTables/OrmBase, DbTransactionHelper, InputHelper, ValidationHelper, DateHelper, Vigia.js, ApiResponseHelper, PermissionHelper, UserHelper, UploadMaster, FileHelper, CsvHelper, ExportHelper, QueueHelper, LogHelper, AuditHelper, HttpHelper, LockHelper, CacheHelper, MailHelper, EmailSendHelper, RateLimitHelper, CryptoHelper, Vitrine.js, FormatHelper, WebhookHelper, SettingsHelper, ArrayHelper, BackupDatabaseHelper). Use SEMPRE que o pedido envolver Joomla, com_*, JControllerLegacy, controller/model/view/task de componente, JFactory/JDatabase, ou frases como "cria o controller", "refatora esse controller", "importa esse CSV", "exporta pra CSV", "upload no Joomla", "coloca na fila", "revisa esse código Joomla", "converte pra usar os helpers".
 ---
 
 # Joomla com os helpers
@@ -22,7 +22,7 @@ Entregue código Joomla **pronto para produção**, curto e seguro, apoiado nos 
 | Arquivo | Quando |
 |---|---|
 | `references/banco.md` | ORM, consultas, paginação, escrita, transação, outro banco, backup do banco |
-| `references/entrada-saida.md` | InputHelper, regras do ValidationHelper, respostas, permissões, Vigia.js (formulário no navegador), Vitrine.js |
+| `references/entrada-saida.md` | InputHelper, regras do ValidationHelper, respostas, permissões, UserHelper (grupos e perfil), Vigia.js (formulário no navegador), Vitrine.js |
 | `references/arquivos.md` | upload, download, arquivos, importar/exportar CSV, arquivos gigantes |
 | `references/fila.md` | tarefas demoradas, jobs, worker, cron |
 | `references/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper (datas e fuso), LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper, ArrayHelper |
@@ -76,6 +76,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 | Limitar tentativas (login, SMS, contato) | `if (!RateLimitHelper::enforce("chave:" . $ip, 5, 3600)) return;` |
 | Enviar e-mail (confirmação, senha) | `MailHelper::send(["to"=>..., "template"=>..., "data"=>...])` ou `queue(...)` |
 | Enviar por outra conta (Gmail, Outlook, ElasticEmail, SendGrid), várias contas ou fora do Joomla | `EmailSendHelper::register("gmail", [...])` · `make(["elasticemail", "gmail"])->to()->subject()->view()->send()` |
+| Grupo do usuário por nome/apelido (com herança), membros de um grupo, perfil sem dados sensíveis, máscara de CPF/e-mail, filtro pela cooperativa | `UserHelper::inGroup("Gerentes")` · `requireGroup([...])` · `emailsInGroup($g)` · `toApi()` · `scopeQuery($orm, ["singular" => "p.cod_singular"])` |
 | Guardar resultado caro (dashboard, API) | `CacheHelper::remember("assunto:det", 300, $fn)` + `flushPrefix("assunto")` |
 | Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |

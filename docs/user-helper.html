@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UserHelper · helpers-joomla</title>
+<meta name="description" content="UserHelper: usuário, grupos e perfil sobre as tabelas do Joomla. Grupo por id, nome ou apelido com herança, membros de um grupo, perfil seguro para JSON, máscaras de CPF e e-mail (LGPD) e escopo de consultas pela cooperativa.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › UserHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação zip rar compactado raw issafefile">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="user-helper.html" class="ativo" aria-current="page" data-busca="usuário usuario grupo grupos usergroups herança membros apelido perfil nome cpf máscara mascara lgpd e-mail aniversário cooperativa central singular pa uf escopo dados pessoais bloqueado último acesso">UserHelper<span class="arquivo">UserHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="platform-helper.html" data-busca="plataforma laravel php puro joomla 6 compatibilidade jfile jfolder jlog">PlatformHelper<span class="arquivo">PlatformHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="email-send-helper.html" data-busca="email e-mail enviar smtp gmail outlook hotmail office365 yahoo zoho sendgrid brevo mailgun mailtrap mailpit locaweb hostinger elasticemail api anexo imagem embutida cid failover várias contas senha de app eml teste fake">EmailSendHelper<span class="arquivo">EmailSendHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><a href="array-helper.html" data-busca="array arrays objeto notação de ponto get set pluck groupby keyby where filtrar agrupar ordenar sortby somar sum árvore totree dot merge coleção lista registros">ArrayHelper<span class="arquivo">ArrayHelper.php</span></a><a href="backup-database-helper.html" data-busca="backup cópia de segurança dump exportar banco sql mysqldump pg_dump estrutura schema dados restaurar gzip download tabelas views triggers">BackupDatabaseHelper<span class="arquivo">BackupDatabaseHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>UserHelper</h1><p class="lead">Usuário, grupos e perfil num lugar só, sobre as tabelas do Joomla (<code>#__users</code>, <code>#__usergroups</code> e <code>#__user_usergroup_map</code>): "está no grupo Gerentes?", membros de um grupo, perfil seguro para JSON, máscaras de CPF e e-mail (LGPD) e filtro de consultas pela cooperativa do usuário.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">IncludeHelper::load(['UserHelper', 'ApiResponseHelper', 'PermissionHelper']);
+
+// Uma vez, no início do componente: nomes estáveis no lugar de ids fixos
+UserHelper::setGroupAliases([
+    'gerentes' =&gt; 'Gerentes',
+    'ti'       =&gt; [25, 26],
+]);
+
+public function aprovar()
+{
+    if (!PermissionHelper::requireToken() || !UserHelper::requireGroup(['gerentes', 'ti'])) {
+        return;   // 403 padronizado, com log e auditoria
+    }
+
+    $limite = UserHelper::valueByGroup([
+        'Diretoria' =&gt; 100000,
+        'gerentes'  =&gt; 20000,
+    ], 1000);
+
+    // ...
+}
+
+public function perfil()
+{
+    return ApiResponseHelper::success('Perfil carregado.', UserHelper::toApi());   // sem senha, CPF e e-mail mascarados
+}</code></pre></div>
+<ul>
+<li><strong>Grupo por id, nome ou apelido</strong>: <code>inGroup(15)</code>, <code>inGroup('Gerentes')</code> ou <code>inGroup('gerentes')</code>. O nome ignora maiúsculas, acentos e espaços repetidos.</li>
+<li><strong>Herança como no ACL do Joomla</strong>: quem está em <em>Gerentes Regionais</em> (filho de <em>Gerentes</em>) também conta como membro de <em>Gerentes</em>. Para olhar só o grupo em que o usuário foi colocado, use <code>inGroupDirect()</code>.</li>
+<li><strong>Falha fechada</strong>: grupo inexistente nunca libera acesso. A checagem dá <code>false</code> e vai um aviso para o log.</li>
+<li><strong>Nada sensível sai</strong>: as linhas de <code>#__users</code> passam por uma lista de campos permitidos. <code>password</code>, <code>activation</code>, <code>otpKey</code>, <code>otep</code>, <code>params</code> e afins nunca são devolvidos, e uma coluna nova na tabela não vaza sozinha.</li>
+<li><strong>Uma consulta por requisição</strong>: o catálogo de grupos e os usuários lidos ficam em memória; com <code>setCacheSeconds()</code> o catálogo vai para o <a href="cache-helper.html">CacheHelper</a>.</li>
+</ul>
+<div class="nota"><p>Depende do <a href="orm-tables.html">OrmTables</a> (carregado sozinho). Usa, se estiverem carregados, o <a href="log-helper.html">LogHelper</a> (avisos), o <a href="permission-helper.html">PermissionHelper</a> (respostas 403), o <a href="audit-helper.html">AuditHelper</a> (mudanças de grupo), o <a href="cache-helper.html">CacheHelper</a> e o <a href="date-helper.html">DateHelper</a>. Funciona no Joomla 4.4, 5 e 6 e também fora dele, com uma conexão registrada no <a href="db-connection-helper.html">DbConnectionHelper</a>.</p></div>
+<h2 id="usuario" data-titulo="Quem é o usuário">Quem é o usuário: o parâmetro <code>$user</code></h2>
+<p>Quase todos os métodos recebem o usuário no <strong>último</strong> parâmetro, opcional. Sem ele, vale o usuário logado. Ele aceita id, username, e-mail, <code>JUser</code>, objeto ou array com <code>id</code>:</p>
+<div class="codigo"><pre><code data-lang="php">UserHelper::inGroup('Gerentes');                 // usuário logado
+UserHelper::inGroup('Gerentes', 152);            // pelo id
+UserHelper::inGroup('Gerentes', 'maria');        // pelo username
+UserHelper::inGroup('Gerentes', 'maria@x.com');  // pelo e-mail
+UserHelper::inGroup('Gerentes', $pedido-&gt;user);  // objeto com -&gt;id</code></pre></div>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>current($user = null)</code></td><td>o <code>JUser</code> logado; fora do Joomla, a linha segura de <code>#__users</code> ou <code>null</code></td></tr>
+<tr><td><code>id($user = null)</code></td><td>o id (<code>0</code> = visitante ou não encontrado)</td></tr>
+<tr><td><code>isLoggedIn()</code> / <code>isGuest()</code></td><td><code>bool</code></td></tr>
+<tr><td><code>isCurrent($user)</code></td><td>é o usuário logado? (ex.: "não pode excluir a si mesmo")</td></tr>
+</tbody></table></div>
+<h2 id="buscar" data-titulo="Buscar usuários">Buscar e listar usuários</h2>
+<div class="metodo"><h3 id="find"><code>find()</code> / <code>findOrFail()</code> / <code>findMany()</code><span class="tag estatico">estático</span></h3><div class="assinatura">UserHelper::find(int|string $login): ?stdClass
+UserHelper::findOrFail(int|string $login): stdClass          // RuntimeException código 404
+UserHelper::findMany(array $ids): array</div><p>Busca por id, username ou e-mail (o que tiver <code>@</code> é e-mail). Devolve só <code>id</code>, <code>name</code>, <code>username</code>, <code>email</code>, <code>block</code>, <code>sendEmail</code>, <code>registerDate</code>, <code>lastvisitDate</code> e <code>requireReset</code>, com os campos numéricos já como <code>int</code>.</p></div>
+<div class="codigo"><pre><code data-lang="php">$usuario = UserHelper::find('maria@x.com');
+
+UserHelper::exists(152);                                   // bool
+UserHelper::emailExists($email, $editandoId);              // validar cadastro sem acusar o próprio usuário
+UserHelper::usernameExists($username, $editandoId);</code></pre></div>
+<div class="metodo"><h3 id="search"><code>search()</code><span class="tag estatico">estático</span></h3><div class="assinatura">UserHelper::search(string $termo, int $limite = 20, bool $soAtivos = true): array</div><p>Procura no nome, username e e-mail. Feito para autocomplete e campos de "escolher usuário".</p></div>
+<div class="metodo"><h3 id="users"><code>users()</code> / <code>userOptions()</code><span class="tag estatico">estático</span></h3><div class="assinatura">UserHelper::users(array $filtros = []): array
+UserHelper::userOptions(array $filtros = []): array   // [id =&gt; nome], só ativos por padrão</div></div>
+<div class="tabela"><table><thead><tr><th>Filtro</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>group</code></td><td>id, nome, apelido ou lista de grupos</td></tr>
+<tr><td><code>descendants</code></td><td><code>true</code> inclui os membros dos subgrupos</td></tr>
+<tr><td><code>term</code></td><td>busca no nome, username e e-mail</td></tr>
+<tr><td><code>blocked</code></td><td><code>false</code> só ativos, <code>true</code> só bloqueados, <code>null</code> (padrão) todos</td></tr>
+<tr><td><code>ids</code></td><td>restringe a esses ids</td></tr>
+<tr><td><code>order</code> / <code>direction</code></td><td>um dos campos permitidos (padrão <code>name</code>) e <code>ASC</code>/<code>DESC</code></td></tr>
+<tr><td><code>page</code> / <code>per_page</code></td><td>com <code>page</code>, devolve o array do <a href="orm-base-leitura.html">paginate()</a> (<code>itens</code>, <code>total</code>...)</td></tr>
+<tr><td><code>limit</code></td><td>máximo de linhas (sem paginação)</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">$pagina = UserHelper::users([
+    'group'       =&gt; 'Gerentes',
+    'descendants' =&gt; true,
+    'term'        =&gt; InputHelper::string('busca'),
+    'blocked'     =&gt; false,
+    'page'        =&gt; InputHelper::int('pagina', 1),
+    'per_page'    =&gt; 20,
+]);
+
+return ApiResponseHelper::success('OK', $pagina['itens'], ['meta' =&gt; ['total' =&gt; $pagina['total']]]);</code></pre></div>
+<h2 id="status" data-titulo="Status da conta">Status da conta</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>isBlocked()</code> / <code>isActive()</code></td><td>bloqueado no Joomla? (usuário inexistente conta como bloqueado)</td></tr>
+<tr><td><code>mustResetPassword()</code></td><td>o administrador exigiu troca de senha (<code>requireReset</code>)</td></tr>
+<tr><td><code>receivesSystemEmails()</code></td><td>marcado para receber e-mails do sistema (<code>sendEmail</code>)</td></tr>
+<tr><td><code>registeredAt()</code> / <code>lastVisitAt()</code></td><td>data em UTC (<code>Y-m-d H:i:s</code>) ou <code>null</code> se nunca acessou</td></tr>
+<tr><td><code>lastVisitRelative()</code></td><td><code>'há 3 dias'</code> (com o <a href="date-helper.html">DateHelper</a>) ou <code>'nunca acessou'</code></td></tr>
+<tr><td><code>daysSinceLastVisit()</code> / <code>isInactiveFor($dias)</code></td><td>dias desde o último acesso; inativo há N dias (nunca acessou conta como inativo)</td></tr>
+</tbody></table></div>
+<h2 id="grupos" data-titulo="Checar grupos">Checar grupos</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Verdadeiro quando</th></tr></thead><tbody>
+<tr><td><code>inGroup($grupo, $user = null)</code></td><td>está no grupo (com herança). Lista = qualquer um deles</td></tr>
+<tr><td><code>inGroupDirect($grupo)</code></td><td>foi colocado no grupo (sem herança)</td></tr>
+<tr><td><code>notInGroup($grupo)</code></td><td>não está</td></tr>
+<tr><td><code>inAnyGroup(array $grupos)</code></td><td>está em pelo menos um</td></tr>
+<tr><td><code>inAllGroups(array $grupos)</code></td><td>está em todos (cada item é avaliado sozinho: apelido com vários grupos vale "qualquer um deles")</td></tr>
+<tr><td><code>inGroupOrDescendants($grupo)</code></td><td>está no grupo ou em qualquer subgrupo dele</td></tr>
+</tbody></table></div>
+<div class="codigo"><div class="titulo-codigo">tmpl/default.php</div><pre><code data-lang="php">&lt;?php if (UserHelper::inAnyGroup(['Gerentes', 'TI'])) : ?&gt;
+    &lt;button type=&quot;button&quot; data-aprovar=&quot;&lt;?php echo (int) $item-&gt;id; ?&gt;&quot;&gt;Aprovar&lt;/button&gt;
+&lt;?php endif; ?&gt;
+
+&lt;?php // ['Gerentes' =&gt; true, 'TI' =&gt; false]: vários botões com uma leitura só
+$pode = UserHelper::groupMatrix(['Gerentes', 'TI', 'Diretoria']); ?&gt;</code></pre></div>
+<div class="metodo"><h3 id="valueByGroup"><code>valueByGroup()</code> / <code>whenInGroup()</code><span class="tag estatico">estático</span></h3><div class="assinatura">UserHelper::valueByGroup(array $mapa, mixed $padrao = null, $user = null): mixed
+UserHelper::whenInGroup($grupo, callable $entao, ?callable $senao = null, $user = null): mixed</div><p><code>valueByGroup</code> devolve o valor do <strong>primeiro</strong> grupo do mapa em que o usuário estiver (ordene do mais alto para o mais baixo). Valor ou padrão que seja <code>Closure</code> é executado. <code>whenInGroup</code> executa um dos callbacks, que recebem o usuário.</p></div>
+<div class="codigo"><pre><code data-lang="php">$limiteDeAprovacao = UserHelper::valueByGroup([
+    'Diretoria' =&gt; 100000,
+    'Gerentes'  =&gt; 20000,
+    'Registered'=&gt; 1000,
+], 0);
+
+UserHelper::whenInGroup('TI', function ($usuario) {
+    JFactory::getDocument()-&gt;addScript('media/com_loja/js/debug.js');
+});</code></pre></div>
+<h3 id="requireGroup">Exigir grupo no controller: <code>requireGroup()</code> / <code>requireAllGroups()</code></h3>
+<div class="assinatura">UserHelper::requireGroup($grupos, string $mensagem = '...', ?string $redirect = null, array $contexto = []): bool
+UserHelper::requireAllGroups(array $grupos, string $mensagem = '...', ?string $redirect = null, array $contexto = []): bool</div>
+<p>Com o <a href="permission-helper.html">PermissionHelper</a> carregado, segue o mesmo fluxo dele: registra no log e na auditoria, responde 401/403 (JSON encerra; HTML mostra a mensagem e redireciona se houver <code>$redirect</code>) e <strong>devolve <code>false</code></strong>. Sem o PermissionHelper, lança <code>RuntimeException</code> com código 403.</p>
+<div class="codigo"><pre><code data-lang="php">if (!UserHelper::requireGroup('Gerentes', 'Só gerentes aprovam crédito.', JRoute::_('index.php?option=com_credito', false))) {
+    return;
+}</code></pre></div>
+<div class="nota aviso"><p>Esconder o botão na view não protege nada: a task do controller precisa do <code>requireGroup</code>. E, como no PermissionHelper, sempre escreva <code>if (!...) { return; }</code>: em HTML o Joomla não encerra a requisição.</p></div>
+<div class="nota dica"><p>Grupo é bom para regras de negócio ("limite do gerente", "fila da TI"). Para "pode editar/excluir" prefira ações da ACL (<code>PermissionHelper::can('core.edit')</code>), que o administrador concede a qualquer grupo sem mexer no código.</p></div>
+<h2 id="apelidos" data-titulo="Apelidos de grupo">Apelidos: sem id fixo espalhado pelo código</h2>
+<p>O id de um grupo muda de um site para outro (desenvolvimento, homologação, produção), e o nome pode ser renomeado pelo administrador. Defina os apelidos uma vez, no início do componente, e use só eles no resto do código:</p>
+<div class="codigo"><div class="titulo-codigo">site/credito.php</div><pre><code data-lang="php">UserHelper::setGroupAliases([
+    'gerentes'  =&gt; 15,                        // id
+    'ti'        =&gt; [25, 26],                  // vários grupos: qualquer um deles
+    'diretoria' =&gt; 'Diretoria Executiva',     // nome
+    'gestao'    =&gt; ['gerentes', 'diretoria'], // apelido de apelidos
+]);
+
+UserHelper::inGroup('gestao');</code></pre></div>
+<p>O segundo parâmetro (<code>$merge = true</code>) soma aos apelidos já definidos; <code>false</code> substitui todos. Apelidos que apontam um para o outro em ciclo lançam <code>LogicException</code>. <code>groupAliases()</code> devolve os definidos.</p>
+<h2 id="meus-grupos" data-titulo="Grupos do usuário">Grupos do usuário</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>userGroupIds($user = null, $herdados = true)</code></td><td><code>[1, 2, 15, 16]</code></td></tr>
+<tr><td><code>groups($user = null, $herdados = true)</code></td><td><code>[15 =&gt; 'Gerentes', 16 =&gt; 'Gerentes Regionais']</code></td></tr>
+<tr><td><code>groupNames($user = null, $herdados = true)</code></td><td><code>['Public', 'Registered', 'Gerentes', ...]</code></td></tr>
+<tr><td><code>groupsDetailed($user = null)</code></td><td><code>[{id, title, path, level, direct}]</code> em ordem de árvore; <code>direct</code> diz se foi colocado ou só herda</td></tr>
+</tbody></table></div>
+<p>Para o usuário logado, os grupos vêm do <code>JUser</code> (já em sessão, sem consulta). Para os demais, da tabela <code>#__user_usergroup_map</code>.</p>
+<h2 id="catalogo" data-titulo="Catálogo de grupos">Catálogo de grupos</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>allGroups()</code></td><td><code>[id =&gt; {id, parent_id, lft, rgt, title, level, path}]</code> em ordem de árvore</td></tr>
+<tr><td><code>group($grupo)</code></td><td>um grupo por id, nome ou apelido, ou <code>null</code> (nome repetido em pais diferentes: o primeiro da árvore)</td></tr>
+<tr><td><code>groupExists($grupo)</code> / <code>groupId($grupo)</code> / <code>groupIds($grupos)</code></td><td>existe? / id (<code>0</code> se não) / ids de uma lista misturando ids, nomes e apelidos</td></tr>
+<tr><td><code>groupTitle($id, $padrao = '')</code> / <code>groupTitles(array $ids)</code></td><td>nome(s) pelo id</td></tr>
+<tr><td><code>groupPath($grupo, ' &gt; ')</code></td><td><code>'Public &gt; Registered &gt; Gerentes'</code></td></tr>
+<tr><td><code>groupParent()</code>, <code>groupAncestors()</code>, <code>groupChildren()</code>, <code>groupDescendants($g, $incluirEle = false)</code></td><td>navegação na árvore</td></tr>
+<tr><td><code>isGroupChildOf($grupo, $pai)</code></td><td>está abaixo do pai (em qualquer nível)</td></tr>
+<tr><td><code>groupTree($raiz = null)</code></td><td>árvore aninhada <code>[{id, title, level, path, children: [...]}]</code></td></tr>
+<tr><td><code>groupOptions('— ', $raiz = null)</code></td><td><code>[16 =&gt; '— — — Gerentes Regionais']</code> para <code>&lt;select&gt;</code></td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">&lt;select name=&quot;grupo_id&quot;&gt;
+&lt;?php foreach (UserHelper::groupOptions('— ', 'Registered') as $id =&gt; $titulo) : ?&gt;
+    &lt;option value=&quot;&lt;?php echo (int) $id; ?&gt;&quot;&gt;&lt;?php echo htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/option&gt;
+&lt;?php endforeach; ?&gt;
+&lt;/select&gt;</code></pre></div>
+<h2 id="membros" data-titulo="Membros de um grupo">Membros de um grupo</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>usersInGroup($grupo, ['descendants' =&gt; false, 'blocked' =&gt; false, 'limit', 'page', 'per_page'])</code></td><td>usuários (sem dados sensíveis); por padrão só os ativos</td></tr>
+<tr><td><code>userIdsInGroup($grupo, $subgrupos = false, $soAtivos = true)</code></td><td><code>[152, 160]</code></td></tr>
+<tr><td><code>countUsersInGroup($grupo, $subgrupos = false, $soAtivos = true)</code></td><td><code>int</code></td></tr>
+<tr><td><code>emailsInGroup($grupo, $subgrupos = false)</code></td><td><code>[user_id =&gt; email]</code> dos ativos com e-mail válido</td></tr>
+<tr><td><code>groupMemberCounts($soAtivos = true)</code></td><td><code>[group_id =&gt; total]</code> de todos os grupos, numa consulta (grupos vazios com <code>0</code>)</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">// Avisar todos os gerentes (e subgrupos) de um pedido novo
+foreach (UserHelper::emailsInGroup('Gerentes', true) as $userId =&gt; $email) {
+    EmailSendHelper::make()-&gt;to($email)-&gt;subject('Novo pedido')-&gt;view('pedido-novo', ['pedido' =&gt; $pedido])-&gt;send();
+}</code></pre></div>
+<h2 id="alterar-grupos" data-titulo="Alterar grupos">Alterar grupos</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Devolve</th></tr></thead><tbody>
+<tr><td><code>addToGroup($user, $grupos)</code></td><td>ids efetivamente adicionados (quem já estava fica de fora)</td></tr>
+<tr><td><code>removeFromGroup($user, $grupos)</code></td><td>ids removidos</td></tr>
+<tr><td><code>syncGroups($user, $grupos)</code></td><td><code>['added' =&gt; [...], 'removed' =&gt; [...]]</code>: deixa o usuário exatamente nesses grupos</td></tr>
+</tbody></table></div>
+<p>No Joomla usam o <code>JUserHelper</code> (mantém a sessão em dia); fora dele, gravam direto em <code>#__user_usergroup_map</code>. Cada mudança vai para o <a href="audit-helper.html">AuditHelper</a> (evento <code>user.group.add</code>/<code>user.group.remove</code>) ou, sem ele, para o log.</p>
+<div class="nota aviso"><p>Na escrita o helper é <strong>estrito</strong>: grupo desconhecido lança <code>InvalidArgumentException</code> (em vez de ser ignorado), usuário inexistente também, e tirar o último grupo do usuário lança <code>LogicException</code>. Confira o token e a permissão (<code>core.admin</code> ou <code>requireGroup</code>) antes: quem altera grupos altera acessos.</p></div>
+<div class="codigo"><pre><code data-lang="php">public function salvarGrupos()
+{
+    if (!PermissionHelper::requireToken() || !PermissionHelper::require('core.admin')) {
+        return;
+    }
+
+    try {
+        $mudou = UserHelper::syncGroups(InputHelper::int('user_id'), InputHelper::arrayOfInt('grupos'));
+
+        return ApiResponseHelper::success('Grupos atualizados.', $mudou);
+    } catch (InvalidArgumentException | LogicException $e) {
+        return ApiResponseHelper::error($e-&gt;getMessage(), null, [], ['http_status' =&gt; 422]);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}</code></pre></div>
+<h2 id="perfil" data-titulo="Perfil">Perfil e dados pessoais</h2>
+<p>O perfil junta <code>#__users</code> com os <strong>dados pessoais</strong> do usuário (<code>sexo</code>, <code>data_nascimento</code>, <code>cpf</code>, <code>central</code>, <code>singular</code>, <code>pa</code>, <code>estado</code>...). Os dados pessoais vêm de <code>JFactory::getDadosPessoais()</code> quando o Joomla do projeto tem esse método (só para o usuário logado). Para os demais usuários, ou num Joomla sem ele, informe de onde ler:</p>
+<div class="codigo"><pre><code data-lang="php">UserHelper::setDadosPessoaisResolver(function ($userId) {
+    return OrmTables::table('#__dados_pessoais')-&gt;findBy('user_id', $userId);   // array ou objeto
+});</code></pre></div>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Exemplo</th></tr></thead><tbody>
+<tr><td><code>get($campo, $padrao = null)</code></td><td>qualquer campo do perfil; campos sensíveis devolvem sempre o padrão</td></tr>
+<tr><td><code>dadosPessoais()</code></td><td>array dos dados pessoais (sem campos sensíveis) ou <code>[]</code></td></tr>
+<tr><td><code>name()</code> / <code>displayName()</code></td><td><code>'MARIA DA SILVA SOUZA'</code> / <code>'Maria da Silva Souza'</code></td></tr>
+<tr><td><code>firstName()</code>, <code>lastName()</code>, <code>shortName()</code>, <code>initials($max = 2)</code></td><td><code>'Maria'</code>, <code>'Souza'</code>, <code>'Maria Souza'</code>, <code>'MS'</code> (avatar)</td></tr>
+<tr><td><code>username()</code>, <code>email()</code>, <code>emailDomain()</code></td><td><code>'x.com'</code></td></tr>
+<tr><td><code>cpf($formatado = true)</code>, <code>cpfMasked()</code>, <code>emailMasked()</code></td><td><code>'123.456.789-09'</code>, <code>'***.456.789-**'</code>, <code>'ma*********@x.com'</code></td></tr>
+<tr><td><code>gender()</code> / <code>genderLabel()</code></td><td><code>'F'</code> / <code>'Feminino'</code> (<code>''</code> / <code>'Não informado'</code>)</td></tr>
+<tr><td><code>greeting()</code> / <code>timeGreeting()</code></td><td><code>'Bem-vinda, Maria'</code> / <code>'Boa tarde, Maria'</code> (no fuso do usuário)</td></tr>
+<tr><td><code>birthDate()</code>, <code>age()</code></td><td><code>'1990-05-12'</code>, <code>36</code> (ou <code>null</code>)</td></tr>
+<tr><td><code>isBirthdayToday()</code>, <code>isBirthdayMonth($mes = null)</code>, <code>daysUntilBirthday()</code></td><td>29/02 em ano não bissexto comemora em 01/03</td></tr>
+<tr><td><code>params()</code>, <code>param($nome, $padrao)</code>, <code>timezone()</code>, <code>language()</code></td><td>preferências de <code>#__users.params</code>; fuso padrão o do site, depois <code>America/Sao_Paulo</code></td></tr>
+</tbody></table></div>
+<h2 id="cooperativa" data-titulo="Cooperativa e escopo">Cooperativa e escopo de consultas</h2>
+<p><code>cooperativa()</code> devolve <code>['central' =&gt; '300', 'singular' =&gt; '0300', 'pa' =&gt; '0', 'uf' =&gt; 'DF']</code> a partir dos dados pessoais (campo vazio vira <code>null</code>). Há atalhos para cada parte e checagens que ignoram zeros à esquerda (<code>'0300'</code> = <code>300</code>):</p>
+<div class="codigo"><pre><code data-lang="php">UserHelper::central();  UserHelper::singular();  UserHelper::pa();  UserHelper::uf();   // 'DF' em maiúsculas
+
+UserHelper::inSingular([300, 3001]);
+UserHelper::inPa(0);
+UserHelper::inUf(['DF', 'GO']);</code></pre></div>
+<div class="metodo"><h3 id="scopeQuery"><code>scopeQuery()</code><span class="tag estatico">estático</span></h3><div class="assinatura">UserHelper::scopeQuery(OrmBase $consulta, array $colunas, array $gruposLiberados = [], $user = null): OrmBase</div><p>Limita a consulta aos dados da cooperativa do usuário: cada chave (<code>central</code>, <code>singular</code>, <code>pa</code> ou <code>uf</code>) vira um <code>where</code> na coluna informada. <strong>Falha fechada:</strong> se o usuário não tiver o código, a consulta não devolve nada. Quem está em um dos <code>$gruposLiberados</code> vê tudo. Chave desconhecida lança <code>InvalidArgumentException</code>.</p></div>
+<div class="codigo"><pre><code data-lang="php">$propostas = OrmTables::table('#__credito_propostas AS p');
+
+UserHelper::scopeQuery($propostas, [
+    'singular' =&gt; 'p.cod_singular',
+    'pa'       =&gt; 'p.cod_pa',
+], ['Diretoria', 'TI']);
+
+$lista = $propostas-&gt;orderBy('p.created_at', 'DESC')-&gt;paginate(20, $pagina);</code></pre></div>
+<div class="nota dica"><p>Use o <code>scopeQuery</code> também no <code>find</code> do registro (editar, excluir, baixar): é a proteção contra IDOR para "cada PA só vê as suas propostas", no mesmo espírito do <a href="permission-helper.html#resolvedores">resolvedor de entidades</a> do PermissionHelper.</p></div>
+<h2 id="saidas" data-titulo="Saídas prontas">Saídas prontas: perfil para API, log e LGPD</h2>
+<div class="metodo"><h3 id="profile"><code>profile()</code> / <code>toApi()</code><span class="tag estatico">estático</span></h3><div class="assinatura">UserHelper::profile($user = null, array $opcoes = []): ?array</div><p>Perfil seguro: <code>id</code>, <code>nome</code>, <code>nome_curto</code>, <code>primeiro_nome</code>, <code>iniciais</code>, <code>username</code>, <code>email</code> e <code>cpf</code> mascarados, <code>sexo</code>, <code>idade</code>, <code>aniversario_hoje</code>, <code>cooperativa</code>, <code>bloqueado</code>, <code>cadastrado_em</code>, <code>ultimo_acesso</code>, <code>timezone</code>, <code>idioma</code> e <code>grupos</code> (<code>[{id, nome, direto}]</code>). <code>null</code> se o usuário não existir.</p></div>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>groups</code></td><td><code>true</code></td><td>inclui a lista de grupos</td></tr>
+<tr><td><code>sensitive</code></td><td><code>false</code></td><td><code>true</code> devolve e-mail e CPF sem máscara e a data de nascimento</td></tr>
+<tr><td><code>fields</code></td><td><code>[]</code></td><td>restringe às chaves informadas</td></tr>
+</tbody></table></div>
+<div class="codigo"><pre><code data-lang="php">return ApiResponseHelper::success('OK', UserHelper::toApi(null, ['fields' =&gt; ['nome', 'iniciais', 'grupos']]));
+
+// Contexto mínimo para LogHelper/AuditHelper: user_id, username, singular, pa, ip, user_agent
+LogHelper::info('Proposta aprovada.', 'credito', UserHelper::snapshot() + ['proposta' =&gt; $id]);
+
+// Tirar campos sensíveis de qualquer usuário (JUser, objeto, array) antes de serializar
+$seguro = UserHelper::sanitize(JFactory::getUser());</code></pre></div>
+<p>Máscaras soltas, para qualquer valor: <code>maskCpf('12345678909')</code> → <code>'***.456.789-**'</code>, <code>maskEmail('maria.silva@x.com')</code> → <code>'ma*********@x.com'</code>, <code>maskName('Maria da Silva Souza')</code> → <code>'Maria da S. S.'</code>. <code>ip()</code> devolve o <code>REMOTE_ADDR</code> (cabeçalhos de proxy não são considerados confiáveis).</p>
+<div class="nota aviso"><p>Use <code>'sensitive' =&gt; true</code> só para o próprio usuário (<code>UserHelper::isCurrent($id)</code>) ou para quem tem permissão de ver dados pessoais. Em listagens e telas de terceiros, devolva o perfil mascarado.</p></div>
+<h2 id="configuracao" data-titulo="Configuração">Configuração</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setGroupAliases(array, $merge = true)</code></td><td>—</td><td>Apelidos de grupo (ver <a href="#apelidos">Apelidos</a>).</td></tr>
+<tr><td><code>setDadosPessoaisResolver(?callable)</code></td><td><code>JFactory::getDadosPessoais()</code> do logado</td><td>De onde ler os dados pessoais de qualquer usuário.</td></tr>
+<tr><td><code>setCacheSeconds($s)</code></td><td><code>0</code> (só na requisição)</td><td>Guarda o catálogo de grupos no <a href="cache-helper.html">CacheHelper</a>.</td></tr>
+<tr><td><code>setConnection($nome)</code></td><td>conexão do Joomla</td><td>Outra conexão do <a href="db-connection-helper.html">DbConnectionHelper</a> onde estão as tabelas de usuários (portal, SSO, PHP puro).</td></tr>
+<tr><td><code>setLogCategory($c)</code></td><td><code>user_helper</code></td><td>Categoria dos avisos no <a href="log-helper.html">LogHelper</a>.</td></tr>
+<tr><td><code>clearCache()</code></td><td>—</td><td>Esquece o catálogo e os usuários lidos. Chame depois de criar ou renomear grupos.</td></tr>
+</tbody></table></div>
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="permission-helper.html">PermissionHelper</a>: ações da ACL, token CSRF e as respostas 401/403 do <code>requireGroup</code>.</li><li><a href="audit-helper.html">AuditHelper</a>: registro das mudanças de grupo.</li><li><a href="email-send-helper.html">EmailSendHelper</a>: disparar para <code>emailsInGroup()</code>.</li><li><a href="format-helper.html">FormatHelper</a>: outros formatos de CPF, nomes e textos.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="permission-helper.html"><small>← Anterior</small>PermissionHelper</a><a class="proxima" href="csv-helper.html"><small>Próxima →</small>CsvHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>UserHelper</code>, <code>CsvHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>PlatformHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>EmailSendHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>ArrayHelper</code>, <code>BackupDatabaseHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>

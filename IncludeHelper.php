@@ -32,6 +32,7 @@ class IncludeHelper
         'OrmTables'           => array('OrmBase'),
         'ApiResponseHelper'   => array('LogHelper'),
         'PermissionHelper'    => array('LogHelper', 'ApiResponseHelper'),
+        'UserHelper'          => array('OrmTables', 'LogHelper'),
         'FileHelper'          => array('PlatformHelper', 'LogHelper'),
         'AuditHelper'         => array('OrmTables', 'LogHelper'),
         'CsvHelper'           => array('PlatformHelper', 'OrmTables', 'DbTransactionHelper', 'ValidationHelper', 'LogHelper'),

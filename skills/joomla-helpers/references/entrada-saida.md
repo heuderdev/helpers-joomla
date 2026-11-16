@@ -1,4 +1,4 @@
-# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Vitrine.js
+# Entrada e saída: InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, UserHelper, Vigia.js, Vitrine.js
 
 ## InputHelper (ler a requisição já no tipo certo)
 
@@ -73,6 +73,20 @@ if (!PermissionHelper::require('core.edit', 'com_loja', 'Sem permissão.', JRout
 ```
 `setUseApiResponse(true)` faz as negações responderem pelo ApiResponseHelper.
 
+## UserHelper (usuário, grupos e perfil)
+
+Sobre `#__users`, `#__usergroups` e `#__user_usergroup_map`; depende de OrmTables. O usuário é sempre o **último** parâmetro, opcional (padrão: logado) e aceita id, username, e-mail, `JUser` ou objeto/array com `id`.
+
+- Grupos (id, nome sem acento/caixa, apelido ou lista = qualquer um), **com herança** do ACL: `inGroup`, `inGroupDirect` (sem herança), `notInGroup`, `inAnyGroup([...])`, `inAllGroups([...])`, `inGroupOrDescendants`, `groupMatrix([...])`, `valueByGroup(['Diretoria' => 100000, 'Gerentes' => 20000], 1000)`, `whenInGroup($g, fn, fn)`. Grupo inexistente → `false` + log (falha fechada).
+- Apelidos (evite id fixo): `UserHelper::setGroupAliases(['gerentes' => 15, 'ti' => [25, 26], 'diretoria' => 'Diretoria Executiva'])`.
+- Exigir: `if (!UserHelper::requireGroup(['gerentes', 'ti'])) { return; }` / `requireAllGroups([...])`: com PermissionHelper carregado responde 401/403 e devolve `false`; sem ele lança `RuntimeException` 403.
+- Do usuário: `userGroupIds()`, `groups()` (`[id => nome]`), `groupNames()`, `groupsDetailed()` (`direct`). Catálogo: `allGroups`, `group`, `groupId`, `groupIds`, `groupTitle`, `groupPath` (`'Public > Registered > Gerentes'`), `groupChildren/Descendants/Ancestors`, `groupTree`, `groupOptions('— ')` para select.
+- Membros (só ativos por padrão, sem dados sensíveis): `usersInGroup($g, ['descendants' => true])`, `userIdsInGroup`, `countUsersInGroup`, `emailsInGroup($g)` (`[id => email]`), `groupMemberCounts()`.
+- Escrita (estrita: grupo/usuário inexistente → `InvalidArgumentException`; tirar o último grupo → `LogicException`; auditada): `addToGroup($u, $g)`, `removeFromGroup`, `syncGroups` → `['added', 'removed']`. Token + `core.admin` antes.
+- Busca: `find($idUsernameOuEmail)` (nunca devolve senha/params/otp), `findOrFail` (404), `findMany`, `search($termo)`, `users(['group', 'descendants', 'term', 'blocked', 'page', 'per_page'])`, `userOptions()`, `emailExists($e, $exceto)`. Status: `isBlocked`, `lastVisitAt`, `lastVisitRelative`, `isInactiveFor($dias)`.
+- Perfil (`#__users` + dados pessoais de `JFactory::getDadosPessoais()` ou `setDadosPessoaisResolver(fn ($userId) => ...)`): `displayName`, `firstName`, `shortName`, `initials`, `cpf`, `cpfMasked`, `emailMasked`, `gender`, `greeting`, `timeGreeting`, `age`, `isBirthdayToday`, `timezone`, `cooperativa()` (`central/singular/pa/uf`), `inSingular([300])` (ignora zeros à esquerda). `profile()`/`toApi($u, ['fields' => [...], 'sensitive' => false])`, `snapshot()` para log, `sanitize($jUser)`, `maskCpf/maskEmail/maskName`.
+- Escopo contra IDOR por cooperativa: `UserHelper::scopeQuery($orm, ['singular' => 'p.cod_singular', 'pa' => 'p.cod_pa'], ['Diretoria'])`; usuário sem o código → consulta vazia.
+- Config: `setCacheSeconds(3600)` (catálogo no CacheHelper; `clearCache()` após mexer em grupos), `setConnection('portal')`, `setLogCategory`.
 ## Vigia.js (js/vigia.js: formulário no navegador)
 
 Valida no navegador com as **mesmas regras e mensagens** do ValidationHelper, mostra os erros 422 do `ApiResponseHelper::fromValidation()` embaixo de cada campo (`itens.1.qtd` → `name="itens[1][qtd]"`; sem campo/`_general` → mensagem geral), aplica máscaras e envia por axios com o token CSRF. Requer axios antes; Alpine opcional. Copie `js/vigia.js` (+ `vigia.css`, opcional com Bootstrap) para `media/com_x/js/`.

@@ -18,7 +18,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Área | Ficha | Helpers |
 |---|---|---|
 | Banco | `referencias/banco.md` | DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, BackupDatabaseHelper |
-| Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, Vigia.js, Vitrine.js |
+| Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, UserHelper, Vigia.js, Vitrine.js |
 | Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
 | Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper, ArrayHelper |
@@ -57,6 +57,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Limitar tentativas (login, SMS, contato) | `if (!RateLimitHelper::enforce("chave:" . $ip, 5, 3600)) return;` |
 | Enviar e-mail (confirmação, senha) | `MailHelper::send(["to"=>..., "template"=>..., "data"=>...])` ou `queue(...)` |
 | Enviar por outra conta (Gmail, Outlook, ElasticEmail, SendGrid), várias contas ou fora do Joomla | `EmailSendHelper::register("gmail", [...])` · `make(["elasticemail", "gmail"])->to()->subject()->view()->send()` |
+| Grupo do usuário por nome/apelido (com herança), membros de um grupo, perfil sem dados sensíveis, máscara de CPF/e-mail, filtro pela cooperativa | `UserHelper::inGroup("Gerentes")` · `requireGroup([...])` · `emailsInGroup($g)` · `toApi()` · `scopeQuery($orm, ["singular" => "p.cod_singular"])` |
 | Guardar resultado caro (dashboard, API) | `CacheHelper::remember("assunto:det", 300, $fn)` + `flushPrefix("assunto")` |
 | Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |
