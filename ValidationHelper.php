@@ -1382,14 +1382,19 @@ class ValidationHelper
                 )
             );
         } catch (Throwable $error) {
-            JLog::add(
-                '[' . __METHOD__ . '] ' .
-                    $error->getMessage() .
-                    ' | Arquivo: ' . $error->getFile() .
-                    ' | Linha: ' . $error->getLine(),
-                JLog::ERROR,
-                'validation_helper'
-            );
+            $logMessage = '[' . __METHOD__ . '] ' .
+                $error->getMessage() .
+                ' | Arquivo: ' . $error->getFile() .
+                ' | Linha: ' . $error->getLine();
+
+            // JLog só existe no Joomla; fora dele (Laravel, PHP puro) não pode derrubar o script.
+            if (class_exists('JLog')) {
+                JLog::add($logMessage, JLog::ERROR, 'validation_helper');
+            } elseif (class_exists('LogHelper')) {
+                LogHelper::error($logMessage, 'validation_helper');
+            } else {
+                error_log($logMessage);
+            }
 
             self::addError(
                 $errors,

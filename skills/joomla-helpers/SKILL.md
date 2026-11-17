@@ -77,7 +77,7 @@ Nenhum caminho é fixo. Os scripts acham os helpers nesta ordem: `$HELPERS_JOOML
 | Enviar e-mail (confirmação, senha) | `MailHelper::send(["to"=>..., "template"=>..., "data"=>...])` ou `queue(...)` |
 | Enviar por outra conta (Gmail, Outlook, ElasticEmail, SendGrid), várias contas ou fora do Joomla | `EmailSendHelper::register("gmail", [...])` · `make(["elasticemail", "gmail"])->to()->subject()->view()->send()` |
 | Grupo do usuário por nome/apelido (com herança), membros de um grupo, perfil sem dados sensíveis, máscara de CPF/e-mail, filtro pela cooperativa | `UserHelper::inGroup("Gerentes")` · `requireGroup([...])` · `emailsInGroup($g)` · `toApi()` · `scopeQuery($orm, ["singular" => "p.cod_singular"])` |
-| Planilha (CSV, XLSX, XLS, ODS) com o mesmo cabeçalho da tabela, validada pelo tipo de cada coluna, tudo ou nada, 1 milhão de linhas | `SheetToTableHelper::import($arq, "#__tabela", ["mode" => "replace", "replace_where" => [...]])` · `validate()` · `preview()` · `errorLines($res)` |
+| Planilha (CSV, XLSX, XLS, ODS) com o mesmo cabeçalho da tabela, validada pelo tipo de cada coluna e por regras, tudo ou nada, 1 milhão de linhas | `SheetToTableHelper::import($arq, "#__tabela", ["mode" => "replace", "replace_where" => [...], "rules" => [...]])` · `ruleExists()` · `ruleUnique()` · `validate()` · `preview()` · `errorLines($res)` |
 | Guardar resultado caro (dashboard, API) | `CacheHelper::remember("assunto:det", 300, $fn)` + `flushPrefix("assunto")` |
 | Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |

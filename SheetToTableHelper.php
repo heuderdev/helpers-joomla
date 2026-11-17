@@ -142,6 +142,12 @@ class SheetToTableHelper
 
     private static $columnsCache = [];
 
+    // Muda a cada leitura do arquivo; ruleUnique() recomeça quando muda.
+    private static $runId = 0;
+
+    // Linha em validação (para mensagens das regras, ex.: ruleUnique()).
+    private static $currentLine = 0;
+
     // Marca "use o DEFAULT do banco" num valor do INSERT.
     private static $defaultMarker = null;
 
@@ -545,7 +551,7 @@ class SheetToTableHelper
             if ($dryRun) {
                 return $finish($check, $check['com_erro'] > 0
                     ? 'Simulação: ' . $check['com_erro'] . ' linha(s) com erro. Nada foi gravado.'
-                    : ($check['valido'] ? 'Simulação concluída: ' . $check['total_linhas'] . ' linha(s) prontas para importar. Nada foi gravado.' : $check['mensagem']));
+                    : ($check['valido'] ? 'Simulação concluída: ' . $check['validas'] . ' linha(s) prontas para importar' . ($check['puladas'] > 0 ? ' e ' . $check['puladas'] . ' pulada(s) pelo row_callback' : '') . '. Nada foi gravado.' : $check['mensagem']));
             }
 
             if (!$check['valido'] || ($check['com_erro'] > 0 && $onError === self::ON_ERROR_ROLLBACK)) {
@@ -775,6 +781,7 @@ class SheetToTableHelper
         $abort = !empty($internal['abort']);
         $progress = isset($options['on_progress']) && is_callable($options['on_progress']) ? $options['on_progress'] : null;
         $reader = self::openRows($source, $options);
+        self::$runId++;
 
         $summary = self::emptySummary();
         $errorLines = [];
@@ -883,7 +890,13 @@ class SheetToTableHelper
                     $summary['validas']++;
                 }
 
-                if ($converted['data'] === false || ($stopWriting && !$keepInvalid)) {
+                if ($converted['data'] === false) {
+                    $summary['validas']--;
+                    $summary['puladas']++;
+                    continue;
+                }
+
+                if ($stopWriting && !$keepInvalid) {
                     continue;
                 }
 
@@ -909,7 +922,11 @@ class SheetToTableHelper
         } elseif ($summary['com_erro'] > 0) {
             $summary['mensagem'] = $summary['com_erro'] . ' de ' . $summary['total_linhas'] . ' linha(s) com erro.';
         } else {
-            $summary['mensagem'] = $summary['total_linhas'] . ' linha(s) válidas.';
+            $summary['mensagem'] = $summary['validas'] . ' linha(s) válidas.';
+        }
+
+        if ($summary['puladas'] > 0) {
+            $summary['mensagem'] .= ' ' . $summary['puladas'] . ' pulada(s) pelo row_callback.';
         }
 
         return $summary;
@@ -923,6 +940,7 @@ class SheetToTableHelper
             'total_linhas' => 0,
             'validas' => 0,
             'com_erro' => 0,
+            'puladas' => 0,
             'gravadas' => 0,
             'apagadas' => 0,
             'ignoradas_duplicadas' => 0,
@@ -1057,6 +1075,8 @@ class SheetToTableHelper
             $data[$field] = $value instanceof Closure ? $value($values, $line) : $value;
         }
 
+        $errors = array_merge($errors, self::applyRules($data, $errors, $columns, $options, $line));
+
         if (!$errors && isset($options['row_callback']) && is_callable($options['row_callback'])) {
             try {
                 $result = call_user_func($options['row_callback'], $data, $line);
@@ -1074,6 +1094,203 @@ class SheetToTableHelper
         }
 
         return ['data' => $data, 'errors' => $errors];
+    }
+
+    /*
+     * Regras de negócio, depois da conversão pelo tipo da coluna, com o
+     * ValidationHelper (mesma sintaxe dos formulários):
+     *
+     *   'rules' => [
+     *       'DATA_BASE' => 'required|in:2026-10-01',
+     *       'STATUS'    => 'required|in:PARCIAL,FINAL',
+     *       'NUM_COOP'  => ['required', 'between:3000,9999', SheetToTableHelper::ruleExists('cooperativas', 'NUM_COOP')],
+     *       'PRODUCAO'  => 'regex:/^-?\d+(\.\d+)?$/',
+     *       'COMBO'     => function ($valor, array $registro, $campo) {      // contrato do ValidationHelper:
+     *           return $valor === 'CREDITO' ?: 'Combo inválido.';           // true = ok; texto = erro; false/null = mensagem padrão
+     *       },
+     *   ],
+     *   'messages' => ['PRODUCAO.regex' => 'Número mal formatado.'],        // mensagens do ValidationHelper
+     *   'labels'   => ['PRODUCAO' => 'Produção'],
+     *
+     *   'row_rules' => function (array $registro, $linha) {                 // regras entre campos
+     *       return $registro['DATA_ATUALIZACAO'] >= $registro['DATA_BASE']
+     *           ?: ['DATA_ATUALIZACAO' => 'Atualização anterior à data-base.'];
+     *   },
+     *
+     * Os valores já chegam convertidos (datas em 'Y-m-d', inteiros em texto
+     * '3031') e com o nome REAL da coluna. A regra de um campo só roda se o
+     * valor passou na conversão do tipo. Numa row_rule: true/null = ok;
+     * texto = erro da linha; ['CAMPO' => 'texto'] = erro no campo.
+     */
+    private static function applyRules(array $data, array $typeErrors, array $columns, array $options, $line)
+    {
+        $errors = [];
+        self::$currentLine = (int) $line;
+
+        if (!empty($options['rules'])) {
+            $failed = [];
+
+            foreach ($typeErrors as $error) {
+                $failed[$error['campo']] = true;
+            }
+
+            $rules = [];
+
+            foreach ((array) $options['rules'] as $field => $fieldRules) {
+                $real = self::realFieldOrNull($columns, $field);
+
+                if ($real === null) {
+                    throw new SheetToTableException('Regra para campo inexistente na tabela: ' . $field . '.');
+                }
+
+                if (!isset($failed[$real])) {
+                    $rules[$real] = $fieldRules;
+                }
+            }
+
+            if ($rules) {
+                if (!class_exists('ValidationHelper')) {
+                    require_once __DIR__ . '/ValidationHelper.php';
+                }
+
+                $result = ValidationHelper::validate(
+                    self::exportRecord($data, true),
+                    $rules,
+                    self::realKeys($columns, isset($options['messages']) ? (array) $options['messages'] : []),
+                    self::realKeys($columns, isset($options['labels']) ? (array) $options['labels'] : [])
+                );
+
+                foreach ($result['errors'] as $field => $messages) {
+                    $real = self::realFieldOrNull($columns, $field);
+
+                    foreach ((array) $messages as $message) {
+                        $errors[] = self::rowError($line, $real, (string) $message, $real !== null && array_key_exists($real, $data) ? self::exportRecord([$real => $data[$real]], true)[$real] : null);
+                    }
+                }
+            }
+        }
+
+        if (!empty($options['row_rules']) && !$typeErrors && !$errors) {
+            $rowRules = is_callable($options['row_rules']) ? [$options['row_rules']] : (array) $options['row_rules'];
+
+            foreach ($rowRules as $rule) {
+                try {
+                    $result = call_user_func($rule, self::exportRecord($data, true), $line);
+                } catch (Throwable $error) {
+                    $result = $error->getMessage();
+                }
+
+                if ($result === true || $result === null) {
+                    continue;
+                }
+
+                if ($result === false) {
+                    $result = 'Linha inválida.';
+                }
+
+                foreach (is_array($result) ? $result : [$result] as $field => $message) {
+                    $real = is_string($field) ? self::realFieldOrNull($columns, $field) : null;
+                    $errors[] = self::rowError($line, $real, (string) $message, $real !== null && array_key_exists($real, $data) ? $data[$real] : null);
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    /*
+     * 'producao.regex' / 'producao' -> 'PRODUCAO.regex' / 'PRODUCAO' (nome real
+     * da coluna), para messages e labels do ValidationHelper. Chaves só com o
+     * nome da regra ('regex') ficam como estão.
+     */
+    private static function realKeys(array $columns, array $values)
+    {
+        $result = [];
+
+        foreach ($values as $key => $value) {
+            $parts = explode('.', (string) $key, 2);
+            $real = self::realFieldOrNull($columns, $parts[0]);
+            $result[$real !== null ? $real . (isset($parts[1]) ? '.' . $parts[1] : '') : $key] = $value;
+        }
+
+        return $result;
+    }
+
+    private static function realFieldOrNull(array $columns, $field)
+    {
+        foreach (array_keys($columns) as $name) {
+            if (strtoupper($name) === strtoupper((string) $field)) {
+                return $name;
+            }
+        }
+
+        return null;
+    }
+
+    /* =================================================================
+     * Regras para planilhas (no formato de closure do ValidationHelper)
+     * ================================================================= */
+
+    /*
+     * Não pode repetir dentro do arquivo:
+     *   'ID_PRODUTO' => ['required', SheetToTableHelper::ruleUnique()]
+     * Guarda um hash por valor (1 milhão de valores ~ 80 MB).
+     */
+    public static function ruleUnique($message = null)
+    {
+        $state = ['run' => null, 'seen' => []];
+
+        return function ($value) use (&$state, $message) {
+            if ($state['run'] !== self::$runId) {
+                $state = ['run' => self::$runId, 'seen' => []];
+            }
+
+            $key = md5((string) $value);
+
+            if (isset($state['seen'][$key])) {
+                return $message !== null ? $message : 'Valor repetido no arquivo (já aparece na linha ' . $state['seen'][$key] . ').';
+            }
+
+            $state['seen'][$key] = self::$currentLine;
+
+            return true;
+        };
+    }
+
+    /*
+     * Valor precisa existir em outra tabela. Carrega os valores uma vez só
+     * (OrmTables), em vez de uma consulta por linha:
+     *   'NUM_COOP' => SheetToTableHelper::ruleExists('cooperativas', 'NUM_COOP', ['connection' => 'upload'])
+     * $options['where'] = function ($query) { $query->where('ativo', 1); }
+     */
+    public static function ruleExists($table, $column, array $options = [], $message = null)
+    {
+        $values = null;
+
+        return function ($value) use ($table, $column, $options, $message, &$values) {
+            if ($values === null) {
+                $query = OrmTables::table(self::validTable($table), [
+                    'connection' => isset($options['connection']) ? $options['connection'] : null,
+                    'timestamps' => false,
+                ]);
+
+                if (isset($options['where']) && is_callable($options['where'])) {
+                    call_user_func($options['where'], $query);
+                }
+
+                $values = [];
+
+                foreach ($query->groupBy($column)->pluck($column) as $item) {
+                    $values[(string) $item] = true;
+                }
+            }
+
+            if (isset($values[(string) $value])) {
+                return true;
+            }
+
+            return $message !== null ? $message : 'Valor "' . $value . '" não existe em ' . $table . '.' . $column . '.';
+        };
     }
 
     /* =================================================================
