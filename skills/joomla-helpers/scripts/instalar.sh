@@ -15,6 +15,7 @@ declare -A DEP=(
     [DbTransactionHelper]="DbConnectionHelper LogHelper"
     [AuditHelper]="OrmTables LogHelper"
     [CsvHelper]="PlatformHelper OrmTables DbTransactionHelper ValidationHelper LogHelper"
+    [SheetToTableHelper]="DbTransactionHelper OrmTables LogHelper"
     [ApiResponseHelper]="LogHelper"
     [PermissionHelper]="ApiResponseHelper LogHelper"
     [UserHelper]="OrmTables LogHelper"
@@ -33,7 +34,7 @@ declare -A DEP=(
     [WebhookHelper]="LogHelper ApiResponseHelper CryptoHelper DbConnectionHelper"
     [BackupDatabaseHelper]="PlatformHelper DbConnectionHelper"
 )
-TODOS="PlatformHelper LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper UserHelper FileHelper UploadMaster AuditHelper CsvHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper EmailSendHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper SettingsHelper ArrayHelper BackupDatabaseHelper IncludeHelper"
+TODOS="PlatformHelper LogHelper DateHelper InputHelper ValidationHelper DbConnectionHelper DbTransactionHelper OrmBase OrmTables ApiResponseHelper PermissionHelper UserHelper FileHelper UploadMaster AuditHelper CsvHelper SheetToTableHelper ChunkUploadHelper ExportHelper QueueHelper HttpHelper LockHelper CacheHelper MailHelper EmailSendHelper RateLimitHelper CryptoHelper FormatHelper WebhookHelper SettingsHelper ArrayHelper BackupDatabaseHelper IncludeHelper"
 
 FORCAR=0; PEDIDOS=()
 for a in "$@"; do

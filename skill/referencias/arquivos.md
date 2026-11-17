@@ -1,4 +1,4 @@
-# Arquivos: UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper
+# Arquivos: UploadMaster, FileHelper, CsvHelper, SheetToTableHelper, ChunkHelper, ExportHelper
 
 Todos devolvem `['success', 'status', 'mensagem', 'data', 'errors']`, não lançam exceção e só operam dentro de um **diretório base** (padrão `JPATH_SITE`; fora do Joomla, a raiz do `PlatformHelper`). Caminhos são relativos à base; `../` é recusado.
 
@@ -56,6 +56,30 @@ CsvHelper::writeRejectedCsv('rejeitados.csv', $r['data']['errors'], $base);   //
 - Erros com texto seguro para o usuário são `CsvHelperException`.
 - CSV grande (mais de alguns segundos): rode o `import` dentro de um job da fila (ficha `fila.md`).
 
+## SheetToTableHelper (planilha → tabela pelo cabeçalho)
+
+CSV, XLSX (leitor próprio, linha a linha), XLS e ODS (phpspreadsheet). Casa o cabeçalho com os campos da tabela pelo nome, em qualquer ordem (`Data Base` = `DATA_BASE`); coluna faltando ou repetida bloqueia antes de abrir transação. Confere cada valor pelo tipo da coluna (inteiro e limites, `DECIMAL(p,s)`, datas BR/ISO/serial do Excel, `ENUM`, tamanho do texto, JSON, UUID). Depende de DbConnectionHelper, DbTransactionHelper e OrmTables.
+
+```php
+$res = SheetToTableHelper::import(InputHelper::file('planilha', null, true), '#__producao', [
+    'require'       => 'not_null',                          // padrão 'all': exige até as colunas que aceitam NULL
+    'fixed'         => ['cod_singular' => UserHelper::singular(), 'importado_por' => UserHelper::id()],
+    'mode'          => 'replace',                           // append (padrão) | replace | upsert | insert_new
+    'replace_where' => ['cod_singular' => UserHelper::singular(), 'data_base' => $dataBase],
+    'on_error'      => 'rollback',                          // padrão: tudo ou nada; 'skip' grava as boas
+]);
+if (!$res['valido']) {
+    return ApiResponseHelper::error($res['mensagem'], ['erros' => SheetToTableHelper::errorLines($res, 50)], [], ['http_status' => 422]);
+}
+```
+
+- `$arquivo`: caminho ou o array do `$_FILES` (o formato sai do `name`). XLSX é ZIP: leia com `InputHelper::file($n, null, true)`.
+- Antes de gravar: `validate()` (só cabeçalho, para enfileirar), `preview($arq, $tab, 20, $op)` (`linhas` com `dados` e `erros`), `dry_run => true`, `template($tab, $destino)` (modelo CSV com BOM ou XLSX), `expectedColumns()`.
+- Sem banco/outro destino: `process($arq, $tab, fn ($regs, $lote) => ..., ['columns' => ['nome' => 'varchar(150)', 'nasc' => 'date']])`.
+- Retorno: `valido`, `mensagem`, `total_linhas`, `validas`, `com_erro`, `gravadas`, `apagadas`, `ignoradas_duplicadas`, `erros` (`linha`, `campo`, `mensagem`, `valor`), `rollback`, `faltantes`, `sugestoes`, `tempo_segundos`.
+- Opções: `ignore`, `only`, `optional`, `aliases` (`['data_base' => ['Competência']]`), `match` (`strict`), `extra_columns => 'error'`, `header_row`, `sheet`, `delimiter`, `encoding`, `decimal` (`br`/`us`), `date_format`, `transform`, `row_callback` (`false` pula; exceção vira erro), `unique_by` (obrigatório no upsert do PostgreSQL), `replace_by` (apaga as chaves do arquivo em **toda** a tabela: com dono, prefira `replace_where`), `replace_strategy => 'truncate'` (fora da transação; MySQL exige `atomic => false`), `atomic`, `validate_first`, `batch_size` (1000), `max_sql_bytes`, `max_errors`, `on_progress`, `show_db_errors => false` em tela de usuário, `connection`.
+- Exceção `SheetToTableException` (mensagem segura): arquivo vazio, formato, aba, tabela, opções. Problema nas linhas volta no resumo.
+- Arquivo grande: `UploadMaster::upload(..., ['raw' => true])` + `QueueHelper::push` (`max_tentativas => 1`) + job com `on_progress` → `$this->progress($p['linhas_lidas'])`. Proteja com `LockHelper::run` e audite com `AuditHelper::imported`.
 ## ChunkHelper (arquivo `ChunkUploadHelper.php`, classe `ChunkHelper`)
 
 > A versão atual tem um erro de sintaxe perto da linha 2003 (`'\'` → `'\\'`). Corrija antes de usar.

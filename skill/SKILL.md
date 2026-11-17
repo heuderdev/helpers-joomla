@@ -19,7 +19,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 |---|---|---|
 | Banco | `referencias/banco.md` | DbConnectionHelper, DbTransactionHelper, OrmBase, OrmTables, BackupDatabaseHelper |
 | Entrada e saída | `referencias/entrada-saida.md` | InputHelper, ValidationHelper, ApiResponseHelper, PermissionHelper, UserHelper, Vigia.js, Vitrine.js |
-| Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, ChunkHelper, ExportHelper |
+| Arquivos | `referencias/arquivos.md` | UploadMaster, FileHelper, CsvHelper, SheetToTableHelper, ChunkHelper, ExportHelper |
 | Fila | `referencias/fila.md` | QueueHelper, AbstractJob, JobRegistry, QueueWorker, worker CLI |
 | Infra | `referencias/infra.md` | LogHelper, AuditHelper, IncludeHelper, DateHelper, LockHelper, CacheHelper, RateLimitHelper, CryptoHelper, FormatHelper, SettingsHelper, ArrayHelper |
 | Integrações | `referencias/integracao.md` | HttpHelper, MailHelper, EmailSendHelper, WebhookHelper |
@@ -58,6 +58,7 @@ Você escreve código Joomla usando os helpers do repositório `heuderdev/helper
 | Enviar e-mail (confirmação, senha) | `MailHelper::send(["to"=>..., "template"=>..., "data"=>...])` ou `queue(...)` |
 | Enviar por outra conta (Gmail, Outlook, ElasticEmail, SendGrid), várias contas ou fora do Joomla | `EmailSendHelper::register("gmail", [...])` · `make(["elasticemail", "gmail"])->to()->subject()->view()->send()` |
 | Grupo do usuário por nome/apelido (com herança), membros de um grupo, perfil sem dados sensíveis, máscara de CPF/e-mail, filtro pela cooperativa | `UserHelper::inGroup("Gerentes")` · `requireGroup([...])` · `emailsInGroup($g)` · `toApi()` · `scopeQuery($orm, ["singular" => "p.cod_singular"])` |
+| Planilha (CSV, XLSX, XLS, ODS) com o mesmo cabeçalho da tabela, validada pelo tipo de cada coluna, tudo ou nada, 1 milhão de linhas | `SheetToTableHelper::import($arq, "#__tabela", ["mode" => "replace", "replace_where" => [...]])` · `validate()` · `preview()` · `errorLines($res)` |
 | Guardar resultado caro (dashboard, API) | `CacheHelper::remember("assunto:det", 300, $fn)` + `flushPrefix("assunto")` |
 | Uma execução por vez (cron, clique duplo) | `LockHelper::run("nome", $fn)` → `$r["acquired"]` |
 | Chamar API externa (ERP, pagamento, frete) | `HttpHelper::get/post($url, ...)` → `$r["ok"]`, `$r["json"]`; `HttpHelper::client([...])` |

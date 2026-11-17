@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SheetToTableHelper · helpers-joomla</title>
+<meta name="description" content="SheetToTableHelper: importa CSV, XLSX, XLS e ODS para uma tabela casando o cabeçalho com os campos pelo nome, valida cada valor pelo tipo da coluna, aponta linha e campo de cada erro e desfaz tudo em caso de erro. Arquivos de 1 milhão de linhas, modos append, replace, upsert e insert_new.">
+<link rel="stylesheet" href="assets/docs.css">
+<script>try{var t=localStorage.getItem('docs-tema');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+<script src="assets/docs.js" defer></script>
+</head>
+<body>
+<header class="topo">
+<button type="button" class="botao-menu" id="alternar-menu" aria-label="Abrir menu">☰ Menu</button>
+<a class="marca" href="index.html">helpers-joomla <span>· documentação</span></a>
+<span class="trilha"><a href="index.html">Documentação</a> › Referência › SheetToTableHelper</span>
+<span class="acoes"><button type="button" id="alternar-tema" aria-label="Alternar tema claro/escuro">◐ Tema</button></span>
+</header>
+<div class="layout">
+<nav class="nav" aria-label="Páginas da documentação"><input id="filtro-menu" type="search" placeholder="Filtrar páginas…" aria-label="Filtrar páginas"><div class="grupo">Começando</div><a href="index.html" data-busca="visão geral introdução compatibilidade">Início</a><a href="primeiros-passos.html" data-busca="instalação require crud começar">Primeiros passos</a><a href="conceitos.html" data-busca="ciclo filtros retorno segurança erros exceções prefixo">Conceitos</a><div class="grupo">Referência</div><a href="db-connection-helper.html" data-busca="conexão banco register driver pgsql mysql">DbConnectionHelper<span class="arquivo">DbConnectionHelper.php</span></a><a href="db-transaction-helper.html" data-busca="transação commit rollback savepoint deadlock retry run attempt">DbTransactionHelper<span class="arquivo">DbTransactionHelper.php</span></a><a href="orm-tables.html" data-busca="table register get atalho sem model">OrmTables<span class="arquivo">OrmTables.php</span></a><a href="orm-base-configuracao.html" data-busca="opções casts fillable guarded timestamps softdeletes primarykey connection">OrmBase — configuração<span class="arquivo">OrmBase.php</span></a><a href="orm-base-consultas.html" data-busca="where orwhere wherein wherelike wheregroup when join orderby groupby limit lockforupdate select">OrmBase — consultas<span class="arquivo">OrmBase.php</span></a><a href="orm-base-leitura.html" data-busca="get first find findorfail findby value pluck exists count sum avg min max paginate chunk all">OrmBase — leitura<span class="arquivo">OrmBase.php</span></a><a href="orm-base-escrita.html" data-busca="create createmany update updatewhere delete deletewhere restore forcedelete increment decrement touch truncate firstorcreate updateorcreate allowmassoperation">OrmBase — escrita<span class="arquivo">OrmBase.php</span></a><a href="orm-base-models.html" data-busca="model extends herança scope query propriedades service conexão connection outro banco">OrmBase — models<span class="arquivo">OrmBase.php</span></a><a href="orm-base-sql-raw.html" data-busca="raw sql puro query bindings placeholder cte union subquery relatório rawfirst rawvalue rawexecute rawsql">OrmBase — SQL raw<span class="arquivo">OrmBase.php</span></a><a href="input-helper.html" data-busca="entrada requisição input post get json formulário int decimal bool string email cpf arquivo upload paginação ordenação zip rar compactado raw issafefile">InputHelper<span class="arquivo">InputHelper.php</span></a><a href="validation-helper.html" data-busca="validação regras required email cpf cnpj data mensagens rótulos wildcard itens unique exists arquivo">ValidationHelper<span class="arquivo">ValidationHelper.php</span></a><a href="date-helper.html" data-busca="data hora fuso horário timezone utc usuário formatar converter período relatório hoje mês semana vencimento relativo">DateHelper<span class="arquivo">DateHelper.php</span></a><a href="api-response-helper.html" data-busca="resposta json api http status erro sucesso 422 500 redirect mensagem controller fetch">ApiResponseHelper<span class="arquivo">ApiResponseHelper.php</span></a><a href="log-helper.html" data-busca="log logs jlog request_id mascarar senha token categoria nível erro exceção">LogHelper<span class="arquivo">LogHelper.php</span></a><a href="permission-helper.html" data-busca="permissão acl acesso negado 401 403 grupo nível idor dono registro require can">PermissionHelper<span class="arquivo">PermissionHelper.php</span></a><a href="user-helper.html" data-busca="usuário usuario grupo grupos usergroups herança membros apelido perfil nome cpf máscara mascara lgpd e-mail aniversário cooperativa central singular pa uf escopo dados pessoais bloqueado último acesso tipo ccs posto de atendimento">UserHelper<span class="arquivo">UserHelper.php</span></a><a href="csv-helper.html" data-busca="csv delimitar encoding importar preview process processamento rejected rejeitados">CsvHelper<span class="arquivo">CsvHelper.php</span></a><a href="sheet-to-table-helper.html" class="ativo" aria-current="page" data-busca="planilha excel xlsx xls ods csv importar importação tabela cabeçalho colunas campos faltando tipo validação linha erro rollback replace upsert insert_new data base lote grande milhão modelo template aba">SheetToTableHelper<span class="arquivo">SheetToTableHelper.php</span></a><a href="export-helper.html" data-busca="exportar csv download excel planilha bom injeção fórmulas generator lotes">ExportHelper<span class="arquivo">ExportHelper.php</span></a><a href="file-helper.html" data-busca="arquivo pasta zip download stream permissões listagem leitura escrita delete copy move">FileHelper<span class="arquivo">FileHelper.php</span></a><a href="audit-helper.html" data-busca="auditar auditoria logs evento categoria level uuid segurança segredos ofuscação">AuditHelper<span class="arquivo">AuditHelper.php</span></a><a href="include-helper.html" data-busca="include incluir carregar carregamento dependências topological dfs post-order">IncludeHelper<span class="arquivo">IncludeHelper.php</span></a><a href="platform-helper.html" data-busca="plataforma laravel php puro joomla 6 compatibilidade jfile jfolder jlog">PlatformHelper<span class="arquivo">PlatformHelper.php</span></a><a href="chunk-upload-helper.html" data-busca="chunk split bytes linhas checkpoint resume reprocessamento grande upload">ChunkHelper<span class="arquivo">ChunkUploadHelper.php</span></a><a href="upload-master.html" data-busca="upload arquivo imagem foto miniatura thumbnail download stream mime extensão pdf docx">UploadMaster<span class="arquivo">UploadMaster.php</span></a><a href="queue-helper.html" data-busca="fila queue job push next complete release fail cancel retry status progress heartbeat purge stats lock">QueueHelper<span class="arquivo">QueueHelper.php</span></a><a href="fila-worker.html" data-busca="abstractjob jobregistry queueworker worker cli handle shouldstop cron supervisor sigterm bootstrap">Jobs e worker<span class="arquivo">fila/</span></a><a href="http-helper.html" data-busca="http api externa curl requisição integração erp pagamento frete whatsapp timeout retry json bearer ssrf download">HttpHelper<span class="arquivo">HttpHelper.php</span></a><a href="lock-helper.html" data-busca="trava lock concorrência cron sobreposto clique duplo get_lock advisory flock mutex simultâneo">LockHelper<span class="arquivo">LockHelper.php</span></a><a href="cache-helper.html" data-busca="cache remember guardar resultado dashboard performance desempenho invalidar prefixo redis memcached">CacheHelper<span class="arquivo">CacheHelper.php</span></a><a href="mail-helper.html" data-busca="email e-mail enviar template smtp anexo fila transacional confirmação senha layout">MailHelper<span class="arquivo">MailHelper.php</span></a><a href="email-send-helper.html" data-busca="email e-mail enviar smtp gmail outlook hotmail office365 yahoo zoho sendgrid brevo mailgun mailtrap mailpit locaweb hostinger elasticemail api anexo imagem embutida cid failover várias contas senha de app eml teste fake">EmailSendHelper<span class="arquivo">EmailSendHelper.php</span></a><a href="rate-limit-helper.html" data-busca="limite tentativas rate limit 429 força bruta login sms senha contato abuso throttle ip">RateLimitHelper<span class="arquivo">RateLimitHelper.php</span></a><a href="crypto-helper.html" data-busca="criptografia cifrar segredo token api hmac assinatura webhook link assinado sodium chave código aleatório">CryptoHelper<span class="arquivo">CryptoHelper.php</span></a><a href="format-helper.html" data-busca="formatar dinheiro reais centavos número cpf cnpj cep telefone whatsapp slug resumo texto plural nome bytes porcentagem">FormatHelper<span class="arquivo">FormatHelper.php</span></a><a href="webhook-helper.html" data-busca="webhook receber notificação pagamento gateway assinatura hmac reenvio duplicado idempotente fila asaas stripe">WebhookHelper<span class="arquivo">WebhookHelper.php</span></a><a href="settings-helper.html" data-busca="configuração opções componente params config.xml getparams parâmetro segredo token padrão">SettingsHelper<span class="arquivo">SettingsHelper.php</span></a><a href="array-helper.html" data-busca="array arrays objeto notação de ponto get set pluck groupby keyby where filtrar agrupar ordenar sortby somar sum árvore totree dot merge coleção lista registros">ArrayHelper<span class="arquivo">ArrayHelper.php</span></a><a href="backup-database-helper.html" data-busca="backup cópia de segurança dump exportar banco sql mysqldump pg_dump estrutura schema dados restaurar gzip download tabelas views triggers">BackupDatabaseHelper<span class="arquivo">BackupDatabaseHelper.php</span></a><div class="grupo">JavaScript</div><a href="vigia-js.html" data-busca="javascript js vigia validação navegador cliente máscara mascara cpf cnpj telefone cep data dinheiro axios ajax fetch formulário erros alpine checkbox radio select array lista linhas dinâmicas upload arquivo grande partes progresso">Vigia.js<span class="arquivo">js/vigia.js</span></a><a href="vitrine-js.html" data-busca="javascript vitrine lista listagem tabela paginação jpaginate carregar mais rolagem infinita ordenação filtro busca lote exportar cache">Vitrine.js<span class="arquivo">js/vitrine.js</span></a><div class="grupo">Guias</div><a href="guia-multiplos-bancos.html" data-busca="conexão erp outro banco transação dois bancos">Múltiplos bancos</a><a href="guia-mysql-postgresql.html" data-busca="postgres pgsql diferenças ilike returning transação abortada ddl">MySQL e PostgreSQL</a><a href="guia-fila.html" data-busca="fila queue job worker cron supervisor background segundo plano assíncrono importação e-mail fatias">Fila de jobs</a><a href="receitas.html" data-busca="exemplos prontos filtros paginação estoque importação csv fila lixeira dashboard">Receitas</a><div class="grupo">Consulta</div><a href="referencia-rapida.html" data-busca="todos os métodos lista cheat sheet">Referência rápida</a><a href="erros-e-solucoes.html" data-busca="erro exceção mensagem problema limitações faq">Erros e soluções</a><div class="vazio">Nenhuma página encontrada.</div></nav>
+<main class="conteudo">
+<h1>SheetToTableHelper</h1><p class="lead">Importa CSV, XLSX, XLS ou ODS direto para uma tabela, casando o <strong>cabeçalho do arquivo</strong> com os <strong>campos da tabela</strong> pelo nome, em qualquer ordem. Cada valor é conferido contra o tipo da coluna no banco, cada erro volta com a <strong>linha e o campo</strong> exatos e, por padrão, qualquer erro desfaz a importação inteira (rollback). Lê arquivos de 1 milhão de linhas ou mais linha a linha, sem carregar o arquivo na memória.</p><div id="nesta-pagina"></div>
+<h2 id="visao-geral" data-titulo="Visão geral">Visão geral</h2>
+<div class="codigo"><div class="titulo-codigo">Tabela e arquivo</div><pre><code data-lang="php">// tabela #__desempenho:  ID (auto) | NUM_CENTRAL | PRODUTO | DATA_BASE | PRODUCAO
+// arquivo.csv:           PRODUCAO;Data Base;num_central;Produto     -&gt; importa (ordem e grafia não importam)
+// arquivo.csv:           PRODUCAO;NUM_CENTRAL;PRODUTO                -&gt; bloqueia:
+//   "Importação cancelada. Falta a seguinte coluna no arquivo: DATA_BASE."
+
+$res = SheetToTableHelper::import($arquivo, '#__desempenho', [
+    'mode'     =&gt; 'replace',    // append (padrão) | replace | upsert | insert_new
+    'on_error' =&gt; 'rollback',   // padrão: qualquer erro desfaz tudo; 'skip' grava as boas
+]);
+
+if (!$res['valido']) {
+    echo $res['mensagem'];                                   // texto pronto para o usuário
+    print_r(SheetToTableHelper::errorLines($res));           // ["Linha 37, campo DATA_BASE: Data inválida: \"31/02/2026\".", ...]
+}</code></pre></div>
+<p>O que ele faz por você:</p>
+<ul>
+<li><strong>Cabeçalho flexível:</strong> <code>Data Base</code>, <code>data-base</code>, <code> DATA_BASE </code> e <code>Dáta Base</code> casam com <code>DATA_BASE</code>. Coluna faltando, repetida ou (se você quiser) sobrando bloqueia antes de tocar no banco, com sugestão: <em>Falta DATA_BASE (no arquivo há "DATA_BAS")</em>.</li>
+<li><strong>Tipo da coluna lido do banco:</strong> inteiro e os limites de <code>TINYINT</code> a <code>BIGINT</code> (com <code>UNSIGNED</code>), <code>DECIMAL(p,s)</code>, data, data e hora, <code>TIMESTAMP</code>, hora, ano, texto e tamanho, <code>ENUM</code>, JSON, UUID e booleano.</li>
+<li><strong>Formatos brasileiros:</strong> <code>1.234,56</code>, <code>R$ 10,00</code>, <code>(10)</code> negativo, <code>17/11/2026</code>, <code>sim</code>/<code>não</code>, além de ISO, padrão americano e datas seriais do Excel.</li>
+<li><strong>Arquivo grande:</strong> CSV e XLSX lidos em fluxo, gravação em lotes de 1000 linhas por <code>INSERT</code> e lote dividido sozinho se passar do <code>max_allowed_packet</code>.</li>
+<li><strong>Erro exato:</strong> se o banco recusar um lote (duplicado, chave estrangeira), ele volta ao savepoint e grava linha a linha para apontar qual linha o banco rejeitou.</li>
+<li><strong>Quatro modos:</strong> inserir, substituir (tudo, por filtro ou pelas chaves que vieram no arquivo), upsert e inserir só os novos.</li>
+</ul>
+<div class="nota"><p><strong>Dependências:</strong> <a href="db-connection-helper.html">DbConnectionHelper</a>, <a href="db-transaction-helper.html">DbTransactionHelper</a> e <a href="orm-tables.html">OrmTables</a>, carregados sozinhos se estiverem na mesma pasta (ou <code>IncludeHelper::load('SheetToTableHelper')</code>). Usa o <a href="log-helper.html">LogHelper</a> se estiver carregado (categoria <code>sheet_to_table</code>). <strong>PHP:</strong> extensões <code>mbstring</code>; <code>zip</code> e <code>xmlreader</code> para XLSX. <strong>XLS e ODS</strong> (e o modelo em <code>.xlsx</code>) precisam da <code>phpoffice/phpspreadsheet</code> (<code>composer require phpoffice/phpspreadsheet</code>). Roda no Joomla 3 a 6 sem configurar nada; no Laravel e em PHP puro com a conexão registrada no <code>DbConnectionHelper</code>.</p></div>
+<div class="tabela"><table><thead><tr><th>Preciso de...</th><th>Use</th></tr></thead><tbody>
+<tr><td>Planilha cujo cabeçalho é igual aos campos da tabela, importada como está</td><td><strong>SheetToTableHelper</strong> (esta página)</td></tr>
+<tr><td>CSV com colunas de nome diferente, mapeamento manual, regras do ValidationHelper, arquivo de rejeitados</td><td><a href="csv-helper.html">CsvHelper</a></td></tr>
+<tr><td>Gerar CSV para download</td><td><a href="export-helper.html">ExportHelper</a></td></tr>
+<tr><td>Arquivo gigante enviado do navegador em partes</td><td><a href="chunk-upload-helper.html">ChunkHelper</a> + esta página</td></tr>
+</tbody></table></div>
+
+<h2 id="como-funciona" data-titulo="Como funciona">Como funciona uma importação</h2>
+<ol>
+<li><strong>Estrutura:</strong> lê as colunas da tabela no banco (<code>getTableColumns</code>, guardado em cache na requisição). Colunas <code>AUTO_INCREMENT</code>/<code>serial</code>/identity e colunas geradas nunca entram.</li>
+<li><strong>Plano:</strong> separa os campos em <em>procurados no arquivo</em>, <em>obrigatórios</em>, <em>opcionais</em>, <em>fixos</em> (<code>fixed</code>) e <em>ignorados</em> (<code>ignore</code>, <code>only</code>).</li>
+<li><strong>Cabeçalho:</strong> casa o cabeçalho com os campos (<a href="#matchHeaders"><code>matchHeaders()</code></a>). Se faltar coluna, devolve o alerta <strong>sem abrir transação</strong>.</li>
+<li><strong>Linhas:</strong> para cada linha não vazia: <code>trim</code>, vazio vira <code>NULL</code>, <code>transform</code> do campo, conversão pelo tipo, campos fixos e <code>row_callback</code>. Erros vão para a lista com linha, campo, mensagem e valor.</li>
+<li><strong>Gravação:</strong> dentro de uma transação (padrão), apaga o que o modo pedir, monta <code>INSERT</code> com várias linhas e <em>bindings</em>, e grava em lotes. Lote recusado pelo banco é refeito linha a linha dentro de savepoints.</li>
+<li><strong>Fim:</strong> com <code>on_error = rollback</code> e qualquer erro, desfaz tudo (inclusive o <code>DELETE</code> do modo replace) e devolve a lista de erros; senão confirma e devolve o resumo.</li>
+</ol>
+<div class="nota dica"><p>Com <code>on_error = rollback</code>, depois do primeiro erro ele para de gravar, mas <strong>continua lendo</strong> o arquivo para listar os erros de todas as linhas (até <code>max_errors</code>). O usuário corrige tudo de uma vez, não um erro por envio.</p></div>
+
+<h2 id="joomla" data-titulo="Ponta a ponta: Joomla">Ponta a ponta no Joomla: tela de importação com prévia</h2>
+<p>Sistema completo: o usuário baixa o modelo, envia a planilha, vê a prévia com os erros e confirma. A importação é protegida por token e por grupo, presa à cooperativa do usuário, travada contra clique duplo, auditada e com download das linhas com erro.</p>
+<div class="codigo"><div class="titulo-codigo">sql/install.mysql.sql</div><pre><code data-lang="sql">CREATE TABLE `#__credito_producao` (
+  `id`           INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `cod_singular` SMALLINT UNSIGNED NOT NULL,
+  `cod_pa`       SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+  `produto`      VARCHAR(40) NOT NULL,
+  `data_base`    DATE NOT NULL,
+  `producao`     DECIMAL(14,2) NOT NULL,
+  `situacao`     ENUM('ativo','inativo') NOT NULL DEFAULT 'ativo',
+  `obs`          VARCHAR(255) NULL,
+  `importado_por` INT NOT NULL,
+  `criado_em`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_producao` (`cod_singular`, `cod_pa`, `produto`, `data_base`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;</code></pre></div>
+<p>O usuário envia só <code>cod_pa</code>, <code>produto</code>, <code>data_base</code>, <code>producao</code>, <code>situacao</code> e <code>obs</code>. A singular e o autor vêm do <a href="user-helper.html">UserHelper</a> (<code>fixed</code>): ninguém importa dados para outra cooperativa mudando uma coluna da planilha.</p>
+<div class="codigo"><div class="titulo-codigo">helpers/ImportacaoProducao.php</div><pre><code data-lang="php">&lt;?php
+
+defined('_JEXEC') or die;
+
+/*
+ * Regras da importação num lugar só: a tela de prévia e a gravação usam
+ * as mesmas opções, então o que passou na prévia passa na gravação.
+ */
+class ImportacaoProducao
+{
+    const TABELA = '#__credito_producao';
+
+    // Sem $userId/$singular, usa o usuário logado. No worker (sem login), passe os dois.
+    public static function opcoes($dataBase, $userId = null, $singular = null)
+    {
+        $userId   = $userId !== null ? (int) $userId : UserHelper::id();
+        $singular = (int) ($singular !== null ? $singular : UserHelper::singular());
+
+        return [
+            'require'  =&gt; 'not_null',                 // situacao e obs podem faltar no arquivo
+            'ignore'   =&gt; ['criado_em'],
+            'fixed'    =&gt; [
+                'cod_singular'  =&gt; $singular,
+                'importado_por' =&gt; $userId,
+            ],
+            'aliases'  =&gt; [
+                'cod_pa'   =&gt; ['PA', 'Posto'],
+                'producao' =&gt; ['Produção (R$)', 'Valor'],
+            ],
+            'transform' =&gt; [
+                'produto' =&gt; function ($valor) {
+                    return $valor === null ? null : mb_strtoupper($valor);
+                },
+            ],
+            // A data-base tem que ser a escolhida na tela: protege contra planilha do mês errado.
+            'row_callback' =&gt; function (array $linha) use ($dataBase) {
+                if ($linha['data_base'] !== $dataBase) {
+                    throw new RuntimeException('Data-base diferente da escolhida (' . date('d/m/Y', strtotime($dataBase)) . ').');
+                }
+
+                return $linha;
+            },
+            // Substitui só a produção desta singular nesta data-base.
+            'mode'          =&gt; 'replace',
+            'replace_where' =&gt; ['cod_singular' =&gt; $singular, 'data_base' =&gt; $dataBase],
+            'show_db_errors' =&gt; false,
+        ];
+    }
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">controller.php</div><pre><code data-lang="php">&lt;?php
+
+defined('_JEXEC') or die;
+
+require_once JPATH_COMPONENT . '/helpers/IncludeHelper.php';
+
+IncludeHelper::load([
+    'SheetToTableHelper', 'InputHelper', 'ApiResponseHelper', 'PermissionHelper',
+    'UserHelper', 'LockHelper', 'AuditHelper', 'ExportHelper', 'UploadMaster', 'LogHelper',
+]);
+require_once JPATH_COMPONENT . '/helpers/ImportacaoProducao.php';
+
+class CreditoController extends JControllerLegacy
+{
+    // Pasta com .htaccess "Require all denied": só sai pelo baixarErros(), que confere o grupo.
+    const PASTA_ERROS = JPATH_SITE . '/media/com_credito/privado/erros';
+
+    // GET: planilha modelo só com o cabeçalho esperado.
+    public function modelo()
+    {
+        if (!UserHelper::requireGroup(['Gerentes', 'TI'])) {
+            return;
+        }
+
+        $arquivo = tempnam(sys_get_temp_dir(), 'modelo') . '.csv';
+        SheetToTableHelper::template(ImportacaoProducao::TABELA, $arquivo, ImportacaoProducao::opcoes(date('Y-m-d')));
+
+        header('Content-Type: text/csv; charset=UTF-8');
+        header('Content-Disposition: attachment; filename="modelo-producao.csv"');
+        header('Content-Length: ' . filesize($arquivo));
+        readfile($arquivo);
+        unlink($arquivo);
+
+        JFactory::getApplication()-&gt;close();
+    }
+
+    // POST: confere cabeçalho e as 20 primeiras linhas, sem gravar.
+    public function previa()
+    {
+        try {
+            if (!PermissionHelper::requireToken() || !UserHelper::requireGroup(['Gerentes', 'TI'])) {
+                return;
+            }
+
+            // XLSX é um ZIP: $raw = true evita o isSafeFile do Joomla recusar o arquivo por engano.
+            $planilha = InputHelper::file('planilha', null, true);
+            $dataBase = InputHelper::date('data_base');
+
+            if ($planilha === null || $dataBase === '') {
+                return ApiResponseHelper::error('Escolha a planilha e a data-base.', null, [], ['http_status' =&gt; 422]);
+            }
+
+            $previa = SheetToTableHelper::preview($planilha, ImportacaoProducao::TABELA, 20, ImportacaoProducao::opcoes($dataBase));
+
+            if (!$previa['valido']) {
+                return ApiResponseHelper::error(SheetToTableHelper::missingMessage($previa) ?: $previa['mensagem'], [
+                    'faltantes' =&gt; $previa['faltantes'],
+                    'sugestoes' =&gt; $previa['sugestoes'],
+                ], [], ['http_status' =&gt; 422]);
+            }
+
+            return ApiResponseHelper::success($previa['mensagem'], [
+                'aba'       =&gt; $previa['aba'],
+                'cabecalho' =&gt; $previa['cabecalho'],
+                'linhas'    =&gt; $previa['linhas'],                 // [['linha' =&gt; 2, 'dados' =&gt; [...], 'erros' =&gt; [...]], ...]
+                'erros'     =&gt; SheetToTableHelper::errorLines($previa),
+            ]);
+        } catch (SheetToTableException $e) {
+            return ApiResponseHelper::error($e-&gt;getMessage(), null, [], ['http_status' =&gt; 422]);   // "O arquivo está vazio.", "Formato não suportado..."
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e);
+        }
+    }
+
+    // POST: grava (tudo ou nada).
+    public function importar()
+    {
+        try {
+            if (!PermissionHelper::requireToken() || !UserHelper::requireGroup(['Gerentes', 'TI'])) {
+                return;
+            }
+
+            $planilha = InputHelper::file('planilha', null, true);
+            $dataBase = InputHelper::date('data_base');
+
+            if ($planilha === null || $dataBase === '') {
+                return ApiResponseHelper::error('Escolha a planilha e a data-base.', null, [], ['http_status' =&gt; 422]);
+            }
+
+            // Uma importação por singular de cada vez (clique duplo, duas abas abertas).
+            $trava = LockHelper::run('credito-producao-' . UserHelper::singular(), function () use ($planilha, $dataBase) {
+                return SheetToTableHelper::import($planilha, ImportacaoProducao::TABELA, ImportacaoProducao::opcoes($dataBase));
+            });
+
+            if (!$trava['acquired']) {
+                return ApiResponseHelper::conflict('Já existe uma importação desta cooperativa em andamento.');
+            }
+
+            $res = $trava['result'];
+
+            AuditHelper::imported('credito_producao', [
+                'arquivo'   =&gt; $planilha['name'],
+                'data_base' =&gt; $dataBase,
+                'valido'    =&gt; $res['valido'],
+                'gravadas'  =&gt; $res['gravadas'],
+                'apagadas'  =&gt; $res['apagadas'],
+                'com_erro'  =&gt; $res['com_erro'],
+            ]);
+
+            if (!$res['valido']) {
+                return ApiResponseHelper::error($res['mensagem'], [
+                    'erros'        =&gt; SheetToTableHelper::errorLines($res, 50),
+                    'download'     =&gt; $res['erros'] ? $this-&gt;salvarErros($res['erros']) : null,
+                    'truncados'    =&gt; $res['erros_truncados'],
+                ], [], ['http_status' =&gt; 422]);
+            }
+
+            return ApiResponseHelper::success($res['mensagem'], [
+                'gravadas' =&gt; $res['gravadas'],
+                'apagadas' =&gt; $res['apagadas'],
+                'segundos' =&gt; $res['tempo_segundos'],
+            ]);
+        } catch (SheetToTableException $e) {
+            return ApiResponseHelper::error($e-&gt;getMessage(), null, [], ['http_status' =&gt; 422]);
+        } catch (Throwable $e) {
+            return ApiResponseHelper::exception($e);
+        }
+    }
+
+    // Lista de erros em CSV (pasta privada, nome aleatório).
+    private function salvarErros(array $erros)
+    {
+        $nome = bin2hex(random_bytes(16)) . '.csv';
+
+        $r = ExportHelper::csv($nome, $erros, [
+            'linha'    =&gt; 'Linha',
+            'campo'    =&gt; 'Campo',
+            'mensagem' =&gt; 'Problema',
+            'valor'    =&gt; 'Valor enviado',
+        ], self::PASTA_ERROS, ['utf8_bom' =&gt; true]);
+
+        return $r['success'] ? $nome : null;
+    }
+
+    // GET: baixa a lista de erros gerada acima.
+    public function baixarErros()
+    {
+        if (!UserHelper::requireGroup(['Gerentes', 'TI'])) {
+            return;
+        }
+
+        $nome = InputHelper::string('arquivo', '', 'get');
+
+        // Só o formato que o salvarErros() gera: sem "../", sem outro arquivo da pasta.
+        if (!preg_match('/^[a-f0-9]{32}\.csv$/', $nome)) {
+            return ApiResponseHelper::notFound('Arquivo não encontrado.');
+        }
+
+        UploadMaster::stream($nome, 'erros-importacao.csv', ['base_directory' =&gt; self::PASTA_ERROS]);
+        JFactory::getApplication()-&gt;close();
+    }
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">tmpl/importar.php</div><pre><code data-lang="html">&lt;?php JFactory::getDocument()-&gt;addScriptOptions('csrf.token', JSession::getFormToken()); ?&gt;
+
+&lt;form id="form-importacao"&gt;
+    &lt;label&gt;Data-base &lt;input type="date" name="data_base" required&gt;&lt;/label&gt;
+    &lt;label&gt;Planilha (CSV, XLSX, XLS ou ODS)
+        &lt;input type="file" name="planilha" accept=".csv,.txt,.xlsx,.xls,.ods" required&gt;
+    &lt;/label&gt;
+    &lt;a href="index.php?option=com_credito&amp;task=modelo"&gt;Baixar planilha modelo&lt;/a&gt;
+    &lt;button type="button" data-task="previa"&gt;Conferir&lt;/button&gt;
+    &lt;button type="button" data-task="importar"&gt;Importar&lt;/button&gt;
+&lt;/form&gt;
+&lt;div id="resultado" aria-live="polite"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+document.querySelectorAll('#form-importacao [data-task]').forEach(function (botao) {
+    botao.addEventListener('click', async function () {
+        var saida = document.getElementById('resultado');
+        var dados = new FormData(document.getElementById('form-importacao'));
+
+        botao.disabled = true;
+        saida.textContent = 'Processando...';
+
+        try {
+            var resposta = await fetch('index.php?option=com_credito&amp;task=' + botao.dataset.task + '&amp;format=json', {
+                method: 'POST',
+                body: dados,
+                headers: { 'X-CSRF-Token': Joomla.getOptions('csrf.token') }
+            });
+            var json = await resposta.json();
+            var erros = (json.data &amp;&amp; json.data.erros) || [];
+
+            saida.textContent = json.mensagem;   // textContent: nada da planilha vira HTML
+
+            if (erros.length) {
+                var lista = document.createElement('ul');
+                erros.forEach(function (texto) {
+                    var item = document.createElement('li');
+                    item.textContent = texto;
+                    lista.appendChild(item);
+                });
+                saida.appendChild(lista);
+            }
+
+            if (json.data &amp;&amp; json.data.download) {
+                var link = document.createElement('a');
+                link.href = 'index.php?option=com_credito&amp;task=baixarErros&amp;arquivo=' + encodeURIComponent(json.data.download);
+                link.textContent = 'Baixar todas as linhas com erro';
+                saida.appendChild(link);
+            }
+        } catch (e) {
+            saida.textContent = 'Falha de comunicação. Tente de novo.';
+        } finally {
+            botao.disabled = false;
+        }
+    });
+});
+&lt;/script&gt;</code></pre></div>
+<p>O que o usuário vê quando a planilha tem problema:</p>
+<div class="codigo"><div class="titulo-codigo">Resposta de importar() com erro (HTTP 422)</div><pre><code data-lang="json">{
+  "success": false,
+  "mensagem": "Importação cancelada: 3 linha(s) com erro. Nada foi gravado (rollback). Corrija as linhas indicadas e envie de novo.",
+  "data": {
+    "erros": [
+      "Linha 2, campo data_base: Data inválida: \"31/02/2026\".",
+      "Linha 9, campo cod_pa: Número fora do limite da coluna (0 a 65535): \"70000\".",
+      "Linha 14, campo situacao: Valor não permitido: \"pendente\". Use: ativo, inativo."
+    ],
+    "download": "3f9a...c1.csv",
+    "truncados": false
+  }
+}</code></pre></div>
+<div class="nota aviso"><p><strong>Segurança da tela:</strong> o token e o grupo são conferidos nas três tasks que leem ou gravam; a singular vem do servidor (<code>fixed</code>), não da planilha; o <code>replace_where</code> limita o <code>DELETE</code> à singular do usuário (com <code>replace_by =&gt; ['data_base']</code> ele apagaria a data-base de <strong>todas</strong> as cooperativas); o arquivo de erros tem nome aleatório numa pasta bloqueada ao acesso direto (<code>.htaccess</code> com <code>Require all denied</code>) e o download só aceita esse formato de nome; o JavaScript usa <code>textContent</code>, então um texto da planilha nunca vira HTML.</p></div>
+
+<h2 id="fila" data-titulo="Ponta a ponta: em segundo plano">Arquivo de 1 milhão de linhas: importação em segundo plano</h2>
+<p>Uma planilha de 1 milhão de linhas leva alguns minutos. Em vez de deixar a requisição aberta, salve o arquivo com o <a href="upload-master.html">UploadMaster</a>, enfileire um job no <a href="queue-helper.html">QueueHelper</a> e mostre o progresso.</p>
+<div class="codigo"><div class="titulo-codigo">controller.php: enfileirar</div><pre><code data-lang="php">public function importarGrande()
+{
+    try {
+        if (!PermissionHelper::requireToken() || !UserHelper::requireGroup(['Gerentes', 'TI'])) {
+            return;
+        }
+
+        $planilha = InputHelper::file('planilha', null, true);
+        $dataBase = InputHelper::date('data_base');
+
+        if ($planilha === null || $dataBase === '') {
+            return ApiResponseHelper::error('Escolha a planilha e a data-base.', null, [], ['http_status' =&gt; 422]);
+        }
+
+        // Confere o cabeçalho na hora: o usuário não espera o job para saber que falta coluna.
+        $cabecalho = SheetToTableHelper::validate($planilha, ImportacaoProducao::TABELA, ImportacaoProducao::opcoes($dataBase));
+
+        if (!$cabecalho['valido']) {
+            return ApiResponseHelper::error(SheetToTableHelper::missingMessage($cabecalho), null, [], ['http_status' =&gt; 422]);
+        }
+
+        // Pasta bloqueada ao acesso direto (.htaccess "Require all denied").
+        $salvo = UploadMaster::upload($planilha, 'media/com_credito/privado/importacoes/' . date('Y-m'), null, [
+            'allowed_extensions' =&gt; SheetToTableHelper::supportedExtensions(),
+            'raw' =&gt; true,
+        ]);
+
+        if (!$salvo['success']) {
+            return ApiResponseHelper::error($salvo['mensagem'], null, [], ['http_status' =&gt; 422]);
+        }
+
+        $job = QueueHelper::push('importar_producao', [
+            'arquivo'   =&gt; $salvo['data']['path'],
+            'data_base' =&gt; $dataBase,
+            'user_id'   =&gt; UserHelper::id(),
+            'singular'  =&gt; (int) UserHelper::singular(),   // o worker não tem usuário logado: leva daqui
+        ], [
+            'usuario_id'      =&gt; UserHelper::id(),
+            'unico'           =&gt; ['arquivo'],
+            'max_tentativas'  =&gt; 1,           // rollback já garante tudo ou nada: não tenta de novo sozinho
+            'timeout_seconds' =&gt; 3600,
+        ]);
+
+        return $job['success']
+            ? ApiResponseHelper::created('Importação na fila. Acompanhe o progresso.', ['uuid' =&gt; $job['data']['uuid']])
+            : ApiResponseHelper::error($job['mensagem']);
+    } catch (SheetToTableException $e) {
+        return ApiResponseHelper::error($e-&gt;getMessage(), null, [], ['http_status' =&gt; 422]);
+    } catch (Throwable $e) {
+        return ApiResponseHelper::exception($e);
+    }
+}
+
+// GET: a tela consulta de tempos em tempos.
+public function statusImportacao()
+{
+    $status = QueueHelper::status(InputHelper::string('uuid', '', 'get'), UserHelper::id());
+
+    return $status['success'] ? ApiResponseHelper::success($status['mensagem'], $status['data']) : ApiResponseHelper::notFound($status['mensagem']);
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">jobs/ImportarProducaoJob.php</div><pre><code data-lang="php">&lt;?php
+
+defined('_JEXEC') or die;
+
+class ImportarProducaoJob extends AbstractJob
+{
+    public function handle()
+    {
+        $arquivo  = (string) $this-&gt;getPayload('arquivo');
+        $dataBase = (string) $this-&gt;getPayload('data_base');
+        $userId   = (int) $this-&gt;getPayload('user_id');
+
+        // As mesmas regras da tela, com o usuário e a singular gravados no payload.
+        $opcoes = ImportacaoProducao::opcoes($dataBase, $userId, (int) $this-&gt;getPayload('singular'));
+
+        $opcoes['batch_size'] = 2000;
+        $opcoes['on_progress'] = function (array $p) {
+            // ['lote' =&gt; 12, 'linhas_lidas' =&gt; 24000, 'com_erro' =&gt; 0, 'memoria_mb' =&gt; 18.0]
+            $this-&gt;progress($p['linhas_lidas']);
+        };
+
+        try {
+            $res = SheetToTableHelper::import($arquivo, ImportacaoProducao::TABELA, $opcoes);
+        } catch (SheetToTableException $e) {
+            return $this-&gt;fail($e-&gt;getMessage(), true);     // arquivo ilegível não melhora tentando de novo
+        }
+
+        AuditHelper::imported('credito_producao', array_intersect_key($res, array_flip(['valido', 'gravadas', 'apagadas', 'com_erro'])), [
+            'user' =&gt; ['id' =&gt; $userId],
+        ]);
+
+        if (!$res['valido']) {
+            return $this-&gt;fail($res['mensagem'] . ' ' . implode(' | ', SheetToTableHelper::errorLines($res, 20)), true);
+        }
+
+        @unlink($arquivo);
+
+        return $this-&gt;complete([
+            'mensagem' =&gt; $res['mensagem'],
+            'gravadas' =&gt; $res['gravadas'],
+            'apagadas' =&gt; $res['apagadas'],
+            'segundos' =&gt; $res['tempo_segundos'],
+            'memoria'  =&gt; $res['memoria_pico_mb'],
+        ]);
+    }
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">jobs.php (registro, carregado no componente e no worker)</div><pre><code data-lang="php">JobRegistry::register('importar_producao', JPATH_SITE . '/components/com_credito/jobs/ImportarProducaoJob.php', 'ImportarProducaoJob', 'imports');</code></pre></div>
+<div class="nota dica"><p>Em 1 milhão de linhas, com <code>atomic</code> (padrão) a transação fica aberta durante toda a gravação. Isso é o que garante o "nada foi gravado" no erro. Se o banco reclamar do tamanho da transação, use <code>'validate_first' =&gt; true, 'atomic' =&gt; false</code>: ele lê o arquivo inteiro uma vez sem gravar e só grava se não houver erro, uma transação por lote (veja <a href="#atomic">atomic</a>).</p></div>
+
+<h2 id="laravel" data-titulo="Laravel e PHP puro">Laravel e PHP puro</h2>
+<p>Fora do Joomla, registre a conexão no <a href="db-connection-helper.html">DbConnectionHelper</a> (pacote <code>joomla/database</code> pelo Composer) e passe <code>'connection'</code>. O resto é igual.</p>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Providers/<wbr>AppServiceProvider.php</div><pre><code data-lang="php">public function boot(): void
+{
+    $db = config('database.connections.mysql');
+
+    \DbConnectionHelper::register('app', [
+        'driver'   =&gt; 'mysqli',
+        'host'     =&gt; $db['host'],
+        'port'     =&gt; (int) $db['port'],
+        'user'     =&gt; $db['username'],
+        'password' =&gt; $db['password'],
+        'database' =&gt; $db['database'],
+        'prefix'   =&gt; '',
+    ]);
+}</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">app/<wbr>Http/<wbr>Controllers/<wbr>ProducaoImportController.php</div><pre><code data-lang="php">public function store(Request $request)
+{
+    $request-&gt;validate(['planilha' =&gt; ['required', 'file', 'mimes:csv,txt,xlsx,xls,ods', 'max:204800']]);
+
+    $arquivo = $request-&gt;file('planilha');
+
+    try {
+        $res = \SheetToTableHelper::import(
+            ['tmp_name' =&gt; $arquivo-&gt;getRealPath(), 'name' =&gt; $arquivo-&gt;getClientOriginalName(), 'error' =&gt; 0],
+            'producao',
+            ['connection' =&gt; 'app', 'mode' =&gt; 'upsert', 'require' =&gt; 'not_null', 'fixed' =&gt; ['user_id' =&gt; $request-&gt;user()-&gt;id]]
+        );
+    } catch (\SheetToTableException $e) {
+        return response()-&gt;json(['message' =&gt; $e-&gt;getMessage()], 422);
+    }
+
+    return response()-&gt;json([
+        'message' =&gt; $res['mensagem'],
+        'errors'  =&gt; \SheetToTableHelper::errorLines($res),
+    ], $res['valido'] ? 200 : 422);
+}</code></pre></div>
+<p>Quer gravar pelo Eloquent, por uma API ou numa fila do Laravel? Use <a href="#process"><code>process()</code></a> com <code>'columns'</code>: ele lê, valida e converte sem tocar em banco nenhum e entrega os lotes.</p>
+<div class="codigo"><pre><code data-lang="php">$res = \SheetToTableHelper::process($caminho, 'producao', function (array $registros, int $lote) {
+    DB::table('producao')-&gt;insert($registros);
+}, [
+    'columns'  =&gt; ['produto' =&gt; 'varchar(40)', 'data_base' =&gt; 'date', 'producao' =&gt; 'decimal(14,2)'],
+    'on_error' =&gt; 'skip',
+]);</code></pre></div>
+<div class="codigo"><div class="titulo-codigo">bin/importar.php (PHP puro, linha de comando)</div><pre><code data-lang="php">&lt;?php
+
+require __DIR__ . '/../vendor/autoload.php';          // joomla/database (e phpoffice/phpspreadsheet, se usar XLS/ODS)
+require __DIR__ . '/../helpers/SheetToTableHelper.php';  // carrega DbConnectionHelper, DbTransactionHelper e OrmTables
+
+DbConnectionHelper::register('dw', [
+    'driver'   =&gt; 'mysqli',
+    'host'     =&gt; getenv('DB_HOST'),
+    'user'     =&gt; getenv('DB_USER'),
+    'password' =&gt; getenv('DB_PASS'),
+    'database' =&gt; 'dw',
+    'prefix'   =&gt; '',
+]);
+
+[$script, $arquivo, $tabela] = $argv + [null, null, null];
+
+$res = SheetToTableHelper::import($arquivo, $tabela, [
+    'connection'  =&gt; 'dw',
+    'mode'        =&gt; 'replace',
+    'replace_by'  =&gt; ['DATA_BASE'],
+    'batch_size'  =&gt; 5000,
+    'on_progress' =&gt; function (array $p) {
+        fwrite(STDERR, sprintf("\rlote %d · %d linhas · %.1f MB", $p['lote'], $p['linhas_lidas'], $p['memoria_mb']));
+    },
+]);
+
+fwrite(STDERR, "\n" . $res['mensagem'] . "\n");
+
+foreach (SheetToTableHelper::errorLines($res, 30) as $linha) {
+    fwrite(STDERR, "  $linha\n");
+}
+
+exit($res['valido'] ? 0 : 1);</code></pre></div>
+<div class="codigo"><pre><code data-lang="bash">php bin/importar.php /dados/desempenho_2026-11.xlsx pt18_cnv_desempenhos4</code></pre></div>
+
+<h2 id="metodos" data-titulo="Métodos">Métodos</h2>
+<p><code>$arquivo</code> é sempre um caminho ou a entrada do <code>$_FILES</code> (<code>['tmp_name', 'name', 'error']</code>, como devolve o <a href="input-helper.html#file"><code>InputHelper::file()</code></a>): o formato sai do <code>name</code> original, porque o temporário do upload não tem extensão. <code>$tabela</code> aceita o prefixo <code>#__</code>. Problemas no arquivo ou nas opções lançam <a href="#erros"><code>SheetToTableException</code></a>, com mensagem que pode ser mostrada ao usuário.</p>
+
+<div class="metodo"><h3 id="import"><code>import()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::import(string|array $arquivo, string $tabela, array $opcoes = []): array</div><p>Importa para a tabela. Confere o cabeçalho, converte cada linha e grava conforme o <a href="#modos">modo</a>, dentro de uma transação. Devolve o <a href="#retorno">resumo</a>; <code>$res['valido']</code> diz se deu certo. Não aceita a opção <code>columns</code> (lê a estrutura real); para isso use <code>process()</code>.</p></div>
+<div class="codigo"><pre><code data-lang="php">$res = SheetToTableHelper::import($_FILES['planilha'], '#__desempenho', [
+    'mode'       =&gt; 'upsert',
+    'unique_by'  =&gt; ['NUM_CENTRAL', 'PRODUTO', 'DATA_BASE'],   // obrigatório no PostgreSQL; no MySQL usa as chaves únicas da tabela
+    'batch_size' =&gt; 2000,
+]);
+// "Importação concluída: 18342 linha(s) gravadas."</code></pre></div>
+
+<div class="metodo"><h3 id="validate"><code>validate()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::validate(string|array $arquivo, string $tabela, array $opcoes = []): array</div><p>Confere <strong>só o cabeçalho</strong> contra a tabela, sem ler as linhas nem gravar. Rápido mesmo em arquivo enorme: use antes de enfileirar. Devolve o resultado de <a href="#matchHeaders"><code>matchHeaders()</code></a> mais <code>cabecalho</code>, <code>linha_cabecalho</code>, <code>aba</code>, <code>campos_esperados</code>, <code>campos_fixos</code> e <code>campos_ignorados</code>.</p></div>
+<div class="codigo"><pre><code data-lang="php">$v = SheetToTableHelper::validate($arquivo, '#__desempenho', ['require' =&gt; 'not_null']);
+
+if (!$v['valido']) {
+    echo SheetToTableHelper::missingMessage($v);
+    // Importação cancelada. Faltam as seguintes colunas no arquivo: DATA_BASE (no arquivo há "DT_BASE"), PRODUCAO.
+}</code></pre></div>
+
+<div class="metodo"><h3 id="preview"><code>preview()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::preview(string|array $arquivo, string $tabela, int $limite = 10, array $opcoes = []): array</div><p>Primeiras <code>$limite</code> linhas de dados já convertidas, <strong>inclusive as que têm erro</strong>, sem gravar. Devolve o resumo com <code>linhas =&gt; [['linha' =&gt; 2, 'dados' =&gt; [...], 'erros' =&gt; [...]], ...]</code>. Em <code>dados</code>, campo que receberá o padrão do banco aparece como <code>null</code>; campo com erro não aparece.</p></div>
+<div class="codigo"><pre><code data-lang="php">$p = SheetToTableHelper::preview($arquivo, '#__desempenho', 5, ['require' =&gt; 'not_null']);
+
+foreach ($p['linhas'] as $l) {
+    echo $l['linha'], ': ', json_encode($l['dados']), $l['erros'] ? ' ✗ ' . $l['erros'][0]['mensagem'] : ' ✓', "\n";
+}
+// 2: {"NUM_CENTRAL":"300","PRODUTO":"Crédito","DATA_BASE":"2026-11-17","PRODUCAO":"1234.56","OBS":"x"} ✓   (na ordem da tabela)</code></pre></div>
+
+<div class="metodo"><h3 id="process"><code>process()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::process(string|array $arquivo, string $tabela, callable $callback, array $opcoes = []): array</div><p>Lê, valida e converte, e entrega lotes prontos para <code>$callback(array $registros, int $numeroDoLote)</code>, <strong>sem gravar nada</strong>. Você grava como quiser (Eloquent, API, outro banco). Linhas com erro não entram nos lotes e aparecem em <code>erros</code>. Com <code>on_error = rollback</code> (padrão), para de entregar lotes no primeiro erro, mas segue lendo para listar todos. Com <code>columns</code>, não precisa de banco.</p></div>
+<div class="codigo"><pre><code data-lang="php">$res = SheetToTableHelper::process($arquivo, '#__desempenho', function (array $registros, $lote) {
+    HttpHelper::post('https://erp.interno/api/producao/lote', ['itens' =&gt; $registros]);
+}, ['on_error' =&gt; 'skip', 'batch_size' =&gt; 500]);</code></pre></div>
+<div class="nota aviso"><p>O <code>process()</code> não abre transação: se o seu callback gravar e um lote seguinte falhar, os anteriores ficam gravados. Para tudo ou nada, envolva a chamada numa transação sua (<a href="db-transaction-helper.html"><code>DbTransactionHelper::run()</code></a>, <code>DB::transaction()</code>) e lance exceção no callback.</p></div>
+
+<div class="metodo"><h3 id="matchHeaders"><code>matchHeaders()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::matchHeaders(array $campos, array $cabecalho, array $opcoes = []): array</div><p>Núcleo puro, sem banco nem arquivo: casa uma lista de campos com um cabeçalho. Opções: <code>match</code>, <code>aliases</code>, <code>optional</code> e <code>extra_columns</code> (veja <a href="#opcoes-cabecalho">opções de cabeçalho</a>). Devolve <code>valido</code>, <code>mensagem</code>, <code>faltantes</code>, <code>duplicados</code>, <code>extras</code>, <code>sugestoes</code> (<code>[CAMPO =&gt; 'cabeçalho parecido']</code>) e <code>mapeamento</code> (<code>[CAMPO =&gt; posição]</code>, vazio se inválido).</p></div>
+<div class="codigo"><pre><code data-lang="php">SheetToTableHelper::matchHeaders(['NUM_CENTRAL', 'DATA_BASE'], ['Data Base', 'num-central']);
+// ['valido' =&gt; true, 'mapeamento' =&gt; ['NUM_CENTRAL' =&gt; 1, 'DATA_BASE' =&gt; 0], 'extras' =&gt; [], ...]
+
+SheetToTableHelper::matchHeaders(['NUM_CENTRAL', 'DATA_BASE'], ['NUM_CENTRAL', 'DATA_BAS']);
+// ['valido' =&gt; false, 'faltantes' =&gt; ['DATA_BASE'], 'sugestoes' =&gt; ['DATA_BASE' =&gt; 'DATA_BAS'],
+//  'mensagem' =&gt; 'Importação cancelada. Falta a seguinte coluna no arquivo: DATA_BASE (no arquivo há "DATA_BAS").']</code></pre></div>
+<p>A sugestão aparece quando um cabeçalho que sobrou é pelo menos 75% parecido com o campo que falta. <strong>Ela nunca casa sozinha</strong>: é só uma dica na mensagem. Para aceitar outro nome, use <code>aliases</code>.</p>
+
+<div class="metodo"><h3 id="headers"><code>headers()</code> / <code>sheets()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::headers(string|array $arquivo, array $opcoes = []): array
+SheetToTableHelper::sheets(string|array $arquivo, array $opcoes = []): array</div><p><code>headers()</code> devolve <code>['cabecalho' =&gt; [...], 'linha' =&gt; 1, 'aba' =&gt; 'Dados', 'formato' =&gt; 'xlsx']</code>: a primeira linha não vazia (ou <code>header_row</code>) da aba escolhida (<code>sheet</code>), com as colunas vazias do fim removidas. <code>sheets()</code> devolve os nomes das abas na ordem do arquivo; CSV devolve <code>['CSV']</code>. Use para montar um <code>&lt;select&gt;</code> de abas antes de importar.</p></div>
+<div class="codigo"><pre><code data-lang="php">SheetToTableHelper::sheets('relatorio.xlsx');                                      // ['Resumo', 'Dados']
+SheetToTableHelper::headers('relatorio.xlsx', ['sheet' =&gt; 'dados', 'header_row' =&gt; 3]);
+// ['cabecalho' =&gt; ['NUM_CENTRAL', 'PRODUTO', 'DATA_BASE', 'PRODUCAO'], 'linha' =&gt; 3, 'aba' =&gt; 'Dados', 'formato' =&gt; 'xlsx']</code></pre></div>
+
+<div class="metodo"><h3 id="template"><code>template()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::template(string $tabela, string $destino, array $opcoes = []): string</div><p>Grava em <code>$destino</code> um arquivo modelo só com o cabeçalho que a tabela espera (com as mesmas opções <code>ignore</code>, <code>only</code>, <code>fixed</code> da importação). <code>.csv</code> sai com <code>;</code> (ou <code>delimiter</code>) e BOM, para o Excel abrir com acentos; <code>.xlsx</code>, <code>.xls</code> e <code>.ods</code> precisam da phpspreadsheet. Devolve o caminho. A pasta precisa existir e ter permissão de escrita.</p></div>
+<div class="codigo"><pre><code data-lang="php">SheetToTableHelper::template('#__desempenho', JPATH_SITE . '/tmp/modelo.xlsx', ['ignore' =&gt; ['CRIADO_EM']]);</code></pre></div>
+
+<div class="metodo"><h3 id="tableColumns"><code>tableColumns()</code> / <code>expectedColumns()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::tableColumns(string $tabela, array $opcoes = []): array
+SheetToTableHelper::expectedColumns(string $tabela, array $opcoes = []): array</div><p><code>tableColumns()</code> devolve a estrutura interpretada de cada coluna: <code>[NOME =&gt; ['name', 'type', 'base', 'int_kind', 'length', 'bytes', 'unsigned', 'precision', 'scale', 'enum', 'nullable', 'default', 'has_default', 'auto', 'generated', 'required_value']]</code>. <code>base</code> é o tipo usado na conversão (<code>int</code>, <code>decimal</code>, <code>date</code>, <code>datetime</code>, <code>timestamp</code>, <code>time</code>, <code>year</code>, <code>enum</code>, <code>json</code>, <code>uuid</code>, <code>bool</code> ou <code>text</code>); <code>required_value</code> é <code>NOT NULL</code> sem padrão. <code>expectedColumns()</code> devolve a lista de colunas que o arquivo precisa ter com as opções informadas: mostre na tela de importação.</p></div>
+<div class="codigo"><pre><code data-lang="php">SheetToTableHelper::expectedColumns('#__desempenho');                              // ['NUM_CENTRAL', 'PRODUTO', 'DATA_BASE', 'PRODUCAO', 'SITUACAO', 'OBS', 'CRIADO_EM']
+SheetToTableHelper::expectedColumns('#__desempenho', ['require' =&gt; 'not_null']);   // ['NUM_CENTRAL', 'PRODUTO', 'DATA_BASE', 'PRODUCAO']</code></pre></div>
+
+<div class="metodo"><h3 id="missingMessage"><code>missingMessage()</code> / <code>errorLines()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::missingMessage(array $resultado): string
+SheetToTableHelper::errorLines(array $resultado, int $limite = 100): array</div><p><code>missingMessage()</code> devolve o texto do alerta de cabeçalho, ou <code>''</code> se o resultado é válido. <code>errorLines()</code> transforma <code>erros</code> em frases prontas: <code>"Linha 37, campo DATA_BASE: Data inválida: \"31/02/2026\"."</code> (sem o trecho do campo quando o erro é da linha inteira).</p></div>
+
+<div class="metodo"><h3 id="utilitarios"><code>supportedExtensions()</code> / <code>supportsPhpSpreadsheet()</code> / <code>clearCache()</code> / <code>exportRecord()</code><span class="tag estatico">estático</span></h3><div class="assinatura">SheetToTableHelper::supportedExtensions(): array
+SheetToTableHelper::supportsPhpSpreadsheet(): bool
+SheetToTableHelper::clearCache(): void
+SheetToTableHelper::exportRecord(array $registro, bool $comoNull = false): array</div><p><code>supportedExtensions()</code>: <code>csv</code>, <code>txt</code>, <code>tsv</code>, <code>xlsx</code>, <code>xlsm</code> e, com a phpspreadsheet, <code>xls</code> e <code>ods</code>; use no <code>accept</code> do formulário e no <code>allowed_extensions</code> do UploadMaster. <code>clearCache()</code> esquece a estrutura das tabelas lida nesta requisição (chame depois de um <code>ALTER TABLE</code> no mesmo script). <code>exportRecord()</code> tira de um registro a marca interna "use o padrão do banco" (ou a troca por <code>null</code>); o <code>process()</code> e o <code>preview()</code> já chamam por você.</p></div>
+<p><code>runFor()</code> e <code>writeBatchFor()</code> são públicos só porque são chamados de dentro de closures; não use direto.</p>
+
+<h2 id="modos" data-titulo="Modos de gravação">Modos de gravação (<code>mode</code>)</h2>
+<div class="tabela"><table><thead><tr><th>Modo</th><th>Apelidos</th><th>O que faz</th><th>SQL</th></tr></thead><tbody>
+<tr><td><code>append</code> (padrão)</td><td><code>insert</code></td><td>Insere junto com o que já existe. Linha com chave única repetida é erro.</td><td><code>INSERT</code></td></tr>
+<tr><td><code>replace</code></td><td><code>truncate_insert</code></td><td>Apaga e insere o arquivo, na mesma transação: se der erro, o que foi apagado volta. Sem filtro apaga <strong>tudo</strong>.</td><td><code>DELETE</code> + <code>INSERT</code></td></tr>
+<tr><td><code>upsert</code></td><td>—</td><td>Insere; se a chave única já existir, atualiza os campos que vieram (menos os de <code>unique_by</code>).</td><td>MySQL: <code>ON DUPLICATE KEY UPDATE</code>; PostgreSQL: <code>ON CONFLICT (unique_by) DO UPDATE</code></td></tr>
+<tr><td><code>insert_new</code></td><td><code>insert_ignore</code></td><td>Insere só o que não existe; duplicados pela chave única são ignorados e contados em <code>ignoradas_duplicadas</code>.</td><td>MySQL: <code>ON DUPLICATE KEY UPDATE x = x</code>; PostgreSQL: <code>ON CONFLICT DO NOTHING</code></td></tr>
+</tbody></table></div>
+<p>Filtros do <code>replace</code> (use um ou outro):</p>
+<div class="codigo"><pre><code data-lang="php">// Apaga só o que bate com o filtro. Valor array = IN; null = IS NULL; array vazio = não apaga nada.
+'mode' =&gt; 'replace', 'replace_where' =&gt; ['DATA_BASE' =&gt; '2026-11-17', 'NUM_CENTRAL' =&gt; [300, 301]],
+
+// Apaga só as chaves que vieram no arquivo: o arquivo de novembro troca novembro e não mexe em outubro.
+// Cada chave é apagada uma vez, antes do primeiro lote em que aparece.
+'mode' =&gt; 'replace', 'replace_by' =&gt; ['DATA_BASE'],
+'mode' =&gt; 'replace', 'replace_by' =&gt; ['NUM_CENTRAL', 'DATA_BASE'],   // combinação de colunas</code></pre></div>
+<div class="nota aviso"><p><code>replace_by</code> apaga pela chave em toda a tabela, de qualquer dono. Em tabela com dados de vários usuários ou cooperativas, use <code>replace_where</code> com o dono vindo do servidor (<code>UserHelper::singular()</code>) e o dono também em <code>fixed</code>, como no <a href="#joomla">exemplo completo</a>.</p></div>
+<div class="metodo"><h3 id="replace_strategy"><code>replace_strategy</code></h3><p><code>'delete'</code> (padrão) apaga com <code>DELETE</code> dentro da transação. <code>'truncate'</code> usa <code>TRUNCATE</code> (mais rápido em tabela enorme, zera o <code>AUTO_INCREMENT</code>), só sem filtro, e roda <strong>antes</strong> da transação: se a importação falhar, os dados antigos não voltam. No MySQL o <code>TRUNCATE</code> confirma na hora, então ele exige <code>'atomic' =&gt; false</code>. Use sempre com <code>'validate_first' =&gt; true</code>, que lê e valida o arquivo inteiro antes de apagar.</p></div>
+<div class="codigo"><pre><code data-lang="php">SheetToTableHelper::import($arquivo, 'dw_fato_producao', [
+    'mode' =&gt; 'replace', 'replace_strategy' =&gt; 'truncate', 'atomic' =&gt; false, 'validate_first' =&gt; true,
+]);</code></pre></div>
+
+<h2 id="erros-linha" data-titulo="Erros por linha">Erros por linha: <code>on_error</code>, <code>atomic</code> e simulação</h2>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>on_error</code></td><td><code>'rollback'</code></td><td><code>'rollback'</code> (ou <code>'abort'</code>): qualquer erro, de tipo ou do banco, desfaz tudo e devolve a lista. <code>'skip'</code>: grava as linhas boas e devolve as ruins em <code>erros</code>; <code>valido</code> continua <code>true</code>.</td></tr>
+<tr><td id="atomic"><code>atomic</code></td><td><code>true</code></td><td>Uma transação para a importação inteira. <code>false</code>: uma transação por lote (um lote nunca fica pela metade), mais leve para o banco, mas <strong>sem rollback</strong> do que já foi gravado. Com <code>rollback</code>, para no primeiro erro e avisa quantas linhas já tinham sido gravadas.</td></tr>
+<tr><td><code>validate_first</code></td><td><code>false</code></td><td>Lê o arquivo inteiro uma vez sem tocar no banco; só grava se não houver erro (com <code>rollback</code>). Lê o arquivo duas vezes. Combine com <code>atomic = false</code>.</td></tr>
+<tr><td><code>dry_run</code></td><td><code>false</code></td><td>Só valida tudo e devolve o resumo, sem gravar: <em>"Simulação concluída: 18342 linha(s) prontas para importar. Nada foi gravado."</em> Erros do banco (duplicado, chave estrangeira) só aparecem na gravação de verdade.</td></tr>
+<tr><td><code>max_errors</code></td><td><code>1000</code></td><td>Quantos erros guardar. Passou disso, <code>erros_truncados = true</code> e, com <code>rollback</code>, a leitura para (<code>leitura_interrompida = true</code>).</td></tr>
+<tr><td><code>show_db_errors</code></td><td><code>true</code></td><td>Acrescenta o detalhe do banco à mensagem de chave estrangeira, formato inválido e recusa genérica. Use <code>false</code> em telas para usuários finais.</td></tr>
+</tbody></table></div>
+<div class="tabela"><table><thead><tr><th>Combinação</th><th>Resultado com erro na linha 500 de 1000</th></tr></thead><tbody>
+<tr><td><code>atomic = true</code>, <code>rollback</code> (padrão)</td><td>Nada gravado; todos os erros listados.</td></tr>
+<tr><td><code>atomic = true</code>, <code>skip</code></td><td>999 linhas gravadas numa transação; linha 500 em <code>erros</code>.</td></tr>
+<tr><td><code>atomic = false</code>, <code>rollback</code></td><td>Os lotes antes do erro ficam gravados; para no erro.</td></tr>
+<tr><td><code>atomic = false</code>, <code>validate_first</code>, <code>rollback</code></td><td>Erro de tipo: nada gravado. Erro do banco no meio: os lotes anteriores ficam.</td></tr>
+<tr><td><code>dry_run</code></td><td>Nada gravado; erros de tipo listados.</td></tr>
+</tbody></table></div>
+
+<h2 id="opcoes" data-titulo="Todas as opções">Todas as opções</h2>
+<p>Valem para <code>import()</code>, <code>validate()</code>, <code>preview()</code>, <code>process()</code> e <code>template()</code>, exceto onde indicado. Nomes de campo nas opções ignoram maiúsculas e minúsculas.</p>
+<h3 id="opcoes-campos">Quais campos entram</h3>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>require</code></td><td><code>'all'</code></td><td><code>'all'</code>: <strong>todo</strong> campo importável precisa estar no arquivo, mesmo os que aceitam <code>NULL</code>. <code>'not_null'</code>: só os <code>NOT NULL</code> sem valor padrão; os outros podem faltar e o banco aplica o padrão.</td></tr>
+<tr><td><code>optional</code></td><td><code>[]</code></td><td>Campos que podem faltar no arquivo.</td></tr>
+<tr><td><code>ignore</code></td><td><code>[]</code></td><td>Campos que nunca entram, mesmo que estejam no arquivo.</td></tr>
+<tr><td><code>only</code></td><td><code>[]</code></td><td>Lista permitida: só estes campos entram.</td></tr>
+<tr><td><code>fixed</code></td><td><code>[]</code></td><td><code>[CAMPO =&gt; valor]</code> gravado em toda linha; não precisa estar no arquivo (e, se estiver, é ignorado). Aceita <code>Closure($valoresBrutosDaLinha, $linha)</code>. Campo inexistente na tabela lança exceção.</td></tr>
+<tr><td><code>auto</code></td><td><code>[]</code></td><td>Campos gerados pelo banco que não foram detectados (identity do PostgreSQL por trigger): passam a ser ignorados.</td></tr>
+<tr><td><code>columns</code></td><td>—</td><td>Estrutura manual, sem ler o banco: <code>['NOME', 'CPF']</code> (texto livre) ou <code>['NOME' =&gt; 'varchar(150)', 'NASC' =&gt; 'date']</code>. Todos aceitam vazio. Só para <code>validate()</code>, <code>preview()</code> e <code>process()</code>; o <code>import()</code> recusa.</td></tr>
+<tr><td><code>connection</code></td><td>Joomla</td><td>Nome registrado no <a href="db-connection-helper.html">DbConnectionHelper</a> ou um driver pronto.</td></tr>
+</tbody></table></div>
+<p>Colunas <code>AUTO_INCREMENT</code>, <code>serial</code>/identity e geradas (<code>VIRTUAL</code>/<code>STORED</code>) ficam de fora sempre e aparecem em <code>campos_ignorados</code>.</p>
+<h3 id="opcoes-cabecalho">Cabeçalho</h3>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>match</code></td><td><code>'normal'</code></td><td><code>'normal'</code>: ignora maiúsculas e acentos e trata espaço, hífen, ponto e <code>_</code> como iguais (<code>"Cód. Central"</code> = <code>COD_CENTRAL</code>). <code>'strict'</code>: só ignora maiúsculas e espaços nas pontas.</td></tr>
+<tr><td><code>aliases</code></td><td><code>[]</code></td><td>Outros nomes aceitos: <code>['DATA_BASE' =&gt; ['Dt Base', 'Competência']]</code>. A chave é o nome do campo como está na tabela.</td></tr>
+<tr><td><code>extra_columns</code></td><td><code>'ignore'</code></td><td><code>'error'</code>: coluna do arquivo que não existe na tabela bloqueia a importação.</td></tr>
+<tr><td><code>header_row</code></td><td>1ª linha não vazia</td><td>Número da linha do cabeçalho (contando a partir de 1), para planilhas com título em cima.</td></tr>
+<tr><td><code>sheet</code></td><td><code>0</code></td><td>Aba do Excel: índice a partir de 0 ou nome (sem diferença de maiúsculas).</td></tr>
+</tbody></table></div>
+<p>Cabeçalho repetido (<code>PRODUTO</code> duas vezes) sempre bloqueia, porque não dá para saber qual coluna vale.</p>
+<h3 id="opcoes-arquivo">Leitura do arquivo</h3>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>delimiter</code></td><td>detectado</td><td>Separador do CSV. Sem ele, detecta entre <code>;</code> <code>,</code> tab e <code>|</code> pelo que divide as primeiras linhas no mesmo número de colunas. Respeita a linha <code>sep=;</code> do Excel.</td></tr>
+<tr><td><code>enclosure</code></td><td><code>'"'</code></td><td>Aspas do CSV.</td></tr>
+<tr><td><code>encoding</code></td><td>detectado</td><td>Codificação do CSV. Detecta UTF-8 (com ou sem BOM), UTF-16 (pelo BOM, convertido em blocos) e, se não for UTF-8 válido, Windows-1252 (o "ANSI" do Excel no Windows).</td></tr>
+<tr><td><code>extension</code></td><td>do nome</td><td>Força o formato quando o nome do arquivo não tem extensão.</td></tr>
+<tr><td><code>trim</code></td><td><code>true</code></td><td>Tira espaços das pontas de cada valor.</td></tr>
+</tbody></table></div>
+<h3 id="opcoes-valores">Conversão de valores</h3>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>decimal</code></td><td><code>'auto'</code></td><td><code>'auto'</code>: com os dois separadores, o último é o decimal; só vírgula é decimal; só ponto é decimal, salvo grupos de milhar (<code>1.234.567</code>). <code>'br'</code>: ponto é milhar e vírgula é decimal, sempre. <code>'us'</code>: vírgula é milhar.</td></tr>
+<tr><td><code>date_format</code></td><td>—</td><td>Formato(s) de data testados primeiro: <code>'m/d/Y'</code> ou <code>['m/d/Y', 'm/d/Y H:i']</code>.</td></tr>
+<tr><td><code>transform</code></td><td><code>[]</code></td><td><code>[CAMPO =&gt; fn ($valor, $valoresBrutos, $linha)]</code>, antes da conversão. Exceção lançada vira erro da linha nesse campo.</td></tr>
+<tr><td><code>row_callback</code></td><td>—</td><td><code>fn (array $registro, $linha)</code> depois da conversão, só em linha sem erro. Devolva o registro (alterado ou não), <code>false</code> para pular a linha sem erro, ou lance exceção para marcar erro na linha.</td></tr>
+<tr><td><code>convert</code></td><td><code>true</code></td><td><code>false</code> grava o texto como veio, sem conferir o tipo (o banco converte ou recusa).</td></tr>
+</tbody></table></div>
+<h3 id="opcoes-execucao">Execução</h3>
+<div class="tabela"><table><thead><tr><th>Opção</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>batch_size</code></td><td><code>1000</code></td><td>Linhas por <code>INSERT</code> e por lote do <code>process()</code> (1 a 20000).</td></tr>
+<tr><td><code>max_sql_bytes</code></td><td>4 MB</td><td>Tamanho máximo de um <code>INSERT</code>; o lote é dividido antes de passar (mínimo 64 KB). Ajuste ao <code>max_allowed_packet</code> do MySQL.</td></tr>
+<tr><td><code>on_progress</code></td><td>—</td><td><code>fn (array $p)</code> a cada lote: <code>['lote', 'linhas_lidas', 'com_erro', 'memoria_mb']</code>.</td></tr>
+<tr><td><code>time_limit</code></td><td><code>0</code></td><td>Só <code>import()</code>: <code>set_time_limit()</code> aplicado (0 = sem limite; negativo = não mexe).</td></tr>
+<tr><td><code>ignore_user_abort</code></td><td><code>true</code></td><td>Só <code>import()</code>: continua mesmo se o navegador fechar, para não parar no meio.</td></tr>
+<tr><td><code>mode</code>, <code>replace_where</code>, <code>replace_by</code>, <code>replace_strategy</code>, <code>unique_by</code></td><td></td><td>Só <code>import()</code>: veja <a href="#modos">modos</a>.</td></tr>
+<tr><td><code>on_error</code>, <code>atomic</code>, <code>validate_first</code>, <code>dry_run</code>, <code>max_errors</code>, <code>show_db_errors</code></td><td></td><td>Veja <a href="#erros-linha">erros por linha</a>.</td></tr>
+</tbody></table></div>
+
+<h2 id="conversao" data-titulo="Conversão por tipo">Conversão e validação por tipo de coluna</h2>
+<p>Antes da conversão: espaços das pontas saem e vazio vira <code>NULL</code>. Valor vazio em coluna <code>NOT NULL</code> sem padrão é erro <em>"Campo obrigatório sem valor."</em>; em <code>NOT NULL</code> com padrão, grava <code>DEFAULT</code> (o banco aplica o padrão); nas outras, <code>NULL</code>.</p>
+<div class="tabela"><table><thead><tr><th>Tipo da coluna</th><th>Aceita</th><th>Grava</th><th>Recusa</th></tr></thead><tbody>
+<tr><td><code>TINYINT</code> … <code>BIGINT</code>, <code>serial</code>, <code>int2/4/8</code></td><td><code>300</code>, <code>1.234.567</code>, <code>10,00</code>, <code>(5)</code>; <code>1.234</code> só com <code>decimal = br</code></td><td><code>'300'</code> (texto, sem perder precisão em <code>BIGINT</code>)</td><td>decimal (<code>10,5</code>), fora do limite do tipo e do <code>UNSIGNED</code></td></tr>
+<tr><td><code>TINYINT(1)</code></td><td>número ou <code>sim/não</code>, <code>true/false</code>, <code>s/n</code>, <code>x</code>, <code>ativo/inativo</code></td><td><code>'1'</code>/<code>'0'</code> ou o número</td><td>fora de −128 a 127</td></tr>
+<tr><td><code>BOOLEAN</code>, <code>BIT(1)</code></td><td><code>1/0</code>, <code>sim/não</code>, <code>true/false</code>, <code>verdadeiro/falso</code>, <code>yes/no</code>, <code>s/n</code>, <code>t/f</code>, <code>x</code>, <code>ativo/inativo</code></td><td><code>'1'</code>/<code>'0'</code></td><td>qualquer outro texto</td></tr>
+<tr><td><code>DECIMAL(p,s)</code>, <code>NUMERIC</code></td><td><code>1.234,56</code>, <code>1,234.56</code>, <code>R$ 10,00</code>, <code>15%</code> (vira 15), <code>(10)</code>, <code>1E3</code></td><td><code>'1234.56'</code></td><td>texto, mais dígitos antes da vírgula que <code>p − s</code>, negativo em <code>UNSIGNED</code></td></tr>
+<tr><td><code>FLOAT</code>, <code>DOUBLE</code>, <code>REAL</code>, <code>MONEY</code></td><td>os mesmos números</td><td>texto numérico</td><td>texto</td></tr>
+<tr><td><code>DATE</code></td><td><code>2026-11-17</code>, <code>17/11/2026</code>, <code>17-11-2026</code>, <code>17.11.2026</code>, <code>2026/11/17</code>, <code>20261117</code>, <code>17/11/26</code>, data serial do Excel, <code>date_format</code></td><td><code>'2026-11-17'</code></td><td>data inexistente (<code>31/02/2026</code>), ano fora de 1000 a 9999</td></tr>
+<tr><td><code>DATETIME</code>, <code>timestamp</code> do PostgreSQL</td><td>os de data, com <code>H:i</code> ou <code>H:i:s</code>, ISO 8601 com <code>T</code> e fuso</td><td><code>'2026-11-17 08:30:00'</code></td><td>idem</td></tr>
+<tr><td><code>TIMESTAMP</code> do MySQL</td><td>idem</td><td>idem</td><td>fora de 1970-01-01 a 2038-01-19</td></tr>
+<tr><td><code>TIME</code></td><td><code>08:30</code>, <code>08:30:15</code>, fração de dia do Excel</td><td><code>'08:30:00'</code></td><td>hora inválida</td></tr>
+<tr><td><code>YEAR</code></td><td>4 dígitos</td><td><code>'2026'</code></td><td>fora de 1901 a 2155 (ou 0)</td></tr>
+<tr><td><code>ENUM(...)</code></td><td>valor da lista, sem diferença de maiúsculas</td><td>o valor como está na lista</td><td>fora da lista (a mensagem lista os válidos)</td></tr>
+<tr><td><code>JSON</code>, <code>JSONB</code></td><td>JSON válido</td><td>o texto</td><td>JSON inválido</td></tr>
+<tr><td><code>UUID</code></td><td><code>8-4-4-4-12</code> hexadecimal</td><td>o texto</td><td>outro formato</td></tr>
+<tr><td><code>VARCHAR(n)</code>, <code>CHAR(n)</code>, <code>TEXT</code> e o resto</td><td>texto UTF-8</td><td>o texto</td><td>mais de <code>n</code> caracteres; <code>TINYTEXT</code>/<code>TEXT</code>/<code>MEDIUMTEXT</code> acima do limite em bytes; codificação inválida</td></tr>
+</tbody></table></div>
+<div class="nota"><p><strong>Datas seriais</strong> (<code>46343</code> = 17/11/2026) só são reconhecidas em XLSX, XLS e ODS. Num CSV, <code>45000</code> não é data e dá erro, de propósito. O <code>DECIMAL</code> confere só os dígitos antes da vírgula; casas decimais a mais o banco arredonda.</p></div>
+
+<h2 id="retorno" data-titulo="Retorno">O resumo devolvido</h2>
+<div class="tabela"><table><thead><tr><th>Chave</th><th>Tipo</th><th>Conteúdo</th></tr></thead><tbody>
+<tr><td><code>valido</code></td><td>bool</td><td>Deu certo. Com <code>on_error = skip</code>, fica <code>true</code> mesmo com linhas puladas.</td></tr>
+<tr><td><code>mensagem</code></td><td>string</td><td>Texto pronto para o usuário.</td></tr>
+<tr><td><code>total_linhas</code></td><td>int</td><td>Linhas de dados lidas (linhas vazias não contam).</td></tr>
+<tr><td><code>validas</code> / <code>com_erro</code></td><td>int</td><td>Linhas sem erro / com algum erro.</td></tr>
+<tr><td><code>gravadas</code></td><td>int</td><td>Linhas gravadas (0 no rollback; no <code>insert_new</code>, só as novas).</td></tr>
+<tr><td><code>apagadas</code></td><td>int</td><td>Linhas apagadas pelo <code>replace</code>.</td></tr>
+<tr><td><code>ignoradas_duplicadas</code></td><td>int</td><td><code>insert_new</code>: linhas que já existiam.</td></tr>
+<tr><td><code>lotes</code></td><td>int</td><td>Lotes entregues ao banco ou ao callback.</td></tr>
+<tr><td><code>erros</code></td><td>array</td><td><code>[['linha' =&gt; 37, 'campo' =&gt; 'DATA_BASE', 'mensagem' =&gt; '...', 'valor' =&gt; '31/02/2026'], ...]</code>. <code>campo</code> é <code>null</code> quando o erro é da linha; <code>valor</code> (até 60 caracteres) é <code>null</code> nos erros do banco.</td></tr>
+<tr><td><code>erros_truncados</code> / <code>leitura_interrompida</code></td><td>bool</td><td>Passou de <code>max_errors</code> / parou de ler por isso.</td></tr>
+<tr><td><code>rollback</code></td><td>bool</td><td>A transação foi desfeita.</td></tr>
+<tr><td><code>faltantes</code>, <code>duplicados</code>, <code>extras</code>, <code>sugestoes</code>, <code>mapeamento</code></td><td>array</td><td>Do casamento do cabeçalho.</td></tr>
+<tr><td><code>cabecalho</code>, <code>linha_cabecalho</code>, <code>aba</code></td><td></td><td>O cabeçalho lido, em que linha e de qual aba.</td></tr>
+<tr><td><code>campos_esperados</code>, <code>campos_fixos</code>, <code>campos_ignorados</code></td><td>array</td><td>O plano dos campos.</td></tr>
+<tr><td><code>modo</code>, <code>dry_run</code>, <code>tempo_segundos</code>, <code>memoria_pico_mb</code></td><td></td><td>Só <code>import()</code>.</td></tr>
+<tr><td><code>linhas</code></td><td>array</td><td>Só <code>preview()</code>.</td></tr>
+</tbody></table></div>
+<p>A <code>linha</code> é a da planilha: a mesma que o Excel mostra na lateral (no CSV, o número do registro, contando o cabeçalho).</p>
+
+<h2 id="erros" data-titulo="Exceções e mensagens">Exceções e mensagens de erro</h2>
+<p>O que é problema da planilha volta no resumo, nunca como exceção. O que impede de começar lança <code>SheetToTableException</code> (estende <code>RuntimeException</code>), sempre com mensagem segura para o usuário; o erro técnico vai para o log.</p>
+<div class="tabela"><table><thead><tr><th>Exceção (<code>getMessage()</code>)</th><th>Quando</th></tr></thead><tbody>
+<tr><td>Arquivo não encontrado ou sem permissão de leitura. · O arquivo está vazio. · O arquivo passa do limite de N MB. · O envio do arquivo falhou (código N).</td><td>Arquivo</td></tr>
+<tr><td>Formato não suportado: .pdf. Use csv, txt, tsv, xlsx, xlsm... · Para importar XLS instale: composer require phpoffice/phpspreadsheet · Para importar XLSX o PHP precisa das extensões zip e xmlreader.</td><td>Formato</td></tr>
+<tr><td>O arquivo não é um XLSX válido. · Não foi possível ler a planilha. Verifique se o arquivo não está corrompido ou protegido por senha. · Aba não encontrada: X. Abas: ... · A planilha não tem a aba N.</td><td>Planilha</td></tr>
+<tr><td>O arquivo não tem cabeçalho (está vazio). · A linha N do arquivo está vazia ou não existe.</td><td>Cabeçalho</td></tr>
+<tr><td>A tabela X não existe ou não tem colunas. · Nome de tabela inválido. · Campo fixo inexistente na tabela: X. · Campo inexistente na tabela em "unique_by": X.</td><td>Tabela e opções</td></tr>
+<tr><td>Modo de importação inválido · on_error deve ser "rollback" ou "skip". · "replace_by" e "replace_where" só valem com mode = replace. · No PostgreSQL o upsert precisa de "unique_by". · TRUNCATE no MySQL não pode ser desfeito...</td><td>Combinação de opções</td></tr>
+<tr><td>Falha ao gravar no banco. Nada foi gravado (rollback). (código 500)</td><td>Banco caiu, deadlock, permissão: o detalhe vai para o log</td></tr>
+</tbody></table></div>
+<p>Mensagens dos erros do banco por linha: <em>Registro duplicado: já existe uma linha com essa chave única (valor "300-0-CRÉDITO-2026-11-17", chave jos_credito_producao.uk_producao)</em> · <em>Valor não encontrado na tabela relacionada.</em> · <em>Campo obrigatório sem valor.</em> · <em>Texto maior que o permitido pela coluna.</em> · <em>Número fora do limite da coluna.</em> · <em>Valor em formato inválido para a coluna.</em> · <em>O banco recusou a linha.</em></p>
+
+<h2 id="arquivos" data-titulo="Formatos e memória">Formatos, tamanho e memória</h2>
+<div class="tabela"><table><thead><tr><th>Formato</th><th>Leitor</th><th>Memória</th></tr></thead><tbody>
+<tr><td><code>.csv</code>, <code>.txt</code>, <code>.tsv</code></td><td><code>fgetcsv</code>, linha a linha</td><td>constante (poucos MB em 1 milhão de linhas)</td></tr>
+<tr><td><code>.xlsx</code>, <code>.xlsm</code></td><td>leitor próprio com <code>XMLReader</code>, linha a linha (não precisa da phpspreadsheet)</td><td>constante, mais os textos compartilhados da planilha</td></tr>
+<tr><td><code>.xls</code></td><td>phpspreadsheet (máximo de 65.536 linhas)</td><td>carrega a aba</td></tr>
+<tr><td><code>.ods</code></td><td>phpspreadsheet</td><td>carrega a aba; para ODS grande, salve como XLSX ou CSV</td></tr>
+</tbody></table></div>
+<p>Erro de fórmula (<code>#N/A</code>, <code>#DIV/0!</code>) chega como texto e a validação aponta a célula. Arquivos temporários (XLSX descompactado, CSV UTF-16 convertido) são apagados no fim, mesmo com erro.</p>
+
+<h2 id="configuracao" data-titulo="Configuração">Configuração global</h2>
+<div class="tabela"><table><thead><tr><th>Método</th><th>Padrão</th><th>O que faz</th></tr></thead><tbody>
+<tr><td><code>setBatchSize($n)</code></td><td><code>1000</code></td><td>Linhas por lote (1 a 20000). A opção <code>batch_size</code> vale para uma chamada.</td></tr>
+<tr><td><code>setMaxSqlBytes($bytes)</code></td><td>4 MB</td><td>Tamanho máximo de um <code>INSERT</code> (mínimo 64 KB).</td></tr>
+<tr><td><code>setMaxFileSize($bytes)</code></td><td>2 GB</td><td>Arquivo maior é recusado antes de ler. O limite de upload do PHP (<code>upload_max_filesize</code>, <code>post_max_size</code>) vale antes deste.</td></tr>
+<tr><td><code>setMaxErrors($n)</code></td><td><code>1000</code></td><td>Erros guardados no resumo.</td></tr>
+<tr><td><code>setLogCategory($c)</code></td><td><code>sheet_to_table</code></td><td>Categoria no <a href="log-helper.html">LogHelper</a>: importação concluída (info), falha de leitura da estrutura, da planilha ou da gravação (error).</td></tr>
+</tbody></table></div>
+<div class="tabela"><table><thead><tr><th>Constante</th><th>Valor</th></tr></thead><tbody>
+<tr><td><code>MODE_APPEND</code>, <code>MODE_REPLACE</code>, <code>MODE_UPSERT</code>, <code>MODE_INSERT_NEW</code></td><td><code>'append'</code>, <code>'replace'</code>, <code>'upsert'</code>, <code>'insert_new'</code></td></tr>
+<tr><td><code>ON_ERROR_ROLLBACK</code>, <code>ON_ERROR_SKIP</code></td><td><code>'rollback'</code>, <code>'skip'</code></td></tr>
+</tbody></table></div>
+
+<h2 id="seguranca" data-titulo="Segurança">Segurança</h2>
+<ul>
+<li><strong>SQL:</strong> os valores vão sempre por <em>bindings</em>; nomes de tabela e de coluna saem da estrutura do banco (nunca do arquivo) e passam por <code>quoteName</code>. Nome de tabela fora de <code>[A-Za-z0-9_#$.]</code> é recusado.</li>
+<li><strong>XML:</strong> o XLSX é lido com <code>LIBXML_NONET</code>, sem acesso à rede.</li>
+<li><strong>Quem pode importar:</strong> o helper não confere permissão. Exija token e permissão no controller (<a href="permission-helper.html">PermissionHelper</a>, <a href="user-helper.html#requireGroup"><code>UserHelper::requireGroup()</code></a>).</li>
+<li><strong>Dono dos dados:</strong> campos como usuário, empresa ou cooperativa vêm do servidor em <code>fixed</code>. Com <code>replace</code>, limite o <code>DELETE</code> ao dono com <code>replace_where</code>.</li>
+<li><strong>Upload:</strong> XLSX é um ZIP; o <code>isSafeFile()</code> do Joomla recusa ZIPs por engano, então leia o campo com <a href="input-helper.html#file"><code>InputHelper::file($nome, null, true)</code></a>. Restrinja a extensão no formulário e no servidor com <code>supportedExtensions()</code>.</li>
+<li><strong>Mensagens:</strong> erros do PHP e do banco nunca chegam ao usuário; vão para o log. Com <code>'show_db_errors' =&gt; false</code>, nem o detalhe do banco por linha.</li>
+<li><strong>Saída:</strong> os valores da planilha voltam em <code>erros</code> e na prévia. Mostre com <code>textContent</code> ou <code>htmlspecialchars()</code>, nunca como HTML.</li>
+</ul>
+
+<h2 id="postgresql" data-titulo="PostgreSQL">PostgreSQL</h2>
+<ul>
+<li><code>upsert</code> precisa de <code>'unique_by' =&gt; [...]</code> (as colunas da restrição única). <code>insert_new</code> sem <code>unique_by</code> usa <code>ON CONFLICT DO NOTHING</code> em qualquer restrição.</li>
+<li><code>serial</code>, <code>bigserial</code>, <code>nextval()</code> e <code>GENERATED ... AS IDENTITY</code> são detectados como automáticos. Coluna preenchida por trigger: informe em <code>auto</code>.</li>
+<li><code>timestamp</code> do PostgreSQL aceita qualquer data comum (o limite 1970–2038 é só do <code>TIMESTAMP</code> do MySQL).</li>
+<li>Cada lote roda num savepoint: um erro do banco não aborta a transação inteira (o "current transaction is aborted" do PostgreSQL).</li>
+</ul>
+
+<h2 id="problemas" data-titulo="Erros e soluções">Erros e soluções</h2>
+<div class="tabela"><table><thead><tr><th>Sintoma</th><th>Causa e solução</th></tr></thead><tbody>
+<tr><td>"Faltam as seguintes colunas no arquivo: OBS, SITUACAO" e essas colunas aceitam vazio</td><td>O padrão <code>require = 'all'</code> exige todas. Use <code>'require' =&gt; 'not_null'</code> ou <code>'optional' =&gt; ['OBS', 'SITUACAO']</code>.</td></tr>
+<tr><td>O cabeçalho certo não é encontrado numa planilha com título</td><td>Informe <code>'header_row' =&gt; 3</code> e, se for outra aba, <code>'sheet' =&gt; 'Dados'</code>.</td></tr>
+<tr><td>Acentos trocados (<code>Ã§</code>) no banco</td><td>O CSV não é UTF-8 nem Windows-1252: informe <code>'encoding' =&gt; 'ISO-8859-1'</code> (ou a codificação certa). Confira também se a conexão usa <code>utf8mb4</code>.</td></tr>
+<tr><td>"Esperado número inteiro, veio decimal: "1.234"" ou <code>1.234</code> gravado como 1,234</td><td>Com só um ponto, o modo <code>auto</code> lê o ponto como decimal. Planilha sempre brasileira: <code>'decimal' =&gt; 'br'</code> (ponto é milhar).</td></tr>
+<tr><td>Datas como <code>11/17/2026</code> recusadas</td><td>Formato americano: <code>'date_format' =&gt; 'm/d/Y'</code>.</td></tr>
+<tr><td>"Formato não suportado: ." no upload</td><td>Passou <code>tmp_name</code> em vez do array do <code>$_FILES</code>: o temporário não tem extensão. Passe o array inteiro ou use <code>'extension' =&gt; 'xlsx'</code>.</td></tr>
+<tr><td>Upload de XLSX chega vazio no Joomla</td><td>O <code>isSafeFile()</code> recusou o ZIP: <code>InputHelper::file('planilha', null, true)</code>.</td></tr>
+<tr><td>"MySQL server has gone away" ou "Packet too large"</td><td>Diminua <code>max_sql_bytes</code> (ou <code>batch_size</code>) para caber no <code>max_allowed_packet</code>.</td></tr>
+<tr><td>Lock wait timeout em importação longa</td><td>A transação única segura a tabela. Rode fora do horário, em <a href="#fila">segundo plano</a>, ou com <code>'atomic' =&gt; false, 'validate_first' =&gt; true</code>.</td></tr>
+<tr><td>A estrutura nova da tabela não é vista</td><td>Cache da requisição: <code>SheetToTableHelper::clearCache()</code> depois do <code>ALTER TABLE</code>.</td></tr>
+</tbody></table></div>
+
+<h2 id="veja-tambem" data-titulo="Veja também">Veja também</h2>
+<ul><li><a href="csv-helper.html">CsvHelper</a>: CSV com mapeamento manual de colunas, regras do ValidationHelper e arquivo de rejeitados.</li><li><a href="export-helper.html">ExportHelper</a>: o caminho inverso (tabela para CSV) e o arquivo com as linhas de erro.</li><li><a href="upload-master.html">UploadMaster</a> e <a href="input-helper.html#file">InputHelper::file()</a>: receber a planilha.</li><li><a href="queue-helper.html">QueueHelper</a> e <a href="fila-worker.html">Jobs e worker</a>: importação em segundo plano.</li><li><a href="lock-helper.html">LockHelper</a>: uma importação de cada vez.</li><li><a href="user-helper.html">UserHelper</a>: o dono dos dados em <code>fixed</code> e <code>replace_where</code>.</li><li><a href="audit-helper.html">AuditHelper</a>: <code>imported()</code> para registrar quem importou o quê.</li><li><a href="db-transaction-helper.html">DbTransactionHelper</a>: as transações e savepoints usados na gravação.</li></ul>
+<nav class="navegacao-paginas" aria-label="Navegação entre páginas"><a href="csv-helper.html"><small>← Anterior</small>CsvHelper</a><a class="proxima" href="export-helper.html"><small>Próxima →</small>ExportHelper</a></nav>
+<p class="rodape">Documentação de <code>DbConnectionHelper</code>, <code>DbTransactionHelper</code>, <code>OrmTables</code>, <code>OrmBase</code>, <code>InputHelper</code>, <code>ValidationHelper</code>, <code>DateHelper</code>, <code>ApiResponseHelper</code>, <code>LogHelper</code>, <code>PermissionHelper</code>, <code>UserHelper</code>, <code>CsvHelper</code>, <code>SheetToTableHelper</code>, <code>ExportHelper</code>, <code>FileHelper</code>, <code>AuditHelper</code>, <code>IncludeHelper</code>, <code>PlatformHelper</code>, <code>ChunkHelper</code>, <code>UploadMaster</code>, <code>QueueHelper</code>, <code>HttpHelper</code>, <code>LockHelper</code>, <code>CacheHelper</code>, <code>MailHelper</code>, <code>EmailSendHelper</code>, <code>RateLimitHelper</code>, <code>CryptoHelper</code>, <code>FormatHelper</code>, <code>WebhookHelper</code>, <code>SettingsHelper</code>, <code>ArrayHelper</code>, <code>BackupDatabaseHelper</code>, <code>Vigia.js</code> e <code>vitrine.js</code>.</p>
+</main>
+</div>
+</body>
+</html>
